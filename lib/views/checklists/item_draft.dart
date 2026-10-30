@@ -7,9 +7,11 @@ import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
 import 'package:pantry_core/models/item_start_values.dart';
+import 'package:pantry_core/models/stock.dart';
 import 'package:pantry_core/utils/currencies.dart';
 import 'form_components.dart';
 import 'price_input.dart';
+import 'stock_cards.dart';
 
 /// Draft state for an item being composed in the quick-add bar.
 class ItemDraft {
@@ -38,6 +40,10 @@ class ItemDraft {
   /// untouched item falls back to the fields' default seeds.
   List<FieldValue> customFields = const [];
 
+  /// Stock and expiry on an inventory or template; on an inventory its
+  /// quantity stands in for [quantity].
+  StockDraft? stock;
+
   /// Start this draft on the recurrence [value] describes.
   void applyRecurrence(RecurrenceDefaultValue value) {
     final normalized = value.normalized();
@@ -56,11 +62,16 @@ class ItemDraft {
     storeIds = {...start.storeIds};
     labelIds = {...start.labelIds};
     applyRecurrence(start.recurrence);
+    stock?.applyStart(start);
   }
 
   void reset(ItemStartValues start) {
     name = '';
     description = '';
+    final stock = this.stock;
+    if (stock != null) {
+      this.stock = StockDraft.forItem(null, template: stock.template);
+    }
     this.start(start);
     imageFile = null;
     imageBytes = null;
@@ -110,6 +121,13 @@ class ComposeSubmission {
   /// user set in the tray), or null when there are none.
   final List<FieldValue>? customFields;
 
+  final StockMode? stockMode;
+  final StockLevel? stockLevel;
+  final String? target;
+  final String? reorderPoint;
+  final int? expiresAt;
+  final int? shelfLifeDays;
+
   const ComposeSubmission({
     required this.name,
     this.description,
@@ -126,5 +144,11 @@ class ComposeSubmission {
     this.barcode,
     this.prices,
     this.customFields,
+    this.stockMode,
+    this.stockLevel,
+    this.target,
+    this.reorderPoint,
+    this.expiresAt,
+    this.shelfLifeDays,
   });
 }

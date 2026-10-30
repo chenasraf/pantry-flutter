@@ -11,6 +11,7 @@ import 'pages/category_scope_page.dart';
 import 'pages/checklist_selector_page.dart';
 import 'pages/checklists_redesign_intro_page.dart';
 import 'pages/custom_fields_page.dart';
+import 'pages/inventory_page.dart';
 import 'pages/item_price_page.dart';
 import 'pages/join_trip_page.dart';
 import 'pages/pinned_notes_page.dart';
@@ -19,6 +20,7 @@ import 'pages/progress_hero_page.dart';
 import 'pages/quick_actions_page.dart';
 import 'pages/shopping_mode_page.dart';
 import 'pages/swipe_actions_page.dart';
+import 'pages/templates_page.dart';
 import 'pages/watch_page.dart';
 import 'pages/widget_lists_page.dart';
 
@@ -188,6 +190,16 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
   '0.33.0': [
     OnboardingPageEntry(
       builder: (_) => const JoinTripOnboardingPage(),
+      showWhen: onboardingUpgradersOnly,
+    ),
+  ],
+  '0.38.0': [
+    OnboardingPageEntry(
+      builder: (_) => const InventoryOnboardingPage(),
+      showWhen: onboardingUpgradersOnly,
+    ),
+    OnboardingPageEntry(
+      builder: (_) => const TemplatesOnboardingPage(),
       showWhen: onboardingUpgradersOnly,
     ),
   ],

@@ -18,11 +18,13 @@ import 'package:pantry/services/list_link_service.dart';
 import 'package:pantry/services/local_notifications_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/stock_rules.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/checklist_sort.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry_core/utils/price.dart';
@@ -42,10 +44,12 @@ import 'package:pantry/views/stores/stores_view.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
 import 'package:pantry/widgets/create_label_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
+import 'apply_template_view.dart';
 import 'checklist_switcher_sheet.dart';
 import 'checklists_controller.dart';
 import 'checklists_dev_dialogs.dart';
 import 'item_defaults_view.dart';
+import 'inventory_settings_view.dart';
 import 'package:pantry/widgets/overflow_grid.dart';
 import 'package:pantry/widgets/overflow_menu.dart';
 import 'package:pantry/views/home/home_app_bar_spec.dart';
@@ -92,6 +96,13 @@ class ChecklistsBodyController extends ChangeNotifier
   final Set<int> selectedLabelIds = {};
   bool noLabelSelected = false;
   PriceFilter priceFilter = PriceFilter.empty;
+
+  /// The inventory Stock facet. Neither or both selected shows every item.
+  bool stockNeedsRestockSelected = false;
+  bool stockInStockSelected = false;
+
+  bool get stockFilterActive =>
+      stockNeedsRestockSelected != stockInStockSelected;
 
   /// In All-lists mode, the most recently chosen target list. Pre-selected on
   /// the next add so the user can rapidly file several items into the same
@@ -256,6 +267,28 @@ class ChecklistsBodyController extends ChangeNotifier
 
   void toggleNoLabel() {
     noLabelSelected = !noLabelSelected;
+    _safeNotify();
+  }
+
+  void toggleStockNeedsRestock() {
+    stockNeedsRestockSelected = !stockNeedsRestockSelected;
+    _safeNotify();
+  }
+
+  void toggleStockInStock() {
+    stockInStockSelected = !stockInStockSelected;
+    _safeNotify();
+  }
+
+  void showNeedsRestock() {
+    stockNeedsRestockSelected = true;
+    stockInStockSelected = false;
+    _safeNotify();
+  }
+
+  void clearStockFilter() {
+    stockNeedsRestockSelected = false;
+    stockInStockSelected = false;
     _safeNotify();
   }
 
@@ -483,7 +516,9 @@ class ChecklistsBodyController extends ChangeNotifier
     final storeFilterActive = selectedStoreIds.isNotEmpty || noStoreSelected;
     final labelFilterActive = selectedLabelIds.isNotEmpty || noLabelSelected;
     final priceFilterActive = priceFilter.isActive;
+    final stockActive = stockFilterActive;
     if (!categoryFilterActive &&
+        !stockActive &&
         !storeFilterActive &&
         !labelFilterActive &&
         !priceFilterActive &&
@@ -510,6 +545,14 @@ class ChecklistsBodyController extends ChangeNotifier
         if (!matchesId && !matchesNone) return false;
       }
       if (priceFilterActive && !matchesPriceFilter(item, priceFilter)) {
+        return false;
+      }
+      // Only inventory items carry a stock status; the facet is offered on
+      // inventories alone, so a selection left over from one never hides a
+      // checklist's items.
+      if (stockActive &&
+          item.stockStatus != null &&
+          item.needsStockRestock != stockNeedsRestockSelected) {
         return false;
       }
       if (selectedListIds.isNotEmpty) {

@@ -99,6 +99,17 @@ class ChecklistsFiltersSection extends StatefulWidget {
   final PriceFilter priceFilter;
   final ValueChanged<PriceFilter> onPriceFilterChanged;
 
+  /// Stock filter — inventories only. Counts are over the items on screen
+  /// before any filter.
+  final bool showStockFilter;
+  final bool stockNeedsRestockSelected;
+  final bool stockInStockSelected;
+  final int stockNeedsRestockCount;
+  final int stockInStockCount;
+  final VoidCallback? onToggleStockNeedsRestock;
+  final VoidCallback? onToggleStockInStock;
+  final VoidCallback? onClearStock;
+
   final String view;
   final ValueChanged<String> onViewChanged;
 
@@ -135,6 +146,14 @@ class ChecklistsFiltersSection extends StatefulWidget {
     required this.showPriceFilter,
     required this.priceFilter,
     required this.onPriceFilterChanged,
+    this.showStockFilter = false,
+    this.stockNeedsRestockSelected = false,
+    this.stockInStockSelected = false,
+    this.stockNeedsRestockCount = 0,
+    this.stockInStockCount = 0,
+    this.onToggleStockNeedsRestock,
+    this.onToggleStockInStock,
+    this.onClearStock,
     required this.view,
     required this.onViewChanged,
   });
@@ -242,6 +261,43 @@ class _ChecklistsFiltersSectionState extends State<ChecklistsFiltersSection> {
     );
   }
 
+  _FilterDropdown _stockDropdown(ColorScheme cs, AppSurfaces surfaces) {
+    final count =
+        (widget.stockNeedsRestockSelected ? 1 : 0) +
+        (widget.stockInStockSelected ? 1 : 0);
+    return _FilterDropdown(
+      label: m.stock.filter,
+      icon: Icons.inventory_2_outlined,
+      selectedCount: count,
+      entries: [
+        _FilterMenuEntry(
+          label: m.stock.filterAll,
+          color: cs.primary,
+          icon: Icons.done_all,
+          selected: count == 0,
+          count: widget.stockNeedsRestockCount + widget.stockInStockCount,
+          onTap: widget.onClearStock ?? () {},
+        ),
+        _FilterMenuEntry(
+          label: m.stock.filterNeedsRestock,
+          color: surfaces.warning,
+          icon: Icons.error_outline,
+          selected: widget.stockNeedsRestockSelected,
+          count: widget.stockNeedsRestockCount,
+          onTap: widget.onToggleStockNeedsRestock ?? () {},
+        ),
+        _FilterMenuEntry(
+          label: m.stock.filterInStock,
+          color: surfaces.success,
+          icon: Icons.check_circle_outline,
+          selected: widget.stockInStockSelected,
+          count: widget.stockInStockCount,
+          onTap: widget.onToggleStockInStock ?? () {},
+        ),
+      ],
+    );
+  }
+
   _FilterDropdown _labelDropdown(ColorScheme cs) {
     final count =
         widget.selectedLabelIds.length + (widget.noLabelSelected ? 1 : 0);
@@ -281,6 +337,7 @@ class _ChecklistsFiltersSectionState extends State<ChecklistsFiltersSection> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final surfaces = AppSurfaces.of(context);
 
     // One multi-select dropdown per active filter dimension, laid out in a
     // horizontally-scrollable row so the same layout serves mobile and desktop
@@ -290,6 +347,7 @@ class _ChecklistsFiltersSectionState extends State<ChecklistsFiltersSection> {
       _categoryDropdown(cs),
       if (widget.showStoreFilter) _storeDropdown(cs),
       if (widget.showLabelFilter) _labelDropdown(cs),
+      if (widget.showStockFilter) _stockDropdown(cs, surfaces),
       if (widget.showPriceFilter)
         ChecklistsPriceFilterDropdown(
           value: widget.priceFilter,
@@ -339,6 +397,9 @@ class _FilterMenuEntry {
   final bool selected;
   final VoidCallback onTap;
 
+  /// How many items the option matches, when the facet shows it.
+  final int? count;
+
   const _FilterMenuEntry({
     required this.label,
     required this.color,
@@ -346,6 +407,7 @@ class _FilterMenuEntry {
     this.off = false,
     required this.selected,
     required this.onTap,
+    this.count,
   });
 }
 
@@ -439,6 +501,13 @@ class _FilterMenuRow extends StatelessWidget {
                 ),
               ),
             ),
+            if (entry.count != null) ...[
+              const SizedBox(width: 10),
+              Text(
+                '${entry.count}',
+                style: TextStyle(fontSize: 13, color: cs.onSurfaceVariant),
+              ),
+            ],
             const SizedBox(width: 14),
             Icon(
               entry.selected

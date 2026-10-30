@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
@@ -6,9 +7,11 @@ import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
 import 'package:pantry_core/models/item_start_values.dart';
+import 'package:pantry_core/models/stock.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/quantity.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/views/custom_fields/item_custom_fields_editor.dart';
 
@@ -42,7 +45,18 @@ Future<void> showItemDefaults(
   ).push(MaterialPageRoute<void>(fullscreenDialog: true, builder: (_) => view));
 }
 
-enum _Section { recurrence, category, stores, labels, quantity, fields }
+enum _Section {
+  recurrence,
+  category,
+  stores,
+  labels,
+  quantity,
+  stockMode,
+  target,
+  reorderPoint,
+  shelfLife,
+  fields,
+}
 
 /// Edits what new items on a list start with. Mirrors the composer: a chip per
 /// part of an item, and the open chip shows whether that part is left empty,
@@ -73,10 +87,25 @@ class _ItemDefaultsViewState extends State<ItemDefaultsView> {
   late final TextEditingController _qtyCtrl = TextEditingController(
     text: _draft.quantity,
   );
+  late final TextEditingController _targetCtrl = TextEditingController(
+    text: _draft.target,
+  );
+  late final TextEditingController _reorderCtrl = TextEditingController(
+    text: _draft.reorderPoint,
+  );
+  late final TextEditingController _shelfLifeCtrl = TextEditingController(
+    text: _draft.shelfLifeDays?.toString() ?? '',
+  );
   _Section? _open;
+  late bool _fillFromDefaults = widget.list.fillFromDefaults ?? true;
 
   ChecklistsController get _controller => widget.controller;
   ChecklistList get _list => widget.list;
+
+  /// Template items are drawn into checklists and inventories, never into a
+  /// template.
+  bool get _drawnInto =>
+      _list.kind != ListKind.template && _list.fillFromDefaults != null;
 
   bool get _canEdit =>
       _list.canEditSettingsWith(_controller.permissions.canEditLists);
@@ -91,17 +120,26 @@ class _ItemDefaultsViewState extends State<ItemDefaultsView> {
   ];
 
   List<_Section> get _sections => [
-    _Section.recurrence,
+    if (_list.kind.hasRecurrence) _Section.recurrence,
     _Section.category,
     if (_storesEnabled) _Section.stores,
     if (_labelsEnabled) _Section.labels,
     _Section.quantity,
+    if (_list.kind == ListKind.inventory && ServerFeature.inventoryStock) ...[
+      _Section.stockMode,
+      _Section.target,
+      _Section.reorderPoint,
+      _Section.shelfLife,
+    ],
     if (_fields.isNotEmpty) _Section.fields,
   ];
 
   @override
   void dispose() {
     _qtyCtrl.dispose();
+    _targetCtrl.dispose();
+    _reorderCtrl.dispose();
+    _shelfLifeCtrl.dispose();
     super.dispose();
   }
 
@@ -111,6 +149,10 @@ class _ItemDefaultsViewState extends State<ItemDefaultsView> {
     _Section.stores => ItemDefaults.storesKey,
     _Section.labels => ItemDefaults.labelsKey,
     _Section.quantity => ItemDefaults.quantityKey,
+    _Section.stockMode => ItemDefaults.stockModeKey,
+    _Section.target => ItemDefaults.targetKey,
+    _Section.reorderPoint => ItemDefaults.reorderPointKey,
+    _Section.shelfLife => ItemDefaults.shelfLifeDaysKey,
     _Section.fields => null,
   };
 
@@ -122,6 +164,10 @@ class _ItemDefaultsViewState extends State<ItemDefaultsView> {
       _Section.stores => c.chipStore,
       _Section.labels => c.chipLabel,
       _Section.quantity => c.chipQuantity,
+      _Section.stockMode => m.stock.card.mode,
+      _Section.target => m.stock.card.target,
+      _Section.reorderPoint => m.stock.card.reorderPoint,
+      _Section.shelfLife => m.stock.expiry.daysItKeeps,
       _Section.fields => m.customFields.manageTitle,
     };
   }
@@ -159,6 +205,19 @@ class _ItemDefaultsViewState extends State<ItemDefaultsView> {
       case _Section.quantity:
         final q = _draft.quantity.trim();
         return q.isEmpty ? null : q;
+      case _Section.stockMode:
+        return _draft.stockMode == StockMode.level
+            ? m.stock.card.level
+            : m.stock.card.count;
+      case _Section.target:
+        final t = _draft.target.trim();
+        return t.isEmpty ? null : t;
+      case _Section.reorderPoint:
+        final r = _draft.reorderPoint.trim();
+        return r.isEmpty ? null : r;
+      case _Section.shelfLife:
+        final days = _draft.shelfLifeDays;
+        return days == null ? null : m.stock.expiry.chipKeeps(days);
       case _Section.fields:
         return null;
     }
@@ -183,7 +242,14 @@ class _ItemDefaultsViewState extends State<ItemDefaultsView> {
       : _draft.modeOf(_key(s)!) != ItemDefaultMode.none;
 
   void _save() {
-    final patch = _draft.patchAgainst(_list.itemDefaults);
+    var patch = _draft.patchAgainst(_list.itemDefaults);
+    if (_drawnInto && _fillFromDefaults != _list.fillFromDefaults) {
+      patch = ItemDefaultsPatch(
+        entries: patch.entries,
+        fields: patch.fields,
+        fillFromDefaults: _fillFromDefaults,
+      );
+    }
     if (patch.isNotEmpty) _controller.updateItemDefaults(_list.id, patch);
     Navigator.of(context).pop();
   }
@@ -233,6 +299,19 @@ class _ItemDefaultsViewState extends State<ItemDefaultsView> {
             const SizedBox(height: 14),
             AbsorbPointer(absorbing: !_canEdit, child: _sectionBody(open)),
           ],
+          if (_drawnInto) ...[
+            const SizedBox(height: 16),
+            const Divider(height: 1),
+            SwitchListTile(
+              contentPadding: EdgeInsetsDirectional.zero,
+              title: Text(m.templates.fillLabel),
+              subtitle: Text(m.templates.fillHint),
+              value: _fillFromDefaults,
+              onChanged: _canEdit
+                  ? (value) => setState(() => _fillFromDefaults = value)
+                  : null,
+            ),
+          ],
         ],
       ),
     );
@@ -257,7 +336,7 @@ class _ItemDefaultsViewState extends State<ItemDefaultsView> {
       children: [
         _ModeControl(
           mode: mode,
-          allowRemember: s != _Section.quantity,
+          allowRemember: !ItemDefaults.fixedOnlyKeys.contains(key),
           enabled: _canEdit,
           onChanged: (next) => setState(() => _draft.modes[key] = next),
         ),
@@ -316,6 +395,66 @@ class _ItemDefaultsViewState extends State<ItemDefaultsView> {
           onChanged: (v) => setState(() => _draft.quantity = v),
           onMinus: () => step(-1),
           onPlus: () => step(1),
+        );
+      case _Section.stockMode:
+        return Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: SegmentedButton<StockMode>(
+            segments: [
+              ButtonSegment(
+                value: StockMode.count,
+                label: Text(m.stock.card.count),
+              ),
+              ButtonSegment(
+                value: StockMode.level,
+                label: Text(m.stock.card.level),
+              ),
+            ],
+            selected: {_draft.stockMode},
+            showSelectedIcon: false,
+            onSelectionChanged: (s) =>
+                setState(() => _draft.stockMode = s.first),
+          ),
+        );
+      case _Section.target:
+        return TextField(
+          controller: _targetCtrl,
+          textDirection: detectTextDirection(_targetCtrl.text),
+          decoration: InputDecoration(
+            hintText: m.stock.card.targetPlaceholder,
+            isDense: true,
+          ),
+          onChanged: (v) => setState(() => _draft.target = v),
+        );
+      case _Section.reorderPoint:
+        return TextField(
+          controller: _reorderCtrl,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          decoration: InputDecoration(
+            hintText: m.stock.card.reorderPlaceholder,
+            isDense: true,
+          ),
+          onChanged: (v) => setState(() => _draft.reorderPoint = v),
+        );
+      case _Section.shelfLife:
+        return TextField(
+          controller: _shelfLifeCtrl,
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(5),
+          ],
+          decoration: InputDecoration(
+            labelText: m.stock.expiry.daysItKeeps,
+            isDense: true,
+          ),
+          onChanged: (v) {
+            final days = int.tryParse(v);
+            setState(
+              () =>
+                  _draft.shelfLifeDays = days != null && days > 0 ? days : null,
+            );
+          },
         );
       case _Section.fields:
         return const SizedBox.shrink();

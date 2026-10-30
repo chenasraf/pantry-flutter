@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry/theme/app_theme.dart';
 
 /// Every transient message in the app goes through here.
 ///
@@ -14,7 +15,7 @@ import 'package:pantry_core/utils/text_direction.dart';
 
 /// How a toast reads at a glance. The kind picks the accent that tints the
 /// card, its leading glyph and the draining border.
-enum ToastKind { info, success, error }
+enum ToastKind { info, success, warning, error }
 
 /// An inline button on a toast — Undo being the one the app leans on.
 @immutable
@@ -189,11 +190,13 @@ class _AppToastState extends State<_AppToast>
     final accent = switch (widget.kind) {
       ToastKind.info => scheme.primary,
       ToastKind.success => scheme.tertiary,
+      ToastKind.warning => AppSurfaces.of(context).warning,
       ToastKind.error => scheme.error,
     };
     final icon = switch (widget.kind) {
       ToastKind.info => Icons.info_outline_rounded,
       ToastKind.success => Icons.check_circle_outline_rounded,
+      ToastKind.warning => Icons.warning_amber_rounded,
       ToastKind.error => Icons.error_outline_rounded,
     };
     // Blended rather than layered: the card sits over arbitrary content, and a

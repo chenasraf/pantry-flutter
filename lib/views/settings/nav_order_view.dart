@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/nav_section.dart';
 import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 
 class NavOrderView extends StatefulWidget {
   const NavOrderView({super.key});
@@ -23,7 +24,8 @@ class _NavOrderViewState extends State<NavOrderView> {
   }
 
   String _label(NavSection s) => switch (s) {
-    NavSection.checklists => m.nav.checklists,
+    NavSection.checklists =>
+      ServerFeature.listKinds ? m.nav.lists : m.nav.checklists,
     NavSection.photoBoard => m.nav.photoBoard,
     NavSection.notesWall => m.nav.notesWall,
   };

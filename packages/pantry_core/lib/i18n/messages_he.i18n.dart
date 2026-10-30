@@ -79,6 +79,9 @@ class MessagesHe extends Messages {
   StoresMessagesHe get stores => StoresMessagesHe(this);
   LabelsMessagesHe get labels => LabelsMessagesHe(this);
   ChecklistsMessagesHe get checklists => ChecklistsMessagesHe(this);
+  ListKindsMessagesHe get listKinds => ListKindsMessagesHe(this);
+  TemplatesMessagesHe get templates => TemplatesMessagesHe(this);
+  StockMessagesHe get stock => StockMessagesHe(this);
   NotesWallMessagesHe get notesWall => NotesWallMessagesHe(this);
   PhotoBoardMessagesHe get photoBoard => PhotoBoardMessagesHe(this);
   ShoppingMessagesHe get shopping => ShoppingMessagesHe(this);
@@ -465,6 +468,16 @@ class NavMessagesHe extends NavMessages {
   /// "רשימה"
   /// ```
   String get checklist => """רשימה""";
+
+  /// ```dart
+  /// "רשימות"
+  /// ```
+  String get lists => """רשימות""";
+
+  /// ```dart
+  /// "רשימה"
+  /// ```
+  String get list => """רשימה""";
 
   /// ```dart
   /// "לוח תמונות"
@@ -989,6 +1002,75 @@ class OnboardingMessagesHe extends OnboardingMessages {
   /// ```
   String get joinTripHow =>
       """כבר באמצע קנייה? ההצטרפות שומרת קודם את הקנייה שלך בהיסטוריה. אם תצא מקנייה שהצטרפת אליה, היא ממשיכה לכל מי שנשאר בה.""";
+
+  /// ```dart
+  /// "לדעת מה יש בארון"
+  /// ```
+  String get inventoryTitle => """לדעת מה יש בארון""";
+
+  /// ```dart
+  /// "מלאים עוקבים אחרי כמה יש לך מכל דבר ומתי הוא פג תוקף. מורידים כמויות תוך כדי שימוש, ו-Pantry מסמן מה עומד להיגמר או לפוג."
+  /// ```
+  String get inventoryBody =>
+      """מלאים עוקבים אחרי כמה יש לך מכל דבר ומתי הוא פג תוקף. מורידים כמויות תוך כדי שימוש, ו-Pantry מסמן מה עומד להיגמר או לפוג.""";
+
+  /// ```dart
+  /// "הגדירו למלאי רשימת השלמה בהגדרות שלו, וכל מה שנגמר או פג תוקף יתווסף אליה. מסמנים אותו בחנות והמלאי מתמלא בחזרה."
+  /// ```
+  String get inventoryHow =>
+      """הגדירו למלאי רשימת השלמה בהגדרות שלו, וכל מה שנגמר או פג תוקף יתווסף אליה. מסמנים אותו בחנות והמלאי מתמלא בחזרה.""";
+
+  /// ```dart
+  /// "ביצים"
+  /// ```
+  String get inventoryMockEggs => """ביצים""";
+
+  /// ```dart
+  /// "חלב"
+  /// ```
+  String get inventoryMockMilk => """חלב""";
+
+  /// ```dart
+  /// "קמח"
+  /// ```
+  String get inventoryMockFlour => """קמח""";
+
+  /// ```dart
+  /// "תבניות למה שקונים תמיד"
+  /// ```
+  String get templateTitle => """תבניות למה שקונים תמיד""";
+
+  /// ```dart
+  /// "שמרו בתבנית את הפריטים שאתם מוסיפים שוב ושוב. צרפו אותה לרשימה, והקלדה ברשימה תציע את הפריטים שלה, עם כל הפרטים."
+  /// ```
+  String get templateBody =>
+      """שמרו בתבנית את הפריטים שאתם מוסיפים שוב ושוב. צרפו אותה לרשימה, והקלדה ברשימה תציע את הפריטים שלה, עם כל הפרטים.""";
+
+  /// ```dart
+  /// "כדי להעתיק תבנית שלמה בבת אחת, פתחו את התפריט שלה בבורר הרשימות ובחרו ${apply}."
+  /// ```
+  String templateHow(String apply) =>
+      """כדי להעתיק תבנית שלמה בבת אחת, פתחו את התפריט שלה בבורר הרשימות ובחרו ${apply}.""";
+
+  /// ```dart
+  /// "קניות שבועיות"
+  /// ```
+  String get templateMockName => """קניות שבועיות""";
+
+  /// ```dart
+  /// "חל"
+  /// ```
+  String get templateMockTyped => """חל""";
+
+  /// ```dart
+  /// "חלב"
+  /// ```
+  String get templateMockFirst => """חלב""";
+
+  /// ```dart
+  /// "חלה"
+  /// ```
+  String get templateMockSecond => """חלה""";
   DevOnboardingMessagesHe get dev => DevOnboardingMessagesHe(this);
 }
 
@@ -4825,6 +4907,1522 @@ class MarkdownChecklistsMessagesHe extends MarkdownChecklistsMessages {
       """${_plural(count, one: 'יובא פריט אחד', many: 'יובאו $count פריטים')}""";
 }
 
+class ListKindsMessagesHe extends ListKindsMessages {
+  final MessagesHe _parent;
+  const ListKindsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "שכפל בתור:"
+  /// ```
+  String get duplicateAs => """שכפל בתור:""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד דולג כי אין לך הרשאה לערוך אותו.', many: '$count פריטים דולגו כי אין לך הרשאה לערוך אותם.')}"
+  /// ```
+  String itemsSkippedNoEdit(int count) =>
+      """${_plural(count, one: 'פריט אחד דולג כי אין לך הרשאה לערוך אותו.', many: '$count פריטים דולגו כי אין לך הרשאה לערוך אותם.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'לא ניתן היה לבטל את הסימון של פריט אחד.', many: 'לא ניתן היה לבטל את הסימון של $count פריטים.')}"
+  /// ```
+  String itemsSkippedUncheck(int count) =>
+      """${_plural(count, one: 'לא ניתן היה לבטל את הסימון של פריט אחד.', many: 'לא ניתן היה לבטל את הסימון של $count פריטים.')}""";
+  ChecklistListKindsMessagesHe get checklist =>
+      ChecklistListKindsMessagesHe(this);
+  InventoryListKindsMessagesHe get inventory =>
+      InventoryListKindsMessagesHe(this);
+  TemplateListKindsMessagesHe get template => TemplateListKindsMessagesHe(this);
+}
+
+class ChecklistListKindsMessagesHe extends ChecklistListKindsMessages {
+  final ListKindsMessagesHe _parent;
+  const ChecklistListKindsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "רשימות סימון"
+  /// ```
+  String get title => """רשימות סימון""";
+
+  /// ```dart
+  /// "רשימת סימון"
+  /// ```
+  String get name => """רשימת סימון""";
+
+  /// ```dart
+  /// "רשימת סימון חדשה"
+  /// ```
+  String get newList => """רשימת סימון חדשה""";
+
+  /// ```dart
+  /// "צוררשימת סימון"
+  /// ```
+  String get createTitle => """צוררשימת סימון""";
+
+  /// ```dart
+  /// "ערוךרשימת סימון"
+  /// ```
+  String get editTitle => """ערוךרשימת סימון""";
+
+  /// ```dart
+  /// "שכפלרשימת סימון"
+  /// ```
+  String get duplicateTitle => """שכפלרשימת סימון""";
+
+  /// ```dart
+  /// "לא ניתן היה לשכפל את רשימת הסימון"
+  /// ```
+  String get duplicateFailed => """לא ניתן היה לשכפל את רשימת הסימון""";
+
+  /// ```dart
+  /// "פעולות רשימת סימון"
+  /// ```
+  String get listMenu => """פעולות רשימת סימון""";
+
+  /// ```dart
+  /// "הסררשימת סימון"
+  /// ```
+  String get deleteDialogTitle => """הסררשימת סימון""";
+
+  /// ```dart
+  /// "אין רשימות סימון עדיין"
+  /// ```
+  String get emptyTitle => """אין רשימות סימון עדיין""";
+
+  /// ```dart
+  /// "צור את רשימת הסימון הראשונה שלך כדי להתחיל להוסיף פריטים."
+  /// ```
+  String get emptyBody =>
+      """צור את רשימת הסימון הראשונה שלך כדי להתחיל להוסיף פריטים.""";
+
+  /// ```dart
+  /// "אשפת רשימות סימון"
+  /// ```
+  String get trashTitle => """אשפת רשימות סימון""";
+
+  /// ```dart
+  /// "רשימות סימון שנמחקו יופיעו כאן."
+  /// ```
+  String get trashEmptyBody => """רשימות סימון שנמחקו יופיעו כאן.""";
+
+  /// ```dart
+  /// "רשימות סימון בארכיון"
+  /// ```
+  String get archiveTitle => """רשימות סימון בארכיון""";
+
+  /// ```dart
+  /// "אין רשימות סימון בארכיון"
+  /// ```
+  String get archiveEmptyTitle => """אין רשימות סימון בארכיון""";
+
+  /// ```dart
+  /// "רשימות סימון שהועברו לארכיון יופיעו כאן."
+  /// ```
+  String get archiveEmptyBody => """רשימות סימון שהועברו לארכיון יופיעו כאן.""";
+
+  /// ```dart
+  /// "פעולה זו תמחק לצמיתות את כל רשימות הסימון שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו."
+  /// ```
+  String get emptyTrashBody =>
+      """פעולה זו תמחק לצמיתות את כל רשימות הסימון שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו.""";
+
+  /// ```dart
+  /// "רשימת הסימון שוחזרה"
+  /// ```
+  String get listRestored => """רשימת הסימון שוחזרה""";
+
+  /// ```dart
+  /// "רשימת הסימון הועברה לאשפה"
+  /// ```
+  String get listMovedToTrash => """רשימת הסימון הועברה לאשפה""";
+
+  /// ```dart
+  /// "רשימת הסימון הועברה לארכיון"
+  /// ```
+  String get listArchived => """רשימת הסימון הועברה לארכיון""";
+
+  /// ```dart
+  /// "רשימת הסימון הוצאה מהארכיון"
+  /// ```
+  String get listUnarchived => """רשימת הסימון הוצאה מהארכיון""";
+}
+
+class InventoryListKindsMessagesHe extends InventoryListKindsMessages {
+  final ListKindsMessagesHe _parent;
+  const InventoryListKindsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "רשימות מלאי"
+  /// ```
+  String get title => """רשימות מלאי""";
+
+  /// ```dart
+  /// "רשימת מלאי"
+  /// ```
+  String get name => """רשימת מלאי""";
+
+  /// ```dart
+  /// "רשימת מלאי חדשה"
+  /// ```
+  String get newList => """רשימת מלאי חדשה""";
+
+  /// ```dart
+  /// "צוררשימת מלאי"
+  /// ```
+  String get createTitle => """צוררשימת מלאי""";
+
+  /// ```dart
+  /// "ערוךרשימת מלאי"
+  /// ```
+  String get editTitle => """ערוךרשימת מלאי""";
+
+  /// ```dart
+  /// "שכפלרשימת מלאי"
+  /// ```
+  String get duplicateTitle => """שכפלרשימת מלאי""";
+
+  /// ```dart
+  /// "לא ניתן היה לשכפל את רשימת המלאי"
+  /// ```
+  String get duplicateFailed => """לא ניתן היה לשכפל את רשימת המלאי""";
+
+  /// ```dart
+  /// "פעולות רשימת מלאי"
+  /// ```
+  String get listMenu => """פעולות רשימת מלאי""";
+
+  /// ```dart
+  /// "הסררשימת מלאי"
+  /// ```
+  String get deleteDialogTitle => """הסררשימת מלאי""";
+
+  /// ```dart
+  /// "אין רשימות מלאי עדיין"
+  /// ```
+  String get emptyTitle => """אין רשימות מלאי עדיין""";
+
+  /// ```dart
+  /// "צור את רשימת המלאי הראשונה שלך כדי להתחיל להוסיף פריטים."
+  /// ```
+  String get emptyBody =>
+      """צור את רשימת המלאי הראשונה שלך כדי להתחיל להוסיף פריטים.""";
+
+  /// ```dart
+  /// "אשפת רשימות מלאי"
+  /// ```
+  String get trashTitle => """אשפת רשימות מלאי""";
+
+  /// ```dart
+  /// "רשימות מלאי שנמחקו יופיעו כאן."
+  /// ```
+  String get trashEmptyBody => """רשימות מלאי שנמחקו יופיעו כאן.""";
+
+  /// ```dart
+  /// "רשימות מלאי בארכיון"
+  /// ```
+  String get archiveTitle => """רשימות מלאי בארכיון""";
+
+  /// ```dart
+  /// "אין רשימות מלאי בארכיון"
+  /// ```
+  String get archiveEmptyTitle => """אין רשימות מלאי בארכיון""";
+
+  /// ```dart
+  /// "רשימות מלאי שהועברו לארכיון יופיעו כאן."
+  /// ```
+  String get archiveEmptyBody => """רשימות מלאי שהועברו לארכיון יופיעו כאן.""";
+
+  /// ```dart
+  /// "פעולה זו תמחק לצמיתות את כל רשימות המלאי שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו."
+  /// ```
+  String get emptyTrashBody =>
+      """פעולה זו תמחק לצמיתות את כל רשימות המלאי שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו.""";
+
+  /// ```dart
+  /// "רשימת המלאי שוחזרה"
+  /// ```
+  String get listRestored => """רשימת המלאי שוחזרה""";
+
+  /// ```dart
+  /// "רשימת המלאי הועברה לאשפה"
+  /// ```
+  String get listMovedToTrash => """רשימת המלאי הועברה לאשפה""";
+
+  /// ```dart
+  /// "רשימת המלאי הועברה לארכיון"
+  /// ```
+  String get listArchived => """רשימת המלאי הועברה לארכיון""";
+
+  /// ```dart
+  /// "רשימת המלאי הוצאה מהארכיון"
+  /// ```
+  String get listUnarchived => """רשימת המלאי הוצאה מהארכיון""";
+}
+
+class TemplateListKindsMessagesHe extends TemplateListKindsMessages {
+  final ListKindsMessagesHe _parent;
+  const TemplateListKindsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "תבניות"
+  /// ```
+  String get title => """תבניות""";
+
+  /// ```dart
+  /// "תבנית"
+  /// ```
+  String get name => """תבנית""";
+
+  /// ```dart
+  /// "תבנית חדשה"
+  /// ```
+  String get newList => """תבנית חדשה""";
+
+  /// ```dart
+  /// "צורתבנית"
+  /// ```
+  String get createTitle => """צורתבנית""";
+
+  /// ```dart
+  /// "ערוךתבנית"
+  /// ```
+  String get editTitle => """ערוךתבנית""";
+
+  /// ```dart
+  /// "שכפלתבנית"
+  /// ```
+  String get duplicateTitle => """שכפלתבנית""";
+
+  /// ```dart
+  /// "לא ניתן היה לשכפל את התבנית"
+  /// ```
+  String get duplicateFailed => """לא ניתן היה לשכפל את התבנית""";
+
+  /// ```dart
+  /// "פעולות תבנית"
+  /// ```
+  String get listMenu => """פעולות תבנית""";
+
+  /// ```dart
+  /// "הסרתבנית"
+  /// ```
+  String get deleteDialogTitle => """הסרתבנית""";
+
+  /// ```dart
+  /// "אין תבניות עדיין"
+  /// ```
+  String get emptyTitle => """אין תבניות עדיין""";
+
+  /// ```dart
+  /// "צור את התבנית הראשונה שלך כדי להתחיל להוסיף פריטים."
+  /// ```
+  String get emptyBody =>
+      """צור את התבנית הראשונה שלך כדי להתחיל להוסיף פריטים.""";
+
+  /// ```dart
+  /// "אשפת תבניות"
+  /// ```
+  String get trashTitle => """אשפת תבניות""";
+
+  /// ```dart
+  /// "תבניות שנמחקו יופיעו כאן."
+  /// ```
+  String get trashEmptyBody => """תבניות שנמחקו יופיעו כאן.""";
+
+  /// ```dart
+  /// "תבניות בארכיון"
+  /// ```
+  String get archiveTitle => """תבניות בארכיון""";
+
+  /// ```dart
+  /// "אין תבניות בארכיון"
+  /// ```
+  String get archiveEmptyTitle => """אין תבניות בארכיון""";
+
+  /// ```dart
+  /// "תבניות שהועברו לארכיון יופיעו כאן."
+  /// ```
+  String get archiveEmptyBody => """תבניות שהועברו לארכיון יופיעו כאן.""";
+
+  /// ```dart
+  /// "פעולה זו תמחק לצמיתות את כל התבניות שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו."
+  /// ```
+  String get emptyTrashBody =>
+      """פעולה זו תמחק לצמיתות את כל התבניות שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו.""";
+
+  /// ```dart
+  /// "התבנית שוחזרה"
+  /// ```
+  String get listRestored => """התבנית שוחזרה""";
+
+  /// ```dart
+  /// "התבנית הועברה לאשפה"
+  /// ```
+  String get listMovedToTrash => """התבנית הועברה לאשפה""";
+
+  /// ```dart
+  /// "התבנית הועברה לארכיון"
+  /// ```
+  String get listArchived => """התבנית הועברה לארכיון""";
+
+  /// ```dart
+  /// "התבנית הוצאה מהארכיון"
+  /// ```
+  String get listUnarchived => """התבנית הוצאה מהארכיון""";
+}
+
+class TemplatesMessagesHe extends TemplatesMessages {
+  final MessagesHe _parent;
+  const TemplatesMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "הצעות"
+  /// ```
+  String get suggestionsHeader => """הצעות""";
+
+  /// ```dart
+  /// "מתבניות: $names"
+  /// ```
+  String fromTemplates(String names) => """מתבניות: $names""";
+
+  /// ```dart
+  /// ""$name" נוסף מתבנית"
+  /// ```
+  String addedFromTemplate(String name) => """"$name" נוסף מתבנית""";
+
+  /// ```dart
+  /// "לא ניתן היה להוסיף את הפריט מהתבנית"
+  /// ```
+  String get drawFailed => """לא ניתן היה להוסיף את הפריט מהתבנית""";
+
+  /// ```dart
+  /// "תבניות:"
+  /// ```
+  String get attachedLabel => """תבניות:""";
+
+  /// ```dart
+  /// "אין תבניות"
+  /// ```
+  String get attachedPlaceholder => """אין תבניות""";
+
+  /// ```dart
+  /// "הקלדת פריט חדש מציעה פריטים תואמים מהתבניות האלה."
+  /// ```
+  String get attachedHint =>
+      """הקלדת פריט חדש מציעה פריטים תואמים מהתבניות האלה.""";
+
+  /// ```dart
+  /// "הקלדת פריט חדש מציעה פריטים תואמים מהתבניות האלה, וגם מ־$names, שמשמשות את כל הרשימות."
+  /// ```
+  String attachedEveryListHint(String names) =>
+      """הקלדת פריט חדש מציעה פריטים תואמים מהתבניות האלה, וגם מ־$names, שמשמשות את כל הרשימות.""";
+
+  /// ```dart
+  /// "הצעה ברשימות:"
+  /// ```
+  String get suggestInLabel => """הצעה ברשימות:""";
+
+  /// ```dart
+  /// "כל הרשימות"
+  /// ```
+  String get everyList => """כל הרשימות""";
+
+  /// ```dart
+  /// "אין רשימות"
+  /// ```
+  String get suggestInPlaceholder => """אין רשימות""";
+
+  /// ```dart
+  /// "הקלדת פריט חדש ברשימות האלה מציעה פריטים תואמים מהתבנית הזו. בחירה ב"כל הרשימות" כוללת גם רשימות שייווצרו בהמשך."
+  /// ```
+  String get suggestInHint =>
+      """הקלדת פריט חדש ברשימות האלה מציעה פריטים תואמים מהתבנית הזו. בחירה ב"כל הרשימות" כוללת גם רשימות שייווצרו בהמשך.""";
+
+  /// ```dart
+  /// "$list ($kind)"
+  /// ```
+  String listWithKind(String list, String kind) => """$list ($kind)""";
+
+  /// ```dart
+  /// "לא ניתן היה לשמור את התבניות המצורפות"
+  /// ```
+  String get attachFailed => """לא ניתן היה לשמור את התבניות המצורפות""";
+
+  /// ```dart
+  /// "מילוי פריטי תבנית מברירות המחדל האלה"
+  /// ```
+  String get fillLabel => """מילוי פריטי תבנית מברירות המחדל האלה""";
+
+  /// ```dart
+  /// "כשפריט נוסף מתבנית, הפרטים שהוא משאיר ריקים מתחילים עם הערכים שלמעלה. כל אחד יכול לשנות זאת בהגדרות האישיות שלו."
+  /// ```
+  String get fillHint =>
+      """כשפריט נוסף מתבנית, הפרטים שהוא משאיר ריקים מתחילים עם הערכים שלמעלה. כל אחד יכול לשנות זאת בהגדרות האישיות שלו.""";
+
+  /// ```dart
+  /// "מילוי פריטי תבנית מברירות המחדל לפריטים"
+  /// ```
+  String get fillPrefLabel => """מילוי פריטי תבנית מברירות המחדל לפריטים""";
+
+  /// ```dart
+  /// "כשמוסיפים פריט מתבנית, הפרטים שהוא משאיר ריקים מתמלאים מברירות המחדל לפריטים של הרשימה. כל רשימה יכולה לכבות זאת בברירות המחדל לפריטים שלה."
+  /// ```
+  String get fillPrefHint =>
+      """כשמוסיפים פריט מתבנית, הפרטים שהוא משאיר ריקים מתמלאים מברירות המחדל לפריטים של הרשימה. כל רשימה יכולה לכבות זאת בברירות המחדל לפריטים שלה.""";
+  FillPrefNamesTemplatesMessagesHe get fillPrefNames =>
+      FillPrefNamesTemplatesMessagesHe(this);
+
+  /// ```dart
+  /// "לא ניתן היה לשמור את ההגדרה"
+  /// ```
+  String get fillPrefFailed => """לא ניתן היה לשמור את ההגדרה""";
+
+  /// ```dart
+  /// "החלה על רשימה"
+  /// ```
+  String get applyToList => """החלה על רשימה""";
+
+  /// ```dart
+  /// "החלת תבנית"
+  /// ```
+  String get applyTemplate => """החלת תבנית""";
+
+  /// ```dart
+  /// "מצורפות לרשימה הזו"
+  /// ```
+  String get attachedTemplates => """מצורפות לרשימה הזו""";
+
+  /// ```dart
+  /// "תבניות אחרות"
+  /// ```
+  String get otherTemplates => """תבניות אחרות""";
+
+  /// ```dart
+  /// "אין רשימות סימון או רשימות מלאי שאפשר להחיל עליהן את התבנית הזו."
+  /// ```
+  String get noTargets =>
+      """אין רשימות סימון או רשימות מלאי שאפשר להחיל עליהן את התבנית הזו.""";
+
+  /// ```dart
+  /// "אין פריטים בתבנית הזו."
+  /// ```
+  String get noItems => """אין פריטים בתבנית הזו.""";
+
+  /// ```dart
+  /// "כבר ברשימה"
+  /// ```
+  String get alreadyOnList => """כבר ברשימה""";
+
+  /// ```dart
+  /// "העתקת הפריטים המסומנים מ־$template אל $list."
+  /// ```
+  String reviewSummary(String template, String list) =>
+      """העתקת הפריטים המסומנים מ־$template אל $list.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'החלת פריט אחד', many: 'החלת $count פריטים')}"
+  /// ```
+  String applyItems(int count) =>
+      """${_plural(count, one: 'החלת פריט אחד', many: 'החלת $count פריטים')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'נוסף פריט אחד אל $list', many: 'נוספו $count פריטים אל $list')}"
+  /// ```
+  String appliedAdded(int count, String list) =>
+      """${_plural(count, one: 'נוסף פריט אחד אל $list', many: 'נוספו $count פריטים אל $list')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד כבר היה ב־$list והוחזר', many: '$count פריטים כבר היו ב־$list והוחזרו')}"
+  /// ```
+  String appliedReused(int count, String list) =>
+      """${_plural(count, one: 'פריט אחד כבר היה ב־$list והוחזר', many: '$count פריטים כבר היו ב־$list והוחזרו')}""";
+
+  /// ```dart
+  /// "$list: $added נוספו, $reused הוחזרו"
+  /// ```
+  String appliedMixed(String list, int added, int reused) =>
+      """$list: $added נוספו, $reused הוחזרו""";
+
+  /// ```dart
+  /// "לא ניתן היה להחיל את התבנית"
+  /// ```
+  String get applyFailed => """לא ניתן היה להחיל את התבנית""";
+
+  /// ```dart
+  /// "לא ניתן היה לטעון את התבניות"
+  /// ```
+  String get loadFailed => """לא ניתן היה לטעון את התבניות""";
+
+  /// ```dart
+  /// "חזרה"
+  /// ```
+  String get back => """חזרה""";
+}
+
+class FillPrefNamesTemplatesMessagesHe extends FillPrefNamesTemplatesMessages {
+  final TemplatesMessagesHe _parent;
+  const FillPrefNamesTemplatesMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "לפי כל רשימה"
+  /// ```
+  String get list => """לפי כל רשימה""";
+
+  /// ```dart
+  /// "תמיד למלא"
+  /// ```
+  String get always => """תמיד למלא""";
+
+  /// ```dart
+  /// "אף פעם לא למלא"
+  /// ```
+  String get never => """אף פעם לא למלא""";
+}
+
+class StockMessagesHe extends StockMessages {
+  final MessagesHe _parent;
+  const StockMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "במלאי"
+  /// ```
+  String get inStock => """במלאי""";
+
+  /// ```dart
+  /// "מלא"
+  /// ```
+  String get full => """מלא""";
+
+  /// ```dart
+  /// "נמוך"
+  /// ```
+  String get low => """נמוך""";
+
+  /// ```dart
+  /// "אזל"
+  /// ```
+  String get out => """אזל""";
+
+  /// ```dart
+  /// "נמוך · לקנות $amount"
+  /// ```
+  String lowBuy(String amount) => """נמוך · לקנות $amount""";
+
+  /// ```dart
+  /// "אזל · לקנות $amount"
+  /// ```
+  String outBuy(String amount) => """אזל · לקנות $amount""";
+
+  /// ```dart
+  /// "לא נספר"
+  /// ```
+  String get notCounted => """לא נספר""";
+
+  /// ```dart
+  /// "פג תוקף ב-$date"
+  /// ```
+  String expiredOn(String date) => """פג תוקף ב-$date""";
+
+  /// ```dart
+  /// "פג תוקף ב-$date · לקנות $amount"
+  /// ```
+  String expiredOnBuy(String date, String amount) =>
+      """פג תוקף ב-$date · לקנות $amount""";
+
+  /// ```dart
+  /// "פג תוקף היום"
+  /// ```
+  String get expiresToday => """פג תוקף היום""";
+
+  /// ```dart
+  /// "פג תוקף היום · לקנות $amount"
+  /// ```
+  String expiresTodayBuy(String amount) => """פג תוקף היום · לקנות $amount""";
+
+  /// ```dart
+  /// "פג תוקף מחר"
+  /// ```
+  String get expiresTomorrow => """פג תוקף מחר""";
+
+  /// ```dart
+  /// "פג תוקף מחר · לקנות $amount"
+  /// ```
+  String expiresTomorrowBuy(String amount) => """פג תוקף מחר · לקנות $amount""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פג תוקף בעוד יום אחד', many: 'פג תוקף בעוד $count ימים')}"
+  /// ```
+  String expiresInDays(int count) =>
+      """${_plural(count, one: 'פג תוקף בעוד יום אחד', many: 'פג תוקף בעוד $count ימים')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פג תוקף בעוד יום אחד · לקנות $amount', many: 'פג תוקף בעוד $count ימים · לקנות $amount')}"
+  /// ```
+  String expiresInDaysBuy(int count, String amount) =>
+      """${_plural(count, one: 'פג תוקף בעוד יום אחד · לקנות $amount', many: 'פג תוקף בעוד $count ימים · לקנות $amount')}""";
+
+  /// ```dart
+  /// "בתוקף עד $date"
+  /// ```
+  String goodUntil(String date) => """בתוקף עד $date""";
+
+  /// ```dart
+  /// "$onHand / $target"
+  /// ```
+  String amount(String onHand, String target) => """$onHand / $target""";
+
+  /// ```dart
+  /// "הפחתת הכמות הקיימת"
+  /// ```
+  String get decrease => """הפחתת הכמות הקיימת""";
+
+  /// ```dart
+  /// "הגדלת הכמות הקיימת"
+  /// ```
+  String get increase => """הגדלת הכמות הקיימת""";
+
+  /// ```dart
+  /// "כמות קיימת"
+  /// ```
+  String get onHandEdit => """כמות קיימת""";
+
+  /// ```dart
+  /// "רמת מלאי: $level"
+  /// ```
+  String levelButton(String level) => """רמת מלאי: $level""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד צריך חידוש מלאי', many: '$count פריטים צריכים חידוש מלאי')}"
+  /// ```
+  String needsRestockCount(int count) =>
+      """${_plural(count, one: 'פריט אחד צריך חידוש מלאי', many: '$count פריטים צריכים חידוש מלאי')}""";
+
+  /// ```dart
+  /// "מלאי"
+  /// ```
+  String get filter => """מלאי""";
+
+  /// ```dart
+  /// "כל הפריטים"
+  /// ```
+  String get filterAll => """כל הפריטים""";
+
+  /// ```dart
+  /// "צריך חידוש מלאי"
+  /// ```
+  String get filterNeedsRestock => """צריך חידוש מלאי""";
+
+  /// ```dart
+  /// "במלאי"
+  /// ```
+  String get filterInStock => """במלאי""";
+
+  /// ```dart
+  /// "לא ניתן היה לשמור את שינוי המלאי. רשימת המלאי מציגה כעת את מה שיש בשרת."
+  /// ```
+  String get writeRefused =>
+      """לא ניתן היה לשמור את שינוי המלאי. רשימת המלאי מציגה כעת את מה שיש בשרת.""";
+  SettingsStockMessagesHe get settings => SettingsStockMessagesHe(this);
+  CardStockMessagesHe get card => CardStockMessagesHe(this);
+  ExpiryStockMessagesHe get expiry => ExpiryStockMessagesHe(this);
+  ComposeStockMessagesHe get compose => ComposeStockMessagesHe(this);
+
+  /// ```dart
+  /// "לרשימת המלאי הזו אין רשימת סימון לחידוש מלאי, ולכן הפריטים האלה רק מסומנים כאן. אפשר לבחור אחת בהגדרות רשימת המלאי."
+  /// ```
+  String get noRestockChecklist =>
+      """לרשימת המלאי הזו אין רשימת סימון לחידוש מלאי, ולכן הפריטים האלה רק מסומנים כאן. אפשר לבחור אחת בהגדרות רשימת המלאי.""";
+
+  /// ```dart
+  /// "חידוש תפוגה ← $date"
+  /// ```
+  String renewChip(String date) => """חידוש תפוגה ← $date""";
+
+  /// ```dart
+  /// "חידוש תפוגה"
+  /// ```
+  String get renewAction => """חידוש תפוגה""";
+
+  /// ```dart
+  /// "סיכום מלאי יומי"
+  /// ```
+  String get summaryPref => """סיכום מלאי יומי""";
+
+  /// ```dart
+  /// "פעם ביום, מה נגמר או התחיל להתקרב לתפוגה ברשימות המלאי של הבית הזה."
+  /// ```
+  String get summaryPrefHint =>
+      """פעם ביום, מה נגמר או התחיל להתקרב לתפוגה ברשימות המלאי של הבית הזה.""";
+
+  /// ```dart
+  /// "לא ניתן היה לשמור את הגדרת סיכום המלאי."
+  /// ```
+  String get summaryPrefFailed => """לא ניתן היה לשמור את הגדרת סיכום המלאי.""";
+  LinksStockMessagesHe get links => LinksStockMessagesHe(this);
+  RestockStockMessagesHe get restock => RestockStockMessagesHe(this);
+}
+
+class SettingsStockMessagesHe extends SettingsStockMessages {
+  final StockMessagesHe _parent;
+  const SettingsStockMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "הגדרות רשימת המלאי"
+  /// ```
+  String get action => """הגדרות רשימת המלאי""";
+
+  /// ```dart
+  /// "הגדרות רשימת המלאי"
+  /// ```
+  String get title => """הגדרות רשימת המלאי""";
+
+  /// ```dart
+  /// "שם"
+  /// ```
+  String get name => """שם""";
+
+  /// ```dart
+  /// "סמל, צבע ושיתוף פועלים כמו ברשימות סימון."
+  /// ```
+  String get nameHint => """סמל, צבע ושיתוף פועלים כמו ברשימות סימון.""";
+
+  /// ```dart
+  /// "התראת תפוגה"
+  /// ```
+  String get expiryWarning => """התראת תפוגה""";
+
+  /// ```dart
+  /// "התראה $days ימים לפני התפוגה"
+  /// ```
+  String warnBefore(String days) => """התראה $days ימים לפני התפוגה""";
+
+  /// ```dart
+  /// "ימים לפני התפוגה"
+  /// ```
+  String get daysBefore => """ימים לפני התפוגה""";
+
+  /// ```dart
+  /// "יש להזין 0 כדי לקבל התראה ביום התפוגה עצמו."
+  /// ```
+  String get warnHint => """יש להזין 0 כדי לקבל התראה ביום התפוגה עצמו.""";
+
+  /// ```dart
+  /// "רשימת סימון לחידוש מלאי"
+  /// ```
+  String get restockChecklist => """רשימת סימון לחידוש מלאי""";
+
+  /// ```dart
+  /// "ללא"
+  /// ```
+  String get restockNone => """ללא""";
+
+  /// ```dart
+  /// "פריטים שנגמרים או מתקרבים לתפוגה נוספים לרשימת הסימון הזו."
+  /// ```
+  String get restockSetHint =>
+      """פריטים שנגמרים או מתקרבים לתפוגה נוספים לרשימת הסימון הזו.""";
+
+  /// ```dart
+  /// "בלעדיה, פריטים נמוכים או שמתקרבים לתפוגה רק מסומנים כאן."
+  /// ```
+  String get restockUnsetHint =>
+      """בלעדיה, פריטים נמוכים או שמתקרבים לתפוגה רק מסומנים כאן.""";
+
+  /// ```dart
+  /// "התראות"
+  /// ```
+  String get notifications => """התראות""";
+
+  /// ```dart
+  /// "סיכום מלאי יומי"
+  /// ```
+  String get stockSummary => """סיכום מלאי יומי""";
+
+  /// ```dart
+  /// "פעם ביום, לספר לחברים מה נגמר או התחיל להתקרב לתפוגה כאן. כל חבר יכול גם לכבות זאת בהגדרות האישיות."
+  /// ```
+  String get stockSummaryHint =>
+      """פעם ביום, לספר לחברים מה נגמר או התחיל להתקרב לתפוגה כאן. כל חבר יכול גם לכבות זאת בהגדרות האישיות.""";
+
+  /// ```dart
+  /// "ביטול"
+  /// ```
+  String get cancel => """ביטול""";
+
+  /// ```dart
+  /// "שמירה"
+  /// ```
+  String get save => """שמירה""";
+}
+
+class CardStockMessagesHe extends CardStockMessages {
+  final StockMessagesHe _parent;
+  const CardStockMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "מלאי"
+  /// ```
+  String get title => """מלאי""";
+
+  /// ```dart
+  /// "מצב מלאי"
+  /// ```
+  String get mode => """מצב מלאי""";
+
+  /// ```dart
+  /// "כמות"
+  /// ```
+  String get count => """כמות""";
+
+  /// ```dart
+  /// "רמה"
+  /// ```
+  String get level => """רמה""";
+
+  /// ```dart
+  /// "מעקב אחר כמה יש לך, למשל 4 מתוך 12 ביצים."
+  /// ```
+  String get countHint => """מעקב אחר כמה יש לך, למשל 4 מתוך 12 ביצים.""";
+
+  /// ```dart
+  /// "מעקב כמלא, נמוך או אזל, למשל קמח או תבלינים."
+  /// ```
+  String get levelHint => """מעקב כמלא, נמוך או אזל, למשל קמח או תבלינים.""";
+
+  /// ```dart
+  /// "קיים"
+  /// ```
+  String get onHand => """קיים""";
+
+  /// ```dart
+  /// "למשל 4"
+  /// ```
+  String get onHandPlaceholder => """למשל 4""";
+
+  /// ```dart
+  /// "יעד"
+  /// ```
+  String get target => """יעד""";
+
+  /// ```dart
+  /// "למשל 12 ביצים"
+  /// ```
+  String get targetPlaceholder => """למשל 12 ביצים""";
+
+  /// ```dart
+  /// "סף הזמנה מחדש"
+  /// ```
+  String get reorderPoint => """סף הזמנה מחדש""";
+
+  /// ```dart
+  /// "למשל 4"
+  /// ```
+  String get reorderPlaceholder => """למשל 4""";
+
+  /// ```dart
+  /// "רמת מלאי"
+  /// ```
+  String get stockLevel => """רמת מלאי""";
+
+  /// ```dart
+  /// "כמות לחידוש"
+  /// ```
+  String get restockAmount => """כמות לחידוש""";
+
+  /// ```dart
+  /// "למשל שקית של 1 ק״ג"
+  /// ```
+  String get restockPlaceholder => """למשל שקית של 1 ק״ג""";
+
+  /// ```dart
+  /// "הומר: רמה $level, כמות לחידוש "$amount"."
+  /// ```
+  String convertedLevelAmount(String level, String amount) =>
+      """הומר: רמה $level, כמות לחידוש "$amount".""";
+
+  /// ```dart
+  /// "הומר: רמה $level."
+  /// ```
+  String convertedLevel(String level) => """הומר: רמה $level.""";
+
+  /// ```dart
+  /// "הומר: קיים "$onHand", יעד "$target"."
+  /// ```
+  String convertedCount(String onHand, String target) =>
+      """הומר: קיים "$onHand", יעד "$target".""";
+
+  /// ```dart
+  /// "הומר: יעד "$target". יש להזין את הכמות הקיימת."
+  /// ```
+  String convertedTargetOnly(String target) =>
+      """הומר: יעד "$target". יש להזין את הכמות הקיימת.""";
+
+  /// ```dart
+  /// "הומר לכמות. יש להזין את הכמות הקיימת ויעד."
+  /// ```
+  String get convertedBlank => """הומר לכמות. יש להזין את הכמות הקיימת ויעד.""";
+
+  /// ```dart
+  /// "פג תוקף: לקנות $amount."
+  /// ```
+  String statusExpiredBuy(String amount) => """פג תוקף: לקנות $amount.""";
+
+  /// ```dart
+  /// "פג תוקף."
+  /// ```
+  String get statusExpired => """פג תוקף.""";
+
+  /// ```dart
+  /// "תוקף עומד לפוג: לקנות $amount."
+  /// ```
+  String statusExpiringBuy(String amount) =>
+      """תוקף עומד לפוג: לקנות $amount.""";
+
+  /// ```dart
+  /// "תוקף עומד לפוג."
+  /// ```
+  String get statusExpiring => """תוקף עומד לפוג.""";
+
+  /// ```dart
+  /// "נמוך: לקנות $amount."
+  /// ```
+  String statusLowBuy(String amount) => """נמוך: לקנות $amount.""";
+
+  /// ```dart
+  /// "נמוך."
+  /// ```
+  String get statusLow => """נמוך.""";
+
+  /// ```dart
+  /// "אזל: לקנות $amount."
+  /// ```
+  String statusOutBuy(String amount) => """אזל: לקנות $amount.""";
+
+  /// ```dart
+  /// "אזל."
+  /// ```
+  String get statusOut => """אזל.""";
+
+  /// ```dart
+  /// "לא נספר: ליעד אין מספר, ולכן הוא אף פעם לא נמוך."
+  /// ```
+  String get statusUncountedTarget =>
+      """לא נספר: ליעד אין מספר, ולכן הוא אף פעם לא נמוך.""";
+
+  /// ```dart
+  /// "לא נספר: לכמות הקיימת אין מספר, ולכן הוא אף פעם לא נמוך."
+  /// ```
+  String get statusUncountedOnHand =>
+      """לא נספר: לכמות הקיימת אין מספר, ולכן הוא אף פעם לא נמוך.""";
+
+  /// ```dart
+  /// "במלאי."
+  /// ```
+  String get statusInStock => """במלאי.""";
+
+  /// ```dart
+  /// "כשלא נבחר מצב מלאי, נעשה שימוש בברירת המחדל של רשימת המלאי."
+  /// ```
+  String get templateDefaultMode =>
+      """כשלא נבחר מצב מלאי, נעשה שימוש בברירת המחדל של רשימת המלאי.""";
+
+  /// ```dart
+  /// "כשהוא נוסף לרשימת מלאי, הוא מתחיל מלא עם $amount קיים."
+  /// ```
+  String templateStartsCount(String amount) =>
+      """כשהוא נוסף לרשימת מלאי, הוא מתחיל מלא עם $amount קיים.""";
+
+  /// ```dart
+  /// "כשהוא נוסף לרשימת מלאי, הוא מתחיל במצב מלא ומתחדש ב-$amount."
+  /// ```
+  String templateStartsLevelAmount(String amount) =>
+      """כשהוא נוסף לרשימת מלאי, הוא מתחיל במצב מלא ומתחדש ב-$amount.""";
+
+  /// ```dart
+  /// "כשהוא נוסף לרשימת מלאי, הוא מתחיל במצב מלא."
+  /// ```
+  String get templateStartsLevel =>
+      """כשהוא נוסף לרשימת מלאי, הוא מתחיל במצב מלא.""";
+
+  /// ```dart
+  /// "כשהוא נוסף לרשימת מלאי ללא יעד, הוא לא נספר."
+  /// ```
+  String get templateUncounted =>
+      """כשהוא נוסף לרשימת מלאי ללא יעד, הוא לא נספר.""";
+}
+
+class ExpiryStockMessagesHe extends ExpiryStockMessages {
+  final StockMessagesHe _parent;
+  const ExpiryStockMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "תפוגה"
+  /// ```
+  String get title => """תפוגה""";
+
+  /// ```dart
+  /// "איך פג תוקף הפריט"
+  /// ```
+  String get mode => """איך פג תוקף הפריט""";
+
+  /// ```dart
+  /// "ללא"
+  /// ```
+  String get none => """ללא""";
+
+  /// ```dart
+  /// "תאריך"
+  /// ```
+  String get date => """תאריך""";
+
+  /// ```dart
+  /// "נשמר N ימים"
+  /// ```
+  String get keeps => """נשמר N ימים""";
+
+  /// ```dart
+  /// "תאריך תפוגה"
+  /// ```
+  String get expiryDate => """תאריך תפוגה""";
+
+  /// ```dart
+  /// "ימים שהוא נשמר"
+  /// ```
+  String get daysItKeeps => """ימים שהוא נשמר""";
+
+  /// ```dart
+  /// "פג תוקף ב-$date."
+  /// ```
+  String expiredSummary(String date) => """פג תוקף ב-$date.""";
+
+  /// ```dart
+  /// "בתוקף עד $date."
+  /// ```
+  String goodUntilSummary(String date) => """בתוקף עד $date.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'כל חידוש מלאי מאריך את התוקף ליום אחד מאותו יום.', many: 'כל חידוש מלאי מאריך את התוקף ל-$count ימים מאותו יום.')}"
+  /// ```
+  String renews(int count) =>
+      """${_plural(count, one: 'כל חידוש מלאי מאריך את התוקף ליום אחד מאותו יום.', many: 'כל חידוש מלאי מאריך את התוקף ל-$count ימים מאותו יום.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'כשהוא נוסף לרשימת מלאי, תוקפו פג יום אחד לאחר מכן.', many: 'כשהוא נוסף לרשימת מלאי, תוקפו פג $count ימים לאחר מכן.')}"
+  /// ```
+  String templateExpires(int count) =>
+      """${_plural(count, one: 'כשהוא נוסף לרשימת מלאי, תוקפו פג יום אחד לאחר מכן.', many: 'כשהוא נוסף לרשימת מלאי, תוקפו פג $count ימים לאחר מכן.')}""";
+
+  /// ```dart
+  /// "תפוגה"
+  /// ```
+  String get chip => """תפוגה""";
+
+  /// ```dart
+  /// "יפוג ב-$date"
+  /// ```
+  String chipExpires(String date) => """יפוג ב-$date""";
+
+  /// ```dart
+  /// "פג תוקף ב-$date"
+  /// ```
+  String chipExpired(String date) => """פג תוקף ב-$date""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'נשמר יום אחד', many: 'נשמר $count ימים')}"
+  /// ```
+  String chipKeeps(int count) =>
+      """${_plural(count, one: 'נשמר יום אחד', many: 'נשמר $count ימים')}""";
+}
+
+class ComposeStockMessagesHe extends ComposeStockMessages {
+  final StockMessagesHe _parent;
+  const ComposeStockMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "מלאי"
+  /// ```
+  String get chip => """מלאי""";
+
+  /// ```dart
+  /// "כמות"
+  /// ```
+  String get count => """כמות""";
+
+  /// ```dart
+  /// "רמה"
+  /// ```
+  String get level => """רמה""";
+
+  /// ```dart
+  /// "רמה · $amount"
+  /// ```
+  String levelAmount(String amount) => """רמה · $amount""";
+
+  /// ```dart
+  /// "יעד: $target"
+  /// ```
+  String targetValue(String target) => """יעד: $target""";
+
+  /// ```dart
+  /// "מלא כשריק"
+  /// ```
+  String get fullWhenEmpty => """מלא כשריק""";
+}
+
+class LinksStockMessagesHe extends LinksStockMessages {
+  final StockMessagesHe _parent;
+  const LinksStockMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "רשימת קניות"
+  /// ```
+  String get caption => """רשימת קניות""";
+
+  /// ```dart
+  /// "מקושר ל$row ב$list"
+  /// ```
+  String tooltipLinked(String row, String list) => """מקושר ל$row ב$list""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'לא מקושר: התאמה אחת, יש לבחור', many: 'לא מקושר: $count התאמות, יש לבחור אחת')}"
+  /// ```
+  String tooltipNeedsPick(int count) =>
+      """${_plural(count, one: 'לא מקושר: התאמה אחת, יש לבחור', many: 'לא מקושר: $count התאמות, יש לבחור אחת')}""";
+
+  /// ```dart
+  /// "עדיין לא מקושר: יתווסף לרשימת הקניות כשיהיה נמוך"
+  /// ```
+  String get tooltipAutoOn =>
+      """עדיין לא מקושר: יתווסף לרשימת הקניות כשיהיה נמוך""";
+
+  /// ```dart
+  /// "לא מקושר: לעולם לא יתווסף לרשימת קניות"
+  /// ```
+  String get tooltipAutoOff => """לא מקושר: לעולם לא יתווסף לרשימת קניות""";
+
+  /// ```dart
+  /// "$row ב$list · $state"
+  /// ```
+  String rowOnList(String row, String list, String state) =>
+      """$row ב$list · $state""";
+
+  /// ```dart
+  /// "פתוח"
+  /// ```
+  String get stateOpen => """פתוח""";
+
+  /// ```dart
+  /// "מסומן"
+  /// ```
+  String get stateChecked => """מסומן""";
+
+  /// ```dart
+  /// "בארכיון"
+  /// ```
+  String get stateArchived => """בארכיון""";
+
+  /// ```dart
+  /// "בסל המחזור"
+  /// ```
+  String get stateTrashed => """בסל המחזור""";
+
+  /// ```dart
+  /// "× $quantity"
+  /// ```
+  String stateQuantity(String quantity) => """× $quantity""";
+
+  /// ```dart
+  /// "ביטול קישור"
+  /// ```
+  String get unlink => """ביטול קישור""";
+
+  /// ```dart
+  /// "איזה מהם?"
+  /// ```
+  String get whichOne => """איזה מהם?""";
+
+  /// ```dart
+  /// "$row, $list, $state"
+  /// ```
+  String candidate(String row, String list, String state) =>
+      """$row, $list, $state""";
+
+  /// ```dart
+  /// "להוסיף לרשימת הקניות כשנמוך"
+  /// ```
+  String get autoLink => """להוסיף לרשימת הקניות כשנמוך""";
+
+  /// ```dart
+  /// "קישור ידני"
+  /// ```
+  String get linkByHand => """קישור ידני""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'לא מקושר · התאמה אחת, יש לבחור', many: 'לא מקושר · $count התאמות, יש לבחור אחת')}"
+  /// ```
+  String chipNeedsPick(int count) =>
+      """${_plural(count, one: 'לא מקושר · התאמה אחת, יש לבחור', many: 'לא מקושר · $count התאמות, יש לבחור אחת')}""";
+
+  /// ```dart
+  /// "לא מתווסף לרשימת קניות"
+  /// ```
+  String get chipNotAdded => """לא מתווסף לרשימת קניות""";
+
+  /// ```dart
+  /// "מקושר ל$row ב$list · $state"
+  /// ```
+  String cardLinked(String row, String list, String state) =>
+      """מקושר ל$row ב$list · $state""";
+
+  /// ```dart
+  /// "קישור לפריט אחר …"
+  /// ```
+  String get linkDifferent => """קישור לפריט אחר …""";
+
+  /// ```dart
+  /// "כשהפריט נגמר או מתקרב לתפוגה, הוא חוזר לרשימה הזו."
+  /// ```
+  String get linkedHint =>
+      """כשהפריט נגמר או מתקרב לתפוגה, הוא חוזר לרשימה הזו.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד מתאים', many: '$count פריטים מתאימים')}"
+  /// ```
+  String matches(int count) =>
+      """${_plural(count, one: 'פריט אחד מתאים', many: '$count פריטים מתאימים')}""";
+
+  /// ```dart
+  /// "$matches ברשימת הסימון לחידוש מלאי. איזה מהם זה?"
+  /// ```
+  String matchesQuestion(String matches) =>
+      """$matches ברשימת הסימון לחידוש מלאי. איזה מהם זה?""";
+
+  /// ```dart
+  /// "קישור"
+  /// ```
+  String get link => """קישור""";
+
+  /// ```dart
+  /// "מוצא או מוסיף את "$item" ב$list כשצריך."
+  /// ```
+  String autoHintOn(String item, String list) =>
+      """מוצא או מוסיף את "$item" ב$list כשצריך.""";
+
+  /// ```dart
+  /// "יש לבחור רשימת סימון לחידוש מלאי בהגדרות רשימת המלאי כדי למצוא או להוסיף שם את הפריט."
+  /// ```
+  String get autoHintNoChecklist =>
+      """יש לבחור רשימת סימון לחידוש מלאי בהגדרות רשימת המלאי כדי למצוא או להוסיף שם את הפריט.""";
+
+  /// ```dart
+  /// "הפריט הזה רק מסומן כאן כשהוא נמוך."
+  /// ```
+  String get autoHintOff => """הפריט הזה רק מסומן כאן כשהוא נמוך.""";
+
+  /// ```dart
+  /// "קישור לפריט …"
+  /// ```
+  String get linkToItem => """קישור לפריט …""";
+
+  /// ```dart
+  /// "קישור לפריט ברשימת סימון"
+  /// ```
+  String get pickerTitle => """קישור לפריט ברשימת סימון""";
+
+  /// ```dart
+  /// "פריט ברשימת סימון"
+  /// ```
+  String get pickerField => """פריט ברשימת סימון""";
+
+  /// ```dart
+  /// "חיפוש פריטים ברשימות סימון …"
+  /// ```
+  String get pickerSearch => """חיפוש פריטים ברשימות סימון …""";
+
+  /// ```dart
+  /// "מחפש …"
+  /// ```
+  String get pickerSearching => """מחפש …""";
+
+  /// ```dart
+  /// "לא נמצאו פריטים"
+  /// ```
+  String get pickerEmpty => """לא נמצאו פריטים""";
+
+  /// ```dart
+  /// "$row — $list"
+  /// ```
+  String pickerRow(String row, String list) => """$row — $list""";
+
+  /// ```dart
+  /// "בארכיון"
+  /// ```
+  String get pickerArchived => """בארכיון""";
+
+  /// ```dart
+  /// "לא ניתן היה לטעון פריטים. יש לבדוק את החיבור ולנסות שוב."
+  /// ```
+  String get pickerFailed =>
+      """לא ניתן היה לטעון פריטים. יש לבדוק את החיבור ולנסות שוב.""";
+
+  /// ```dart
+  /// "ביטול"
+  /// ```
+  String get cancel => """ביטול""";
+}
+
+class RestockStockMessagesHe extends RestockStockMessages {
+  final StockMessagesHe _parent;
+  const RestockStockMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "$what נוסף ל$list"
+  /// ```
+  String added(String what, String list) => """$what נוסף ל$list""";
+
+  /// ```dart
+  /// "שוב ב$list: $row × $quantity"
+  /// ```
+  String revivedQuantity(String list, String row, String quantity) =>
+      """שוב ב$list: $row × $quantity""";
+
+  /// ```dart
+  /// "שוב ב$list: $row"
+  /// ```
+  String revived(String list, String row) => """שוב ב$list: $row""";
+
+  /// ```dart
+  /// "$list: $row עכשיו × $quantity"
+  /// ```
+  String changed(String list, String row, String quantity) =>
+      """$list: $row עכשיו × $quantity""";
+
+  /// ```dart
+  /// "$row ב$list מוצמד על × $quantity"
+  /// ```
+  String pinnedAt(String row, String list, String quantity) =>
+      """$row ב$list מוצמד על × $quantity""";
+
+  /// ```dart
+  /// "$row ב$list מוצמד"
+  /// ```
+  String pinned(String row, String list) => """$row ב$list מוצמד""";
+
+  /// ```dart
+  /// "כבר לא נחוץ: $row ב$list"
+  /// ```
+  String recovered(String row, String list) => """כבר לא נחוץ: $row ב$list""";
+
+  /// ```dart
+  /// "$item קושר ל$row ב$list"
+  /// ```
+  String linked(String item, String row, String list) =>
+      """$item קושר ל$row ב$list""";
+
+  /// ```dart
+  /// "הקישור של $item ל$row ב$list בוטל. הוא לא יתווסף לרשימת קניות."
+  /// ```
+  String unlinked(String item, String row, String list) =>
+      """הקישור של $item ל$row ב$list בוטל. הוא לא יתווסף לרשימת קניות.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '$item מתאים לפריט אחד ב$list. יש לבחור אחד לקישור.', many: '$item מתאים ל-$count פריטים ב$list. יש לבחור אחד לקישור.')}"
+  /// ```
+  String severalMatches(String item, int count, String list) =>
+      """${_plural(count, one: '$item מתאים לפריט אחד ב$list. יש לבחור אחד לקישור.', many: '$item מתאים ל-$count פריטים ב$list. יש לבחור אחד לקישור.')}""";
+
+  /// ```dart
+  /// "חודש מלאי: $parts"
+  /// ```
+  String restocked(String parts) => """חודש מלאי: $parts""";
+
+  /// ```dart
+  /// "הוחלף: $parts"
+  /// ```
+  String replaced(String parts) => """הוחלף: $parts""";
+
+  /// ```dart
+  /// "חודש מלאי: $restock; הוחלף: $replace"
+  /// ```
+  String restockedReplaced(String restock, String replace) =>
+      """חודש מלאי: $restock; הוחלף: $replace""";
+
+  /// ```dart
+  /// "בוטל: חידוש מלאי $parts"
+  /// ```
+  String undidRestocked(String parts) => """בוטל: חידוש מלאי $parts""";
+
+  /// ```dart
+  /// "בוטל: החלפה $parts"
+  /// ```
+  String undidReplaced(String parts) => """בוטל: החלפה $parts""";
+
+  /// ```dart
+  /// "בוטל: חידוש מלאי $restock; החלפה $replace"
+  /// ```
+  String undidRestockedReplaced(String restock, String replace) =>
+      """בוטל: חידוש מלאי $restock; החלפה $replace""";
+
+  /// ```dart
+  /// "$item ($inventory) +$amount"
+  /// ```
+  String partAdded(String item, String inventory, String amount) =>
+      """$item ($inventory) +$amount""";
+
+  /// ```dart
+  /// "$item ($inventory) למלא"
+  /// ```
+  String partFull(String item, String inventory) =>
+      """$item ($inventory) למלא""";
+
+  /// ```dart
+  /// "$item ($inventory) ×$amount"
+  /// ```
+  String partReplaced(String item, String inventory, String amount) =>
+      """$item ($inventory) ×$amount""";
+
+  /// ```dart
+  /// "$item ($inventory), מלא"
+  /// ```
+  String partReplacedFull(String item, String inventory) =>
+      """$item ($inventory), מלא""";
+
+  /// ```dart
+  /// "$restock · ביטול הסימון יבטל"
+  /// ```
+  String uncheckToUndo(String restock) => """$restock · ביטול הסימון יבטל""";
+
+  /// ```dart
+  /// "$item ($inventory)"
+  /// ```
+  String source(String item, String inventory) => """$item ($inventory)""";
+
+  /// ```dart
+  /// "מחדש מלאי: $items"
+  /// ```
+  String restocks(String items) => """מחדש מלאי: $items""";
+
+  /// ```dart
+  /// "× $quantity"
+  /// ```
+  String pinnedChip(String quantity) => """× $quantity""";
+
+  /// ```dart
+  /// "מוצמד"
+  /// ```
+  String get pinnedChipBare => """מוצמד""";
+
+  /// ```dart
+  /// "מוצמד, המלאי לא משנה אותו. הקשה מבטלת את ההצמדה."
+  /// ```
+  String get pinnedChipTooltip =>
+      """מוצמד, המלאי לא משנה אותו. הקשה מבטלת את ההצמדה.""";
+
+  /// ```dart
+  /// "כבר לא נחוץ"
+  /// ```
+  String get noLongerNeeded => """כבר לא נחוץ""";
+}
+
 class NotesWallMessagesHe extends NotesWallMessages {
   final MessagesHe _parent;
   const NotesWallMessagesHe(this._parent) : super(_parent);
@@ -6935,6 +8533,26 @@ class WearMessagesHe extends WearMessages {
   /// "צבע Pantry"
   /// ```
   String get accentApp => """צבע Pantry""";
+
+  /// ```dart
+  /// "+$amount"
+  /// ```
+  String stockRaised(String amount) => """+$amount""";
+
+  /// ```dart
+  /// "−$amount"
+  /// ```
+  String stockLowered(String amount) => """−$amount""";
+
+  /// ```dart
+  /// "סיום עדכון"
+  /// ```
+  String get stockClose => """סיום עדכון""";
+
+  /// ```dart
+  /// "אין פריטים שצריך להשלים"
+  /// ```
+  String get nothingNeedsRestock => """אין פריטים שצריך להשלים""";
 }
 
 class WatchMessagesHe extends WatchMessages {
@@ -7450,6 +9068,8 @@ Map<String, String> get messagesHeMap => {
   """home.learnMore""": """למד עוד""",
   """nav.checklists""": """רשימות""",
   """nav.checklist""": """רשימה""",
+  """nav.lists""": """רשימות""",
+  """nav.list""": """רשימה""",
   """nav.photoBoard""": """לוח תמונות""",
   """nav.notesWall""": """קיר הערות""",
   """widget.chooseListsTitle""": """בחירת רשימות""",
@@ -7564,6 +9184,21 @@ Map<String, String> get messagesHeMap => {
   """onboarding.joinTripMockHousemate""": """דנה""",
   """onboarding.joinTripHow""":
       """כבר באמצע קנייה? ההצטרפות שומרת קודם את הקנייה שלך בהיסטוריה. אם תצא מקנייה שהצטרפת אליה, היא ממשיכה לכל מי שנשאר בה.""",
+  """onboarding.inventoryTitle""": """לדעת מה יש בארון""",
+  """onboarding.inventoryBody""":
+      """מלאים עוקבים אחרי כמה יש לך מכל דבר ומתי הוא פג תוקף. מורידים כמויות תוך כדי שימוש, ו-Pantry מסמן מה עומד להיגמר או לפוג.""",
+  """onboarding.inventoryHow""":
+      """הגדירו למלאי רשימת השלמה בהגדרות שלו, וכל מה שנגמר או פג תוקף יתווסף אליה. מסמנים אותו בחנות והמלאי מתמלא בחזרה.""",
+  """onboarding.inventoryMockEggs""": """ביצים""",
+  """onboarding.inventoryMockMilk""": """חלב""",
+  """onboarding.inventoryMockFlour""": """קמח""",
+  """onboarding.templateTitle""": """תבניות למה שקונים תמיד""",
+  """onboarding.templateBody""":
+      """שמרו בתבנית את הפריטים שאתם מוסיפים שוב ושוב. צרפו אותה לרשימה, והקלדה ברשימה תציע את הפריטים שלה, עם כל הפרטים.""",
+  """onboarding.templateMockName""": """קניות שבועיות""",
+  """onboarding.templateMockTyped""": """חל""",
+  """onboarding.templateMockFirst""": """חלב""",
+  """onboarding.templateMockSecond""": """חלה""",
   """onboarding.dev.showOnboarding""": """הצג היכרות""",
   """onboarding.dev.pickLastSeenTitle""": """תצוגה מקדימה של החדש""",
   """onboarding.dev.pickLastSeenBody""":
@@ -8276,6 +9911,240 @@ Map<String, String> get messagesHeMap => {
   """checklists.markdown.reuseExisting""":
       """שימוש חוזר בפריטים קיימים במקום הוספת כפילויות""",
   """checklists.markdown.defaultFields""": """ערכים שיחולו על כל פריט מיובא""",
+  """listKinds.duplicateAs""": """שכפל בתור:""",
+  """listKinds.checklist.title""": """רשימות סימון""",
+  """listKinds.checklist.name""": """רשימת סימון""",
+  """listKinds.checklist.newList""": """רשימת סימון חדשה""",
+  """listKinds.checklist.createTitle""": """צוררשימת סימון""",
+  """listKinds.checklist.editTitle""": """ערוךרשימת סימון""",
+  """listKinds.checklist.duplicateTitle""": """שכפלרשימת סימון""",
+  """listKinds.checklist.duplicateFailed""":
+      """לא ניתן היה לשכפל את רשימת הסימון""",
+  """listKinds.checklist.listMenu""": """פעולות רשימת סימון""",
+  """listKinds.checklist.deleteDialogTitle""": """הסררשימת סימון""",
+  """listKinds.checklist.emptyTitle""": """אין רשימות סימון עדיין""",
+  """listKinds.checklist.emptyBody""":
+      """צור את רשימת הסימון הראשונה שלך כדי להתחיל להוסיף פריטים.""",
+  """listKinds.checklist.trashTitle""": """אשפת רשימות סימון""",
+  """listKinds.checklist.trashEmptyBody""":
+      """רשימות סימון שנמחקו יופיעו כאן.""",
+  """listKinds.checklist.archiveTitle""": """רשימות סימון בארכיון""",
+  """listKinds.checklist.archiveEmptyTitle""": """אין רשימות סימון בארכיון""",
+  """listKinds.checklist.archiveEmptyBody""":
+      """רשימות סימון שהועברו לארכיון יופיעו כאן.""",
+  """listKinds.checklist.emptyTrashBody""":
+      """פעולה זו תמחק לצמיתות את כל רשימות הסימון שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו.""",
+  """listKinds.checklist.listRestored""": """רשימת הסימון שוחזרה""",
+  """listKinds.checklist.listMovedToTrash""": """רשימת הסימון הועברה לאשפה""",
+  """listKinds.checklist.listArchived""": """רשימת הסימון הועברה לארכיון""",
+  """listKinds.checklist.listUnarchived""": """רשימת הסימון הוצאה מהארכיון""",
+  """listKinds.inventory.title""": """רשימות מלאי""",
+  """listKinds.inventory.name""": """רשימת מלאי""",
+  """listKinds.inventory.newList""": """רשימת מלאי חדשה""",
+  """listKinds.inventory.createTitle""": """צוררשימת מלאי""",
+  """listKinds.inventory.editTitle""": """ערוךרשימת מלאי""",
+  """listKinds.inventory.duplicateTitle""": """שכפלרשימת מלאי""",
+  """listKinds.inventory.duplicateFailed""":
+      """לא ניתן היה לשכפל את רשימת המלאי""",
+  """listKinds.inventory.listMenu""": """פעולות רשימת מלאי""",
+  """listKinds.inventory.deleteDialogTitle""": """הסררשימת מלאי""",
+  """listKinds.inventory.emptyTitle""": """אין רשימות מלאי עדיין""",
+  """listKinds.inventory.emptyBody""":
+      """צור את רשימת המלאי הראשונה שלך כדי להתחיל להוסיף פריטים.""",
+  """listKinds.inventory.trashTitle""": """אשפת רשימות מלאי""",
+  """listKinds.inventory.trashEmptyBody""":
+      """רשימות מלאי שנמחקו יופיעו כאן.""",
+  """listKinds.inventory.archiveTitle""": """רשימות מלאי בארכיון""",
+  """listKinds.inventory.archiveEmptyTitle""": """אין רשימות מלאי בארכיון""",
+  """listKinds.inventory.archiveEmptyBody""":
+      """רשימות מלאי שהועברו לארכיון יופיעו כאן.""",
+  """listKinds.inventory.emptyTrashBody""":
+      """פעולה זו תמחק לצמיתות את כל רשימות המלאי שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו.""",
+  """listKinds.inventory.listRestored""": """רשימת המלאי שוחזרה""",
+  """listKinds.inventory.listMovedToTrash""": """רשימת המלאי הועברה לאשפה""",
+  """listKinds.inventory.listArchived""": """רשימת המלאי הועברה לארכיון""",
+  """listKinds.inventory.listUnarchived""": """רשימת המלאי הוצאה מהארכיון""",
+  """listKinds.template.title""": """תבניות""",
+  """listKinds.template.name""": """תבנית""",
+  """listKinds.template.newList""": """תבנית חדשה""",
+  """listKinds.template.createTitle""": """צורתבנית""",
+  """listKinds.template.editTitle""": """ערוךתבנית""",
+  """listKinds.template.duplicateTitle""": """שכפלתבנית""",
+  """listKinds.template.duplicateFailed""": """לא ניתן היה לשכפל את התבנית""",
+  """listKinds.template.listMenu""": """פעולות תבנית""",
+  """listKinds.template.deleteDialogTitle""": """הסרתבנית""",
+  """listKinds.template.emptyTitle""": """אין תבניות עדיין""",
+  """listKinds.template.emptyBody""":
+      """צור את התבנית הראשונה שלך כדי להתחיל להוסיף פריטים.""",
+  """listKinds.template.trashTitle""": """אשפת תבניות""",
+  """listKinds.template.trashEmptyBody""": """תבניות שנמחקו יופיעו כאן.""",
+  """listKinds.template.archiveTitle""": """תבניות בארכיון""",
+  """listKinds.template.archiveEmptyTitle""": """אין תבניות בארכיון""",
+  """listKinds.template.archiveEmptyBody""":
+      """תבניות שהועברו לארכיון יופיעו כאן.""",
+  """listKinds.template.emptyTrashBody""":
+      """פעולה זו תמחק לצמיתות את כל התבניות שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו.""",
+  """listKinds.template.listRestored""": """התבנית שוחזרה""",
+  """listKinds.template.listMovedToTrash""": """התבנית הועברה לאשפה""",
+  """listKinds.template.listArchived""": """התבנית הועברה לארכיון""",
+  """listKinds.template.listUnarchived""": """התבנית הוצאה מהארכיון""",
+  """templates.suggestionsHeader""": """הצעות""",
+  """templates.drawFailed""": """לא ניתן היה להוסיף את הפריט מהתבנית""",
+  """templates.attachedLabel""": """תבניות:""",
+  """templates.attachedPlaceholder""": """אין תבניות""",
+  """templates.attachedHint""":
+      """הקלדת פריט חדש מציעה פריטים תואמים מהתבניות האלה.""",
+  """templates.suggestInLabel""": """הצעה ברשימות:""",
+  """templates.everyList""": """כל הרשימות""",
+  """templates.suggestInPlaceholder""": """אין רשימות""",
+  """templates.suggestInHint""":
+      """הקלדת פריט חדש ברשימות האלה מציעה פריטים תואמים מהתבנית הזו. בחירה ב"כל הרשימות" כוללת גם רשימות שייווצרו בהמשך.""",
+  """templates.attachFailed""": """לא ניתן היה לשמור את התבניות המצורפות""",
+  """templates.fillLabel""": """מילוי פריטי תבנית מברירות המחדל האלה""",
+  """templates.fillHint""":
+      """כשפריט נוסף מתבנית, הפרטים שהוא משאיר ריקים מתחילים עם הערכים שלמעלה. כל אחד יכול לשנות זאת בהגדרות האישיות שלו.""",
+  """templates.fillPrefLabel""": """מילוי פריטי תבנית מברירות המחדל לפריטים""",
+  """templates.fillPrefHint""":
+      """כשמוסיפים פריט מתבנית, הפרטים שהוא משאיר ריקים מתמלאים מברירות המחדל לפריטים של הרשימה. כל רשימה יכולה לכבות זאת בברירות המחדל לפריטים שלה.""",
+  """templates.fillPrefNames.list""": """לפי כל רשימה""",
+  """templates.fillPrefNames.always""": """תמיד למלא""",
+  """templates.fillPrefNames.never""": """אף פעם לא למלא""",
+  """templates.fillPrefFailed""": """לא ניתן היה לשמור את ההגדרה""",
+  """templates.applyToList""": """החלה על רשימה""",
+  """templates.applyTemplate""": """החלת תבנית""",
+  """templates.attachedTemplates""": """מצורפות לרשימה הזו""",
+  """templates.otherTemplates""": """תבניות אחרות""",
+  """templates.noTargets""":
+      """אין רשימות סימון או רשימות מלאי שאפשר להחיל עליהן את התבנית הזו.""",
+  """templates.noItems""": """אין פריטים בתבנית הזו.""",
+  """templates.alreadyOnList""": """כבר ברשימה""",
+  """templates.applyFailed""": """לא ניתן היה להחיל את התבנית""",
+  """templates.loadFailed""": """לא ניתן היה לטעון את התבניות""",
+  """templates.back""": """חזרה""",
+  """stock.inStock""": """במלאי""",
+  """stock.full""": """מלא""",
+  """stock.low""": """נמוך""",
+  """stock.out""": """אזל""",
+  """stock.notCounted""": """לא נספר""",
+  """stock.expiresToday""": """פג תוקף היום""",
+  """stock.expiresTomorrow""": """פג תוקף מחר""",
+  """stock.decrease""": """הפחתת הכמות הקיימת""",
+  """stock.increase""": """הגדלת הכמות הקיימת""",
+  """stock.onHandEdit""": """כמות קיימת""",
+  """stock.filter""": """מלאי""",
+  """stock.filterAll""": """כל הפריטים""",
+  """stock.filterNeedsRestock""": """צריך חידוש מלאי""",
+  """stock.filterInStock""": """במלאי""",
+  """stock.writeRefused""":
+      """לא ניתן היה לשמור את שינוי המלאי. רשימת המלאי מציגה כעת את מה שיש בשרת.""",
+  """stock.settings.action""": """הגדרות רשימת המלאי""",
+  """stock.settings.title""": """הגדרות רשימת המלאי""",
+  """stock.settings.name""": """שם""",
+  """stock.settings.nameHint""":
+      """סמל, צבע ושיתוף פועלים כמו ברשימות סימון.""",
+  """stock.settings.expiryWarning""": """התראת תפוגה""",
+  """stock.settings.daysBefore""": """ימים לפני התפוגה""",
+  """stock.settings.warnHint""":
+      """יש להזין 0 כדי לקבל התראה ביום התפוגה עצמו.""",
+  """stock.settings.restockChecklist""": """רשימת סימון לחידוש מלאי""",
+  """stock.settings.restockNone""": """ללא""",
+  """stock.settings.restockSetHint""":
+      """פריטים שנגמרים או מתקרבים לתפוגה נוספים לרשימת הסימון הזו.""",
+  """stock.settings.restockUnsetHint""":
+      """בלעדיה, פריטים נמוכים או שמתקרבים לתפוגה רק מסומנים כאן.""",
+  """stock.settings.notifications""": """התראות""",
+  """stock.settings.stockSummary""": """סיכום מלאי יומי""",
+  """stock.settings.stockSummaryHint""":
+      """פעם ביום, לספר לחברים מה נגמר או התחיל להתקרב לתפוגה כאן. כל חבר יכול גם לכבות זאת בהגדרות האישיות.""",
+  """stock.settings.cancel""": """ביטול""",
+  """stock.settings.save""": """שמירה""",
+  """stock.card.title""": """מלאי""",
+  """stock.card.mode""": """מצב מלאי""",
+  """stock.card.count""": """כמות""",
+  """stock.card.level""": """רמה""",
+  """stock.card.countHint""": """מעקב אחר כמה יש לך, למשל 4 מתוך 12 ביצים.""",
+  """stock.card.levelHint""":
+      """מעקב כמלא, נמוך או אזל, למשל קמח או תבלינים.""",
+  """stock.card.onHand""": """קיים""",
+  """stock.card.onHandPlaceholder""": """למשל 4""",
+  """stock.card.target""": """יעד""",
+  """stock.card.targetPlaceholder""": """למשל 12 ביצים""",
+  """stock.card.reorderPoint""": """סף הזמנה מחדש""",
+  """stock.card.reorderPlaceholder""": """למשל 4""",
+  """stock.card.stockLevel""": """רמת מלאי""",
+  """stock.card.restockAmount""": """כמות לחידוש""",
+  """stock.card.restockPlaceholder""": """למשל שקית של 1 ק״ג""",
+  """stock.card.convertedBlank""":
+      """הומר לכמות. יש להזין את הכמות הקיימת ויעד.""",
+  """stock.card.statusExpired""": """פג תוקף.""",
+  """stock.card.statusExpiring""": """תוקף עומד לפוג.""",
+  """stock.card.statusLow""": """נמוך.""",
+  """stock.card.statusOut""": """אזל.""",
+  """stock.card.statusUncountedTarget""":
+      """לא נספר: ליעד אין מספר, ולכן הוא אף פעם לא נמוך.""",
+  """stock.card.statusUncountedOnHand""":
+      """לא נספר: לכמות הקיימת אין מספר, ולכן הוא אף פעם לא נמוך.""",
+  """stock.card.statusInStock""": """במלאי.""",
+  """stock.card.templateDefaultMode""":
+      """כשלא נבחר מצב מלאי, נעשה שימוש בברירת המחדל של רשימת המלאי.""",
+  """stock.card.templateStartsLevel""":
+      """כשהוא נוסף לרשימת מלאי, הוא מתחיל במצב מלא.""",
+  """stock.card.templateUncounted""":
+      """כשהוא נוסף לרשימת מלאי ללא יעד, הוא לא נספר.""",
+  """stock.expiry.title""": """תפוגה""",
+  """stock.expiry.mode""": """איך פג תוקף הפריט""",
+  """stock.expiry.none""": """ללא""",
+  """stock.expiry.date""": """תאריך""",
+  """stock.expiry.keeps""": """נשמר N ימים""",
+  """stock.expiry.expiryDate""": """תאריך תפוגה""",
+  """stock.expiry.daysItKeeps""": """ימים שהוא נשמר""",
+  """stock.expiry.chip""": """תפוגה""",
+  """stock.compose.chip""": """מלאי""",
+  """stock.compose.count""": """כמות""",
+  """stock.compose.level""": """רמה""",
+  """stock.compose.fullWhenEmpty""": """מלא כשריק""",
+  """stock.noRestockChecklist""":
+      """לרשימת המלאי הזו אין רשימת סימון לחידוש מלאי, ולכן הפריטים האלה רק מסומנים כאן. אפשר לבחור אחת בהגדרות רשימת המלאי.""",
+  """stock.renewAction""": """חידוש תפוגה""",
+  """stock.summaryPref""": """סיכום מלאי יומי""",
+  """stock.summaryPrefHint""":
+      """פעם ביום, מה נגמר או התחיל להתקרב לתפוגה ברשימות המלאי של הבית הזה.""",
+  """stock.summaryPrefFailed""": """לא ניתן היה לשמור את הגדרת סיכום המלאי.""",
+  """stock.links.caption""": """רשימת קניות""",
+  """stock.links.tooltipAutoOn""":
+      """עדיין לא מקושר: יתווסף לרשימת הקניות כשיהיה נמוך""",
+  """stock.links.tooltipAutoOff""":
+      """לא מקושר: לעולם לא יתווסף לרשימת קניות""",
+  """stock.links.stateOpen""": """פתוח""",
+  """stock.links.stateChecked""": """מסומן""",
+  """stock.links.stateArchived""": """בארכיון""",
+  """stock.links.stateTrashed""": """בסל המחזור""",
+  """stock.links.unlink""": """ביטול קישור""",
+  """stock.links.whichOne""": """איזה מהם?""",
+  """stock.links.autoLink""": """להוסיף לרשימת הקניות כשנמוך""",
+  """stock.links.linkByHand""": """קישור ידני""",
+  """stock.links.chipNotAdded""": """לא מתווסף לרשימת קניות""",
+  """stock.links.linkDifferent""": """קישור לפריט אחר …""",
+  """stock.links.linkedHint""":
+      """כשהפריט נגמר או מתקרב לתפוגה, הוא חוזר לרשימה הזו.""",
+  """stock.links.link""": """קישור""",
+  """stock.links.autoHintNoChecklist""":
+      """יש לבחור רשימת סימון לחידוש מלאי בהגדרות רשימת המלאי כדי למצוא או להוסיף שם את הפריט.""",
+  """stock.links.autoHintOff""": """הפריט הזה רק מסומן כאן כשהוא נמוך.""",
+  """stock.links.linkToItem""": """קישור לפריט …""",
+  """stock.links.pickerTitle""": """קישור לפריט ברשימת סימון""",
+  """stock.links.pickerField""": """פריט ברשימת סימון""",
+  """stock.links.pickerSearch""": """חיפוש פריטים ברשימות סימון …""",
+  """stock.links.pickerSearching""": """מחפש …""",
+  """stock.links.pickerEmpty""": """לא נמצאו פריטים""",
+  """stock.links.pickerArchived""": """בארכיון""",
+  """stock.links.pickerFailed""":
+      """לא ניתן היה לטעון פריטים. יש לבדוק את החיבור ולנסות שוב.""",
+  """stock.links.cancel""": """ביטול""",
+  """stock.restock.pinnedChipBare""": """מוצמד""",
+  """stock.restock.pinnedChipTooltip""":
+      """מוצמד, המלאי לא משנה אותו. הקשה מבטלת את ההצמדה.""",
+  """stock.restock.noLongerNeeded""": """כבר לא נחוץ""",
   """notesWall.noNotes""": """אין הערות עדיין.""",
   """notesWall.failedToLoad""": """טעינת ההערות נכשלה.""",
   """notesWall.saveFailed""": """שמירת ההערה נכשלה.""",
@@ -8622,6 +10491,8 @@ Map<String, String> get messagesHeMap => {
   """wear.accent""": """צבע הדגשה""",
   """wear.accentServer""": """צבע ה־Nextcloud שלך""",
   """wear.accentApp""": """צבע Pantry""",
+  """wear.stockClose""": """סיום עדכון""",
+  """wear.nothingNeedsRestock""": """אין פריטים שצריך להשלים""",
   """watch.title""": """שעון""",
   """watch.requestWarning""":
       """אשר רק אם השעון שלך. הוא מקבל גישה לבית שלך בדיוק כמו הטלפון הזה.""",

@@ -6,13 +6,24 @@ import 'package:pantry_core/models/item_lifecycle.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/rrule.dart';
+import 'package:pantry_core/models/stock.dart';
 import 'package:pantry/theme/app_theme.dart';
+
+import 'inventory_row_parts.dart';
 
 class FactTiles extends StatelessWidget {
   final ListItem item;
   final ItemLifecycle lifecycle;
 
-  const FactTiles({super.key, required this.item, required this.lifecycle});
+  /// Whether the item's recurrence is shown. Inventory items have none.
+  final bool showType;
+
+  const FactTiles({
+    super.key,
+    required this.item,
+    required this.lifecycle,
+    this.showType = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,16 +50,85 @@ class FactTiles extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 11),
-          Expanded(
-            flex: 14,
-            child: _FactTile(
-              label: v.typeLabel,
-              child: _TypeValue(item: item, lifecycle: lifecycle),
+          if (showType) ...[
+            const SizedBox(width: 11),
+            Expanded(
+              flex: 14,
+              child: _FactTile(
+                label: v.typeLabel,
+                child: _TypeValue(item: item, lifecycle: lifecycle),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// An inventory item's facts: its stock with the status chips and gauge, and
+/// its expiry when it has one.
+class StockFactTiles extends StatelessWidget {
+  final ListItem item;
+
+  const StockFactTiles({super.key, required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final level = item.stockMode == StockMode.level;
+    final restock = (item.quantity ?? '').trim();
+    final value = level
+        ? (restock.isEmpty
+              ? stockLevelName(item.stockLevel ?? StockLevel.full)
+              : '${stockLevelName(item.stockLevel ?? StockLevel.full)} · $restock')
+        : stockAmountLabel(item);
+    final chips = stockStatusChips(item);
+    final expiry = expirySummary(item);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _FactTile(
+          label: m.stock.card.title,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              if (chips.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 7,
+                  runSpacing: 4,
+                  children: [
+                    for (final spec in chips) StockStatusChip(spec: spec),
+                  ],
+                ),
+              ],
+              if (StockGauge.showsFor(item)) ...[
+                const SizedBox(height: 10),
+                StockGauge(item: item),
+              ],
+            ],
+          ),
+        ),
+        if (expiry != null) ...[
+          const SizedBox(height: 12),
+          _FactTile(
+            label: m.stock.expiry.title,
+            child: Text(
+              expiry,
+              style: theme.textTheme.bodyMedium?.copyWith(color: cs.onSurface),
             ),
           ),
         ],
-      ),
+      ],
     );
   }
 }

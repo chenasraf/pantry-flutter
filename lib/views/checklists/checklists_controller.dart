@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart'
+    show AppLifecycleListener, AppLifecycleState;
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/category.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
@@ -9,8 +11,11 @@ import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/label.dart' as models;
+import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
+import 'package:pantry_core/models/list_template.dart';
 import 'package:pantry_core/models/member.dart';
+import 'package:pantry_core/models/stock.dart';
 import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/auth_service.dart';
@@ -29,13 +34,19 @@ import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/pending_overlay.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
+import 'package:pantry_core/utils/stock_rules.dart';
 import 'checklists_ordering.dart';
+import 'restock_feedback.dart';
 export 'checklists_ordering.dart';
+export 'package:pantry_core/models/list_kind.dart';
+export 'package:pantry_core/models/list_template.dart';
 
 part 'checklists_controller.batch.dart';
 part 'checklists_controller.item_crud.dart';
 part 'checklists_controller.list_crud.dart';
 part 'checklists_controller.sort.dart';
+part 'checklists_controller.stock.dart';
+part 'checklists_controller.templates.dart';
 
 class ChecklistsController extends ChangeNotifier {
   final int houseId;
@@ -48,12 +59,22 @@ class ChecklistsController extends ChangeNotifier {
 
   ChecklistsController({required this.houseId}) {
     _appliedSub = SyncManager.instance.onApplied.listen(_onSyncApplied);
+    _skippedSub = SyncManager.instance.onSkipped.listen(_onSyncSkipped);
     _reconnectSub = SyncManager.instance.onReconnect.listen(_onReconnect);
     // Every enqueue and every drain moves the queue's length, which is the one
     // signal that the set of waiting images may have changed.
     SyncManager.instance.pendingCount.addListener(_onQueueLengthChanged);
     unawaited(_refreshPendingItemImages());
+    // A backgrounded app may be killed before a staged stock write's delay
+    // runs out, which would lose it.
+    _lifecycle = AppLifecycleListener(
+      onStateChange: (state) {
+        if (state != AppLifecycleState.resumed) _sendAllStagedStock();
+      },
+    );
   }
+
+  late final AppLifecycleListener _lifecycle;
 
   /// True when the synthetic "All lists" entry is selected.
   bool get isMetaMode => _currentList?.id == kAllListsId;
@@ -99,7 +120,31 @@ class ChecklistsController extends ChangeNotifier {
       isMetaMode && _sortBy == 'custom' ? 'newest' : _sortBy;
 
   bool _disposed = false;
+
+  /// This member's item writes whose answers may still bring stock feedback,
+  /// each with the item as it was before the write.
+  final _stockFeedback = RestockFeedbackTracker<ListItem>();
+
+  /// Items whose expiry may be renewed after a raise, and the date it would
+  /// take. See [renewOfferFor].
+  final Map<int, int> _renewOffers = {};
+
+  static const _stockWriteDelay = Duration(milliseconds: 800);
+
+  /// Stock changes shown on screen whose write waits for the member to pause,
+  /// with the item as it was before the first of them.
+  final Map<
+    int,
+    ({ListItem before, String? quantity, StockLevel? level, Timer timer})
+  >
+  _stagedStock = {};
+
+  /// A tick or uncheck changed stock that the inventory in view may not show
+  /// yet; it reloads once the queue drains.
+  bool _stockChangedElsewhere = false;
+
   StreamSubscription<SyncOpApplied>? _appliedSub;
+  StreamSubscription<SyncOpSkipped>? _skippedSub;
   StreamSubscription<void>? _reconnectSub;
 
   /// Images the queue still owes the server, keyed by every id their item
@@ -115,7 +160,10 @@ class ChecklistsController extends ChangeNotifier {
   /// never had one.
   File? pendingItemImage(int itemId) => _pendingItemImages[itemId];
 
-  void _onQueueLengthChanged() => unawaited(_refreshPendingItemImages());
+  void _onQueueLengthChanged() {
+    unawaited(_refreshPendingItemImages());
+    _refreshStockOnceDrained();
+  }
 
   /// Rebuilds overlap, and they do not finish in the order they started: an
   /// empty queue resolves without touching the disk, while the rebuild that
@@ -147,9 +195,12 @@ class ChecklistsController extends ChangeNotifier {
 
   @override
   void dispose() {
+    _sendAllStagedStock();
     _disposed = true;
     _appliedSub?.cancel();
+    _skippedSub?.cancel();
     _reconnectSub?.cancel();
+    _lifecycle.dispose();
     SyncManager.instance.pendingCount.removeListener(_onQueueLengthChanged);
     super.dispose();
   }
@@ -168,11 +219,52 @@ class ChecklistsController extends ChangeNotifier {
     super.notifyListeners();
   }
 
+  /// Active lists of every kind.
   List<ChecklistList> _lists = [];
   List<ChecklistList> get lists => _lists;
 
+  List<ChecklistList> listsOfKind(ListKind kind) => [
+    for (final l in _lists)
+      if (l.kind == kind) l,
+  ];
+
   ChecklistList? _currentList;
   ChecklistList? get currentList => _currentList;
+
+  /// The kind whose section is open. Follows the current list, and outlives it
+  /// when the last list of a kind is removed, so the section shows its empty
+  /// state instead of jumping to another kind.
+  ListKind _kind = ListKind.checklist;
+  ListKind get kind => _currentList?.kind ?? _kind;
+
+  /// Whether the open section's items are checked off, recur and shop.
+  bool get isChecklistKind => kind.isChecklist;
+
+  /// Opens [kind]'s section on its first list, or on its empty state.
+  Future<void> selectKind(ListKind kind) async {
+    if (kind == this.kind) return;
+    final first = sortedListsOfKind(kind).firstOrNull;
+    if (first != null) {
+      await selectList(first);
+      return;
+    }
+    _kind = kind;
+    _currentList = null;
+    _checklistService.selectedListId = null;
+    _items = [];
+    _isLoading = false;
+    _isRefreshing = false;
+    _error = null;
+    _isTrashMode = false;
+    _isArchiveMode = false;
+    exitSelection();
+    notifyListeners();
+  }
+
+  /// The list to land on once [removed] leaves the active index: another list
+  /// of the same kind, so the section stays put.
+  ChecklistList? _nextAfterRemoving(ChecklistList removed) =>
+      sortedListsOfKind(removed.kind).firstOrNull;
 
   List<ListItem> _items = [];
   List<ListItem> get items => _items;
@@ -266,6 +358,9 @@ class ChecklistsController extends ChangeNotifier {
   List<ChecklistList> get sortedLists =>
       ChecklistService.sortLists(_lists, _listSort);
 
+  List<ChecklistList> sortedListsOfKind(ListKind kind) =>
+      ChecklistService.sortLists(listsOfKind(kind), _listSort);
+
   bool _showAddedBy = false;
   bool get showAddedBy => _showAddedBy;
 
@@ -304,6 +399,13 @@ class ChecklistsController extends ChangeNotifier {
   /// Lists whose archived-reuse set has a fetch in flight or completed, so the
   /// lazy load fires at most once per list per session.
   final Set<int> _archivedReuseRequested = {};
+
+  /// Items of the templates attached to each list, offered in its add box.
+  /// Fetched lazily on the first search of a list, and dropped when moving to
+  /// another list or changing attachments, since the templates may have
+  /// changed in between.
+  final Map<int, List<TemplateSuggestion>> _templateSuggestions = {};
+  final Set<int> _templateSuggestionsRequested = {};
 
   bool _isLoading = true;
   bool get isLoading => _isLoading;
@@ -443,7 +545,7 @@ class ChecklistsController extends ChangeNotifier {
 
     try {
       final results = await Future.wait([
-        _checklistService.getLists(houseId),
+        _checklistService.getListsOfEveryKind(houseId),
         _categoryService.getCategories(houseId),
       ]);
 
@@ -454,7 +556,7 @@ class ChecklistsController extends ChangeNotifier {
           pending: _sync.pendingListRecordIds(houseId),
         ),
       );
-      _checklistService.cacheLists(houseId, _lists);
+      _checklistService.cacheListsOfEveryKind(houseId, _lists);
 
       final cats = results[1] as List<models.Category>;
       _categories = {for (final c in cats) c.id: c};
@@ -545,14 +647,21 @@ class ChecklistsController extends ChangeNotifier {
           // flicker the per-list view in between refreshes.
           await selectList(allListsSentinel(houseId));
         } else {
-          final target = targetId != null
-              ? _lists.cast<ChecklistList?>().firstWhere(
-                      (l) => l!.id == targetId,
-                      orElse: () => null,
-                    ) ??
-                    _lists.first
-              : _lists.first;
-          await selectList(target);
+          if (!ServerFeature.listKinds) _kind = ListKind.checklist;
+          final target =
+              _lists.where((l) => l.id == targetId).firstOrNull ??
+              sortedListsOfKind(_kind).firstOrNull ??
+              // An emptied template or inventory section stays open on its
+              // empty state.
+              (_kind.isChecklist ? _lists.first : null);
+          if (target != null) {
+            await selectList(target);
+          } else {
+            _currentList = null;
+            _items = [];
+            _isLoading = false;
+            notifyListeners();
+          }
         }
       } else {
         _isLoading = false;
@@ -708,7 +817,7 @@ class ChecklistsController extends ChangeNotifier {
       _labels = {for (final l in cachedLabels) l.id: l};
     }
 
-    final cachedLists = _checklistService.getCachedLists(houseId);
+    final cachedLists = _checklistService.getCachedListsOfEveryKind(houseId);
     if (cachedLists != null && _lists.isEmpty) {
       _lists = _applyLocalListPrefs(cachedLists);
       if (_lists.isNotEmpty) {
@@ -750,7 +859,13 @@ class ChecklistsController extends ChangeNotifier {
     bool refreshInPlace = false,
   }) async {
     final previousListId = _currentList?.id;
+    if (previousListId != list.id) {
+      _sendAllStagedStock();
+      _resetTemplateSuggestions();
+      _renewOffers.clear();
+    }
     _currentList = list;
+    _kind = list.kind;
     _checklistService.selectedListId = list.id;
     if (ServerFeature.listItemSort) {
       _sortBy = _checklistService.cachedItemSort(houseId, list.id);
@@ -999,6 +1114,7 @@ class ChecklistsController extends ChangeNotifier {
   /// endpoint's capability flag, plus a writable non-meta list and the
   /// check-items permission.
   bool get canUncheckAll =>
+      isChecklistKind &&
       ServerFeature.uncheckAll &&
       !isMetaMode &&
       isCurrentListWritable &&
@@ -1008,6 +1124,7 @@ class ChecklistsController extends ChangeNotifier {
   /// should be offered. A writable non-meta list in the active view, plus the
   /// delete-items permission.
   bool get canRemoveAllDone =>
+      isChecklistKind &&
       !isMetaMode &&
       !isSoftView &&
       isCurrentListWritable &&
@@ -1017,6 +1134,7 @@ class ChecklistsController extends ChangeNotifier {
   /// should be offered. Same gate as the per-item archive action, on a
   /// writable non-meta list in the active view.
   bool get canArchiveAllDone =>
+      isChecklistKind &&
       ServerFeature.itemArchive &&
       !isMetaMode &&
       !isSoftView &&
@@ -1028,6 +1146,7 @@ class ChecklistsController extends ChangeNotifier {
     // offline cache via `_precacheListItems`. Wiping the non-current caches
     // here (the old behavior) raced that warm-up and, if the user went offline
     // before it finished, left those lists showing nothing.
+    _resetTemplateSuggestions();
     await load();
   }
 
@@ -1056,6 +1175,7 @@ class ChecklistsController extends ChangeNotifier {
     final key = isMetaMode ? kAllListsId : (listId ?? _currentList?.id);
     if (key == null) return;
     _checklistService.cacheItems(key, List.of(_items));
+    _recountNeedsRestock();
   }
 
   void _cacheCurrentItems() => _cacheVisibleItems();
@@ -1099,6 +1219,7 @@ class ChecklistsController extends ChangeNotifier {
           notifyListeners();
           unawaited(_refreshLabels());
         }
+        _onInventorySettingsApplied(applied);
         final entity = applied.entity;
         if (entity is ChecklistList) {
           // Server entities never carry the client-only progress-card state,
@@ -1115,7 +1236,7 @@ class ChecklistsController extends ChangeNotifier {
             if (i != -1) {
               _lists[i] = reconciled;
               if (_currentList?.id == tempId) _currentList = reconciled;
-              _checklistService.cacheLists(houseId, _lists);
+              _checklistService.cacheListsOfEveryKind(houseId, _lists);
               notifyListeners();
               return;
             }
@@ -1124,11 +1245,12 @@ class ChecklistsController extends ChangeNotifier {
           if (j != -1) {
             _lists[j] = reconciled;
             if (_currentList?.id == entity.id) _currentList = reconciled;
-            _checklistService.cacheLists(houseId, _lists);
+            _checklistService.cacheListsOfEveryKind(houseId, _lists);
             notifyListeners();
           }
         }
       case SyncEntity.checklistItem:
+        _onStockWriteApplied(applied);
         final entity = applied.entity;
         if (entity is PantryBatchResult) {
           _reconcileBatchApplied(applied.op, entity);
@@ -1153,6 +1275,12 @@ class ChecklistsController extends ChangeNotifier {
               notifyListeners();
               return;
             }
+          }
+          // A later stock write is still queued: this answer is older than
+          // what the row shows, and the newer write's answer replaces it.
+          if (_isInventoryList(entity.listId) &&
+              _sync.pendingItemIds(houseId).contains(entity.id)) {
+            return;
           }
           final j = _items.indexWhere((it) => it.id == entity.id);
           if (j != -1) {

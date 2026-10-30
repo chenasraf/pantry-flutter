@@ -79,6 +79,9 @@ class MessagesNn extends Messages {
   StoresMessagesNn get stores => StoresMessagesNn(this);
   LabelsMessagesNn get labels => LabelsMessagesNn(this);
   ChecklistsMessagesNn get checklists => ChecklistsMessagesNn(this);
+  ListKindsMessagesNn get listKinds => ListKindsMessagesNn(this);
+  TemplatesMessagesNn get templates => TemplatesMessagesNn(this);
+  StockMessagesNn get stock => StockMessagesNn(this);
   NotesWallMessagesNn get notesWall => NotesWallMessagesNn(this);
   PhotoBoardMessagesNn get photoBoard => PhotoBoardMessagesNn(this);
   ShoppingMessagesNn get shopping => ShoppingMessagesNn(this);
@@ -401,10 +404,10 @@ class HomeMessagesNn extends HomeMessages {
   String get noHouses => """Ingen hus enno.""";
 
   /// ```dart
-  /// "Hus er eit område for hushaldninga di. Opprett ditt fyrste hus for å kunne leggje til sjekklister, bilete og notat."
+  /// "Hus er eit område for hushaldninga di. Opprett ditt fyrste hus for å kunne leggje til lister, bilete og notat."
   /// ```
   String get noHousesBody =>
-      """Hus er eit område for hushaldninga di. Opprett ditt fyrste hus for å kunne leggje til sjekklister, bilete og notat.""";
+      """Hus er eit område for hushaldninga di. Opprett ditt fyrste hus for å kunne leggje til lister, bilete og notat.""";
 
   /// ```dart
   /// "Opprett hus"
@@ -466,6 +469,16 @@ class NavMessagesNn extends NavMessages {
   /// "Sjekkliste"
   /// ```
   String get checklist => """Sjekkliste""";
+
+  /// ```dart
+  /// "Lister"
+  /// ```
+  String get lists => """Lister""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get list => """Liste""";
 
   /// ```dart
   /// "Fotovegg"
@@ -992,6 +1005,75 @@ Passord: pantry""";
   /// ```
   String get joinTripHow =>
       """Alt i gang med din eigen? Blir du med, blir han først lagra i historikken din. Går du ut av ein handletur du blei med på, held han fram for alle som er att i han.""";
+
+  /// ```dart
+  /// "Vit kva som er i skapet"
+  /// ```
+  String get inventoryTitle => """Vit kva som er i skapet""";
+
+  /// ```dart
+  /// "Lager held styr på kor mykje du har av kvar ting og når det går ut. Tel ned mengdene medan du brukar dei, og Pantry merkjer det som minkar eller snart går ut."
+  /// ```
+  String get inventoryBody =>
+      """Lager held styr på kor mykje du har av kvar ting og når det går ut. Tel ned mengdene medan du brukar dei, og Pantry merkjer det som minkar eller snart går ut.""";
+
+  /// ```dart
+  /// "Gje eit lager ei påfyllingsliste i innstillingane, så kjem alt som minkar eller går ut på ho av seg sjølv. Kryss det av i butikken, og lageret blir fylt opp att."
+  /// ```
+  String get inventoryHow =>
+      """Gje eit lager ei påfyllingsliste i innstillingane, så kjem alt som minkar eller går ut på ho av seg sjølv. Kryss det av i butikken, og lageret blir fylt opp att.""";
+
+  /// ```dart
+  /// "Egg"
+  /// ```
+  String get inventoryMockEggs => """Egg""";
+
+  /// ```dart
+  /// "Mjølk"
+  /// ```
+  String get inventoryMockMilk => """Mjølk""";
+
+  /// ```dart
+  /// "Mjøl"
+  /// ```
+  String get inventoryMockFlour => """Mjøl""";
+
+  /// ```dart
+  /// "Malar for det du alltid kjøper"
+  /// ```
+  String get templateTitle => """Malar for det du alltid kjøper""";
+
+  /// ```dart
+  /// "Ta vare på varene du legg til om att og om att i ein mal. Knyt han til ei liste, så føreslår skriving der varene hans, med alle detaljar."
+  /// ```
+  String get templateBody =>
+      """Ta vare på varene du legg til om att og om att i ein mal. Knyt han til ei liste, så føreslår skriving der varene hans, med alle detaljar.""";
+
+  /// ```dart
+  /// "For å kopiere heile malen på ein gong, opna menyen hans i listeveljaren og vel ${apply}."
+  /// ```
+  String templateHow(String apply) =>
+      """For å kopiere heile malen på ein gong, opna menyen hans i listeveljaren og vel ${apply}.""";
+
+  /// ```dart
+  /// "Vekehandel"
+  /// ```
+  String get templateMockName => """Vekehandel""";
+
+  /// ```dart
+  /// "Mj"
+  /// ```
+  String get templateMockTyped => """Mj""";
+
+  /// ```dart
+  /// "Mjølk"
+  /// ```
+  String get templateMockFirst => """Mjølk""";
+
+  /// ```dart
+  /// "Mjøl"
+  /// ```
+  String get templateMockSecond => """Mjøl""";
   DevOnboardingMessagesNn get dev => DevOnboardingMessagesNn(this);
 }
 
@@ -4830,6 +4912,1532 @@ class MarkdownChecklistsMessagesNn extends MarkdownChecklistsMessages {
       """${_plural(count, one: 'Importert 1 oppføring', many: 'Importert $count oppføringar')}""";
 }
 
+class ListKindsMessagesNn extends ListKindsMessages {
+  final MessagesNn _parent;
+  const ListKindsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Dupliser som:"
+  /// ```
+  String get duplicateAs => """Dupliser som:""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 oppføring vart hoppa over fordi du ikkje har tilgang til å redigere han.', many: '$count oppføringar vart hoppa over fordi du ikkje har tilgang til å redigere dei.')}"
+  /// ```
+  String itemsSkippedNoEdit(int count) =>
+      """${_plural(count, one: '1 oppføring vart hoppa over fordi du ikkje har tilgang til å redigere han.', many: '$count oppføringar vart hoppa over fordi du ikkje har tilgang til å redigere dei.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Klarte ikkje fjerne avkryssinga på 1 oppføring.', many: 'Klarte ikkje fjerne avkryssinga på $count oppføringar.')}"
+  /// ```
+  String itemsSkippedUncheck(int count) =>
+      """${_plural(count, one: 'Klarte ikkje fjerne avkryssinga på 1 oppføring.', many: 'Klarte ikkje fjerne avkryssinga på $count oppføringar.')}""";
+  ChecklistListKindsMessagesNn get checklist =>
+      ChecklistListKindsMessagesNn(this);
+  InventoryListKindsMessagesNn get inventory =>
+      InventoryListKindsMessagesNn(this);
+  TemplateListKindsMessagesNn get template => TemplateListKindsMessagesNn(this);
+}
+
+class ChecklistListKindsMessagesNn extends ChecklistListKindsMessages {
+  final ListKindsMessagesNn _parent;
+  const ChecklistListKindsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Sjekklister"
+  /// ```
+  String get title => """Sjekklister""";
+
+  /// ```dart
+  /// "Sjekkliste"
+  /// ```
+  String get name => """Sjekkliste""";
+
+  /// ```dart
+  /// "Ny sjekkliste"
+  /// ```
+  String get newList => """Ny sjekkliste""";
+
+  /// ```dart
+  /// "Opprett ei sjekkliste"
+  /// ```
+  String get createTitle => """Opprett ei sjekkliste""";
+
+  /// ```dart
+  /// "Rediger ei sjekkliste"
+  /// ```
+  String get editTitle => """Rediger ei sjekkliste""";
+
+  /// ```dart
+  /// "Dupliser sjekkliste"
+  /// ```
+  String get duplicateTitle => """Dupliser sjekkliste""";
+
+  /// ```dart
+  /// "Klarte ikkje duplisere sjekklista"
+  /// ```
+  String get duplicateFailed => """Klarte ikkje duplisere sjekklista""";
+
+  /// ```dart
+  /// "Handlingar for sjekkliste"
+  /// ```
+  String get listMenu => """Handlingar for sjekkliste""";
+
+  /// ```dart
+  /// "Fjern sjekkliste"
+  /// ```
+  String get deleteDialogTitle => """Fjern sjekkliste""";
+
+  /// ```dart
+  /// "Ingen sjekklister enno"
+  /// ```
+  String get emptyTitle => """Ingen sjekklister enno""";
+
+  /// ```dart
+  /// "Opprett din fyrste sjekkliste for å leggje til oppføringar."
+  /// ```
+  String get emptyBody =>
+      """Opprett din fyrste sjekkliste for å leggje til oppføringar.""";
+
+  /// ```dart
+  /// "Papirkorg for sjekklister"
+  /// ```
+  String get trashTitle => """Papirkorg for sjekklister""";
+
+  /// ```dart
+  /// "Sletta sjekklister kjem opp her."
+  /// ```
+  String get trashEmptyBody => """Sletta sjekklister kjem opp her.""";
+
+  /// ```dart
+  /// "Arkiverte sjekklister"
+  /// ```
+  String get archiveTitle => """Arkiverte sjekklister""";
+
+  /// ```dart
+  /// "Ingen arkiverte sjekklister"
+  /// ```
+  String get archiveEmptyTitle => """Ingen arkiverte sjekklister""";
+
+  /// ```dart
+  /// "Arkiverte sjekklister kjem opp her."
+  /// ```
+  String get archiveEmptyBody => """Arkiverte sjekklister kjem opp her.""";
+
+  /// ```dart
+  /// "Dette vil permanent slette alle sjekklister i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast."
+  /// ```
+  String get emptyTrashBody =>
+      """Dette vil permanent slette alle sjekklister i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast.""";
+
+  /// ```dart
+  /// "Sjekkliste gjenoppretta"
+  /// ```
+  String get listRestored => """Sjekkliste gjenoppretta""";
+
+  /// ```dart
+  /// "Sjekkliste flytta til papirkorga"
+  /// ```
+  String get listMovedToTrash => """Sjekkliste flytta til papirkorga""";
+
+  /// ```dart
+  /// "Sjekkliste arkivert"
+  /// ```
+  String get listArchived => """Sjekkliste arkivert""";
+
+  /// ```dart
+  /// "Sjekkliste henta ut av arkivet"
+  /// ```
+  String get listUnarchived => """Sjekkliste henta ut av arkivet""";
+}
+
+class InventoryListKindsMessagesNn extends InventoryListKindsMessages {
+  final ListKindsMessagesNn _parent;
+  const InventoryListKindsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Lagerlister"
+  /// ```
+  String get title => """Lagerlister""";
+
+  /// ```dart
+  /// "Lagerliste"
+  /// ```
+  String get name => """Lagerliste""";
+
+  /// ```dart
+  /// "Ny lagerliste"
+  /// ```
+  String get newList => """Ny lagerliste""";
+
+  /// ```dart
+  /// "Opprett ei lagerliste"
+  /// ```
+  String get createTitle => """Opprett ei lagerliste""";
+
+  /// ```dart
+  /// "Rediger ei lagerliste"
+  /// ```
+  String get editTitle => """Rediger ei lagerliste""";
+
+  /// ```dart
+  /// "Dupliser lagerliste"
+  /// ```
+  String get duplicateTitle => """Dupliser lagerliste""";
+
+  /// ```dart
+  /// "Klarte ikkje duplisere lagerlista"
+  /// ```
+  String get duplicateFailed => """Klarte ikkje duplisere lagerlista""";
+
+  /// ```dart
+  /// "Handlingar for lagerliste"
+  /// ```
+  String get listMenu => """Handlingar for lagerliste""";
+
+  /// ```dart
+  /// "Fjern lagerliste"
+  /// ```
+  String get deleteDialogTitle => """Fjern lagerliste""";
+
+  /// ```dart
+  /// "Ingen lagerlister enno"
+  /// ```
+  String get emptyTitle => """Ingen lagerlister enno""";
+
+  /// ```dart
+  /// "Opprett din fyrste lagerliste for å leggje til oppføringar."
+  /// ```
+  String get emptyBody =>
+      """Opprett din fyrste lagerliste for å leggje til oppføringar.""";
+
+  /// ```dart
+  /// "Papirkorg for lagerlister"
+  /// ```
+  String get trashTitle => """Papirkorg for lagerlister""";
+
+  /// ```dart
+  /// "Sletta lagerlister kjem opp her."
+  /// ```
+  String get trashEmptyBody => """Sletta lagerlister kjem opp her.""";
+
+  /// ```dart
+  /// "Arkiverte lagerlister"
+  /// ```
+  String get archiveTitle => """Arkiverte lagerlister""";
+
+  /// ```dart
+  /// "Ingen arkiverte lagerlister"
+  /// ```
+  String get archiveEmptyTitle => """Ingen arkiverte lagerlister""";
+
+  /// ```dart
+  /// "Arkiverte lagerlister kjem opp her."
+  /// ```
+  String get archiveEmptyBody => """Arkiverte lagerlister kjem opp her.""";
+
+  /// ```dart
+  /// "Dette vil permanent slette alle lagerlister i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast."
+  /// ```
+  String get emptyTrashBody =>
+      """Dette vil permanent slette alle lagerlister i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast.""";
+
+  /// ```dart
+  /// "Lagerliste gjenoppretta"
+  /// ```
+  String get listRestored => """Lagerliste gjenoppretta""";
+
+  /// ```dart
+  /// "Lagerliste flytta til papirkorga"
+  /// ```
+  String get listMovedToTrash => """Lagerliste flytta til papirkorga""";
+
+  /// ```dart
+  /// "Lagerliste arkivert"
+  /// ```
+  String get listArchived => """Lagerliste arkivert""";
+
+  /// ```dart
+  /// "Lagerliste henta ut av arkivet"
+  /// ```
+  String get listUnarchived => """Lagerliste henta ut av arkivet""";
+}
+
+class TemplateListKindsMessagesNn extends TemplateListKindsMessages {
+  final ListKindsMessagesNn _parent;
+  const TemplateListKindsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Malar"
+  /// ```
+  String get title => """Malar""";
+
+  /// ```dart
+  /// "Mal"
+  /// ```
+  String get name => """Mal""";
+
+  /// ```dart
+  /// "Ny mal"
+  /// ```
+  String get newList => """Ny mal""";
+
+  /// ```dart
+  /// "Opprett ein mal"
+  /// ```
+  String get createTitle => """Opprett ein mal""";
+
+  /// ```dart
+  /// "Rediger ein mal"
+  /// ```
+  String get editTitle => """Rediger ein mal""";
+
+  /// ```dart
+  /// "Dupliser mal"
+  /// ```
+  String get duplicateTitle => """Dupliser mal""";
+
+  /// ```dart
+  /// "Klarte ikkje duplisere malen"
+  /// ```
+  String get duplicateFailed => """Klarte ikkje duplisere malen""";
+
+  /// ```dart
+  /// "Handlingar for mal"
+  /// ```
+  String get listMenu => """Handlingar for mal""";
+
+  /// ```dart
+  /// "Fjern mal"
+  /// ```
+  String get deleteDialogTitle => """Fjern mal""";
+
+  /// ```dart
+  /// "Ingen malar enno"
+  /// ```
+  String get emptyTitle => """Ingen malar enno""";
+
+  /// ```dart
+  /// "Opprett din fyrste mal for å leggje til oppføringar."
+  /// ```
+  String get emptyBody =>
+      """Opprett din fyrste mal for å leggje til oppføringar.""";
+
+  /// ```dart
+  /// "Papirkorg for malar"
+  /// ```
+  String get trashTitle => """Papirkorg for malar""";
+
+  /// ```dart
+  /// "Sletta malar kjem opp her."
+  /// ```
+  String get trashEmptyBody => """Sletta malar kjem opp her.""";
+
+  /// ```dart
+  /// "Arkiverte malar"
+  /// ```
+  String get archiveTitle => """Arkiverte malar""";
+
+  /// ```dart
+  /// "Ingen arkiverte malar"
+  /// ```
+  String get archiveEmptyTitle => """Ingen arkiverte malar""";
+
+  /// ```dart
+  /// "Arkiverte malar kjem opp her."
+  /// ```
+  String get archiveEmptyBody => """Arkiverte malar kjem opp her.""";
+
+  /// ```dart
+  /// "Dette vil permanent slette alle malar i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast."
+  /// ```
+  String get emptyTrashBody =>
+      """Dette vil permanent slette alle malar i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast.""";
+
+  /// ```dart
+  /// "Mal gjenoppretta"
+  /// ```
+  String get listRestored => """Mal gjenoppretta""";
+
+  /// ```dart
+  /// "Mal flytta til papirkorga"
+  /// ```
+  String get listMovedToTrash => """Mal flytta til papirkorga""";
+
+  /// ```dart
+  /// "Mal arkivert"
+  /// ```
+  String get listArchived => """Mal arkivert""";
+
+  /// ```dart
+  /// "Mal henta ut av arkivet"
+  /// ```
+  String get listUnarchived => """Mal henta ut av arkivet""";
+}
+
+class TemplatesMessagesNn extends TemplatesMessages {
+  final MessagesNn _parent;
+  const TemplatesMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Forslag"
+  /// ```
+  String get suggestionsHeader => """Forslag""";
+
+  /// ```dart
+  /// "Frå malar: $names"
+  /// ```
+  String fromTemplates(String names) => """Frå malar: $names""";
+
+  /// ```dart
+  /// "La til «$name» frå ein mal"
+  /// ```
+  String addedFromTemplate(String name) => """La til «$name» frå ein mal""";
+
+  /// ```dart
+  /// "Klarte ikkje leggje til oppføringa frå malen"
+  /// ```
+  String get drawFailed => """Klarte ikkje leggje til oppføringa frå malen""";
+
+  /// ```dart
+  /// "Malar:"
+  /// ```
+  String get attachedLabel => """Malar:""";
+
+  /// ```dart
+  /// "Ingen malar"
+  /// ```
+  String get attachedPlaceholder => """Ingen malar""";
+
+  /// ```dart
+  /// "Når du skriv inn ei ny oppføring, får du forslag om samsvarande oppføringar frå desse malane."
+  /// ```
+  String get attachedHint =>
+      """Når du skriv inn ei ny oppføring, får du forslag om samsvarande oppføringar frå desse malane.""";
+
+  /// ```dart
+  /// "Når du skriv inn ei ny oppføring, får du forslag om samsvarande oppføringar frå desse malane, og frå $names, som alle lister brukar."
+  /// ```
+  String attachedEveryListHint(String names) =>
+      """Når du skriv inn ei ny oppføring, får du forslag om samsvarande oppføringar frå desse malane, og frå $names, som alle lister brukar.""";
+
+  /// ```dart
+  /// "Foreslå i:"
+  /// ```
+  String get suggestInLabel => """Foreslå i:""";
+
+  /// ```dart
+  /// "Alle lister"
+  /// ```
+  String get everyList => """Alle lister""";
+
+  /// ```dart
+  /// "Ingen lister"
+  /// ```
+  String get suggestInPlaceholder => """Ingen lister""";
+
+  /// ```dart
+  /// "Når du skriv inn ei ny oppføring i desse listene, får du forslag om samsvarande oppføringar frå denne malen. Vel du «Alle lister», kjem òg lister som vert oppretta seinare med."
+  /// ```
+  String get suggestInHint =>
+      """Når du skriv inn ei ny oppføring i desse listene, får du forslag om samsvarande oppføringar frå denne malen. Vel du «Alle lister», kjem òg lister som vert oppretta seinare med.""";
+
+  /// ```dart
+  /// "$list ($kind)"
+  /// ```
+  String listWithKind(String list, String kind) => """$list ($kind)""";
+
+  /// ```dart
+  /// "Klarte ikkje lagre dei tilknytte malane"
+  /// ```
+  String get attachFailed => """Klarte ikkje lagre dei tilknytte malane""";
+
+  /// ```dart
+  /// "Fyll maloppføringar frå desse standardverdiane"
+  /// ```
+  String get fillLabel => """Fyll maloppføringar frå desse standardverdiane""";
+
+  /// ```dart
+  /// "Når ei oppføring vert lagd til frå ein mal, startar dei tomme detaljane med verdiane ovanfor. Kvar person kan overstyre dette i dei personlege innstillingane sine."
+  /// ```
+  String get fillHint =>
+      """Når ei oppføring vert lagd til frå ein mal, startar dei tomme detaljane med verdiane ovanfor. Kvar person kan overstyre dette i dei personlege innstillingane sine.""";
+
+  /// ```dart
+  /// "Fyll maloppføringar frå standardverdiane"
+  /// ```
+  String get fillPrefLabel => """Fyll maloppføringar frå standardverdiane""";
+
+  /// ```dart
+  /// "Når du legg til ei oppføring frå ein mal, vert dei tomme detaljane fylte frå standardverdiane til lista. Kvar liste kan slå dette av i standardverdiane sine."
+  /// ```
+  String get fillPrefHint =>
+      """Når du legg til ei oppføring frå ein mal, vert dei tomme detaljane fylte frå standardverdiane til lista. Kvar liste kan slå dette av i standardverdiane sine.""";
+  FillPrefNamesTemplatesMessagesNn get fillPrefNames =>
+      FillPrefNamesTemplatesMessagesNn(this);
+
+  /// ```dart
+  /// "Klarte ikkje lagre innstillinga"
+  /// ```
+  String get fillPrefFailed => """Klarte ikkje lagre innstillinga""";
+
+  /// ```dart
+  /// "Bruk på liste"
+  /// ```
+  String get applyToList => """Bruk på liste""";
+
+  /// ```dart
+  /// "Bruk malen"
+  /// ```
+  String get applyTemplate => """Bruk malen""";
+
+  /// ```dart
+  /// "Knytt til denne lista"
+  /// ```
+  String get attachedTemplates => """Knytt til denne lista""";
+
+  /// ```dart
+  /// "Andre malar"
+  /// ```
+  String get otherTemplates => """Andre malar""";
+
+  /// ```dart
+  /// "Det finst ingen sjekklister eller lagerlister å bruke denne malen på."
+  /// ```
+  String get noTargets =>
+      """Det finst ingen sjekklister eller lagerlister å bruke denne malen på.""";
+
+  /// ```dart
+  /// "Denne malen har ingen oppføringar."
+  /// ```
+  String get noItems => """Denne malen har ingen oppføringar.""";
+
+  /// ```dart
+  /// "Allereie på lista"
+  /// ```
+  String get alreadyOnList => """Allereie på lista""";
+
+  /// ```dart
+  /// "Kopier dei avkryssa oppføringane frå $template til $list."
+  /// ```
+  String reviewSummary(String template, String list) =>
+      """Kopier dei avkryssa oppføringane frå $template til $list.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Bruk 1 oppføring', many: 'Bruk $count oppføringar')}"
+  /// ```
+  String applyItems(int count) =>
+      """${_plural(count, one: 'Bruk 1 oppføring', many: 'Bruk $count oppføringar')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'La til 1 oppføring i $list', many: 'La til $count oppføringar i $list')}"
+  /// ```
+  String appliedAdded(int count, String list) =>
+      """${_plural(count, one: 'La til 1 oppføring i $list', many: 'La til $count oppføringar i $list')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 oppføring var allereie i $list og vart henta fram att', many: '$count oppføringar var allereie i $list og vart henta fram att')}"
+  /// ```
+  String appliedReused(int count, String list) =>
+      """${_plural(count, one: '1 oppføring var allereie i $list og vart henta fram att', many: '$count oppføringar var allereie i $list og vart henta fram att')}""";
+
+  /// ```dart
+  /// "$list: $added lagt til, $reused henta fram att"
+  /// ```
+  String appliedMixed(String list, int added, int reused) =>
+      """$list: $added lagt til, $reused henta fram att""";
+
+  /// ```dart
+  /// "Klarte ikkje bruke malen"
+  /// ```
+  String get applyFailed => """Klarte ikkje bruke malen""";
+
+  /// ```dart
+  /// "Klarte ikkje laste malane"
+  /// ```
+  String get loadFailed => """Klarte ikkje laste malane""";
+
+  /// ```dart
+  /// "Tilbake"
+  /// ```
+  String get back => """Tilbake""";
+}
+
+class FillPrefNamesTemplatesMessagesNn extends FillPrefNamesTemplatesMessages {
+  final TemplatesMessagesNn _parent;
+  const FillPrefNamesTemplatesMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Følg kvar liste"
+  /// ```
+  String get list => """Følg kvar liste""";
+
+  /// ```dart
+  /// "Fyll alltid"
+  /// ```
+  String get always => """Fyll alltid""";
+
+  /// ```dart
+  /// "Fyll aldri"
+  /// ```
+  String get never => """Fyll aldri""";
+}
+
+class StockMessagesNn extends StockMessages {
+  final MessagesNn _parent;
+  const StockMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "På lager"
+  /// ```
+  String get inStock => """På lager""";
+
+  /// ```dart
+  /// "Full"
+  /// ```
+  String get full => """Full""";
+
+  /// ```dart
+  /// "Lite"
+  /// ```
+  String get low => """Lite""";
+
+  /// ```dart
+  /// "Tom"
+  /// ```
+  String get out => """Tom""";
+
+  /// ```dart
+  /// "Lite · kjøp $amount"
+  /// ```
+  String lowBuy(String amount) => """Lite · kjøp $amount""";
+
+  /// ```dart
+  /// "Tom · kjøp $amount"
+  /// ```
+  String outBuy(String amount) => """Tom · kjøp $amount""";
+
+  /// ```dart
+  /// "Ikkje talt"
+  /// ```
+  String get notCounted => """Ikkje talt""";
+
+  /// ```dart
+  /// "Gjekk ut $date"
+  /// ```
+  String expiredOn(String date) => """Gjekk ut $date""";
+
+  /// ```dart
+  /// "Gjekk ut $date · kjøp $amount"
+  /// ```
+  String expiredOnBuy(String date, String amount) =>
+      """Gjekk ut $date · kjøp $amount""";
+
+  /// ```dart
+  /// "Går ut i dag"
+  /// ```
+  String get expiresToday => """Går ut i dag""";
+
+  /// ```dart
+  /// "Går ut i dag · kjøp $amount"
+  /// ```
+  String expiresTodayBuy(String amount) => """Går ut i dag · kjøp $amount""";
+
+  /// ```dart
+  /// "Går ut i morgon"
+  /// ```
+  String get expiresTomorrow => """Går ut i morgon""";
+
+  /// ```dart
+  /// "Går ut i morgon · kjøp $amount"
+  /// ```
+  String expiresTomorrowBuy(String amount) =>
+      """Går ut i morgon · kjøp $amount""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Går ut om 1 dag', many: 'Går ut om $count dagar')}"
+  /// ```
+  String expiresInDays(int count) =>
+      """${_plural(count, one: 'Går ut om 1 dag', many: 'Går ut om $count dagar')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Går ut om 1 dag · kjøp $amount', many: 'Går ut om $count dagar · kjøp $amount')}"
+  /// ```
+  String expiresInDaysBuy(int count, String amount) =>
+      """${_plural(count, one: 'Går ut om 1 dag · kjøp $amount', many: 'Går ut om $count dagar · kjøp $amount')}""";
+
+  /// ```dart
+  /// "Haldbar til $date"
+  /// ```
+  String goodUntil(String date) => """Haldbar til $date""";
+
+  /// ```dart
+  /// "$onHand / $target"
+  /// ```
+  String amount(String onHand, String target) => """$onHand / $target""";
+
+  /// ```dart
+  /// "Minsk mengda på lager"
+  /// ```
+  String get decrease => """Minsk mengda på lager""";
+
+  /// ```dart
+  /// "Auk mengda på lager"
+  /// ```
+  String get increase => """Auk mengda på lager""";
+
+  /// ```dart
+  /// "Mengd på lager"
+  /// ```
+  String get onHandEdit => """Mengd på lager""";
+
+  /// ```dart
+  /// "Lagernivå: $level"
+  /// ```
+  String levelButton(String level) => """Lagernivå: $level""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 oppføring må fyllast på', many: '$count oppføringar må fyllast på')}"
+  /// ```
+  String needsRestockCount(int count) =>
+      """${_plural(count, one: '1 oppføring må fyllast på', many: '$count oppføringar må fyllast på')}""";
+
+  /// ```dart
+  /// "Lager"
+  /// ```
+  String get filter => """Lager""";
+
+  /// ```dart
+  /// "Alle oppføringar"
+  /// ```
+  String get filterAll => """Alle oppføringar""";
+
+  /// ```dart
+  /// "Må fyllast på"
+  /// ```
+  String get filterNeedsRestock => """Må fyllast på""";
+
+  /// ```dart
+  /// "På lager"
+  /// ```
+  String get filterInStock => """På lager""";
+
+  /// ```dart
+  /// "Klarte ikkje lagre lagerendringa. Lagerlista viser no det tenaren har."
+  /// ```
+  String get writeRefused =>
+      """Klarte ikkje lagre lagerendringa. Lagerlista viser no det tenaren har.""";
+  SettingsStockMessagesNn get settings => SettingsStockMessagesNn(this);
+  CardStockMessagesNn get card => CardStockMessagesNn(this);
+  ExpiryStockMessagesNn get expiry => ExpiryStockMessagesNn(this);
+  ComposeStockMessagesNn get compose => ComposeStockMessagesNn(this);
+
+  /// ```dart
+  /// "Denne lagerlista har inga sjekkliste for påfylling, så desse oppføringane blir berre merkte her. Vel ei i innstillingane for lagerlista."
+  /// ```
+  String get noRestockChecklist =>
+      """Denne lagerlista har inga sjekkliste for påfylling, så desse oppføringane blir berre merkte her. Vel ei i innstillingane for lagerlista.""";
+
+  /// ```dart
+  /// "Forny utløp → $date"
+  /// ```
+  String renewChip(String date) => """Forny utløp → $date""";
+
+  /// ```dart
+  /// "Forny utløp"
+  /// ```
+  String get renewAction => """Forny utløp""";
+
+  /// ```dart
+  /// "Dagleg lageroversikt"
+  /// ```
+  String get summaryPref => """Dagleg lageroversikt""";
+
+  /// ```dart
+  /// "Ein gong om dagen, kva som nyleg har blitt lite av eller snart går ut i lagerlistene i dette huset."
+  /// ```
+  String get summaryPrefHint =>
+      """Ein gong om dagen, kva som nyleg har blitt lite av eller snart går ut i lagerlistene i dette huset.""";
+
+  /// ```dart
+  /// "Klarte ikkje lagre innstillinga for lageroversikta."
+  /// ```
+  String get summaryPrefFailed =>
+      """Klarte ikkje lagre innstillinga for lageroversikta.""";
+  LinksStockMessagesNn get links => LinksStockMessagesNn(this);
+  RestockStockMessagesNn get restock => RestockStockMessagesNn(this);
+}
+
+class SettingsStockMessagesNn extends SettingsStockMessages {
+  final StockMessagesNn _parent;
+  const SettingsStockMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Innstillingar for lagerlista"
+  /// ```
+  String get action => """Innstillingar for lagerlista""";
+
+  /// ```dart
+  /// "Innstillingar for lagerlista"
+  /// ```
+  String get title => """Innstillingar for lagerlista""";
+
+  /// ```dart
+  /// "Namn"
+  /// ```
+  String get name => """Namn""";
+
+  /// ```dart
+  /// "Ikon, farge og deling fungerer som på sjekklister."
+  /// ```
+  String get nameHint =>
+      """Ikon, farge og deling fungerer som på sjekklister.""";
+
+  /// ```dart
+  /// "Varsel om utløp"
+  /// ```
+  String get expiryWarning => """Varsel om utløp""";
+
+  /// ```dart
+  /// "Varsle $days dagar før utløp"
+  /// ```
+  String warnBefore(String days) => """Varsle $days dagar før utløp""";
+
+  /// ```dart
+  /// "Dagar før utløp"
+  /// ```
+  String get daysBefore => """Dagar før utløp""";
+
+  /// ```dart
+  /// "Set 0 for å varsle på sjølve utløpsdatoen."
+  /// ```
+  String get warnHint => """Set 0 for å varsle på sjølve utløpsdatoen.""";
+
+  /// ```dart
+  /// "Sjekkliste for påfylling"
+  /// ```
+  String get restockChecklist => """Sjekkliste for påfylling""";
+
+  /// ```dart
+  /// "Ingen"
+  /// ```
+  String get restockNone => """Ingen""";
+
+  /// ```dart
+  /// "Oppføringar som blir lite av eller snart går ut, blir lagde til på denne sjekklista."
+  /// ```
+  String get restockSetHint =>
+      """Oppføringar som blir lite av eller snart går ut, blir lagde til på denne sjekklista.""";
+
+  /// ```dart
+  /// "Utan ho blir oppføringar med lite att eller som snart går ut, berre merkte her."
+  /// ```
+  String get restockUnsetHint =>
+      """Utan ho blir oppføringar med lite att eller som snart går ut, berre merkte her.""";
+
+  /// ```dart
+  /// "Varsel"
+  /// ```
+  String get notifications => """Varsel""";
+
+  /// ```dart
+  /// "Dagleg lageroversikt"
+  /// ```
+  String get stockSummary => """Dagleg lageroversikt""";
+
+  /// ```dart
+  /// "Ein gong om dagen, fortel medlemene kva som nyleg har blitt lite av eller snart går ut her. Kvart medlem kan òg slå det av i sine eigne innstillingar."
+  /// ```
+  String get stockSummaryHint =>
+      """Ein gong om dagen, fortel medlemene kva som nyleg har blitt lite av eller snart går ut her. Kvart medlem kan òg slå det av i sine eigne innstillingar.""";
+
+  /// ```dart
+  /// "Avbryt"
+  /// ```
+  String get cancel => """Avbryt""";
+
+  /// ```dart
+  /// "Lagre"
+  /// ```
+  String get save => """Lagre""";
+}
+
+class CardStockMessagesNn extends CardStockMessages {
+  final StockMessagesNn _parent;
+  const CardStockMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Lager"
+  /// ```
+  String get title => """Lager""";
+
+  /// ```dart
+  /// "Lagermodus"
+  /// ```
+  String get mode => """Lagermodus""";
+
+  /// ```dart
+  /// "Tal"
+  /// ```
+  String get count => """Tal""";
+
+  /// ```dart
+  /// "Nivå"
+  /// ```
+  String get level => """Nivå""";
+
+  /// ```dart
+  /// "Hald oversikt over kor mange du har, t.d. 4 av 12 egg."
+  /// ```
+  String get countHint =>
+      """Hald oversikt over kor mange du har, t.d. 4 av 12 egg.""";
+
+  /// ```dart
+  /// "Hald oversikt som Full, Lite eller Tom, t.d. mjøl eller krydder."
+  /// ```
+  String get levelHint =>
+      """Hald oversikt som Full, Lite eller Tom, t.d. mjøl eller krydder.""";
+
+  /// ```dart
+  /// "På lager"
+  /// ```
+  String get onHand => """På lager""";
+
+  /// ```dart
+  /// "t.d. 4"
+  /// ```
+  String get onHandPlaceholder => """t.d. 4""";
+
+  /// ```dart
+  /// "Mål"
+  /// ```
+  String get target => """Mål""";
+
+  /// ```dart
+  /// "t.d. 12 egg"
+  /// ```
+  String get targetPlaceholder => """t.d. 12 egg""";
+
+  /// ```dart
+  /// "Påfyllingspunkt"
+  /// ```
+  String get reorderPoint => """Påfyllingspunkt""";
+
+  /// ```dart
+  /// "t.d. 4"
+  /// ```
+  String get reorderPlaceholder => """t.d. 4""";
+
+  /// ```dart
+  /// "Lagernivå"
+  /// ```
+  String get stockLevel => """Lagernivå""";
+
+  /// ```dart
+  /// "Påfyllingsmengd"
+  /// ```
+  String get restockAmount => """Påfyllingsmengd""";
+
+  /// ```dart
+  /// "t.d. 1 kg-pose"
+  /// ```
+  String get restockPlaceholder => """t.d. 1 kg-pose""";
+
+  /// ```dart
+  /// "Konvertert: nivå $level, påfyllingsmengd "$amount"."
+  /// ```
+  String convertedLevelAmount(String level, String amount) =>
+      """Konvertert: nivå $level, påfyllingsmengd "$amount".""";
+
+  /// ```dart
+  /// "Konvertert: nivå $level."
+  /// ```
+  String convertedLevel(String level) => """Konvertert: nivå $level.""";
+
+  /// ```dart
+  /// "Konvertert: på lager "$onHand", mål "$target"."
+  /// ```
+  String convertedCount(String onHand, String target) =>
+      """Konvertert: på lager "$onHand", mål "$target".""";
+
+  /// ```dart
+  /// "Konvertert: mål "$target". Skriv inn mengda på lager."
+  /// ```
+  String convertedTargetOnly(String target) =>
+      """Konvertert: mål "$target". Skriv inn mengda på lager.""";
+
+  /// ```dart
+  /// "Konvertert til tal. Skriv inn mengda på lager og eit mål."
+  /// ```
+  String get convertedBlank =>
+      """Konvertert til tal. Skriv inn mengda på lager og eit mål.""";
+
+  /// ```dart
+  /// "Gått ut: kjøp $amount."
+  /// ```
+  String statusExpiredBuy(String amount) => """Gått ut: kjøp $amount.""";
+
+  /// ```dart
+  /// "Gått ut."
+  /// ```
+  String get statusExpired => """Gått ut.""";
+
+  /// ```dart
+  /// "Går snart ut: kjøp $amount."
+  /// ```
+  String statusExpiringBuy(String amount) => """Går snart ut: kjøp $amount.""";
+
+  /// ```dart
+  /// "Går snart ut."
+  /// ```
+  String get statusExpiring => """Går snart ut.""";
+
+  /// ```dart
+  /// "Lite: kjøp $amount."
+  /// ```
+  String statusLowBuy(String amount) => """Lite: kjøp $amount.""";
+
+  /// ```dart
+  /// "Lite."
+  /// ```
+  String get statusLow => """Lite.""";
+
+  /// ```dart
+  /// "Tom: kjøp $amount."
+  /// ```
+  String statusOutBuy(String amount) => """Tom: kjøp $amount.""";
+
+  /// ```dart
+  /// "Tom."
+  /// ```
+  String get statusOut => """Tom.""";
+
+  /// ```dart
+  /// "Ikkje talt: målet har ikkje noko tal, så det blir aldri lite."
+  /// ```
+  String get statusUncountedTarget =>
+      """Ikkje talt: målet har ikkje noko tal, så det blir aldri lite.""";
+
+  /// ```dart
+  /// "Ikkje talt: mengda på lager har ikkje noko tal, så det blir aldri lite."
+  /// ```
+  String get statusUncountedOnHand =>
+      """Ikkje talt: mengda på lager har ikkje noko tal, så det blir aldri lite.""";
+
+  /// ```dart
+  /// "På lager."
+  /// ```
+  String get statusInStock => """På lager.""";
+
+  /// ```dart
+  /// "Utan vald lagermodus blir standarden til lagerlista brukt."
+  /// ```
+  String get templateDefaultMode =>
+      """Utan vald lagermodus blir standarden til lagerlista brukt.""";
+
+  /// ```dart
+  /// "Når han blir lagd i ei lagerliste, startar han full med $amount på lager."
+  /// ```
+  String templateStartsCount(String amount) =>
+      """Når han blir lagd i ei lagerliste, startar han full med $amount på lager.""";
+
+  /// ```dart
+  /// "Når han blir lagd i ei lagerliste, startar han som Full og blir fylt på med $amount."
+  /// ```
+  String templateStartsLevelAmount(String amount) =>
+      """Når han blir lagd i ei lagerliste, startar han som Full og blir fylt på med $amount.""";
+
+  /// ```dart
+  /// "Når han blir lagd i ei lagerliste, startar han som Full."
+  /// ```
+  String get templateStartsLevel =>
+      """Når han blir lagd i ei lagerliste, startar han som Full.""";
+
+  /// ```dart
+  /// "Når han blir lagd i ei lagerliste utan mål, blir han ikkje talt."
+  /// ```
+  String get templateUncounted =>
+      """Når han blir lagd i ei lagerliste utan mål, blir han ikkje talt.""";
+}
+
+class ExpiryStockMessagesNn extends ExpiryStockMessages {
+  final StockMessagesNn _parent;
+  const ExpiryStockMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Utløp"
+  /// ```
+  String get title => """Utløp""";
+
+  /// ```dart
+  /// "Korleis oppføringa går ut"
+  /// ```
+  String get mode => """Korleis oppføringa går ut""";
+
+  /// ```dart
+  /// "Ingen"
+  /// ```
+  String get none => """Ingen""";
+
+  /// ```dart
+  /// "Dato"
+  /// ```
+  String get date => """Dato""";
+
+  /// ```dart
+  /// "Held seg N dagar"
+  /// ```
+  String get keeps => """Held seg N dagar""";
+
+  /// ```dart
+  /// "Utløpsdato"
+  /// ```
+  String get expiryDate => """Utløpsdato""";
+
+  /// ```dart
+  /// "Dagar han held seg"
+  /// ```
+  String get daysItKeeps => """Dagar han held seg""";
+
+  /// ```dart
+  /// "Gjekk ut $date."
+  /// ```
+  String expiredSummary(String date) => """Gjekk ut $date.""";
+
+  /// ```dart
+  /// "Haldbar til $date."
+  /// ```
+  String goodUntilSummary(String date) => """Haldbar til $date.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Kvar påfylling fornyar han til 1 dag frå den dagen.', many: 'Kvar påfylling fornyar han til $count dagar frå den dagen.')}"
+  /// ```
+  String renews(int count) =>
+      """${_plural(count, one: 'Kvar påfylling fornyar han til 1 dag frå den dagen.', many: 'Kvar påfylling fornyar han til $count dagar frå den dagen.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Når han blir lagd i ei lagerliste, går han ut 1 dag seinare.', many: 'Når han blir lagd i ei lagerliste, går han ut $count dagar seinare.')}"
+  /// ```
+  String templateExpires(int count) =>
+      """${_plural(count, one: 'Når han blir lagd i ei lagerliste, går han ut 1 dag seinare.', many: 'Når han blir lagd i ei lagerliste, går han ut $count dagar seinare.')}""";
+
+  /// ```dart
+  /// "Utløp"
+  /// ```
+  String get chip => """Utløp""";
+
+  /// ```dart
+  /// "Går ut $date"
+  /// ```
+  String chipExpires(String date) => """Går ut $date""";
+
+  /// ```dart
+  /// "Gjekk ut $date"
+  /// ```
+  String chipExpired(String date) => """Gjekk ut $date""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Held seg 1 dag', many: 'Held seg $count dagar')}"
+  /// ```
+  String chipKeeps(int count) =>
+      """${_plural(count, one: 'Held seg 1 dag', many: 'Held seg $count dagar')}""";
+}
+
+class ComposeStockMessagesNn extends ComposeStockMessages {
+  final StockMessagesNn _parent;
+  const ComposeStockMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Lager"
+  /// ```
+  String get chip => """Lager""";
+
+  /// ```dart
+  /// "Tal"
+  /// ```
+  String get count => """Tal""";
+
+  /// ```dart
+  /// "Nivå"
+  /// ```
+  String get level => """Nivå""";
+
+  /// ```dart
+  /// "Nivå · $amount"
+  /// ```
+  String levelAmount(String amount) => """Nivå · $amount""";
+
+  /// ```dart
+  /// "Mål: $target"
+  /// ```
+  String targetValue(String target) => """Mål: $target""";
+
+  /// ```dart
+  /// "Full når tom"
+  /// ```
+  String get fullWhenEmpty => """Full når tom""";
+}
+
+class LinksStockMessagesNn extends LinksStockMessages {
+  final StockMessagesNn _parent;
+  const LinksStockMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Handleliste"
+  /// ```
+  String get caption => """Handleliste""";
+
+  /// ```dart
+  /// "Kopla til $row på $list"
+  /// ```
+  String tooltipLinked(String row, String list) =>
+      """Kopla til $row på $list""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Ikkje kopla: 1 treff, vel eitt', many: 'Ikkje kopla: $count treff, vel eitt')}"
+  /// ```
+  String tooltipNeedsPick(int count) =>
+      """${_plural(count, one: 'Ikkje kopla: 1 treff, vel eitt', many: 'Ikkje kopla: $count treff, vel eitt')}""";
+
+  /// ```dart
+  /// "Ikkje kopla enno: blir lagd til på handlelista når det blir lite"
+  /// ```
+  String get tooltipAutoOn =>
+      """Ikkje kopla enno: blir lagd til på handlelista når det blir lite""";
+
+  /// ```dart
+  /// "Ikkje kopla: blir aldri lagd til på ei handleliste"
+  /// ```
+  String get tooltipAutoOff =>
+      """Ikkje kopla: blir aldri lagd til på ei handleliste""";
+
+  /// ```dart
+  /// "$row på $list · $state"
+  /// ```
+  String rowOnList(String row, String list, String state) =>
+      """$row på $list · $state""";
+
+  /// ```dart
+  /// "open"
+  /// ```
+  String get stateOpen => """open""";
+
+  /// ```dart
+  /// "kryssa av"
+  /// ```
+  String get stateChecked => """kryssa av""";
+
+  /// ```dart
+  /// "arkivert"
+  /// ```
+  String get stateArchived => """arkivert""";
+
+  /// ```dart
+  /// "i papirkorga"
+  /// ```
+  String get stateTrashed => """i papirkorga""";
+
+  /// ```dart
+  /// "× $quantity"
+  /// ```
+  String stateQuantity(String quantity) => """× $quantity""";
+
+  /// ```dart
+  /// "Kople frå"
+  /// ```
+  String get unlink => """Kople frå""";
+
+  /// ```dart
+  /// "Kva for ein er det?"
+  /// ```
+  String get whichOne => """Kva for ein er det?""";
+
+  /// ```dart
+  /// "$row, $list, $state"
+  /// ```
+  String candidate(String row, String list, String state) =>
+      """$row, $list, $state""";
+
+  /// ```dart
+  /// "Legg til på handlelista når det blir lite"
+  /// ```
+  String get autoLink => """Legg til på handlelista når det blir lite""";
+
+  /// ```dart
+  /// "Kople for hand"
+  /// ```
+  String get linkByHand => """Kople for hand""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Ikkje kopla · 1 treff, vel eitt', many: 'Ikkje kopla · $count treff, vel eitt')}"
+  /// ```
+  String chipNeedsPick(int count) =>
+      """${_plural(count, one: 'Ikkje kopla · 1 treff, vel eitt', many: 'Ikkje kopla · $count treff, vel eitt')}""";
+
+  /// ```dart
+  /// "Blir ikkje lagd til på ei handleliste"
+  /// ```
+  String get chipNotAdded => """Blir ikkje lagd til på ei handleliste""";
+
+  /// ```dart
+  /// "Kopla til $row på $list · $state"
+  /// ```
+  String cardLinked(String row, String list, String state) =>
+      """Kopla til $row på $list · $state""";
+
+  /// ```dart
+  /// "Kople til ei anna oppføring …"
+  /// ```
+  String get linkDifferent => """Kople til ei anna oppføring …""";
+
+  /// ```dart
+  /// "Når det blir lite av ho eller ho snart går ut, kjem denne oppføringa tilbake på den lista."
+  /// ```
+  String get linkedHint =>
+      """Når det blir lite av ho eller ho snart går ut, kjem denne oppføringa tilbake på den lista.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 oppføring passar', many: '$count oppføringar passar')}"
+  /// ```
+  String matches(int count) =>
+      """${_plural(count, one: '1 oppføring passar', many: '$count oppføringar passar')}""";
+
+  /// ```dart
+  /// "$matches på sjekklista for påfylling. Kva for ei er det?"
+  /// ```
+  String matchesQuestion(String matches) =>
+      """$matches på sjekklista for påfylling. Kva for ei er det?""";
+
+  /// ```dart
+  /// "Kople"
+  /// ```
+  String get link => """Kople""";
+
+  /// ```dart
+  /// "Finn eller legg til «$item» på $list når det trengst."
+  /// ```
+  String autoHintOn(String item, String list) =>
+      """Finn eller legg til «$item» på $list når det trengst.""";
+
+  /// ```dart
+  /// "Vel ei sjekkliste for påfylling i innstillingane for lagerlista for å finne eller leggje til denne oppføringa der."
+  /// ```
+  String get autoHintNoChecklist =>
+      """Vel ei sjekkliste for påfylling i innstillingane for lagerlista for å finne eller leggje til denne oppføringa der.""";
+
+  /// ```dart
+  /// "Denne oppføringa blir berre merkt her når det blir lite av ho."
+  /// ```
+  String get autoHintOff =>
+      """Denne oppføringa blir berre merkt her når det blir lite av ho.""";
+
+  /// ```dart
+  /// "Kople til ei oppføring …"
+  /// ```
+  String get linkToItem => """Kople til ei oppføring …""";
+
+  /// ```dart
+  /// "Kople til ei oppføring på ei sjekkliste"
+  /// ```
+  String get pickerTitle => """Kople til ei oppføring på ei sjekkliste""";
+
+  /// ```dart
+  /// "Oppføring på sjekkliste"
+  /// ```
+  String get pickerField => """Oppføring på sjekkliste""";
+
+  /// ```dart
+  /// "Søk i oppføringar på sjekklister …"
+  /// ```
+  String get pickerSearch => """Søk i oppføringar på sjekklister …""";
+
+  /// ```dart
+  /// "Søkjer …"
+  /// ```
+  String get pickerSearching => """Søkjer …""";
+
+  /// ```dart
+  /// "Fann ingen oppføringar"
+  /// ```
+  String get pickerEmpty => """Fann ingen oppføringar""";
+
+  /// ```dart
+  /// "$row — $list"
+  /// ```
+  String pickerRow(String row, String list) => """$row — $list""";
+
+  /// ```dart
+  /// "arkivert"
+  /// ```
+  String get pickerArchived => """arkivert""";
+
+  /// ```dart
+  /// "Klarte ikkje laste oppføringar. Sjekk tilkoplinga og prøv igjen."
+  /// ```
+  String get pickerFailed =>
+      """Klarte ikkje laste oppføringar. Sjekk tilkoplinga og prøv igjen.""";
+
+  /// ```dart
+  /// "Avbryt"
+  /// ```
+  String get cancel => """Avbryt""";
+}
+
+class RestockStockMessagesNn extends RestockStockMessages {
+  final StockMessagesNn _parent;
+  const RestockStockMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "La til $what på $list"
+  /// ```
+  String added(String what, String list) => """La til $what på $list""";
+
+  /// ```dart
+  /// "Tilbake på $list: $row × $quantity"
+  /// ```
+  String revivedQuantity(String list, String row, String quantity) =>
+      """Tilbake på $list: $row × $quantity""";
+
+  /// ```dart
+  /// "Tilbake på $list: $row"
+  /// ```
+  String revived(String list, String row) => """Tilbake på $list: $row""";
+
+  /// ```dart
+  /// "$list: $row no × $quantity"
+  /// ```
+  String changed(String list, String row, String quantity) =>
+      """$list: $row no × $quantity""";
+
+  /// ```dart
+  /// "$row på $list er festa på × $quantity"
+  /// ```
+  String pinnedAt(String row, String list, String quantity) =>
+      """$row på $list er festa på × $quantity""";
+
+  /// ```dart
+  /// "$row på $list er festa"
+  /// ```
+  String pinned(String row, String list) => """$row på $list er festa""";
+
+  /// ```dart
+  /// "Ikkje lenger nødvendig: $row på $list"
+  /// ```
+  String recovered(String row, String list) =>
+      """Ikkje lenger nødvendig: $row på $list""";
+
+  /// ```dart
+  /// "Kopla $item til $row på $list"
+  /// ```
+  String linked(String item, String row, String list) =>
+      """Kopla $item til $row på $list""";
+
+  /// ```dart
+  /// "Kopla $item frå $row på $list. Det blir ikkje lagt til på ei handleliste."
+  /// ```
+  String unlinked(String item, String row, String list) =>
+      """Kopla $item frå $row på $list. Det blir ikkje lagt til på ei handleliste.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '$item passar med 1 oppføring på $list. Vel ei å kople til.', many: '$item passar med $count oppføringar på $list. Vel ei å kople til.')}"
+  /// ```
+  String severalMatches(String item, int count, String list) =>
+      """${_plural(count, one: '$item passar med 1 oppføring på $list. Vel ei å kople til.', many: '$item passar med $count oppføringar på $list. Vel ei å kople til.')}""";
+
+  /// ```dart
+  /// "Fylte på $parts"
+  /// ```
+  String restocked(String parts) => """Fylte på $parts""";
+
+  /// ```dart
+  /// "Bytte ut $parts"
+  /// ```
+  String replaced(String parts) => """Bytte ut $parts""";
+
+  /// ```dart
+  /// "Fylte på $restock, bytte ut $replace"
+  /// ```
+  String restockedReplaced(String restock, String replace) =>
+      """Fylte på $restock, bytte ut $replace""";
+
+  /// ```dart
+  /// "Angra: fylte på $parts"
+  /// ```
+  String undidRestocked(String parts) => """Angra: fylte på $parts""";
+
+  /// ```dart
+  /// "Angra: bytte ut $parts"
+  /// ```
+  String undidReplaced(String parts) => """Angra: bytte ut $parts""";
+
+  /// ```dart
+  /// "Angra: fylte på $restock, bytte ut $replace"
+  /// ```
+  String undidRestockedReplaced(String restock, String replace) =>
+      """Angra: fylte på $restock, bytte ut $replace""";
+
+  /// ```dart
+  /// "$item ($inventory) +$amount"
+  /// ```
+  String partAdded(String item, String inventory, String amount) =>
+      """$item ($inventory) +$amount""";
+
+  /// ```dart
+  /// "$item ($inventory) til Full"
+  /// ```
+  String partFull(String item, String inventory) =>
+      """$item ($inventory) til Full""";
+
+  /// ```dart
+  /// "$item ($inventory) ×$amount"
+  /// ```
+  String partReplaced(String item, String inventory, String amount) =>
+      """$item ($inventory) ×$amount""";
+
+  /// ```dart
+  /// "$item ($inventory), Full"
+  /// ```
+  String partReplacedFull(String item, String inventory) =>
+      """$item ($inventory), Full""";
+
+  /// ```dart
+  /// "$restock · fjern krysset for å angre"
+  /// ```
+  String uncheckToUndo(String restock) =>
+      """$restock · fjern krysset for å angre""";
+
+  /// ```dart
+  /// "$item ($inventory)"
+  /// ```
+  String source(String item, String inventory) => """$item ($inventory)""";
+
+  /// ```dart
+  /// "Fyller på $items"
+  /// ```
+  String restocks(String items) => """Fyller på $items""";
+
+  /// ```dart
+  /// "× $quantity"
+  /// ```
+  String pinnedChip(String quantity) => """× $quantity""";
+
+  /// ```dart
+  /// "Festa"
+  /// ```
+  String get pinnedChipBare => """Festa""";
+
+  /// ```dart
+  /// "Festa, så lageret lèt det vere. Trykk for å løysa."
+  /// ```
+  String get pinnedChipTooltip =>
+      """Festa, så lageret lèt det vere. Trykk for å løysa.""";
+
+  /// ```dart
+  /// "Ikkje lenger nødvendig"
+  /// ```
+  String get noLongerNeeded => """Ikkje lenger nødvendig""";
+}
+
 class NotesWallMessagesNn extends NotesWallMessages {
   final MessagesNn _parent;
   const NotesWallMessagesNn(this._parent) : super(_parent);
@@ -6952,6 +8560,26 @@ class WearMessagesNn extends WearMessages {
   /// "Pantry-fargen"
   /// ```
   String get accentApp => """Pantry-fargen""";
+
+  /// ```dart
+  /// "+$amount"
+  /// ```
+  String stockRaised(String amount) => """+$amount""";
+
+  /// ```dart
+  /// "−$amount"
+  /// ```
+  String stockLowered(String amount) => """−$amount""";
+
+  /// ```dart
+  /// "Ferdig med å justere"
+  /// ```
+  String get stockClose => """Ferdig med å justere""";
+
+  /// ```dart
+  /// "Ingenting treng påfyll"
+  /// ```
+  String get nothingNeedsRestock => """Ingenting treng påfyll""";
 }
 
 class WatchMessagesNn extends WatchMessages {
@@ -7463,7 +9091,7 @@ Fullfør innlogginga i nettlesaren din.""",
       """Klarte ikkje å lese sertifikatet til tenaren for å bekrefte det. Tilkoblinga kan vere ustabil, eller tenaren kan vere utilgjengeleg.""",
   """home.noHouses""": """Ingen hus enno.""",
   """home.noHousesBody""":
-      """Hus er eit område for hushaldninga di. Opprett ditt fyrste hus for å kunne leggje til sjekklister, bilete og notat.""",
+      """Hus er eit område for hushaldninga di. Opprett ditt fyrste hus for å kunne leggje til lister, bilete og notat.""",
   """home.createHouse""": """Opprett hus""",
   """home.houseName""": """Namn på hus""",
   """home.houseDescription""": """Skildring (valfritt)""",
@@ -7476,6 +9104,8 @@ Fullfør innlogginga i nettlesaren din.""",
   """home.learnMore""": """Lær meir""",
   """nav.checklists""": """Sjekkliste""",
   """nav.checklist""": """Sjekkliste""",
+  """nav.lists""": """Lister""",
+  """nav.list""": """Liste""",
   """nav.photoBoard""": """Fotovegg""",
   """nav.notesWall""": """Notatvegg""",
   """widget.chooseListsTitle""": """Vel lister""",
@@ -7596,6 +9226,21 @@ Passord: pantry""",
   """onboarding.joinTripMockHousemate""": """Dana""",
   """onboarding.joinTripHow""":
       """Alt i gang med din eigen? Blir du med, blir han først lagra i historikken din. Går du ut av ein handletur du blei med på, held han fram for alle som er att i han.""",
+  """onboarding.inventoryTitle""": """Vit kva som er i skapet""",
+  """onboarding.inventoryBody""":
+      """Lager held styr på kor mykje du har av kvar ting og når det går ut. Tel ned mengdene medan du brukar dei, og Pantry merkjer det som minkar eller snart går ut.""",
+  """onboarding.inventoryHow""":
+      """Gje eit lager ei påfyllingsliste i innstillingane, så kjem alt som minkar eller går ut på ho av seg sjølv. Kryss det av i butikken, og lageret blir fylt opp att.""",
+  """onboarding.inventoryMockEggs""": """Egg""",
+  """onboarding.inventoryMockMilk""": """Mjølk""",
+  """onboarding.inventoryMockFlour""": """Mjøl""",
+  """onboarding.templateTitle""": """Malar for det du alltid kjøper""",
+  """onboarding.templateBody""":
+      """Ta vare på varene du legg til om att og om att i ein mal. Knyt han til ei liste, så føreslår skriving der varene hans, med alle detaljar.""",
+  """onboarding.templateMockName""": """Vekehandel""",
+  """onboarding.templateMockTyped""": """Mj""",
+  """onboarding.templateMockFirst""": """Mjølk""",
+  """onboarding.templateMockSecond""": """Mjøl""",
   """onboarding.dev.showOnboarding""": """Vis oppstartshjelp""",
   """onboarding.dev.pickLastSeenTitle""": """Førehandsvis kva som er nytt""",
   """onboarding.dev.pickLastSeenBody""":
@@ -8326,6 +9971,251 @@ Passord: pantry""",
       """Bruk eksisterande oppføringar i staden for å opprette duplikatar""",
   """checklists.markdown.defaultFields""":
       """Standardinnstillingar som blir brukt på kvar oppføring""",
+  """listKinds.duplicateAs""": """Dupliser som:""",
+  """listKinds.checklist.title""": """Sjekklister""",
+  """listKinds.checklist.name""": """Sjekkliste""",
+  """listKinds.checklist.newList""": """Ny sjekkliste""",
+  """listKinds.checklist.createTitle""": """Opprett ei sjekkliste""",
+  """listKinds.checklist.editTitle""": """Rediger ei sjekkliste""",
+  """listKinds.checklist.duplicateTitle""": """Dupliser sjekkliste""",
+  """listKinds.checklist.duplicateFailed""":
+      """Klarte ikkje duplisere sjekklista""",
+  """listKinds.checklist.listMenu""": """Handlingar for sjekkliste""",
+  """listKinds.checklist.deleteDialogTitle""": """Fjern sjekkliste""",
+  """listKinds.checklist.emptyTitle""": """Ingen sjekklister enno""",
+  """listKinds.checklist.emptyBody""":
+      """Opprett din fyrste sjekkliste for å leggje til oppføringar.""",
+  """listKinds.checklist.trashTitle""": """Papirkorg for sjekklister""",
+  """listKinds.checklist.trashEmptyBody""":
+      """Sletta sjekklister kjem opp her.""",
+  """listKinds.checklist.archiveTitle""": """Arkiverte sjekklister""",
+  """listKinds.checklist.archiveEmptyTitle""":
+      """Ingen arkiverte sjekklister""",
+  """listKinds.checklist.archiveEmptyBody""":
+      """Arkiverte sjekklister kjem opp her.""",
+  """listKinds.checklist.emptyTrashBody""":
+      """Dette vil permanent slette alle sjekklister i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast.""",
+  """listKinds.checklist.listRestored""": """Sjekkliste gjenoppretta""",
+  """listKinds.checklist.listMovedToTrash""":
+      """Sjekkliste flytta til papirkorga""",
+  """listKinds.checklist.listArchived""": """Sjekkliste arkivert""",
+  """listKinds.checklist.listUnarchived""":
+      """Sjekkliste henta ut av arkivet""",
+  """listKinds.inventory.title""": """Lagerlister""",
+  """listKinds.inventory.name""": """Lagerliste""",
+  """listKinds.inventory.newList""": """Ny lagerliste""",
+  """listKinds.inventory.createTitle""": """Opprett ei lagerliste""",
+  """listKinds.inventory.editTitle""": """Rediger ei lagerliste""",
+  """listKinds.inventory.duplicateTitle""": """Dupliser lagerliste""",
+  """listKinds.inventory.duplicateFailed""":
+      """Klarte ikkje duplisere lagerlista""",
+  """listKinds.inventory.listMenu""": """Handlingar for lagerliste""",
+  """listKinds.inventory.deleteDialogTitle""": """Fjern lagerliste""",
+  """listKinds.inventory.emptyTitle""": """Ingen lagerlister enno""",
+  """listKinds.inventory.emptyBody""":
+      """Opprett din fyrste lagerliste for å leggje til oppføringar.""",
+  """listKinds.inventory.trashTitle""": """Papirkorg for lagerlister""",
+  """listKinds.inventory.trashEmptyBody""":
+      """Sletta lagerlister kjem opp her.""",
+  """listKinds.inventory.archiveTitle""": """Arkiverte lagerlister""",
+  """listKinds.inventory.archiveEmptyTitle""":
+      """Ingen arkiverte lagerlister""",
+  """listKinds.inventory.archiveEmptyBody""":
+      """Arkiverte lagerlister kjem opp her.""",
+  """listKinds.inventory.emptyTrashBody""":
+      """Dette vil permanent slette alle lagerlister i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast.""",
+  """listKinds.inventory.listRestored""": """Lagerliste gjenoppretta""",
+  """listKinds.inventory.listMovedToTrash""":
+      """Lagerliste flytta til papirkorga""",
+  """listKinds.inventory.listArchived""": """Lagerliste arkivert""",
+  """listKinds.inventory.listUnarchived""":
+      """Lagerliste henta ut av arkivet""",
+  """listKinds.template.title""": """Malar""",
+  """listKinds.template.name""": """Mal""",
+  """listKinds.template.newList""": """Ny mal""",
+  """listKinds.template.createTitle""": """Opprett ein mal""",
+  """listKinds.template.editTitle""": """Rediger ein mal""",
+  """listKinds.template.duplicateTitle""": """Dupliser mal""",
+  """listKinds.template.duplicateFailed""": """Klarte ikkje duplisere malen""",
+  """listKinds.template.listMenu""": """Handlingar for mal""",
+  """listKinds.template.deleteDialogTitle""": """Fjern mal""",
+  """listKinds.template.emptyTitle""": """Ingen malar enno""",
+  """listKinds.template.emptyBody""":
+      """Opprett din fyrste mal for å leggje til oppføringar.""",
+  """listKinds.template.trashTitle""": """Papirkorg for malar""",
+  """listKinds.template.trashEmptyBody""": """Sletta malar kjem opp her.""",
+  """listKinds.template.archiveTitle""": """Arkiverte malar""",
+  """listKinds.template.archiveEmptyTitle""": """Ingen arkiverte malar""",
+  """listKinds.template.archiveEmptyBody""":
+      """Arkiverte malar kjem opp her.""",
+  """listKinds.template.emptyTrashBody""":
+      """Dette vil permanent slette alle malar i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast.""",
+  """listKinds.template.listRestored""": """Mal gjenoppretta""",
+  """listKinds.template.listMovedToTrash""": """Mal flytta til papirkorga""",
+  """listKinds.template.listArchived""": """Mal arkivert""",
+  """listKinds.template.listUnarchived""": """Mal henta ut av arkivet""",
+  """templates.suggestionsHeader""": """Forslag""",
+  """templates.drawFailed""":
+      """Klarte ikkje leggje til oppføringa frå malen""",
+  """templates.attachedLabel""": """Malar:""",
+  """templates.attachedPlaceholder""": """Ingen malar""",
+  """templates.attachedHint""":
+      """Når du skriv inn ei ny oppføring, får du forslag om samsvarande oppføringar frå desse malane.""",
+  """templates.suggestInLabel""": """Foreslå i:""",
+  """templates.everyList""": """Alle lister""",
+  """templates.suggestInPlaceholder""": """Ingen lister""",
+  """templates.suggestInHint""":
+      """Når du skriv inn ei ny oppføring i desse listene, får du forslag om samsvarande oppføringar frå denne malen. Vel du «Alle lister», kjem òg lister som vert oppretta seinare med.""",
+  """templates.attachFailed""": """Klarte ikkje lagre dei tilknytte malane""",
+  """templates.fillLabel""":
+      """Fyll maloppføringar frå desse standardverdiane""",
+  """templates.fillHint""":
+      """Når ei oppføring vert lagd til frå ein mal, startar dei tomme detaljane med verdiane ovanfor. Kvar person kan overstyre dette i dei personlege innstillingane sine.""",
+  """templates.fillPrefLabel""": """Fyll maloppføringar frå standardverdiane""",
+  """templates.fillPrefHint""":
+      """Når du legg til ei oppføring frå ein mal, vert dei tomme detaljane fylte frå standardverdiane til lista. Kvar liste kan slå dette av i standardverdiane sine.""",
+  """templates.fillPrefNames.list""": """Følg kvar liste""",
+  """templates.fillPrefNames.always""": """Fyll alltid""",
+  """templates.fillPrefNames.never""": """Fyll aldri""",
+  """templates.fillPrefFailed""": """Klarte ikkje lagre innstillinga""",
+  """templates.applyToList""": """Bruk på liste""",
+  """templates.applyTemplate""": """Bruk malen""",
+  """templates.attachedTemplates""": """Knytt til denne lista""",
+  """templates.otherTemplates""": """Andre malar""",
+  """templates.noTargets""":
+      """Det finst ingen sjekklister eller lagerlister å bruke denne malen på.""",
+  """templates.noItems""": """Denne malen har ingen oppføringar.""",
+  """templates.alreadyOnList""": """Allereie på lista""",
+  """templates.applyFailed""": """Klarte ikkje bruke malen""",
+  """templates.loadFailed""": """Klarte ikkje laste malane""",
+  """templates.back""": """Tilbake""",
+  """stock.inStock""": """På lager""",
+  """stock.full""": """Full""",
+  """stock.low""": """Lite""",
+  """stock.out""": """Tom""",
+  """stock.notCounted""": """Ikkje talt""",
+  """stock.expiresToday""": """Går ut i dag""",
+  """stock.expiresTomorrow""": """Går ut i morgon""",
+  """stock.decrease""": """Minsk mengda på lager""",
+  """stock.increase""": """Auk mengda på lager""",
+  """stock.onHandEdit""": """Mengd på lager""",
+  """stock.filter""": """Lager""",
+  """stock.filterAll""": """Alle oppføringar""",
+  """stock.filterNeedsRestock""": """Må fyllast på""",
+  """stock.filterInStock""": """På lager""",
+  """stock.writeRefused""":
+      """Klarte ikkje lagre lagerendringa. Lagerlista viser no det tenaren har.""",
+  """stock.settings.action""": """Innstillingar for lagerlista""",
+  """stock.settings.title""": """Innstillingar for lagerlista""",
+  """stock.settings.name""": """Namn""",
+  """stock.settings.nameHint""":
+      """Ikon, farge og deling fungerer som på sjekklister.""",
+  """stock.settings.expiryWarning""": """Varsel om utløp""",
+  """stock.settings.daysBefore""": """Dagar før utløp""",
+  """stock.settings.warnHint""":
+      """Set 0 for å varsle på sjølve utløpsdatoen.""",
+  """stock.settings.restockChecklist""": """Sjekkliste for påfylling""",
+  """stock.settings.restockNone""": """Ingen""",
+  """stock.settings.restockSetHint""":
+      """Oppføringar som blir lite av eller snart går ut, blir lagde til på denne sjekklista.""",
+  """stock.settings.restockUnsetHint""":
+      """Utan ho blir oppføringar med lite att eller som snart går ut, berre merkte her.""",
+  """stock.settings.notifications""": """Varsel""",
+  """stock.settings.stockSummary""": """Dagleg lageroversikt""",
+  """stock.settings.stockSummaryHint""":
+      """Ein gong om dagen, fortel medlemene kva som nyleg har blitt lite av eller snart går ut her. Kvart medlem kan òg slå det av i sine eigne innstillingar.""",
+  """stock.settings.cancel""": """Avbryt""",
+  """stock.settings.save""": """Lagre""",
+  """stock.card.title""": """Lager""",
+  """stock.card.mode""": """Lagermodus""",
+  """stock.card.count""": """Tal""",
+  """stock.card.level""": """Nivå""",
+  """stock.card.countHint""":
+      """Hald oversikt over kor mange du har, t.d. 4 av 12 egg.""",
+  """stock.card.levelHint""":
+      """Hald oversikt som Full, Lite eller Tom, t.d. mjøl eller krydder.""",
+  """stock.card.onHand""": """På lager""",
+  """stock.card.onHandPlaceholder""": """t.d. 4""",
+  """stock.card.target""": """Mål""",
+  """stock.card.targetPlaceholder""": """t.d. 12 egg""",
+  """stock.card.reorderPoint""": """Påfyllingspunkt""",
+  """stock.card.reorderPlaceholder""": """t.d. 4""",
+  """stock.card.stockLevel""": """Lagernivå""",
+  """stock.card.restockAmount""": """Påfyllingsmengd""",
+  """stock.card.restockPlaceholder""": """t.d. 1 kg-pose""",
+  """stock.card.convertedBlank""":
+      """Konvertert til tal. Skriv inn mengda på lager og eit mål.""",
+  """stock.card.statusExpired""": """Gått ut.""",
+  """stock.card.statusExpiring""": """Går snart ut.""",
+  """stock.card.statusLow""": """Lite.""",
+  """stock.card.statusOut""": """Tom.""",
+  """stock.card.statusUncountedTarget""":
+      """Ikkje talt: målet har ikkje noko tal, så det blir aldri lite.""",
+  """stock.card.statusUncountedOnHand""":
+      """Ikkje talt: mengda på lager har ikkje noko tal, så det blir aldri lite.""",
+  """stock.card.statusInStock""": """På lager.""",
+  """stock.card.templateDefaultMode""":
+      """Utan vald lagermodus blir standarden til lagerlista brukt.""",
+  """stock.card.templateStartsLevel""":
+      """Når han blir lagd i ei lagerliste, startar han som Full.""",
+  """stock.card.templateUncounted""":
+      """Når han blir lagd i ei lagerliste utan mål, blir han ikkje talt.""",
+  """stock.expiry.title""": """Utløp""",
+  """stock.expiry.mode""": """Korleis oppføringa går ut""",
+  """stock.expiry.none""": """Ingen""",
+  """stock.expiry.date""": """Dato""",
+  """stock.expiry.keeps""": """Held seg N dagar""",
+  """stock.expiry.expiryDate""": """Utløpsdato""",
+  """stock.expiry.daysItKeeps""": """Dagar han held seg""",
+  """stock.expiry.chip""": """Utløp""",
+  """stock.compose.chip""": """Lager""",
+  """stock.compose.count""": """Tal""",
+  """stock.compose.level""": """Nivå""",
+  """stock.compose.fullWhenEmpty""": """Full når tom""",
+  """stock.noRestockChecklist""":
+      """Denne lagerlista har inga sjekkliste for påfylling, så desse oppføringane blir berre merkte her. Vel ei i innstillingane for lagerlista.""",
+  """stock.renewAction""": """Forny utløp""",
+  """stock.summaryPref""": """Dagleg lageroversikt""",
+  """stock.summaryPrefHint""":
+      """Ein gong om dagen, kva som nyleg har blitt lite av eller snart går ut i lagerlistene i dette huset.""",
+  """stock.summaryPrefFailed""":
+      """Klarte ikkje lagre innstillinga for lageroversikta.""",
+  """stock.links.caption""": """Handleliste""",
+  """stock.links.tooltipAutoOn""":
+      """Ikkje kopla enno: blir lagd til på handlelista når det blir lite""",
+  """stock.links.tooltipAutoOff""":
+      """Ikkje kopla: blir aldri lagd til på ei handleliste""",
+  """stock.links.stateOpen""": """open""",
+  """stock.links.stateChecked""": """kryssa av""",
+  """stock.links.stateArchived""": """arkivert""",
+  """stock.links.stateTrashed""": """i papirkorga""",
+  """stock.links.unlink""": """Kople frå""",
+  """stock.links.whichOne""": """Kva for ein er det?""",
+  """stock.links.autoLink""": """Legg til på handlelista når det blir lite""",
+  """stock.links.linkByHand""": """Kople for hand""",
+  """stock.links.chipNotAdded""": """Blir ikkje lagd til på ei handleliste""",
+  """stock.links.linkDifferent""": """Kople til ei anna oppføring …""",
+  """stock.links.linkedHint""":
+      """Når det blir lite av ho eller ho snart går ut, kjem denne oppføringa tilbake på den lista.""",
+  """stock.links.link""": """Kople""",
+  """stock.links.autoHintNoChecklist""":
+      """Vel ei sjekkliste for påfylling i innstillingane for lagerlista for å finne eller leggje til denne oppføringa der.""",
+  """stock.links.autoHintOff""":
+      """Denne oppføringa blir berre merkt her når det blir lite av ho.""",
+  """stock.links.linkToItem""": """Kople til ei oppføring …""",
+  """stock.links.pickerTitle""": """Kople til ei oppføring på ei sjekkliste""",
+  """stock.links.pickerField""": """Oppføring på sjekkliste""",
+  """stock.links.pickerSearch""": """Søk i oppføringar på sjekklister …""",
+  """stock.links.pickerSearching""": """Søkjer …""",
+  """stock.links.pickerEmpty""": """Fann ingen oppføringar""",
+  """stock.links.pickerArchived""": """arkivert""",
+  """stock.links.pickerFailed""":
+      """Klarte ikkje laste oppføringar. Sjekk tilkoplinga og prøv igjen.""",
+  """stock.links.cancel""": """Avbryt""",
+  """stock.restock.pinnedChipBare""": """Festa""",
+  """stock.restock.pinnedChipTooltip""":
+      """Festa, så lageret lèt det vere. Trykk for å løysa.""",
+  """stock.restock.noLongerNeeded""": """Ikkje lenger nødvendig""",
   """notesWall.noNotes""": """Ingen notat enno""",
   """notesWall.failedToLoad""": """Klarte ikkje laste notat""",
   """notesWall.saveFailed""": """Klarte ikkje lagre notat.""",
@@ -8685,6 +10575,8 @@ Passord: pantry""",
   """wear.accent""": """Aksentfarge""",
   """wear.accentServer""": """Nextcloud-fargen din""",
   """wear.accentApp""": """Pantry-fargen""",
+  """wear.stockClose""": """Ferdig med å justere""",
+  """wear.nothingNeedsRestock""": """Ingenting treng påfyll""",
   """watch.title""": """Klokke""",
   """watch.requestWarning""":
       """Tillat berre dette om klokka er di. Ho får same tilgang til husstanden som denne telefonen.""",

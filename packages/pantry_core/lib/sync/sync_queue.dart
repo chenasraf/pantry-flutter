@@ -1,4 +1,5 @@
 import 'package:pantry_core/models/item_defaults.dart';
+import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/services/cache_store.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 
@@ -135,7 +136,11 @@ class SyncQueue {
             (o.op == SyncOpKind.restore ||
                 o.op == SyncOpKind.permanentDelete) &&
             ((op.parentId == null && o.houseId == op.houseId) ||
-                o.parentId == parent),
+                o.parentId == parent) &&
+            // Each list kind has its own trash.
+            (op.entity != SyncEntity.checklistList ||
+                ListKind.parse(o.body['kind']) ==
+                    ListKind.parse(op.body['kind'])),
       );
       // Only signal `changed` when something actually collapsed: the
       // emptyTrash op is never removed here, so an unconditional `changed`

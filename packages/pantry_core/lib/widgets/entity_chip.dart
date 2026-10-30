@@ -58,6 +58,9 @@ enum ChipDensity {
 class EntityChip extends StatelessWidget {
   final Widget? leading;
 
+  /// After the label, e.g. a ✕ on a chip whose tap clears what it shows.
+  final Widget? trailing;
+
   /// When null the chip renders as an icon-only badge, so the leading glyph
   /// carries the whole meaning.
   final String? label;
@@ -82,6 +85,7 @@ class EntityChip extends StatelessWidget {
   const EntityChip({
     super.key,
     this.leading,
+    this.trailing,
     this.label,
     required this.textColor,
     this.background,
@@ -125,6 +129,7 @@ class EntityChip extends StatelessWidget {
                 ),
               ),
             ),
+          if (trailing != null) ...[SizedBox(width: density.gap), trailing!],
         ],
       ),
     );

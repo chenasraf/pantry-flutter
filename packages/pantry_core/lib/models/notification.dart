@@ -69,6 +69,8 @@ class NcNotification {
       case 'note':
         return NotificationTarget.notes;
       case 'item':
+      // A daily stock summary opens its inventory.
+      case 'inventory':
       // A custom-field date reminder deep-links to the item detail.
       case 'cf_reminder':
         return NotificationTarget.checklists;
@@ -90,6 +92,20 @@ class NcNotification {
       houseId: int.parse(scope.group(1)!),
       listId: int.parse(scope.group(2)!),
       itemId: int.parse(item.group(1)!),
+    );
+  }
+
+  /// House and inventory ids parsed from a stock summary's [link] (shaped
+  /// `…/houses/{h}/inventories/{l}?stock=restock`).
+  ({int houseId, int listId, bool needsRestock})? get inventoryLinkTarget {
+    final url = link;
+    if (url == null) return null;
+    final scope = RegExp(r'/houses/(\d+)/inventories/(\d+)').firstMatch(url);
+    if (scope == null) return null;
+    return (
+      houseId: int.parse(scope.group(1)!),
+      listId: int.parse(scope.group(2)!),
+      needsRestock: RegExp(r'[?&]stock=restock').hasMatch(url),
     );
   }
 }

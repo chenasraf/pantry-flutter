@@ -13,6 +13,7 @@ import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/views/checklists/checklist_density.dart';
 import 'checklist_item_tile_parts.dart';
+import 'inventory_row_parts.dart';
 import 'swipe_reveal_row.dart';
 
 class ChecklistItemTile extends StatefulWidget {
@@ -40,6 +41,10 @@ class ChecklistItemTile extends StatefulWidget {
   /// When false, the done/undone checkbox is shown but disabled (greyed).
   /// Mirrors `canCheckItems`: viewing is allowed, toggling completion is not.
   final bool canCheck;
+
+  /// Whether the item can be checked off at all. When false the row has no
+  /// checkbox, and a "done" tap or long-press opens the item instead.
+  final bool checkable;
   final ValueChanged<ListItem>? onMove;
   final ValueChanged<ListItem>? onCopy;
   final ValueChanged<ListItem>? onDelete;
@@ -97,6 +102,17 @@ class ChecklistItemTile extends StatefulWidget {
   /// [suggestion] is true.
   final bool archived;
 
+  /// On a suggestion from the list's templates: the names of those templates,
+  /// shown on a trailing badge.
+  final List<String>? fromTemplates;
+
+  /// On an inventory item: what the row's stock controls change. See
+  /// [ChecklistTileRowContent.inventory].
+  final InventoryRowActions? inventory;
+
+  /// See [ChecklistTileRowContent.onUnpinQuantity].
+  final VoidCallback? onUnpinQuantity;
+
   const ChecklistItemTile({
     super.key,
     required this.item,
@@ -110,6 +126,7 @@ class ChecklistItemTile extends StatefulWidget {
     this.onDelete,
     this.onEdit,
     this.canCheck = true,
+    this.checkable = true,
     this.onMove,
     this.onCopy,
     this.trashMode = false,
@@ -131,6 +148,9 @@ class ChecklistItemTile extends StatefulWidget {
     this.suggestion = false,
     this.onSuggestionTap,
     this.archived = false,
+    this.fromTemplates,
+    this.inventory,
+    this.onUnpinQuantity,
   });
 
   /// A read-only tile used as a reuse suggestion in the compose bar: name and
@@ -145,12 +165,14 @@ class ChecklistItemTile extends StatefulWidget {
     required VoidCallback onTap,
     this.pendingImage,
     this.archived = false,
+    this.fromTemplates,
   }) : isCardsView = false,
        onToggle = _noop,
        onView = _noop,
        onDelete = null,
        onEdit = null,
        canCheck = false,
+       checkable = false,
        onMove = null,
        onCopy = null,
        trashMode = false,
@@ -169,7 +191,9 @@ class ChecklistItemTile extends StatefulWidget {
        onSelectToggle = null,
        onLongPressSelect = null,
        suggestion = true,
-       onSuggestionTap = onTap;
+       onSuggestionTap = onTap,
+       inventory = null,
+       onUnpinQuantity = null;
 
   static void _noop(ListItem _) {}
 
@@ -196,6 +220,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
     final longPressAction = prefs.defaultItemLongPressAction;
     final density = ChecklistDensity.fromPref(prefs.checklistDensity);
     final swipeEnabled = prefs.swipeActionsEnabled;
+    final canCheck = widget.canCheck && widget.checkable;
 
     final catColor = cat != null
         ? (_parseColor(cat.color) ?? cs.primary)
@@ -227,6 +252,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
         pendingImage: widget.pendingImage,
         suggestion: true,
         archived: widget.archived,
+        fromTemplates: widget.fromTemplates,
       );
     }
 
@@ -278,6 +304,18 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
           );
         }
       } else {
+        final onRenew = widget.inventory?.onRenew;
+        if (widget.inventory?.renewTo != null && onRenew != null) {
+          actions.add(
+            SwipeAction(
+              icon: Icons.autorenew,
+              label: m.stock.renewAction,
+              tint: cs.primary,
+              background: tintedSurface(cs.primary, 0.14),
+              onPressed: onRenew,
+            ),
+          );
+        }
         // Drop any swipe action the row tap already performs, so swipe never
         // duplicates the tap. When tap does nothing, both View and Edit show.
         // In overflow-menu mode there's no tap-gesture overlap, so the menu
@@ -358,8 +396,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       rowTap = () => widget.onView(item);
     } else {
       rowTap = switch (tapAction) {
-        'done' =>
-          widget.canCheck ? _toggleAndCloseSwipe : () => widget.onView(item),
+        'done' => canCheck ? _toggleAndCloseSwipe : () => widget.onView(item),
         'edit' =>
           widget.onEdit != null
               ? () => widget.onEdit!(item)
@@ -384,8 +421,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       rowLongPress = () => widget.onView(item);
     } else {
       rowLongPress = switch (longPressAction) {
-        'done' =>
-          widget.canCheck ? _toggleAndCloseSwipe : () => widget.onView(item),
+        'done' => canCheck ? _toggleAndCloseSwipe : () => widget.onView(item),
         'edit' =>
           widget.onEdit != null
               ? () => widget.onEdit!(item)
@@ -411,12 +447,15 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       listBadge: widget.listBadge,
       hideCategory: widget.hideCategory,
       priceStoreContext: widget.priceStoreContext,
-      onCheckboxTap: widget.canCheck ? _toggleAndCloseSwipe : null,
+      onCheckboxTap: canCheck ? _toggleAndCloseSwipe : null,
       onRowTap: rowTap,
       onRowLongPress: rowLongPress,
       selectionMode: selecting,
       selected: widget.selected,
       pendingImage: widget.pendingImage,
+      checkable: widget.checkable,
+      inventory: widget.inventory,
+      onUnpinQuantity: widget.onUnpinQuantity,
     );
 
     // In selection mode the row toggles selection and shows no swipe actions,

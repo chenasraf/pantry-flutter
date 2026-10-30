@@ -8,6 +8,7 @@ import 'package:pantry_core/services/user_prefs_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/services/checklist_widget_service.dart';
 import 'package:pantry/views/settings/chip_visibility_view.dart';
+import 'package:pantry/views/settings/fill_from_item_defaults_tile.dart';
 import 'package:pantry/views/settings/nav_order_view.dart';
 import 'package:pantry/views/settings/settings_tiles.dart';
 
@@ -309,6 +310,11 @@ class InterfaceSettingsView extends StatelessWidget {
           value: prefs.suggestArchivedItems,
           onChanged: (value) =>
               UserPrefsService.instance.setSuggestArchivedItems(value),
+        ),
+      if (ServerFeature.templates && prefs.lastHouseId != null)
+        FillFromItemDefaultsTile(
+          key: ValueKey(prefs.lastHouseId),
+          houseId: prefs.lastHouseId!,
         ),
     ];
 

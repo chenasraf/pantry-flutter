@@ -30,8 +30,9 @@ extension ChecklistsControllerBatch on ChecklistsController {
     final ids = _selectedItemIds.toList();
     if (ids.isEmpty) return;
     // Per-list view: the moved items leave immediately. Meta view keeps them
-    // (their listId only changes once the server confirms via _onSyncApplied).
-    if (!isMetaMode) {
+    // (their listId only changes once the server confirms via _onSyncApplied),
+    // unless they go to another kind, which the meta view doesn't show.
+    if (!isMetaMode || !_checklistService.kindOf(targetListId).isChecklist) {
       _items = reconcileRemoveIds(_items, ids.toSet());
       _cacheCurrentItems();
     }
@@ -165,11 +166,23 @@ extension ChecklistsControllerBatch on ChecklistsController {
   /// Reconciles the authoritative envelope from a flushed `batch` op back into
   /// the view — see [_onSyncApplied].
   void _reconcileBatchApplied(SyncOp op, PantryBatchResult result) {
-    switch (op.body['batchAction'] as String?) {
+    final action = op.body['batchAction'] as String?;
+    _reportSkipped(action, result.skipped.length);
+    switch (action) {
       case 'move':
+        // Moved items come back in the checklist shape whatever their new
+        // kind, so a row that changed kinds is dropped, never merged.
+        final targetKind = _checklistService.kindOf(
+          op.body['targetListId'] as int? ?? 0,
+        );
         if (isMetaMode) {
           // Adopt the returned items (now carrying their new listId).
-          _items = reconcileReplaceById(_items, result.items);
+          _items = targetKind.isChecklist
+              ? reconcileReplaceById(_items, result.items)
+              : reconcileRemoveIds(_items, {
+                  for (final i in result.items) i.id,
+                });
+          _cacheCurrentItems();
         } else {
           // Direction-aware: a returned item now living on the current list
           // moved *in* (keep/insert it — this is how an undo-move-back lands);
@@ -193,7 +206,10 @@ extension ChecklistsControllerBatch on ChecklistsController {
           _cacheCurrentItems();
         }
       case 'copy':
-        if (isMetaMode && result.items.isNotEmpty) {
+        final targetKind = _checklistService.kindOf(
+          op.body['targetListId'] as int? ?? 0,
+        );
+        if (isMetaMode && targetKind.isChecklist && result.items.isNotEmpty) {
           final existing = {for (final i in _items) i.id};
           final fresh = [
             for (final i in result.items)
@@ -216,6 +232,16 @@ extension ChecklistsControllerBatch on ChecklistsController {
         break;
     }
     notifyListeners();
+  }
+
+  void _reportSkipped(String? action, int skipped) {
+    if (skipped == 0) return;
+    final message = switch (action) {
+      'move' || 'copy' => m.listKinds.itemsSkippedNoEdit(skipped),
+      'uncheck' => m.listKinds.itemsSkippedUncheck(skipped),
+      _ => null,
+    };
+    if (message != null) showAppToast(message: message, kind: ToastKind.error);
   }
 
   // -- Batch undo --

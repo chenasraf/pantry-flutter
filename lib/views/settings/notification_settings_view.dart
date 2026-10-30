@@ -6,6 +6,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry/views/settings/stock_summary_tile.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry/services/background_notification_task.dart';
 import 'package:pantry/services/local_notifications_service.dart';
 import 'package:pantry/services/unified_push_service.dart';
@@ -324,6 +326,11 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView> {
                 notificationsEnabled &&
                 !(pushEnabled && push.status == UnifiedPushStatus.active),
           ),
+          if (ServerFeature.inventoryStock && prefs.lastHouseId != null)
+            StockSummaryTile(
+              key: ValueKey(prefs.lastHouseId),
+              houseId: prefs.lastHouseId!,
+            ),
         ],
       ),
     );

@@ -73,6 +73,8 @@ home:
 nav:
   checklists: Listes
   checklist: Liste
+  lists: Listes
+  list: Liste
   photoBoard: Tableau photos
   notesWall: Mur de notes
 
@@ -173,6 +175,19 @@ onboarding:
   joinTripBody: "Quand quelqu'un de votre foyer est en train de faire les courses, une bannière vous propose ses courses plutôt qu'une seconde liste à vous. Vous les faites ensemble : ce que l'un coche disparaît pour l'autre."
   joinTripMockHousemate: "Dana"
   joinTripHow: "Déjà en courses ? Rejoindre enregistre d'abord les vôtres dans votre historique. Si vous quittez des courses que vous avez rejointes, elles continuent pour ceux qui y restent."
+  inventoryTitle: "Sachez ce qu'il y a dans le placard"
+  inventoryBody: "Les inventaires suivent la quantité de chaque chose et sa date de péremption. Diminuez les quantités au fil de l'usage, et Pantry signale ce qui vient à manquer ou va bientôt périmer."
+  inventoryHow: "Donnez à un inventaire une liste de réapprovisionnement dans ses réglages, et tout ce qui manque ou périme y est ajouté pour vous. Cochez-le au magasin et l'inventaire se remplit à nouveau."
+  inventoryMockEggs: "Œufs"
+  inventoryMockMilk: "Lait"
+  inventoryMockFlour: "Farine"
+  templateTitle: "Des modèles pour vos achats habituels"
+  templateBody: "Rangez dans un modèle les articles que vous ajoutez sans cesse. Associez-le à une liste, et en tapant dans celle-ci ses articles vous sont suggérés, avec tous leurs détails."
+  templateHow(String apply): "Pour copier tout un modèle d'un coup, ouvrez son menu dans le sélecteur de listes et choisissez ${apply}."
+  templateMockName: "Courses de la semaine"
+  templateMockTyped: "La"
+  templateMockFirst: "Lait"
+  templateMockSecond: "Lardons"
   dev:
     showOnboarding: "Afficher l'intro"
     pickLastSeenTitle: "Aperçu des nouveautés"
@@ -918,6 +933,296 @@ checklists:
     addItems(int count): "${_plural(count, one: 'Ajouter 1 élément', many: 'Ajouter $count éléments')}"
     imported(int count): "${_plural(count, one: '1 élément importé', many: '$count éléments importés')}"
 
+listKinds:
+  duplicateAs: "Dupliquer en tant que :"
+  itemsSkippedNoEdit(int count): "${_plural(count, one: '1 article a été ignoré, car vous n’êtes pas autorisé à le modifier.', many: '$count articles ont été ignorés, car vous n’êtes pas autorisé à les modifier.')}"
+  itemsSkippedUncheck(int count): "${_plural(count, one: '1 article n’a pas pu être décoché.', many: '$count articles n’ont pas pu être décochés.')}"
+  checklist:
+    title: Listes de contrôle
+    name: Liste de contrôle
+    newList: Nouvelle liste de contrôle
+    createTitle: Créer une liste de contrôle
+    editTitle: Modifier la liste de contrôle
+    duplicateTitle: Dupliquer la liste de contrôle
+    duplicateFailed: Impossible de dupliquer la liste de contrôle
+    listMenu: Actions de la liste de contrôle
+    deleteDialogTitle: Supprimer la liste de contrôle
+    emptyTitle: Aucune liste de contrôle pour le moment
+    emptyBody: Créez votre première liste de contrôle pour commencer à ajouter des articles.
+    trashTitle: Corbeille des listes de contrôle
+    trashEmptyBody: Les listes de contrôle supprimées apparaîtront ici.
+    archiveTitle: Listes de contrôle archivées
+    archiveEmptyTitle: Aucune liste de contrôle archivée
+    archiveEmptyBody: Les listes de contrôle archivées apparaîtront ici.
+    emptyTrashBody: Toutes les listes de contrôle présentes dans la corbeille, ainsi que leurs articles, seront définitivement supprimées. Cette action est irréversible.
+    listRestored: Liste de contrôle restaurée
+    listMovedToTrash: Liste de contrôle déplacée vers la corbeille
+    listArchived: Liste de contrôle archivée
+    listUnarchived: Liste de contrôle désarchivée
+  inventory:
+    title: Inventaires
+    name: Inventaire
+    newList: Nouvel inventaire
+    createTitle: Créer un inventaire
+    editTitle: Modifier l'inventaire
+    duplicateTitle: Dupliquer l'inventaire
+    duplicateFailed: Impossible de dupliquer l'inventaire
+    listMenu: Actions de l'inventaire
+    deleteDialogTitle: Supprimer l'inventaire
+    emptyTitle: Aucun inventaire pour le moment
+    emptyBody: Créez votre premier inventaire pour commencer à ajouter des articles.
+    trashTitle: Corbeille des inventaires
+    trashEmptyBody: Les inventaires supprimés apparaîtront ici.
+    archiveTitle: Inventaires archivés
+    archiveEmptyTitle: Aucun inventaire archivé
+    archiveEmptyBody: Les inventaires archivés apparaîtront ici.
+    emptyTrashBody: Tous les inventaires présents dans la corbeille, ainsi que leurs articles, seront définitivement supprimés. Cette action est irréversible.
+    listRestored: Inventaire restauré
+    listMovedToTrash: Inventaire déplacé vers la corbeille
+    listArchived: Inventaire archivé
+    listUnarchived: Inventaire désarchivé
+  template:
+    title: Modèles
+    name: Modèle
+    newList: Nouveau modèle
+    createTitle: Créer un modèle
+    editTitle: Modifier le modèle
+    duplicateTitle: Dupliquer le modèle
+    duplicateFailed: Impossible de dupliquer le modèle
+    listMenu: Actions du modèle
+    deleteDialogTitle: Supprimer le modèle
+    emptyTitle: Aucun modèle pour le moment
+    emptyBody: Créez votre premier modèle pour commencer à ajouter des articles.
+    trashTitle: Corbeille des modèles
+    trashEmptyBody: Les modèles supprimés apparaîtront ici.
+    archiveTitle: Modèles archivés
+    archiveEmptyTitle: Aucun modèle archivé
+    archiveEmptyBody: Les modèles archivés apparaîtront ici.
+    emptyTrashBody: Tous les modèles présents dans la corbeille, ainsi que leurs articles, seront définitivement supprimés. Cette action est irréversible.
+    listRestored: Modèle restauré
+    listMovedToTrash: Modèle déplacé vers la corbeille
+    listArchived: Modèle archivé
+    listUnarchived: Modèle désarchivé
+
+templates:
+  suggestionsHeader: Suggestions
+  fromTemplates(String names): "Depuis les modèles : $names"
+  addedFromTemplate(String name): '"$name" ajouté depuis un modèle'
+  drawFailed: Impossible d'ajouter l'article depuis le modèle
+  attachedLabel: "Modèles :"
+  attachedPlaceholder: Aucun modèle
+  attachedHint: La saisie d'un nouvel article suggère les articles correspondants de ces modèles.
+  attachedEveryListHint(String names): La saisie d'un nouvel article suggère les articles correspondants de ces modèles, ainsi que de $names, utilisés par toutes les listes.
+  suggestInLabel: "Suggérer dans :"
+  everyList: Toutes les listes
+  suggestInPlaceholder: Aucune liste
+  suggestInHint: La saisie d'un nouvel article dans ces listes suggère les articles correspondants de ce modèle. Sélectionner « Toutes les listes » inclut aussi les listes créées par la suite.
+  listWithKind(String list, String kind): "$list ($kind)"
+  attachFailed: Impossible d'enregistrer les modèles associés
+  fillLabel: Remplir les articles de modèle avec ces valeurs
+  fillHint: Lorsqu'un article est ajouté depuis un modèle, les détails qu'il laisse vides démarrent avec les valeurs ci-dessus. Chaque personne peut modifier ce comportement dans ses paramètres personnels.
+  fillPrefLabel: Remplir les articles de modèle avec les valeurs par défaut
+  fillPrefHint: Lorsque vous ajoutez un article depuis un modèle, les détails qu'il laisse vides sont remplis avec les valeurs par défaut des articles de la liste. Chaque liste peut désactiver ce comportement dans ses valeurs par défaut.
+  fillPrefNames:
+    list: Selon chaque liste
+    always: Toujours remplir
+    never: Ne jamais remplir
+  fillPrefFailed: Impossible d'enregistrer le paramètre
+  applyToList: Appliquer à une liste
+  applyTemplate: Appliquer le modèle
+  attachedTemplates: Associés à cette liste
+  otherTemplates: Autres modèles
+  noTargets: Aucune liste de contrôle ni aucun inventaire auquel appliquer ce modèle.
+  noItems: Ce modèle ne contient aucun article.
+  alreadyOnList: Déjà dans la liste
+  reviewSummary(String template, String list): Copier les articles cochés de $template dans $list.
+  applyItems(int count): "${_plural(count, one: 'Appliquer 1 article', many: 'Appliquer $count articles')}"
+  appliedAdded(int count, String list): "${_plural(count, one: '1 article ajouté à $list', many: '$count articles ajoutés à $list')}"
+  appliedReused(int count, String list): "${_plural(count, one: '1 article était déjà dans $list et a été rétabli', many: '$count articles étaient déjà dans $list et ont été rétablis')}"
+  appliedMixed(String list, int added, int reused): "$list : $added ajoutés, $reused rétablis"
+  applyFailed: Impossible d'appliquer le modèle
+  loadFailed: Impossible de charger les modèles
+  back: Retour
+
+stock:
+  inStock: En stock
+  full: Plein
+  low: Bas
+  out: Épuisé
+  lowBuy(String amount): "Bas · acheter $amount"
+  outBuy(String amount): "Épuisé · acheter $amount"
+  notCounted: Non compté
+  expiredOn(String date): "Périmé le $date"
+  expiredOnBuy(String date, String amount): "Périmé le $date · acheter $amount"
+  expiresToday: Périme aujourd’hui
+  expiresTodayBuy(String amount): "Périme aujourd’hui · acheter $amount"
+  expiresTomorrow: Périme demain
+  expiresTomorrowBuy(String amount): "Périme demain · acheter $amount"
+  expiresInDays(int count): "${_plural(count, one: 'Périme dans 1 jour', many: 'Périme dans $count jours')}"
+  expiresInDaysBuy(int count, String amount): "${_plural(count, one: 'Périme dans 1 jour · acheter $amount', many: 'Périme dans $count jours · acheter $amount')}"
+  goodUntil(String date): "Bon jusqu’au $date"
+  amount(String onHand, String target): "$onHand / $target"
+  decrease: Diminuer la quantité disponible
+  increase: Augmenter la quantité disponible
+  onHandEdit: Quantité disponible
+  levelButton(String level): "Niveau de stock : $level"
+  needsRestockCount(int count): "${_plural(count, one: '1 article à réapprovisionner', many: '$count articles à réapprovisionner')}"
+  filter: Stock
+  filterAll: Tous les articles
+  filterNeedsRestock: À réapprovisionner
+  filterInStock: En stock
+  writeRefused: Impossible d’enregistrer la modification du stock. L’inventaire affiche maintenant les données du serveur.
+  settings:
+    action: Paramètres de l’inventaire
+    title: Paramètres de l’inventaire
+    name: Nom
+    nameHint: L’icône, la couleur et le partage fonctionnent comme pour les listes de contrôle.
+    expiryWarning: Alerte de péremption
+    warnBefore(String days): "Avertir $days jours avant la péremption"
+    daysBefore: Jours avant la péremption
+    warnHint: Indiquez 0 pour être averti le jour même de la péremption.
+    restockChecklist: Liste de réapprovisionnement
+    restockNone: Aucune
+    restockSetHint: Les articles qui s’épuisent ou arrivent à péremption sont ajoutés à cette liste de contrôle.
+    restockUnsetHint: Sans elle, les articles bas ou bientôt périmés sont seulement signalés ici.
+    notifications: Notifications
+    stockSummary: Résumé quotidien du stock
+    stockSummaryHint: Une fois par jour, indique aux membres ce qui vient de s’épuiser ou arrive à péremption ici. Chaque membre peut aussi le désactiver dans ses paramètres personnels.
+    cancel: Annuler
+    save: Enregistrer
+  card:
+    title: Stock
+    mode: Mode de stock
+    count: Quantité
+    level: Niveau
+    countHint: Suivez combien vous en avez, p. ex. 4 œufs sur 12.
+    levelHint: Suivez-le en Plein, Bas ou Épuisé, p. ex. farine ou épices.
+    onHand: Disponible
+    onHandPlaceholder: p. ex. 4
+    target: Objectif
+    targetPlaceholder: p. ex. 12 œufs
+    reorderPoint: Seuil de réapprovisionnement
+    reorderPlaceholder: p. ex. 4
+    stockLevel: Niveau de stock
+    restockAmount: Quantité à racheter
+    restockPlaceholder: p. ex. sachet de 1 kg
+    convertedLevelAmount(String level, String amount): "Converti : niveau $level, quantité à racheter « $amount »."
+    convertedLevel(String level): "Converti : niveau $level."
+    convertedCount(String onHand, String target): "Converti : disponible « $onHand », objectif « $target »."
+    convertedTargetOnly(String target): "Converti : objectif « $target ». Saisissez la quantité disponible."
+    convertedBlank: Converti en quantité. Saisissez la quantité disponible et un objectif.
+    statusExpiredBuy(String amount): "Périmé : acheter $amount."
+    statusExpired: Périmé.
+    statusExpiringBuy(String amount): "Bientôt périmé : acheter $amount."
+    statusExpiring: Bientôt périmé.
+    statusLowBuy(String amount): "Bas : acheter $amount."
+    statusLow: Bas.
+    statusOutBuy(String amount): "Épuisé : acheter $amount."
+    statusOut: Épuisé.
+    statusUncountedTarget: "Non compté : l’objectif n’a pas de nombre, il n’est donc jamais bas."
+    statusUncountedOnHand: "Non compté : la quantité disponible n’a pas de nombre, il n’est donc jamais bas."
+    statusInStock: En stock.
+    templateDefaultMode: Sans mode de stock choisi, il utilise celui de l’inventaire par défaut.
+    templateStartsCount(String amount): "Ajouté à un inventaire, il démarre plein avec $amount disponible."
+    templateStartsLevelAmount(String amount): "Ajouté à un inventaire, il démarre Plein et se réapprovisionne de $amount."
+    templateStartsLevel: Ajouté à un inventaire, il démarre Plein.
+    templateUncounted: Ajouté à un inventaire sans objectif, il n’est pas compté.
+  expiry:
+    title: Péremption
+    mode: Comment l’article se périme
+    none: Aucune
+    date: Date
+    keeps: Se conserve N jours
+    expiryDate: Date de péremption
+    daysItKeeps: Jours de conservation
+    expiredSummary(String date): "Périmé le $date."
+    goodUntilSummary(String date): "Bon jusqu’au $date."
+    renews(int count): "${_plural(count, one: 'Chaque réapprovisionnement la repousse à 1 jour à partir de ce jour.', many: 'Chaque réapprovisionnement la repousse à $count jours à partir de ce jour.')}"
+    templateExpires(int count): "${_plural(count, one: 'Ajouté à un inventaire, il périme 1 jour plus tard.', many: 'Ajouté à un inventaire, il périme $count jours plus tard.')}"
+    chip: Péremption
+    chipExpires(String date): "Périme le $date"
+    chipExpired(String date): "Périmé le $date"
+    chipKeeps(int count): "${_plural(count, one: 'Se conserve 1 jour', many: 'Se conserve $count jours')}"
+  compose:
+    chip: Stock
+    count: Quantité
+    level: Niveau
+    levelAmount(String amount): "Niveau · $amount"
+    targetValue(String target): "Objectif : $target"
+    fullWhenEmpty: Plein si vide
+  noRestockChecklist: Cet inventaire n’a pas de liste de réapprovisionnement, ces articles sont donc seulement signalés ici. Choisissez-en une dans les paramètres de l’inventaire.
+  renewChip(String date): "Renouveler la péremption → $date"
+  renewAction: Renouveler la péremption
+  summaryPref: Résumé quotidien du stock
+  summaryPrefHint: Une fois par jour, ce qui vient de s’épuiser ou arrive à péremption dans les inventaires de ce foyer.
+  summaryPrefFailed: Impossible d’enregistrer le réglage du résumé du stock.
+  links:
+    caption: Liste de courses
+    tooltipLinked(String row, String list): "Lié à $row sur $list"
+    tooltipNeedsPick(int count): "${_plural(count, one: 'Non lié : 1 correspondance, choisissez-en une', many: 'Non lié : $count correspondances, choisissez-en une')}"
+    tooltipAutoOn: "Pas encore lié : ajouté à la liste de courses quand il est bas"
+    tooltipAutoOff: "Non lié : jamais ajouté à une liste de courses"
+    rowOnList(String row, String list, String state): "$row sur $list · $state"
+    stateOpen: à faire
+    stateChecked: coché
+    stateArchived: archivé
+    stateTrashed: dans la corbeille
+    stateQuantity(String quantity): "× $quantity"
+    unlink: Délier
+    whichOne: Lequel est-ce ?
+    candidate(String row, String list, String state): "$row, $list, $state"
+    autoLink: Ajouter à la liste de courses quand il est bas
+    linkByHand: Lier à la main
+    chipNeedsPick(int count): "${_plural(count, one: 'Non lié · 1 correspondance, choisissez-en une', many: 'Non lié · $count correspondances, choisissez-en une')}"
+    chipNotAdded: Jamais ajouté à une liste de courses
+    cardLinked(String row, String list, String state): "Lié à $row sur $list · $state"
+    linkDifferent: Lier à un autre article …
+    linkedHint: Quand il s’épuise ou arrive à péremption, cet article revient sur cette liste.
+    matches(int count): "${_plural(count, one: '1 article correspond', many: '$count articles correspondent')}"
+    matchesQuestion(String matches): "$matches sur la liste de réapprovisionnement. Lequel est-ce ?"
+    link: Lier
+    autoHintOn(String item, String list): "Trouve ou ajoute « $item » sur $list quand il le faut."
+    autoHintNoChecklist: Choisissez une liste de réapprovisionnement dans les paramètres de l’inventaire pour y trouver ou ajouter cet article.
+    autoHintOff: Cet article est seulement signalé ici quand il est bas.
+    linkToItem: Lier à un article …
+    pickerTitle: Lier à un article de liste
+    pickerField: Article de liste
+    pickerSearch: Rechercher des articles …
+    pickerSearching: Recherche …
+    pickerEmpty: Aucun article trouvé
+    pickerRow(String row, String list): "$row — $list"
+    pickerArchived: archivé
+    pickerFailed: Impossible de charger les articles. Vérifiez la connexion et réessayez.
+    cancel: Annuler
+  restock:
+    added(String what, String list): "$what ajouté à $list"
+    revivedQuantity(String list, String row, String quantity): "De retour sur $list : $row × $quantity"
+    revived(String list, String row): "De retour sur $list : $row"
+    changed(String list, String row, String quantity): "$list : $row maintenant × $quantity"
+    pinnedAt(String row, String list, String quantity): "$row sur $list est épinglé à × $quantity"
+    pinned(String row, String list): "$row sur $list est épinglé"
+    recovered(String row, String list): "Plus nécessaire : $row sur $list"
+    linked(String item, String row, String list): "$item lié à $row sur $list"
+    unlinked(String item, String row, String list): "$item délié de $row sur $list. Il ne sera ajouté à aucune liste de courses."
+    severalMatches(String item, int count, String list): "${_plural(count, one: '$item correspond à 1 article sur $list. Choisissez-en un à lier.', many: '$item correspond à $count articles sur $list. Choisissez-en un à lier.')}"
+    restocked(String parts): "Réapprovisionné $parts"
+    replaced(String parts): "Remplacé $parts"
+    restockedReplaced(String restock, String replace): "Réapprovisionné $restock, remplacé $replace"
+    undidRestocked(String parts): "Annulé : réapprovisionné $parts"
+    undidReplaced(String parts): "Annulé : remplacé $parts"
+    undidRestockedReplaced(String restock, String replace): "Annulé : réapprovisionné $restock, remplacé $replace"
+    partAdded(String item, String inventory, String amount): "$item ($inventory) +$amount"
+    partFull(String item, String inventory): "$item ($inventory) à Plein"
+    partReplaced(String item, String inventory, String amount): "$item ($inventory) ×$amount"
+    partReplacedFull(String item, String inventory): "$item ($inventory), Plein"
+    uncheckToUndo(String restock): "$restock · décochez pour annuler"
+    source(String item, String inventory): "$item ($inventory)"
+    restocks(String items): "Réapprovisionne $items"
+    pinnedChip(String quantity): "× $quantity"
+    pinnedChipBare: Épinglé
+    pinnedChipTooltip: Épinglé, le stock n'y touche pas. Touchez pour désépingler.
+    noLongerNeeded: Plus nécessaire
+
 notesWall:
   noNotes: Aucune note pour le moment.
   failedToLoad: Impossible de charger les notes.
@@ -1335,6 +1640,12 @@ wear:
   accent: Couleur d'accent
   accentServer: Votre couleur Nextcloud
   accentApp: Couleur de Pantry
+  # TRANSLATORS: {amount} is the amount on hand that changed, in the item's own wording, e.g. "3 eggs". Keep the sign in front of it.
+  stockRaised(String amount): "+$amount"
+  # TRANSLATORS: {amount} is the amount on hand that changed, in the item's own wording, e.g. "3 eggs". Keep the sign in front of it.
+  stockLowered(String amount): "−$amount"
+  stockClose: Terminer l’ajustement
+  nothingNeedsRestock: Rien à réapprovisionner
 
 watch:
   title: Montre

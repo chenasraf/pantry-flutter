@@ -17,6 +17,7 @@ import '../checklists/list_switcher_page.dart';
 import '../photos/photos_page.dart';
 import '../notes/notes_page.dart';
 import '../services/rotary_service.dart';
+import '../services/wear_ambient.dart';
 import '../services/wear_deep_link.dart';
 import '../shopping/join_trip_page.dart';
 import '../shopping/progression_page.dart';
@@ -119,6 +120,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
     _controller.addListener(_onData);
     PrefsService.instance.addListener(_onPrefs);
     WearDeepLink.instance.addListener(_onDeepLink);
+    WearAmbient.instance.addListener(_onAmbient);
     if (widget.controller == null) unawaited(_controller.start());
   }
 
@@ -135,6 +137,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     WearDeepLink.instance.removeListener(_onDeepLink);
+    WearAmbient.instance.removeListener(_onAmbient);
     PrefsService.instance.removeListener(_onPrefs);
     _rotary?.cancel();
     _lockTimer?.cancel();
@@ -153,7 +156,19 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
   /// screen is off.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    _controller.setActive(state == AppLifecycleState.resumed);
+    final resumed = state == AppLifecycleState.resumed;
+    // A paused process may be killed before an undo window drains, so an
+    // open stock row is written now and skips the window.
+    if (!resumed) _pageKey.currentState?.closeStock(window: false);
+    _controller.setActive(resumed);
+  }
+
+  /// Lowering the wrist dims the screen without pausing the app, and is as
+  /// much the wearer walking away from an open row as leaving the app is.
+  void _onAmbient() {
+    if (WearAmbient.instance.isAmbient) {
+      _pageKey.currentState?.closeStock(window: false);
+    }
   }
 
   void _onData() {
@@ -466,6 +481,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
   /// collapses behind it — an expansion the wearer has already acted on has
   /// nothing left to offer when they come back.
   Future<T?> _push<T>(Widget page) async {
+    _pageKey.currentState?.closeStock();
     _railTimer?.cancel();
     setState(() {
       _railExpanded = false;
@@ -479,6 +495,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
   Future<void> _openSwitcher() => _push<void>(
     ListSwitcherPage(
       lists: _controller.lists,
+      inventories: _controller.inventories,
       selectedId: _controller.list?.id,
     ),
   );
@@ -564,10 +581,17 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
                       child: EdgeAwarePageView(
                         controller: _pager,
                         page: _page,
-                        onPageChanged: (p) => setState(() {
-                          _page = p;
-                          _railExpanded = false;
-                        }),
+                        onPageChanged: (p) {
+                          // Turning the crown to another page leaves an open
+                          // row the way scrolling it away does.
+                          if (p != _checklistIndex) {
+                            _pageKey.currentState?.closeStock();
+                          }
+                          setState(() {
+                            _page = p;
+                            _railExpanded = false;
+                          });
+                        },
                         children: _pages,
                       ),
                     ),

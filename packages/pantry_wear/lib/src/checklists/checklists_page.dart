@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
+import 'package:pantry_core/utils/stock_rules.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
@@ -16,6 +18,7 @@ import '../widgets/wear_empty.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import 'checklists_controller.dart';
+import 'inventory_card.dart';
 import 'item_card.dart';
 import 'item_detail_page.dart';
 
@@ -33,6 +36,10 @@ import 'item_detail_page.dart';
 /// section in browse, or off to the done page in a session. Unchecking earns
 /// the same window as checking, since it is the one of the two that undoes
 /// work already done.
+///
+/// An inventory's rows adjust stock instead (see [InventoryCard]): a tap opens
+/// the row's controls, and closing it — its ✓, or scrolling it away — queues
+/// the net change behind the same window.
 class ChecklistsPage extends StatefulWidget {
   final ChecklistsController controller;
   final ValueNotifier<FocusGeometry> geometry;
@@ -63,10 +70,22 @@ class ChecklistsPageState extends State<ChecklistsPage>
 
   var _doneCollapsed = true;
 
+  /// The inventory row whose controls are swapped in, and where the list was
+  /// scrolled to when it opened — scrolling it away is one of the ways it
+  /// closes.
+  int? _openId;
+  double _openOffset = 0;
+
+  /// What each closed row's undo window would write, and what it says.
+  final _stockChanges = <int, StockChange>{};
+
+  /// Only the rows that need restock, in the same groups.
+  var _restockOnly = false;
+
   @override
   void initState() {
     super.initState();
-    _controller = ScrollController();
+    _controller = ScrollController()..addListener(_onScroll);
     _pending = UndoWindows(
       vsync: this,
       onChanged: () {
@@ -85,14 +104,108 @@ class ChecklistsPageState extends State<ChecklistsPage>
   }
 
   void _onData() {
-    if (mounted) setState(() {});
+    if (!mounted) return;
+    // The row was taken out from under its controls — scope moved, or the
+    // item went away. What the wearer stepped to still stands.
+    final open = _openId;
+    if (open != null && !widget.controller.items.any((i) => i.id == open)) {
+      closeStock(window: false);
+    }
+    setState(() {});
   }
 
   /// Resolve every open undo window at once. The mode transition calls this
   /// before the pager swaps, so nothing is left half-committed against a page
   /// set that no longer exists.
-  void resolvePending({required bool commit}) =>
-      _pending.resolveAll(commit: commit);
+  void resolvePending({required bool commit}) {
+    final open = _openId;
+    if (open != null) {
+      _openId = null;
+      final change = widget.controller.closeStock(open);
+      if (change != null) {
+        commit
+            ? widget.controller.commitStock(change)
+            : widget.controller.revertStock(change);
+      }
+    }
+    _pending.resolveAll(commit: commit);
+    if (!commit) {
+      for (final change in _stockChanges.values) {
+        widget.controller.revertStock(change);
+      }
+    }
+    _stockChanges.clear();
+  }
+
+  // -- Adjusting stock -------------------------------------------------------
+
+  /// Close the open row and queue what it changed. Behind the undo window,
+  /// unless the app is going away: a paused process may never come back to
+  /// finish draining it.
+  void closeStock({bool window = true}) {
+    final id = _openId;
+    if (id == null) return;
+    if (mounted) setState(() => _openId = null);
+    final controller = widget.controller;
+    final change = controller.closeStock(id);
+    if (change == null) return;
+    if (!window) return controller.commitStock(change);
+    _stockChanges[id] = change;
+    _pending.fire(
+      id,
+      target: true,
+      commit: (_) {
+        _stockChanges.remove(id);
+        controller.commitStock(change);
+      },
+    );
+  }
+
+  void _openStock(ListItem item) {
+    closeStock();
+    setState(() {
+      _openId = item.id;
+      _openOffset = _controller.hasClients ? _controller.offset : 0;
+    });
+  }
+
+  /// A tap inside the window takes the change back, and nothing is written.
+  void _undoStock(int id) {
+    _pending.fire(id, target: true, commit: (_) {});
+    final change = _stockChanges.remove(id);
+    if (change != null) widget.controller.revertStock(change);
+  }
+
+  /// The crown turns the list through the same scroll, so this is also how
+  /// turning it closes a row.
+  void _onScroll() {
+    if (_openId == null || !_controller.hasClients) return;
+    final moved = (_controller.offset - _openOffset).abs();
+    if (moved <= WearMetrics.of(context).itemExtent / 2) return;
+    // Scroll positions move during layout as well as on input, and closing
+    // rebuilds the list.
+    if (SchedulerBinding.instance.schedulerPhase ==
+        SchedulerPhase.persistentCallbacks) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (mounted) closeStock();
+      });
+      return;
+    }
+    closeStock();
+  }
+
+  void _onInventoryTap(ListItem item, int index) {
+    if (_scrollTo(index)) return;
+    if (_pending.targetOf(item.id) != null) return _undoStock(item.id);
+    if (_openId == item.id) return;
+    _openStock(item);
+  }
+
+  void _onInventoryLongPress(ListItem item, int index) {
+    if (_scrollTo(index)) return;
+    closeStock();
+    unawaited(_openDetail(item));
+  }
 
   /// The item a row's window is holding, as the controller now has it.
   ///
@@ -145,6 +258,21 @@ class ChecklistsPageState extends State<ChecklistsPage>
     unawaited(_openDetail(item));
   }
 
+  /// The rows the filter lets through. A row being adjusted, or waiting out
+  /// its window, stays put even once it no longer needs restock, so it is not
+  /// pulled out from under the wearer's finger.
+  List<ListItem> _visibleItems() {
+    final items = widget.controller.items;
+    if (!widget.controller.isInventory || !_restockOnly) return items;
+    return [
+      for (final item in items)
+        if (item.needsStockRestock ||
+            item.id == _openId ||
+            _pending.targetOf(item.id) != null)
+          item,
+    ];
+  }
+
   /// Brings a card the wearer was only aiming at within reach and reports that
   /// it did, so the gesture stops there rather than acting on it. What counts
   /// as aimed at is the list's to say — see `SnapFocusListState.canActOn`.
@@ -181,15 +309,29 @@ class ChecklistsPageState extends State<ChecklistsPage>
             groupLabel: group,
             groupIcon: icon,
             groupColor: color,
-            builder: (context, d) => ItemCard(
-              item: item,
-              d: d,
-              controller: controller,
-              marked: _pending.targetOf(item.id) ?? item.done,
-              pending: _pending.controllerOf(item.id),
-              onTap: () => _onCardTap(item, index),
-              onLongPress: () => _onCardLongPress(item, index),
-            ),
+            builder: (context, d) => controller.isInventory
+                ? InventoryCard(
+                    item: item,
+                    d: d,
+                    controller: controller,
+                    open: _openId == item.id,
+                    pending: _pending.controllerOf(item.id),
+                    pendingLabel: _stockChanges[item.id]?.label,
+                    onTap: () => _onInventoryTap(item, index),
+                    onLongPress: () => _onInventoryLongPress(item, index),
+                    onSetOnHand: (q) => controller.stepStock(item, quantity: q),
+                    onSetLevel: (l) => controller.stepStock(item, level: l),
+                    onClose: closeStock,
+                  )
+                : ItemCard(
+                    item: item,
+                    d: d,
+                    controller: controller,
+                    marked: _pending.targetOf(item.id) ?? item.done,
+                    pending: _pending.controllerOf(item.id),
+                    onTap: () => _onCardTap(item, index),
+                    onLongPress: () => _onCardLongPress(item, index),
+                  ),
           ),
         );
       }
@@ -219,7 +361,33 @@ class ChecklistsPageState extends State<ChecklistsPage>
       );
     }
 
-    for (final group in _groups(controller.items, controller)) {
+    if (controller.isInventory) {
+      elements.add(
+        FocusElement(
+          extent: metrics.headerExtent + metrics.cardGap,
+          snappable: false,
+          isHeader: true,
+          builder: (context, _) => _RestockToggle(
+            on: _restockOnly,
+            onTap: () => setState(() => _restockOnly = !_restockOnly),
+          ),
+        ),
+      );
+    }
+
+    final visible = _visibleItems();
+    if (controller.isInventory && visible.isEmpty) {
+      elements.add(
+        FocusElement(
+          extent: metrics.noticeExtent,
+          snappable: false,
+          isHeader: true,
+          builder: (context, _) => _Notice(m.wear.nothingNeedsRestock),
+        ),
+      );
+    }
+
+    for (final group in _groups(visible, controller)) {
       addHeader(group.label, icon: group.icon, color: group.color);
       addItems(
         group.items,
@@ -241,7 +409,7 @@ class ChecklistsPageState extends State<ChecklistsPage>
             extent: metrics.noticeExtent,
             snappable: false,
             isHeader: true,
-            builder: (context, _) => const _AllDone(),
+            builder: (context, _) => _Notice(m.checklists.allDone),
           ),
         );
       }
@@ -385,7 +553,7 @@ class ChecklistsPageState extends State<ChecklistsPage>
         (controller.mode == ChecklistMode.session || controller.done.isEmpty)) {
       return WearEmpty(message: _emptyMessage(controller));
     }
-    return SnapFocusList(
+    final list = SnapFocusList(
       key: _listKey,
       controller: _controller,
       elements: _elements(),
@@ -396,6 +564,38 @@ class ChecklistsPageState extends State<ChecklistsPage>
       geometry: widget.geometry,
       underRail: true,
     );
+    if (!controller.isInventory) return list;
+    final open = _openItem();
+    return Stack(
+      children: [
+        Positioned.fill(child: list),
+        PositionedDirectional(
+          start: 0,
+          end: 0,
+          bottom: 0,
+          child: RenewDrawer(
+            date: open == null || controller.renewTaken(open)
+                ? null
+                : controller.renewOfferFor(open),
+            onTap: () {
+              if (open == null) return;
+              // Renewing is the end of a restock, so it closes the row too.
+              controller.takeRenew(open);
+              closeStock();
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  ListItem? _openItem() {
+    final id = _openId;
+    if (id == null) return null;
+    for (final item in widget.controller.items) {
+      if (item.id == id) return item;
+    }
+    return null;
   }
 }
 
@@ -413,23 +613,26 @@ class _Group {
   });
 }
 
-/// The list cleared, said where its rows were.
+/// Something the list has to say where its rows were: a checklist cleared, or
+/// a filter that let nothing through.
 ///
-/// A row of the list rather than a page of its own: the completed section is
-/// still below it and still worth scrolling to, so the page has to hold both.
-class _AllDone extends StatelessWidget {
-  const _AllDone();
+/// A row of the list rather than a page of its own: the completed section, or
+/// the filter that would bring the rows back, is still on the page.
+class _Notice extends StatelessWidget {
+  final String message;
+
+  const _Notice(this.message);
 
   @override
   Widget build(BuildContext context) => Center(
     child: Padding(
       padding: const EdgeInsetsDirectional.only(start: 16, end: 16),
       child: Text(
-        m.checklists.allDone,
+        message,
         textAlign: TextAlign.center,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        textDirection: detectTextDirection(m.checklists.allDone),
+        textDirection: detectTextDirection(message),
         style: const TextStyle(
           fontSize: 13,
           height: 1.1,
@@ -497,6 +700,65 @@ class _GroupHeader extends StatelessWidget {
               ),
               if (trailing != null) ...[const Spacer(), trailing!],
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The Needs restock filter, at the top of an inventory. It only filters:
+/// rows keep their category groups either way.
+class _RestockToggle extends StatelessWidget {
+  final bool on;
+  final VoidCallback onTap;
+
+  const _RestockToggle({required this.on, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final label = m.stock.filterNeedsRestock;
+    return Center(
+      child: Semantics(
+        button: true,
+        toggled: on,
+        label: label,
+        excludeSemantics: true,
+        child: GestureDetector(
+          onTap: onTap,
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            padding: const EdgeInsetsDirectional.symmetric(
+              horizontal: 10,
+              vertical: 4,
+            ),
+            decoration: BoxDecoration(
+              color: on ? scheme.primary : Colors.white.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  on ? Icons.check : Icons.filter_list,
+                  size: 12,
+                  color: on ? scheme.onPrimary : Colors.white70,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  label,
+                  maxLines: 1,
+                  textDirection: detectTextDirection(label),
+                  style: TextStyle(
+                    fontSize: 11,
+                    height: 1.1,
+                    fontWeight: FontWeight.w600,
+                    color: on ? scheme.onPrimary : Colors.white70,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

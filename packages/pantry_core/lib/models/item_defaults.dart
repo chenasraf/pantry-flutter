@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 import 'package:pantry_core/models/list_recurrence.dart';
+import 'package:pantry_core/models/stock.dart';
 
 /// How one part of a new item is pre-filled.
 enum ItemDefaultMode {
@@ -187,6 +188,14 @@ class ItemDefaults {
   /// Never [ItemDefaultMode.remember]: a quantity belongs to the item it was
   /// typed for.
   final ItemDefaultEntry<String> quantity;
+
+  /// Inventories only. The target, reorder point and shelf life are never
+  /// [ItemDefaultMode.remember], for the same reason as [quantity]: one
+  /// product's values would land on unrelated items.
+  final ItemDefaultEntry<StockMode> stockMode;
+  final ItemDefaultEntry<String> target;
+  final ItemDefaultEntry<String> reorderPoint;
+  final ItemDefaultEntry<int> shelfLifeDays;
   final List<ItemDefaultField> fields;
 
   const ItemDefaults({
@@ -195,6 +204,10 @@ class ItemDefaults {
     this.category = const ItemDefaultEntry(.none),
     this.labels = const ItemDefaultEntry(.none),
     this.quantity = const ItemDefaultEntry(.none),
+    this.stockMode = const ItemDefaultEntry(.none),
+    this.target = const ItemDefaultEntry(.none),
+    this.reorderPoint = const ItemDefaultEntry(.none),
+    this.shelfLifeDays = const ItemDefaultEntry(.none),
     this.fields = const [],
   });
 
@@ -205,6 +218,18 @@ class ItemDefaults {
   static const categoryKey = 'category';
   static const labelsKey = 'labels';
   static const quantityKey = 'quantity';
+  static const stockModeKey = 'stockMode';
+  static const targetKey = 'target';
+  static const reorderPointKey = 'reorderPoint';
+  static const shelfLifeDaysKey = 'shelfLifeDays';
+
+  /// Keys whose value belongs to the item it was typed for.
+  static const fixedOnlyKeys = {
+    quantityKey,
+    targetKey,
+    reorderPointKey,
+    shelfLifeDaysKey,
+  };
   static const fieldsKey = 'fields';
 
   ItemDefaultField? field(int fieldId) {
@@ -230,6 +255,10 @@ class ItemDefaults {
       category: entry(categoryKey, _parseId),
       labels: entry(labelsKey, _parseIds),
       quantity: entry(quantityKey, _parseQuantity),
+      stockMode: entry(stockModeKey, StockMode.tryParse),
+      target: entry(targetKey, _parseQuantity),
+      reorderPoint: entry(reorderPointKey, _parseQuantity),
+      shelfLifeDays: entry(shelfLifeDaysKey, _parseShelfLife),
       fields: fields is List
           ? [
               for (final f in fields)
@@ -255,6 +284,10 @@ class ItemDefaults {
       categoryKey: entry(category, (v) => v),
       labelsKey: entry(labels, (v) => v),
       quantityKey: entry(quantity, (v) => v),
+      stockModeKey: entry(stockMode, (v) => v.wire),
+      targetKey: entry(target, (v) => v),
+      reorderPointKey: entry(reorderPoint, (v) => v),
+      shelfLifeDaysKey: entry(shelfLifeDays, (v) => v),
       fieldsKey: [for (final f in fields) f.toJson()],
     };
   }
@@ -270,7 +303,7 @@ class ItemDefaults {
       final incoming = patch.entries[key];
       if (incoming == null) return current;
       final mode = incoming.mode ?? current.mode;
-      if (key == quantityKey && mode == ItemDefaultMode.remember) {
+      if (fixedOnlyKeys.contains(key) && mode == ItemDefaultMode.remember) {
         return current;
       }
       return _settle(mode, incoming.hasValue ? parse(incoming.value) : null);
@@ -307,6 +340,10 @@ class ItemDefaults {
       category: merge(categoryKey, category, _parseId),
       labels: merge(labelsKey, labels, _parseIds),
       quantity: merge(quantityKey, quantity, _parseQuantity),
+      stockMode: merge(stockModeKey, stockMode, StockMode.tryParse),
+      target: merge(targetKey, target, _parseQuantity),
+      reorderPoint: merge(reorderPointKey, reorderPoint, _parseQuantity),
+      shelfLifeDays: merge(shelfLifeDaysKey, shelfLifeDays, _parseShelfLife),
       fields: fields,
     );
   }
@@ -325,6 +362,10 @@ class ItemDefaults {
       categoryKey: pinned(category, (v) => v),
       labelsKey: pinned(labels, (v) => v),
       quantityKey: pinned(quantity, (v) => v),
+      stockModeKey: pinned(stockMode, (v) => v.wire),
+      targetKey: pinned(target, (v) => v),
+      reorderPointKey: pinned(reorderPoint, (v) => v),
+      shelfLifeDaysKey: pinned(shelfLifeDays, (v) => v),
       fieldsKey: [
         for (final f in fields)
           {
@@ -362,6 +403,8 @@ String? _parseQuantity(Object? raw) {
   final q = raw is String ? raw.trim() : null;
   return (q == null || q.isEmpty) ? null : q;
 }
+
+int? _parseShelfLife(Object? raw) => raw is num && raw > 0 ? raw.toInt() : null;
 
 /// One key of an [ItemDefaultsPatch]. A [mode] of `null` keeps the key's
 /// current mode, which is how an add-item form writes back what it used.
@@ -409,14 +452,24 @@ class ItemDefaultsPatch {
   final Map<String, ItemDefaultPatchEntry> entries;
   final Map<int, ItemDefaultPatchEntry> fields;
 
-  const ItemDefaultsPatch({this.entries = const {}, this.fields = const {}});
+  /// Whether template items drawn into the list fill their empty details from
+  /// these defaults; `null` leaves it as it is.
+  final bool? fillFromDefaults;
 
-  bool get isEmpty => entries.isEmpty && fields.isEmpty;
+  const ItemDefaultsPatch({
+    this.entries = const {},
+    this.fields = const {},
+    this.fillFromDefaults,
+  });
+
+  bool get isEmpty =>
+      entries.isEmpty && fields.isEmpty && fillFromDefaults == null;
   bool get isNotEmpty => !isEmpty;
 
   /// Whether every key only writes back a value, which anyone who can add
   /// items may send for a remembering key.
   bool get isValueOnly =>
+      fillFromDefaults == null &&
       entries.values.every((e) => e.mode == null) &&
       fields.values.every((e) => e.mode == null);
 
@@ -436,8 +489,14 @@ class ItemDefaultsPatch {
         );
       }
     }
-    return ItemDefaultsPatch(entries: entries, fields: fields);
+    return ItemDefaultsPatch(
+      entries: entries,
+      fields: fields,
+      fillFromDefaults: json[fillFromDefaultsKey] as bool?,
+    );
   }
+
+  static const fillFromDefaultsKey = 'fillFromDefaults';
 
   Map<String, dynamic> toJson() => {
     for (final MapEntry(:key, :value) in entries.entries) key: value.toJson(),
@@ -446,6 +505,7 @@ class ItemDefaultsPatch {
         for (final MapEntry(:key, :value) in fields.entries)
           {'fieldId': key, ...value.toJson()},
       ],
+    fillFromDefaultsKey: ?fillFromDefaults,
   };
 
   /// This patch followed by [later], so queued patches for one list can be
@@ -466,6 +526,7 @@ class ItemDefaultsPatch {
         for (final MapEntry(:key, :value) in later.fields.entries)
           key: merge(fields[key], value),
       },
+      fillFromDefaults: later.fillFromDefaults ?? fillFromDefaults,
     );
   }
 }

@@ -555,6 +555,10 @@ class SyncManager {
   ];
 
   /// Enqueue an op. Returns immediately. If online, kicks the flush loop.
+  /// Every op waiting, oldest first, exactly as enqueued.
+  @visibleForTesting
+  List<SyncOp> get queuedOps => _queue.all();
+
   void enqueue(SyncOp op) {
     _queue.enqueue(op);
     pendingCount.value = _queue.length;

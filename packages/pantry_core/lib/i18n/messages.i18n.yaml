@@ -59,7 +59,7 @@ login:
 
 home:
   noHouses: No houses yet.
-  noHousesBody: "Houses are shared spaces for your household. Create your first house to start adding checklists, photos and notes."
+  noHousesBody: "Houses are shared spaces for your household. Create your first house to start adding lists, photos and notes."
   createHouse: Create house
   houseName: House name
   houseDescription: Description (optional)
@@ -73,6 +73,8 @@ home:
 nav:
   checklists: Checklists
   checklist: Checklist
+  lists: Lists
+  list: List
   photoBoard: Photo Board
   notesWall: Notes Wall
 
@@ -173,6 +175,19 @@ onboarding:
   joinTripBody: "When someone in your house is out shopping, a banner offers you their trip instead of a second one of your own. You walk it together — whatever one of you ticks off is gone for the other."
   joinTripMockHousemate: "Dana"
   joinTripHow: "Already shopping? Joining saves your own trip to your history first. Step out of a trip you joined and it keeps running for everyone still in it."
+  inventoryTitle: "Know what's in the cupboard"
+  inventoryBody: "Inventories track how much of each thing you have and when it goes off. Step amounts down as you use them, and Pantry flags what runs low or is about to expire."
+  inventoryHow: "Give an inventory a restock checklist in its settings, and anything low or expiring is put on it for you. Tick it off at the shop and the inventory fills back up."
+  inventoryMockEggs: "Eggs"
+  inventoryMockMilk: "Milk"
+  inventoryMockFlour: "Flour"
+  templateTitle: "Templates for what you always buy"
+  templateBody: "Keep the items you add again and again in a template. Attach it to a list, and typing there suggests its items, details and all."
+  templateHow(String apply): "To copy a whole template in at once, open its menu in the list switcher and pick ${apply}."
+  templateMockName: "Weekly shop"
+  templateMockTyped: "Mi"
+  templateMockFirst: "Milk"
+  templateMockSecond: "Mince"
   dev:
     showOnboarding: "Show onboarding"
     pickLastSeenTitle: "Preview what's new"
@@ -183,7 +198,7 @@ onboarding:
 
 notificationsIntro:
   title: Stay in the loop
-  body: "Pantry can notify you when household members add items to checklists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties."
+  body: "Pantry can notify you when household members add items to lists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties."
   bullet1: Household activity alerts
   bullet2: Fetched directly from your server
   bullet3: Works even when the app is closed
@@ -918,6 +933,296 @@ checklists:
     addItems(int count): "${_plural(count, one: 'Add 1 item', many: 'Add $count items')}"
     imported(int count): "${_plural(count, one: 'Imported 1 item', many: 'Imported $count items')}"
 
+listKinds:
+  duplicateAs: "Duplicate as:"
+  itemsSkippedNoEdit(int count): "${_plural(count, one: '1 item was skipped because you cannot edit it.', many: '$count items were skipped because you cannot edit them.')}"
+  itemsSkippedUncheck(int count): "${_plural(count, one: '1 item could not be unchecked.', many: '$count items could not be unchecked.')}"
+  checklist:
+    title: Checklists
+    name: Checklist
+    newList: New checklist
+    createTitle: Create a checklist
+    editTitle: Edit checklist
+    duplicateTitle: Duplicate checklist
+    duplicateFailed: Could not duplicate the checklist
+    listMenu: Checklist actions
+    deleteDialogTitle: Remove checklist
+    emptyTitle: No checklists yet
+    emptyBody: Create your first checklist to start adding items.
+    trashTitle: Checklists trash
+    trashEmptyBody: Deleted checklists will appear here.
+    archiveTitle: Archived checklists
+    archiveEmptyTitle: No archived checklists
+    archiveEmptyBody: Archived checklists will appear here.
+    emptyTrashBody: This will permanently delete every checklist in the trash, along with all of their items. This cannot be undone.
+    listRestored: Checklist restored
+    listMovedToTrash: Checklist moved to trash
+    listArchived: Checklist archived
+    listUnarchived: Checklist unarchived
+  inventory:
+    title: Inventories
+    name: Inventory
+    newList: New inventory
+    createTitle: Create an inventory
+    editTitle: Edit inventory
+    duplicateTitle: Duplicate inventory
+    duplicateFailed: Could not duplicate the inventory
+    listMenu: Inventory actions
+    deleteDialogTitle: Remove inventory
+    emptyTitle: No inventories yet
+    emptyBody: Create your first inventory to start adding items.
+    trashTitle: Inventories trash
+    trashEmptyBody: Deleted inventories will appear here.
+    archiveTitle: Archived inventories
+    archiveEmptyTitle: No archived inventories
+    archiveEmptyBody: Archived inventories will appear here.
+    emptyTrashBody: This will permanently delete every inventory in the trash, along with all of their items. This cannot be undone.
+    listRestored: Inventory restored
+    listMovedToTrash: Inventory moved to trash
+    listArchived: Inventory archived
+    listUnarchived: Inventory unarchived
+  template:
+    title: Templates
+    name: Template
+    newList: New template
+    createTitle: Create a template
+    editTitle: Edit template
+    duplicateTitle: Duplicate template
+    duplicateFailed: Could not duplicate the template
+    listMenu: Template actions
+    deleteDialogTitle: Remove template
+    emptyTitle: No templates yet
+    emptyBody: Create your first template to start adding items.
+    trashTitle: Templates trash
+    trashEmptyBody: Deleted templates will appear here.
+    archiveTitle: Archived templates
+    archiveEmptyTitle: No archived templates
+    archiveEmptyBody: Archived templates will appear here.
+    emptyTrashBody: This will permanently delete every template in the trash, along with all of their items. This cannot be undone.
+    listRestored: Template restored
+    listMovedToTrash: Template moved to trash
+    listArchived: Template archived
+    listUnarchived: Template unarchived
+
+templates:
+  suggestionsHeader: Suggestions
+  fromTemplates(String names): "From templates: $names"
+  addedFromTemplate(String name): 'Added "$name" from a template'
+  drawFailed: Could not add the item from the template
+  attachedLabel: "Templates:"
+  attachedPlaceholder: No templates
+  attachedHint: Typing a new item suggests matching items from these templates.
+  attachedEveryListHint(String names): Typing a new item suggests matching items from these templates, and from $names, which every list uses.
+  suggestInLabel: "Suggest in:"
+  everyList: Every list
+  suggestInPlaceholder: No lists
+  suggestInHint: Typing a new item on these lists suggests matching items from this template. Selecting "Every list" includes lists made later.
+  listWithKind(String list, String kind): "$list ($kind)"
+  attachFailed: Could not save the attached templates
+  fillLabel: Fill template items from these defaults
+  fillHint: When an item is added from a template, the details it leaves empty start with the values above. Each person can override this in their personal settings.
+  fillPrefLabel: Fill template items from item defaults
+  fillPrefHint: When you add an item from a template, fill the details it leaves empty from the list's item defaults. Each list can switch this off in its item defaults.
+  fillPrefNames:
+    list: Follow each list
+    always: Always fill
+    never: Never fill
+  fillPrefFailed: Could not save the setting
+  applyToList: Apply to list
+  applyTemplate: Apply template
+  attachedTemplates: Attached to this list
+  otherTemplates: Other templates
+  noTargets: There are no checklists or inventories to apply this template to.
+  noItems: This template has no items.
+  alreadyOnList: Already on list
+  reviewSummary(String template, String list): Copy the ticked items from $template into $list.
+  applyItems(int count): "${_plural(count, one: 'Apply 1 item', many: 'Apply $count items')}"
+  appliedAdded(int count, String list): "${_plural(count, one: 'Added 1 item to $list', many: 'Added $count items to $list')}"
+  appliedReused(int count, String list): "${_plural(count, one: '1 item was already on $list and was brought back', many: '$count items were already on $list and were brought back')}"
+  appliedMixed(String list, int added, int reused): "$list: $added added, $reused brought back"
+  applyFailed: Could not apply the template
+  loadFailed: Could not load the templates
+  back: Back
+
+stock:
+  inStock: In stock
+  full: Full
+  low: Low
+  out: Out
+  lowBuy(String amount): "Low · buy $amount"
+  outBuy(String amount): "Out · buy $amount"
+  notCounted: Not counted
+  expiredOn(String date): "Expired $date"
+  expiredOnBuy(String date, String amount): "Expired $date · buy $amount"
+  expiresToday: Expires today
+  expiresTodayBuy(String amount): "Expires today · buy $amount"
+  expiresTomorrow: Expires tomorrow
+  expiresTomorrowBuy(String amount): "Expires tomorrow · buy $amount"
+  expiresInDays(int count): "${_plural(count, one: 'Expires in 1 day', many: 'Expires in $count days')}"
+  expiresInDaysBuy(int count, String amount): "${_plural(count, one: 'Expires in 1 day · buy $amount', many: 'Expires in $count days · buy $amount')}"
+  goodUntil(String date): "Good until $date"
+  amount(String onHand, String target): "$onHand / $target"
+  decrease: Decrease the amount on hand
+  increase: Increase the amount on hand
+  onHandEdit: Amount on hand
+  levelButton(String level): "Stock level: $level"
+  needsRestockCount(int count): "${_plural(count, one: '1 item needs restock', many: '$count items need restock')}"
+  filter: Stock
+  filterAll: All items
+  filterNeedsRestock: Needs restock
+  filterInStock: In stock
+  writeRefused: Could not save the stock change. The inventory now shows what the server has.
+  settings:
+    action: Inventory settings
+    title: Inventory settings
+    name: Name
+    nameHint: Icon, colour and sharing work as they do on checklists.
+    expiryWarning: Expiry warning
+    warnBefore(String days): "Warn $days days before expiry"
+    daysBefore: Days before expiry
+    warnHint: Set 0 to warn on the expiry date itself.
+    restockChecklist: Restock checklist
+    restockNone: None
+    restockSetHint: Items that run low or start expiring are added to this checklist.
+    restockUnsetHint: Without one, low and expiring items are only marked here.
+    notifications: Notifications
+    stockSummary: Daily stock summary
+    stockSummaryHint: Once a day, tell members what newly ran low or started expiring here. Each member can also turn it off in their personal settings.
+    cancel: Cancel
+    save: Save
+  card:
+    title: Stock
+    mode: Stock mode
+    count: Count
+    level: Level
+    countHint: Track how many you have, e.g. 4 of 12 eggs.
+    levelHint: Track it as Full, Low or Out, e.g. flour or spices.
+    onHand: On hand
+    onHandPlaceholder: e.g. 4
+    target: Target
+    targetPlaceholder: e.g. 12 eggs
+    reorderPoint: Reorder point
+    reorderPlaceholder: e.g. 4
+    stockLevel: Stock level
+    restockAmount: Restock amount
+    restockPlaceholder: e.g. 1 kg bag
+    convertedLevelAmount(String level, String amount): 'Converted: level $level, restock amount "$amount".'
+    convertedLevel(String level): "Converted: level $level."
+    convertedCount(String onHand, String target): 'Converted: on hand "$onHand", target "$target".'
+    convertedTargetOnly(String target): 'Converted: target "$target". Enter the amount on hand.'
+    convertedBlank: Converted to a count. Enter the amount on hand and a target.
+    statusExpiredBuy(String amount): "Expired: buy $amount."
+    statusExpired: Expired.
+    statusExpiringBuy(String amount): "Expiring soon: buy $amount."
+    statusExpiring: Expiring soon.
+    statusLowBuy(String amount): "Low: buy $amount."
+    statusLow: Low.
+    statusOutBuy(String amount): "Out: buy $amount."
+    statusOut: Out.
+    statusUncountedTarget: "Not counted: the target has no number, so it never runs low."
+    statusUncountedOnHand: "Not counted: on hand has no number, so it never runs low."
+    statusInStock: In stock.
+    templateDefaultMode: With no stock mode picked, it uses the inventory's default.
+    templateStartsCount(String amount): "Drawn into an inventory, it starts full with $amount on hand."
+    templateStartsLevelAmount(String amount): "Drawn into an inventory, it starts Full and restocks $amount."
+    templateStartsLevel: Drawn into an inventory, it starts Full.
+    templateUncounted: Drawn into an inventory without a target, it is not counted.
+  expiry:
+    title: Expiry
+    mode: How the item expires
+    none: None
+    date: Date
+    keeps: Keeps N days
+    expiryDate: Expiry date
+    daysItKeeps: Days it keeps
+    expiredSummary(String date): "Expired $date."
+    goodUntilSummary(String date): "Good until $date."
+    renews(int count): "${_plural(count, one: 'Each restock renews it to 1 day from that day.', many: 'Each restock renews it to $count days from that day.')}"
+    templateExpires(int count): "${_plural(count, one: 'Drawn into an inventory, it expires 1 day later.', many: 'Drawn into an inventory, it expires $count days later.')}"
+    chip: Expiry
+    chipExpires(String date): "Expires $date"
+    chipExpired(String date): "Expired $date"
+    chipKeeps(int count): "${_plural(count, one: 'Keeps 1 day', many: 'Keeps $count days')}"
+  compose:
+    chip: Stock
+    count: Count
+    level: Level
+    levelAmount(String amount): "Level · $amount"
+    targetValue(String target): "Target: $target"
+    fullWhenEmpty: Full when empty
+  noRestockChecklist: This inventory has no restock checklist, so these items are only marked here. Pick one in the inventory settings.
+  renewChip(String date): "Renew expiry → $date"
+  renewAction: Renew expiry
+  summaryPref: Daily stock summary
+  summaryPrefHint: Once a day, what newly ran low or started expiring in this house's inventories.
+  summaryPrefFailed: Could not save the stock summary setting.
+  links:
+    caption: Shopping list
+    tooltipLinked(String row, String list): "Linked to $row on $list"
+    tooltipNeedsPick(int count): "${_plural(count, one: 'Not linked: 1 match, pick one', many: 'Not linked: $count matches, pick one')}"
+    tooltipAutoOn: "Not linked yet: added to the shopping list when low"
+    tooltipAutoOff: "Not linked: never added to a shopping list"
+    rowOnList(String row, String list, String state): "$row on $list · $state"
+    stateOpen: open
+    stateChecked: checked
+    stateArchived: archived
+    stateTrashed: in the trash
+    stateQuantity(String quantity): "× $quantity"
+    unlink: Unlink
+    whichOne: Which one is it?
+    candidate(String row, String list, String state): "$row, $list, $state"
+    autoLink: Add to shopping list when low
+    linkByHand: Link by hand
+    chipNeedsPick(int count): "${_plural(count, one: 'Not linked · 1 match, pick one', many: 'Not linked · $count matches, pick one')}"
+    chipNotAdded: Not added to a shopping list
+    cardLinked(String row, String list, String state): "Linked to $row on $list · $state"
+    linkDifferent: Link to a different item …
+    linkedHint: When it runs low or starts expiring, this item is put back on that list.
+    matches(int count): "${_plural(count, one: '1 item matches', many: '$count items match')}"
+    matchesQuestion(String matches): "$matches on the restock checklist. Which one is this?"
+    link: Link
+    autoHintOn(String item, String list): 'Finds or adds "$item" on $list when it is needed.'
+    autoHintNoChecklist: Pick a restock checklist in the inventory settings to find or add this item there.
+    autoHintOff: This item is only marked here when it runs low.
+    linkToItem: Link to an item …
+    pickerTitle: Link to a checklist item
+    pickerField: Checklist item
+    pickerSearch: Search checklist items …
+    pickerSearching: Searching …
+    pickerEmpty: No checklist items found
+    pickerRow(String row, String list): "$row — $list"
+    pickerArchived: archived
+    pickerFailed: Could not load checklist items. Check your connection and try again.
+    cancel: Cancel
+  restock:
+    added(String what, String list): "Added $what to $list"
+    revivedQuantity(String list, String row, String quantity): "Back on $list: $row × $quantity"
+    revived(String list, String row): "Back on $list: $row"
+    changed(String list, String row, String quantity): "$list: $row now × $quantity"
+    pinnedAt(String row, String list, String quantity): "$row on $list is pinned at × $quantity"
+    pinned(String row, String list): "$row on $list is pinned"
+    recovered(String row, String list): "No longer needed: $row on $list"
+    linked(String item, String row, String list): "Linked $item to $row on $list"
+    unlinked(String item, String row, String list): "Unlinked $item from $row on $list. It will not be added to a shopping list."
+    severalMatches(String item, int count, String list): "${_plural(count, one: '$item matches 1 item on $list. Pick one to link.', many: '$item matches $count items on $list. Pick one to link.')}"
+    restocked(String parts): "Restocked $parts"
+    replaced(String parts): "Replaced $parts"
+    restockedReplaced(String restock, String replace): "Restocked $restock, replaced $replace"
+    undidRestocked(String parts): "Undid: restocked $parts"
+    undidReplaced(String parts): "Undid: replaced $parts"
+    undidRestockedReplaced(String restock, String replace): "Undid: restocked $restock, replaced $replace"
+    partAdded(String item, String inventory, String amount): "$item ($inventory) +$amount"
+    partFull(String item, String inventory): "$item ($inventory) to Full"
+    partReplaced(String item, String inventory, String amount): "$item ($inventory) ×$amount"
+    partReplacedFull(String item, String inventory): "$item ($inventory), Full"
+    uncheckToUndo(String restock): "$restock · uncheck to undo"
+    source(String item, String inventory): "$item ($inventory)"
+    restocks(String items): "Restocks $items"
+    pinnedChip(String quantity): "× $quantity"
+    pinnedChipBare: Pinned
+    pinnedChipTooltip: Pinned, so stock leaves it. Tap to unpin.
+    noLongerNeeded: No longer needed
+
 notesWall:
   noNotes: No notes yet.
   failedToLoad: Failed to load notes.
@@ -1345,6 +1650,12 @@ wear:
   accent: Accent
   accentServer: Your Nextcloud color
   accentApp: Pantry color
+  # TRANSLATORS: {amount} is the amount on hand that changed, in the item's own wording, e.g. "3 eggs". Keep the sign in front of it.
+  stockRaised(String amount): "+$amount"
+  # TRANSLATORS: {amount} is the amount on hand that changed, in the item's own wording, e.g. "3 eggs". Keep the sign in front of it.
+  stockLowered(String amount): "−$amount"
+  stockClose: Done adjusting
+  nothingNeedsRestock: Nothing needs restock
 
 watch:
   title: Watch

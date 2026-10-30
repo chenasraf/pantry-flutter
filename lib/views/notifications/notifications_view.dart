@@ -5,6 +5,7 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/notification.dart';
 import 'package:pantry_core/services/deep_link_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
+import 'package:pantry/services/background_notification_task.dart';
 import 'notifications_controller.dart';
 
 class NotificationsView extends StatefulWidget {
@@ -36,14 +37,9 @@ class _NotificationsBody extends StatelessWidget {
   const _NotificationsBody();
 
   void _openNotification(BuildContext context, NcNotification n) {
-    final target = n.target;
-    if (target == null) return;
-    final tab = switch (target) {
-      NotificationTarget.checklists => 0,
-      NotificationTarget.photos => 1,
-      NotificationTarget.notes => 2,
-    };
-    DeepLinkService.instance.push(DeepLink(tabIndex: tab, houseId: n.houseId));
+    final link = notificationDeepLinkFor(n);
+    if (link == null) return;
+    DeepLinkService.instance.push(link);
     // Pop back to home so it consumes the deep link.
     Navigator.of(context).pop();
   }

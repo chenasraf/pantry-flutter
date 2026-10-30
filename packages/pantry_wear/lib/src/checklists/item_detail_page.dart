@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/list_link.dart';
+import 'package:pantry_core/models/stock.dart';
 import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/rrule.dart';
+import 'package:pantry_core/utils/stock_display.dart';
+import 'package:pantry_core/utils/stock_rules.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry_core/widgets/entity_chip.dart';
@@ -18,11 +22,15 @@ import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import '../widgets/wear_scroll_indicator.dart';
 import 'checklists_controller.dart';
+import 'inventory_card.dart';
 import 'item_image.dart';
 import '../widgets/wear_surfaces.dart';
 
 /// Read-only. The watch writes check-state and nothing else, so the actions
 /// here are the two check verbs and a hand-off to the phone.
+///
+/// An inventory item has no check state: it shows its stock, expiry and link
+/// instead, and the hand-off is its only action.
 class ItemDetailPage extends StatelessWidget {
   final ListItem item;
   final ChecklistsController controller;
@@ -56,6 +64,7 @@ class ItemDetailPage extends StatelessWidget {
             priceCurrency: resolved.priceCurrency,
           );
     final removed = controller.removed.any((i) => i.id == item.id);
+    final inventory = controller.listOf(item)?.kind == ListKind.inventory;
 
     return Scaffold(
       backgroundColor: const Color(0xFF0B0B0C),
@@ -93,7 +102,8 @@ class ItemDetailPage extends StatelessWidget {
                 ),
               ],
               const SizedBox(height: 14),
-              if (item.quantity != null)
+              if (inventory) ..._stockFacts(context),
+              if (item.quantity != null && !inventory)
                 WearFact(
                   label: m.settings.chipNames.quantity,
                   value: EntityChip(textColor: neutral, label: item.quantity!),
@@ -132,38 +142,40 @@ class ItemDetailPage extends StatelessWidget {
               // A schedule, not a flag: "recurring" alone tells you nothing you
               // could act on, so the row carries what core already knows how to
               // say about the rule.
-              WearFact(
-                label: m.wear.repeats,
-                value: EntityChip(
-                  textColor: item.rrule != null ? scheme.primary : neutral,
-                  label: item.rrule != null
-                      ? formatRrule(item.rrule!)
-                      : m.settings.chipNames.oneTime,
-                  leading: Icon(
-                    item.rrule != null
-                        ? Icons.repeat
-                        : Icons.looks_one_outlined,
-                    size: 12,
-                    color: item.rrule != null ? scheme.primary : neutral,
+              if (!inventory) ...[
+                WearFact(
+                  label: m.wear.repeats,
+                  value: EntityChip(
+                    textColor: item.rrule != null ? scheme.primary : neutral,
+                    label: item.rrule != null
+                        ? formatRrule(item.rrule!)
+                        : m.settings.chipNames.oneTime,
+                    leading: Icon(
+                      item.rrule != null
+                          ? Icons.repeat
+                          : Icons.looks_one_outlined,
+                      size: 12,
+                      color: item.rrule != null ? scheme.primary : neutral,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              WearDetailButton(
-                icon: item.done ? Icons.remove_done : Icons.check,
-                label: item.done ? m.wear.markUndone : m.wear.markDone,
-                color: scheme.primary,
-                onTap: () {
-                  if (inSession) {
-                    item.done
-                        ? controller.uncheckItem(item)
-                        : controller.checkItem(item);
-                  } else {
-                    controller.setDone(item, !item.done);
-                  }
-                  Navigator.of(context).pop();
-                },
-              ),
+                const SizedBox(height: 16),
+                WearDetailButton(
+                  icon: item.done ? Icons.remove_done : Icons.check,
+                  label: item.done ? m.wear.markUndone : m.wear.markDone,
+                  color: scheme.primary,
+                  onTap: () {
+                    if (inSession) {
+                      item.done
+                          ? controller.uncheckItem(item)
+                          : controller.checkItem(item);
+                    } else {
+                      controller.setDone(item, !item.done);
+                    }
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
               if (inSession) ...[
                 const SizedBox(height: 8),
                 WearDetailButton(
@@ -194,6 +206,77 @@ class ItemDetailPage extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+extension on ItemDetailPage {
+  /// The stock in full, where the row only had room for one chip: the amount,
+  /// every status chip (Good until among them), the status and expiry lines,
+  /// and how it reaches a shopping list.
+  List<Widget> _stockFacts(BuildContext context) {
+    const neutral = kDetailInk;
+    final level = item.stockMode == StockMode.level;
+    final restock = (item.quantity ?? '').trim();
+    final levelName = stockLevelName(item.stockLevel ?? StockLevel.full);
+    final amount = level
+        ? (restock.isEmpty ? levelName : '$levelName · $restock')
+        : stockAmountLabel(item);
+    final line = stockStatusLine(
+      item.stockFields,
+      controller.listOf(item)?.expiryLeadDays ?? defaultExpiryLeadDays,
+    );
+    final lineTone = line.tone;
+    final expiry = expirySummary(item);
+    final chips = stockStatusChips(item);
+    return [
+      WearFact(
+        label: m.stock.card.title,
+        value: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            EntityChip(textColor: Colors.white, label: amount),
+            for (final chip in chips)
+              Padding(
+                padding: const EdgeInsetsDirectional.only(top: 4),
+                child: EntityChip(
+                  textColor: chip.tone == null
+                      ? neutral
+                      : stockToneInk(context, chip.tone!),
+                  label: chip.label,
+                ),
+              ),
+            const SizedBox(height: 4),
+            Text(
+              line.text,
+              textDirection: detectTextDirection(line.text),
+              style: TextStyle(
+                fontSize: 12,
+                color: lineTone == null
+                    ? Colors.white70
+                    : stockToneInk(context, lineTone),
+              ),
+            ),
+          ],
+        ),
+      ),
+      if (expiry != null)
+        WearFact(
+          label: m.stock.expiry.title,
+          value: Text(
+            expiry,
+            textDirection: detectTextDirection(expiry),
+            style: const TextStyle(fontSize: 12, color: Colors.white70),
+          ),
+        ),
+      WearFact(
+        label: m.stock.links.caption,
+        value: Text(
+          stockLinkTooltip(item),
+          textDirection: detectTextDirection(stockLinkTooltip(item)),
+          style: const TextStyle(fontSize: 12, color: Colors.white70),
+        ),
+      ),
+    ];
   }
 }
 

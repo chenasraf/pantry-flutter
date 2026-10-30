@@ -71,7 +71,9 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
               ),
             ),
       title: list == null
-          ? const SizedBox.shrink()
+          ? (ServerFeature.listKinds
+                ? _emptySectionTitle(context)
+                : const SizedBox.shrink())
           : InkWell(
               key: switcherAnchorKey,
               onTap: () => openSwitcher(context),
@@ -113,6 +115,42 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
         // toolbar button and which fold into the overflow.
         Builder(builder: _toolbarActions),
       ],
+    );
+  }
+
+  /// A section with no lists names its kind, and still opens the switcher.
+  Widget _emptySectionTitle(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return InkWell(
+      key: switcherAnchorKey,
+      onTap: () => openSwitcher(context),
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Text(
+                domain.kind.strings.title,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.3,
+                  color: cs.onSurface,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Icon(
+              Icons.keyboard_arrow_down,
+              color: cs.onSurfaceVariant,
+              size: 22,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -332,7 +370,7 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
               label: m.checklists.showAddedBy,
               checked: domain.showAddedBy,
             ),
-          if (list != null)
+          if (list != null && domain.isChecklistKind)
             OverflowCheckboxAction(
               value: 'toggle_progress_hero',
               label: m.checklists.showProgressHero,
@@ -356,6 +394,16 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
         icon: Icons.dashboard_customize_outlined,
         label: m.checklists.menu.manage,
         entries: [
+          if (!isMeta &&
+              list != null &&
+              list.kind == ListKind.inventory &&
+              ServerFeature.inventoryStock &&
+              domain.canEditCurrentListSettings)
+            OverflowAction(
+              value: 'inventory_settings',
+              icon: Icons.settings_outlined,
+              label: m.stock.settings.action,
+            ),
           if (!isMeta && list?.activeItemDefaults != null)
             OverflowAction(
               value: 'item_defaults',
@@ -398,15 +446,32 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
             OverflowAction(
               value: 'duplicate_list',
               icon: Icons.copy_outlined,
-              label: m.checklists.duplicateListTitle,
+              label: ServerFeature.listKinds
+                  ? list.kind.strings.duplicateTitle
+                  : m.checklists.duplicateListTitle,
             ),
-          if (list != null && !isMeta && PlatformInfo.isMobile)
+          if (list != null && !isMeta && domain.canApplyTemplate(list))
+            OverflowAction(
+              value: 'apply_template',
+              icon: Icons.playlist_add,
+              label: list.kind == ListKind.template
+                  ? m.templates.applyToList
+                  : m.templates.applyTemplate,
+            ),
+          // List links and home screen widgets open checklists.
+          if (list != null &&
+              !isMeta &&
+              list.kind.isChecklist &&
+              PlatformInfo.isMobile)
             OverflowAction(
               value: 'copy_link',
               icon: Icons.link,
               label: m.checklists.copyLink,
             ),
-          if (list != null && !isMeta && PlatformInfo.isAndroidPhone)
+          if (list != null &&
+              !isMeta &&
+              list.kind.isChecklist &&
+              PlatformInfo.isAndroidPhone)
             OverflowAction(
               value: 'add_to_home',
               icon: Icons.add_to_home_screen,
@@ -437,7 +502,7 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
         entries: [
           if (ServerFeature.shopping) ...[
             // When the FAB is turned off, its action lives here, above history.
-            if (!prefs.startShoppingFabEnabled)
+            if (!prefs.startShoppingFabEnabled && domain.isChecklistKind)
               OverflowAction(
                 value: 'start_shopping',
                 icon: shoppingSession != null

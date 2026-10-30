@@ -4,6 +4,7 @@ import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/item_start_values.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
+import 'package:pantry_core/models/stock.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/version.dart';
 
@@ -435,6 +436,63 @@ void main() {
       final d = list().recurrenceDefault;
       expect(d.kind, ListRecurrenceKind.once);
       expect(d.remembers, isTrue);
+    });
+  });
+
+  group('inventory stock defaults', () {
+    final inventory = _parse({
+      'stockMode': {'mode': 'remember', 'value': 'level'},
+      'target': {'mode': 'fixed', 'value': '12 eggs'},
+      'reorderPoint': {'mode': 'fixed', 'value': '4'},
+      'shelfLifeDays': {'mode': 'fixed', 'value': 7},
+    });
+
+    test('parse and start a new item', () {
+      expect(inventory.stockMode.mode, ItemDefaultMode.remember);
+      expect(inventory.stockMode.value, StockMode.level);
+      final start = ItemStartValues.resolve(inventory, const [], 1);
+      expect(start.stockMode, StockMode.level);
+      expect(start.target, '12 eggs');
+      expect(start.reorderPoint, '4');
+      expect(start.shelfLifeDays, 7);
+    });
+
+    test('survive the cache round trip', () {
+      final again = _parse(inventory.toJson());
+      expect(again.stockMode.value, StockMode.level);
+      expect(again.shelfLifeDays.value, 7);
+      expect(again.configSignature, inventory.configSignature);
+    });
+
+    test('the stock mode is remembered after an add', () {
+      final patch = rememberPatch(
+        inventory,
+        recurrence: RecurrenceDefaultValue.staple,
+        categoryId: null,
+        storeIds: const [],
+        labelIds: const [],
+        customFieldValues: const [],
+        fieldDefs: const [],
+        stockMode: StockMode.count,
+      );
+      expect(patch.toJson(), {
+        'stockMode': {'value': 'count'},
+      });
+      expect(inventory.applyPatch(patch).stockMode.value, StockMode.count);
+    });
+
+    test('target, reorder point and shelf life are never remembered', () {
+      final patched = inventory.applyPatch(
+        const ItemDefaultsPatch(
+          entries: {
+            'shelfLifeDays': ItemDefaultPatchEntry.mode(
+              ItemDefaultMode.remember,
+            ),
+          },
+        ),
+      );
+      expect(patched.shelfLifeDays.mode, ItemDefaultMode.fixed);
+      expect(patched.shelfLifeDays.value, 7);
     });
   });
 }

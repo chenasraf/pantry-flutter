@@ -96,3 +96,31 @@ class ChecklistsArchiveBanner extends StatelessWidget {
     );
   }
 }
+
+/// Above an inventory with items needing restock but nowhere to put them.
+class NoRestockChecklistNotice extends StatelessWidget {
+  const NoRestockChecklistNotice({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Container(
+      width: double.infinity,
+      color: AppSurfaces.of(context).raised,
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 10, 16, 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.info_outline, size: 18, color: cs.onSurfaceVariant),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              m.stock.noRestockChecklist,
+              style: TextStyle(color: cs.onSurfaceVariant),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

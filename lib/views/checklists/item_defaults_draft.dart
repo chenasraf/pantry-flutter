@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:pantry_core/models/item_defaults.dart';
+import 'package:pantry_core/models/stock.dart';
 
 /// A list's item defaults as the defaults screen edits them: one mode per key,
 /// plus every key's value — kept even while a key is not "fixed", so switching
@@ -12,6 +13,10 @@ class ItemDefaultsDraft {
   int? categoryId;
   List<int> labelIds;
   String quantity;
+  StockMode stockMode;
+  String target;
+  String reorderPoint;
+  int? shelfLifeDays;
   final Map<int, ({ItemDefaultMode mode, ItemDefaultFieldValue? value})> fields;
 
   ItemDefaultsDraft._({
@@ -21,6 +26,10 @@ class ItemDefaultsDraft {
     required this.categoryId,
     required this.labelIds,
     required this.quantity,
+    required this.stockMode,
+    required this.target,
+    required this.reorderPoint,
+    required this.shelfLifeDays,
     required this.fields,
   });
 
@@ -30,6 +39,10 @@ class ItemDefaultsDraft {
     ItemDefaults.categoryKey,
     ItemDefaults.labelsKey,
     ItemDefaults.quantityKey,
+    ItemDefaults.stockModeKey,
+    ItemDefaults.targetKey,
+    ItemDefaults.reorderPointKey,
+    ItemDefaults.shelfLifeDaysKey,
   ];
 
   /// Seed from the stored defaults. A remembered value seeds the editor too,
@@ -44,12 +57,20 @@ class ItemDefaultsDraft {
         ItemDefaults.categoryKey: d.category.mode,
         ItemDefaults.labelsKey: d.labels.mode,
         ItemDefaults.quantityKey: d.quantity.mode,
+        ItemDefaults.stockModeKey: d.stockMode.mode,
+        ItemDefaults.targetKey: d.target.mode,
+        ItemDefaults.reorderPointKey: d.reorderPoint.mode,
+        ItemDefaults.shelfLifeDaysKey: d.shelfLifeDays.mode,
       },
       recurrence: d.recurrence.value ?? RecurrenceDefaultValue.staple,
       storeIds: [...?d.stores.value],
       categoryId: d.category.value,
       labelIds: [...?d.labels.value],
       quantity: d.quantity.value ?? '',
+      stockMode: d.stockMode.value ?? StockMode.count,
+      target: d.target.value ?? '',
+      reorderPoint: d.reorderPoint.value ?? '',
+      shelfLifeDays: d.shelfLifeDays.value,
       fields: {
         for (final f in d.fields) f.fieldId: (mode: f.mode, value: f.value),
       },
@@ -121,6 +142,34 @@ class ItemDefaultsDraft {
       before.quantity,
       quantity.trim(),
       (a, b) => (a ?? '') == b,
+      (v) => v,
+    );
+    diff(
+      ItemDefaults.stockModeKey,
+      before.stockMode,
+      stockMode,
+      (a, b) => a == b,
+      (v) => v.wire,
+    );
+    diff(
+      ItemDefaults.targetKey,
+      before.target,
+      target.trim(),
+      (a, b) => (a ?? '') == b,
+      (v) => v,
+    );
+    diff(
+      ItemDefaults.reorderPointKey,
+      before.reorderPoint,
+      reorderPoint.trim(),
+      (a, b) => (a ?? '') == b,
+      (v) => v,
+    );
+    diff(
+      ItemDefaults.shelfLifeDaysKey,
+      before.shelfLifeDays,
+      shelfLifeDays,
+      (a, b) => a == b,
       (v) => v,
     );
 

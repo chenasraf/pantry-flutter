@@ -5,15 +5,24 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/color.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
 import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 
 class TrashStage extends StatefulWidget {
   final ChecklistsController controller;
+
+  /// Whose trash is shown; each kind has its own.
+  final ListKind kind;
   final VoidCallback onBack;
 
-  const TrashStage({super.key, required this.controller, required this.onBack});
+  const TrashStage({
+    super.key,
+    required this.controller,
+    this.kind = ListKind.checklist,
+    required this.onBack,
+  });
 
   @override
   State<TrashStage> createState() => _TrashStageState();
@@ -35,7 +44,7 @@ class _TrashStageState extends State<TrashStage> {
       _error = null;
     });
     try {
-      await widget.controller.loadTrashedLists();
+      await widget.controller.loadTrashedLists(kind: widget.kind);
     } catch (_) {
       if (!mounted) return;
       _error = m.checklists.failedToLoadTrash;
@@ -63,7 +72,9 @@ class _TrashStageState extends State<TrashStage> {
               ),
               const SizedBox(width: 4),
               Text(
-                m.checklists.listsTrashTitle,
+                ServerFeature.listKinds
+                    ? widget.kind.strings.trashTitle
+                    : m.checklists.listsTrashTitle,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
@@ -101,7 +112,9 @@ class _TrashStageState extends State<TrashStage> {
             padding: const EdgeInsets.symmetric(vertical: 24),
             child: Center(
               child: Text(
-                m.checklists.listTrashEmpty,
+                ServerFeature.listKinds
+                    ? widget.kind.strings.trashEmptyBody
+                    : m.checklists.listTrashEmpty,
                 style: TextStyle(color: cs.onSurfaceVariant),
               ),
             ),
@@ -211,7 +224,11 @@ class _TrashStageState extends State<TrashStage> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(m.checklists.emptyTrashConfirm),
-        content: Text(m.checklists.emptyTrashConfirmBody),
+        content: Text(
+          ServerFeature.listKinds
+              ? widget.kind.strings.emptyTrashBody
+              : m.checklists.emptyTrashConfirmBody,
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -226,7 +243,7 @@ class _TrashStageState extends State<TrashStage> {
     );
     if (confirmed != true || !mounted) return;
     try {
-      await widget.controller.emptyListsTrash();
+      await widget.controller.emptyListsTrash(kind: widget.kind);
       if (mounted) setState(() {});
     } catch (_) {
       if (!mounted) return;

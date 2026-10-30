@@ -6,15 +6,23 @@ import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/date_format.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 
+import 'apply_template_view.dart';
 import 'switcher_widgets.dart';
 
 class ListStage extends StatelessWidget {
   final ChecklistsController controller;
+
+  /// The kind whose lists are shown.
+  final ListKind kind;
+
+  /// Switches [kind]. The kind picker shows only when this is set.
+  final ValueChanged<ListKind>? onKindChanged;
   final Future<int> Function(int listId) itemCountForList;
   final VoidCallback onCreateNew;
   final ValueChanged<ChecklistList> onEdit;
@@ -25,6 +33,8 @@ class ListStage extends StatelessWidget {
   const ListStage({
     super.key,
     required this.controller,
+    this.kind = ListKind.checklist,
+    this.onKindChanged,
     required this.itemCountForList,
     required this.onCreateNew,
     required this.onEdit,
@@ -36,15 +46,20 @@ class ListStage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final hasKinds = ServerFeature.listKinds;
+    final strings = kind.strings;
     final realLists = ServerFeature.checklistSort
-        ? controller.sortedLists
-        : controller.lists;
+        ? controller.sortedListsOfKind(kind)
+        : controller.listsOfKind(kind);
     final current = controller.currentList;
     // The synthetic "All lists" entry only earns its spot when there's more
     // than one real list to aggregate. With zero lists the index renders the
     // empty state; with one list, "All lists" would just duplicate that list.
+    // It aggregates checklists only.
     final showAllLists =
-        ServerFeature.checklistAllView && realLists.length >= 2;
+        kind.isChecklist &&
+        ServerFeature.checklistAllView &&
+        realLists.length >= 2;
     final perms = controller.permissions;
     final canEditLists = perms.canEditLists;
     final canDeleteLists = perms.canDeleteLists;
@@ -81,7 +96,7 @@ class ListStage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                m.checklists.yourChecklists,
+                hasKinds ? strings.title : m.checklists.yourChecklists,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
@@ -105,6 +120,36 @@ class ListStage extends StatelessWidget {
             ],
           ),
         ),
+        if (hasKinds && onKindChanged != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: ListKindPicker(selected: kind, onChanged: onKindChanged!),
+          ),
+        if (hasKinds && realLists.isEmpty)
+          Padding(
+            padding: const EdgeInsetsDirectional.symmetric(
+              horizontal: 4,
+              vertical: 12,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  strings.emptyTitle,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: cs.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  strings.emptyBody,
+                  style: TextStyle(fontSize: 13, color: cs.onSurfaceVariant),
+                ),
+              ],
+            ),
+          ),
         if (allListsTile != null)
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
@@ -119,7 +164,8 @@ class ListStage extends StatelessWidget {
                   shrinkWrap: true,
                   buildDefaultDragHandles: false,
                   itemCount: realLists.length,
-                  onReorderItem: controller.reorderLists,
+                  onReorderItem: (from, to) =>
+                      controller.reorderLists(from, to, kind: kind),
                   proxyDecorator: (child, _, _) =>
                       Material(color: Colors.transparent, child: child),
                   itemBuilder: (_, i) {
@@ -149,6 +195,9 @@ class ListStage extends StatelessWidget {
                             : null,
                         onArchive: canArchiveLists
                             ? () => _archiveList(context, list)
+                            : null,
+                        onApply: controller.canApplyTemplate(list)
+                            ? () => showApplyTemplate(context, controller, list)
                             : null,
                       ),
                     );
@@ -182,6 +231,9 @@ class ListStage extends StatelessWidget {
                       onArchive: canArchiveLists
                           ? () => _archiveList(context, list)
                           : null,
+                      onApply: controller.canApplyTemplate(list)
+                          ? () => showApplyTemplate(context, controller, list)
+                          : null,
                     );
                   },
                 ),
@@ -209,7 +261,7 @@ class ListStage extends StatelessWidget {
                   ),
                   const SizedBox(width: 13),
                   Text(
-                    m.checklists.newChecklist,
+                    strings.newList,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
@@ -237,7 +289,7 @@ class ListStage extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
                   Text(
-                    m.checklists.viewListsTrash,
+                    hasKinds ? strings.trashTitle : m.checklists.viewListsTrash,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -265,7 +317,7 @@ class ListStage extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
                   Text(
-                    m.checklists.archivedLists,
+                    strings.archiveTitle,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -285,7 +337,11 @@ class ListStage extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(m.checklists.removeListConfirm),
+        title: Text(
+          ServerFeature.listKinds
+              ? list.kind.strings.deleteDialogTitle
+              : m.checklists.removeListConfirm,
+        ),
         content: Text(m.checklists.removeListConfirmBody(list.name)),
         actions: [
           TextButton(
@@ -305,7 +361,9 @@ class ListStage extends StatelessWidget {
       if (!context.mounted) return;
       Navigator.pop(context);
       showUndoToast(
-        message: m.checklists.listRemoved,
+        message: ServerFeature.listKinds
+            ? list.kind.strings.listMovedToTrash
+            : m.checklists.listRemoved,
         undoLabel: m.checklists.undo,
         onUndo: () => controller.restoreList(list),
         undoFailedMessage: m.checklists.restoreFailed,
@@ -326,7 +384,7 @@ class ListStage extends StatelessWidget {
       if (!context.mounted) return;
       Navigator.pop(context);
       showUndoToast(
-        message: m.checklists.listArchived,
+        message: list.kind.strings.listArchived,
         undoLabel: m.checklists.undo,
         onUndo: () => controller.unarchiveList(list),
         undoFailedMessage: m.checklists.unarchiveListFailed,
@@ -351,6 +409,7 @@ class _ListTile extends StatelessWidget {
   final VoidCallback? onDuplicate;
   final VoidCallback? onRemove;
   final VoidCallback? onArchive;
+  final VoidCallback? onApply;
   final int? dragIndex;
   final bool showOverflow;
 
@@ -363,21 +422,37 @@ class _ListTile extends StatelessWidget {
     this.onDuplicate,
     this.onRemove,
     this.onArchive,
+    this.onApply,
     this.dragIndex,
     this.showOverflow = false,
   });
+
+  String get _applyLabel => list.kind == ListKind.template
+      ? m.templates.applyToList
+      : m.templates.applyTemplate;
+
+  String get _editLabel => ServerFeature.listKinds
+      ? list.kind.strings.editTitle
+      : m.checklists.editList;
+
+  String get _removeLabel => ServerFeature.listKinds
+      ? list.kind.strings.deleteDialogTitle
+      : m.checklists.removeList;
 
   bool get _hasActions =>
       onEdit != null ||
       onDuplicate != null ||
       onRemove != null ||
-      onArchive != null;
+      onArchive != null ||
+      onApply != null;
 
   /// A stamped list with open items reads as its item count: the stamp records
   /// the last sign-off, and the switcher's job is showing what still needs
   /// doing.
   String _summary(int count) {
-    if (count > 0) return m.checklists.itemsSummary(count);
+    if (count > 0 || !list.kind.isChecklist) {
+      return m.checklists.itemsSummary(count);
+    }
     final completedAt = ServerFeature.checklistCompletionTime
         ? list.lastCompletedAt
         : null;
@@ -440,6 +515,22 @@ class _ListTile extends StatelessWidget {
               ],
             ),
           ),
+          if (list.kind == ListKind.inventory && (list.needsRestock ?? 0) > 0)
+            Padding(
+              padding: const EdgeInsetsDirectional.only(end: 8),
+              child: Tooltip(
+                message: m.stock.needsRestockCount(list.needsRestock!),
+                child: Semantics(
+                  label: m.stock.needsRestockCount(list.needsRestock!),
+                  excludeSemantics: true,
+                  child: Badge(
+                    label: Text('${list.needsRestock}'),
+                    backgroundColor: cs.error,
+                    textColor: cs.onError,
+                  ),
+                ),
+              ),
+            ),
           if (selected)
             Container(
               width: 24,
@@ -462,6 +553,7 @@ class _ListTile extends StatelessWidget {
                 onSelected: (v) {
                   if (v == 'edit') onEdit?.call();
                   if (v == 'duplicate') onDuplicate?.call();
+                  if (v == 'apply') onApply?.call();
                   if (v == 'archive') onArchive?.call();
                   if (v == 'remove') onRemove?.call();
                 },
@@ -473,7 +565,7 @@ class _ListTile extends StatelessWidget {
                         children: [
                           const Icon(Icons.edit_outlined, size: 18),
                           const SizedBox(width: 10),
-                          Text(m.checklists.editList),
+                          Text(_editLabel),
                         ],
                       ),
                     ),
@@ -485,6 +577,17 @@ class _ListTile extends StatelessWidget {
                           const Icon(Icons.copy_outlined, size: 18),
                           const SizedBox(width: 10),
                           Text(m.checklists.duplicateList),
+                        ],
+                      ),
+                    ),
+                  if (onApply != null)
+                    PopupMenuItem<String>(
+                      value: 'apply',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.playlist_add, size: 18),
+                          const SizedBox(width: 10),
+                          Text(_applyLabel),
                         ],
                       ),
                     ),
@@ -506,7 +609,7 @@ class _ListTile extends StatelessWidget {
                         children: [
                           const Icon(Icons.delete_outline, size: 18),
                           const SizedBox(width: 10),
-                          Text(m.checklists.removeList),
+                          Text(_removeLabel),
                         ],
                       ),
                     ),
@@ -544,10 +647,12 @@ class _ListTile extends StatelessWidget {
       onDuplicate: onDuplicate,
       onRemove: onRemove,
       onArchive: onArchive,
-      editLabel: m.checklists.editList,
+      onApply: onApply,
+      editLabel: _editLabel,
       duplicateLabel: m.checklists.duplicateList,
-      removeLabel: m.checklists.removeList,
+      removeLabel: _removeLabel,
       archiveLabel: m.checklists.archiveList,
+      applyLabel: _applyLabel,
       child: interactive,
     );
   }

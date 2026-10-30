@@ -80,7 +80,7 @@ home:
   noHouses: Ingen hus enno.
   noHousesBody:
     "Hus er eit område for hushaldninga di. Opprett ditt fyrste hus for
-    å kunne leggje til sjekklister, bilete og notat."
+    å kunne leggje til lister, bilete og notat."
   createHouse: Opprett hus
   houseName: Namn på hus
   houseDescription: Skildring (valfritt)
@@ -97,6 +97,8 @@ home:
 nav:
   checklists: Sjekkliste
   checklist: Sjekkliste
+  lists: Lister
+  list: Liste
   photoBoard: Fotovegg
   notesWall: Notatvegg
 
@@ -239,6 +241,19 @@ onboarding:
   joinTripBody: "Når nokon i huset er ute og handlar, tilbyr eit banner deg handleturen deira i staden for ein til av din eigen. De går han saman — det ein av dykk kryssar av, er borte for den andre."
   joinTripMockHousemate: "Dana"
   joinTripHow: "Alt i gang med din eigen? Blir du med, blir han først lagra i historikken din. Går du ut av ein handletur du blei med på, held han fram for alle som er att i han."
+  inventoryTitle: "Vit kva som er i skapet"
+  inventoryBody: "Lager held styr på kor mykje du har av kvar ting og når det går ut. Tel ned mengdene medan du brukar dei, og Pantry merkjer det som minkar eller snart går ut."
+  inventoryHow: "Gje eit lager ei påfyllingsliste i innstillingane, så kjem alt som minkar eller går ut på ho av seg sjølv. Kryss det av i butikken, og lageret blir fylt opp att."
+  inventoryMockEggs: "Egg"
+  inventoryMockMilk: "Mjølk"
+  inventoryMockFlour: "Mjøl"
+  templateTitle: "Malar for det du alltid kjøper"
+  templateBody: "Ta vare på varene du legg til om att og om att i ein mal. Knyt han til ei liste, så føreslår skriving der varene hans, med alle detaljar."
+  templateHow(String apply): "For å kopiere heile malen på ein gong, opna menyen hans i listeveljaren og vel ${apply}."
+  templateMockName: "Vekehandel"
+  templateMockTyped: "Mj"
+  templateMockFirst: "Mjølk"
+  templateMockSecond: "Mjøl"
   dev:
     showOnboarding: Vis oppstartshjelp
     pickLastSeenTitle: Førehandsvis kva som er nytt
@@ -1054,6 +1069,294 @@ checklists:
     imported(int count):
       "${_plural(count, one: 'Importert 1 oppføring', many: 'Importert
       $count oppføringar')}"
+listKinds:
+  duplicateAs: "Dupliser som:"
+  itemsSkippedNoEdit(int count): "${_plural(count, one: '1 oppføring vart hoppa over fordi du ikkje har tilgang til å redigere han.', many: '$count oppføringar vart hoppa over fordi du ikkje har tilgang til å redigere dei.')}"
+  itemsSkippedUncheck(int count): "${_plural(count, one: 'Klarte ikkje fjerne avkryssinga på 1 oppføring.', many: 'Klarte ikkje fjerne avkryssinga på $count oppføringar.')}"
+  checklist:
+    title: Sjekklister
+    name: Sjekkliste
+    newList: Ny sjekkliste
+    createTitle: Opprett ei sjekkliste
+    editTitle: Rediger ei sjekkliste
+    duplicateTitle: Dupliser sjekkliste
+    duplicateFailed: Klarte ikkje duplisere sjekklista
+    listMenu: Handlingar for sjekkliste
+    deleteDialogTitle: Fjern sjekkliste
+    emptyTitle: Ingen sjekklister enno
+    emptyBody: Opprett din fyrste sjekkliste for å leggje til oppføringar.
+    trashTitle: Papirkorg for sjekklister
+    trashEmptyBody: Sletta sjekklister kjem opp her.
+    archiveTitle: Arkiverte sjekklister
+    archiveEmptyTitle: Ingen arkiverte sjekklister
+    archiveEmptyBody: Arkiverte sjekklister kjem opp her.
+    emptyTrashBody: Dette vil permanent slette alle sjekklister i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast.
+    listRestored: Sjekkliste gjenoppretta
+    listMovedToTrash: Sjekkliste flytta til papirkorga
+    listArchived: Sjekkliste arkivert
+    listUnarchived: Sjekkliste henta ut av arkivet
+  inventory:
+    title: Lagerlister
+    name: Lagerliste
+    newList: Ny lagerliste
+    createTitle: Opprett ei lagerliste
+    editTitle: Rediger ei lagerliste
+    duplicateTitle: Dupliser lagerliste
+    duplicateFailed: Klarte ikkje duplisere lagerlista
+    listMenu: Handlingar for lagerliste
+    deleteDialogTitle: Fjern lagerliste
+    emptyTitle: Ingen lagerlister enno
+    emptyBody: Opprett din fyrste lagerliste for å leggje til oppføringar.
+    trashTitle: Papirkorg for lagerlister
+    trashEmptyBody: Sletta lagerlister kjem opp her.
+    archiveTitle: Arkiverte lagerlister
+    archiveEmptyTitle: Ingen arkiverte lagerlister
+    archiveEmptyBody: Arkiverte lagerlister kjem opp her.
+    emptyTrashBody: Dette vil permanent slette alle lagerlister i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast.
+    listRestored: Lagerliste gjenoppretta
+    listMovedToTrash: Lagerliste flytta til papirkorga
+    listArchived: Lagerliste arkivert
+    listUnarchived: Lagerliste henta ut av arkivet
+  template:
+    title: Malar
+    name: Mal
+    newList: Ny mal
+    createTitle: Opprett ein mal
+    editTitle: Rediger ein mal
+    duplicateTitle: Dupliser mal
+    duplicateFailed: Klarte ikkje duplisere malen
+    listMenu: Handlingar for mal
+    deleteDialogTitle: Fjern mal
+    emptyTitle: Ingen malar enno
+    emptyBody: Opprett din fyrste mal for å leggje til oppføringar.
+    trashTitle: Papirkorg for malar
+    trashEmptyBody: Sletta malar kjem opp her.
+    archiveTitle: Arkiverte malar
+    archiveEmptyTitle: Ingen arkiverte malar
+    archiveEmptyBody: Arkiverte malar kjem opp her.
+    emptyTrashBody: Dette vil permanent slette alle malar i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast.
+    listRestored: Mal gjenoppretta
+    listMovedToTrash: Mal flytta til papirkorga
+    listArchived: Mal arkivert
+    listUnarchived: Mal henta ut av arkivet
+templates:
+  suggestionsHeader: Forslag
+  fromTemplates(String names): "Frå malar: $names"
+  addedFromTemplate(String name): La til «$name» frå ein mal
+  drawFailed: Klarte ikkje leggje til oppføringa frå malen
+  attachedLabel: "Malar:"
+  attachedPlaceholder: Ingen malar
+  attachedHint: Når du skriv inn ei ny oppføring, får du forslag om samsvarande oppføringar frå desse malane.
+  attachedEveryListHint(String names): Når du skriv inn ei ny oppføring, får du forslag om samsvarande oppføringar frå desse malane, og frå $names, som alle lister brukar.
+  suggestInLabel: "Foreslå i:"
+  everyList: Alle lister
+  suggestInPlaceholder: Ingen lister
+  suggestInHint: Når du skriv inn ei ny oppføring i desse listene, får du forslag om samsvarande oppføringar frå denne malen. Vel du «Alle lister», kjem òg lister som vert oppretta seinare med.
+  listWithKind(String list, String kind): "$list ($kind)"
+  attachFailed: Klarte ikkje lagre dei tilknytte malane
+  fillLabel: Fyll maloppføringar frå desse standardverdiane
+  fillHint: Når ei oppføring vert lagd til frå ein mal, startar dei tomme detaljane med verdiane ovanfor. Kvar person kan overstyre dette i dei personlege innstillingane sine.
+  fillPrefLabel: Fyll maloppføringar frå standardverdiane
+  fillPrefHint: Når du legg til ei oppføring frå ein mal, vert dei tomme detaljane fylte frå standardverdiane til lista. Kvar liste kan slå dette av i standardverdiane sine.
+  fillPrefNames:
+    list: Følg kvar liste
+    always: Fyll alltid
+    never: Fyll aldri
+  fillPrefFailed: Klarte ikkje lagre innstillinga
+  applyToList: Bruk på liste
+  applyTemplate: Bruk malen
+  attachedTemplates: Knytt til denne lista
+  otherTemplates: Andre malar
+  noTargets: Det finst ingen sjekklister eller lagerlister å bruke denne malen på.
+  noItems: Denne malen har ingen oppføringar.
+  alreadyOnList: Allereie på lista
+  reviewSummary(String template, String list): Kopier dei avkryssa oppføringane frå $template til $list.
+  applyItems(int count): "${_plural(count, one: 'Bruk 1 oppføring', many: 'Bruk $count oppføringar')}"
+  appliedAdded(int count, String list): "${_plural(count, one: 'La til 1 oppføring i $list', many: 'La til $count oppføringar i $list')}"
+  appliedReused(int count, String list): "${_plural(count, one: '1 oppføring var allereie i $list og vart henta fram att', many: '$count oppføringar var allereie i $list og vart henta fram att')}"
+  appliedMixed(String list, int added, int reused): "$list: $added lagt til, $reused henta fram att"
+  applyFailed: Klarte ikkje bruke malen
+  loadFailed: Klarte ikkje laste malane
+  back: Tilbake
+stock:
+  inStock: På lager
+  full: Full
+  low: Lite
+  out: Tom
+  lowBuy(String amount): "Lite · kjøp $amount"
+  outBuy(String amount): "Tom · kjøp $amount"
+  notCounted: Ikkje talt
+  expiredOn(String date): "Gjekk ut $date"
+  expiredOnBuy(String date, String amount): "Gjekk ut $date · kjøp $amount"
+  expiresToday: Går ut i dag
+  expiresTodayBuy(String amount): "Går ut i dag · kjøp $amount"
+  expiresTomorrow: Går ut i morgon
+  expiresTomorrowBuy(String amount): "Går ut i morgon · kjøp $amount"
+  expiresInDays(int count): "${_plural(count, one: 'Går ut om 1 dag', many: 'Går ut om $count dagar')}"
+  expiresInDaysBuy(int count, String amount): "${_plural(count, one: 'Går ut om 1 dag · kjøp $amount', many: 'Går ut om $count dagar · kjøp $amount')}"
+  goodUntil(String date): "Haldbar til $date"
+  amount(String onHand, String target): "$onHand / $target"
+  decrease: Minsk mengda på lager
+  increase: Auk mengda på lager
+  onHandEdit: Mengd på lager
+  levelButton(String level): "Lagernivå: $level"
+  needsRestockCount(int count): "${_plural(count, one: '1 oppføring må fyllast på', many: '$count oppføringar må fyllast på')}"
+  filter: Lager
+  filterAll: Alle oppføringar
+  filterNeedsRestock: Må fyllast på
+  filterInStock: På lager
+  writeRefused: Klarte ikkje lagre lagerendringa. Lagerlista viser no det tenaren har.
+  settings:
+    action: Innstillingar for lagerlista
+    title: Innstillingar for lagerlista
+    name: Namn
+    nameHint: Ikon, farge og deling fungerer som på sjekklister.
+    expiryWarning: Varsel om utløp
+    warnBefore(String days): "Varsle $days dagar før utløp"
+    daysBefore: Dagar før utløp
+    warnHint: Set 0 for å varsle på sjølve utløpsdatoen.
+    restockChecklist: Sjekkliste for påfylling
+    restockNone: Ingen
+    restockSetHint: Oppføringar som blir lite av eller snart går ut, blir lagde til på denne sjekklista.
+    restockUnsetHint: Utan ho blir oppføringar med lite att eller som snart går ut, berre merkte her.
+    notifications: Varsel
+    stockSummary: Dagleg lageroversikt
+    stockSummaryHint: Ein gong om dagen, fortel medlemene kva som nyleg har blitt lite av eller snart går ut her. Kvart medlem kan òg slå det av i sine eigne innstillingar.
+    cancel: Avbryt
+    save: Lagre
+  card:
+    title: Lager
+    mode: Lagermodus
+    count: Tal
+    level: Nivå
+    countHint: Hald oversikt over kor mange du har, t.d. 4 av 12 egg.
+    levelHint: Hald oversikt som Full, Lite eller Tom, t.d. mjøl eller krydder.
+    onHand: På lager
+    onHandPlaceholder: t.d. 4
+    target: Mål
+    targetPlaceholder: t.d. 12 egg
+    reorderPoint: Påfyllingspunkt
+    reorderPlaceholder: t.d. 4
+    stockLevel: Lagernivå
+    restockAmount: Påfyllingsmengd
+    restockPlaceholder: t.d. 1 kg-pose
+    convertedLevelAmount(String level, String amount): 'Konvertert: nivå $level, påfyllingsmengd "$amount".'
+    convertedLevel(String level): "Konvertert: nivå $level."
+    convertedCount(String onHand, String target): 'Konvertert: på lager "$onHand", mål "$target".'
+    convertedTargetOnly(String target): 'Konvertert: mål "$target". Skriv inn mengda på lager.'
+    convertedBlank: Konvertert til tal. Skriv inn mengda på lager og eit mål.
+    statusExpiredBuy(String amount): "Gått ut: kjøp $amount."
+    statusExpired: Gått ut.
+    statusExpiringBuy(String amount): "Går snart ut: kjøp $amount."
+    statusExpiring: Går snart ut.
+    statusLowBuy(String amount): "Lite: kjøp $amount."
+    statusLow: Lite.
+    statusOutBuy(String amount): "Tom: kjøp $amount."
+    statusOut: Tom.
+    statusUncountedTarget: "Ikkje talt: målet har ikkje noko tal, så det blir aldri lite."
+    statusUncountedOnHand: "Ikkje talt: mengda på lager har ikkje noko tal, så det blir aldri lite."
+    statusInStock: På lager.
+    templateDefaultMode: Utan vald lagermodus blir standarden til lagerlista brukt.
+    templateStartsCount(String amount): "Når han blir lagd i ei lagerliste, startar han full med $amount på lager."
+    templateStartsLevelAmount(String amount): "Når han blir lagd i ei lagerliste, startar han som Full og blir fylt på med $amount."
+    templateStartsLevel: Når han blir lagd i ei lagerliste, startar han som Full.
+    templateUncounted: Når han blir lagd i ei lagerliste utan mål, blir han ikkje talt.
+  expiry:
+    title: Utløp
+    mode: Korleis oppføringa går ut
+    none: Ingen
+    date: Dato
+    keeps: Held seg N dagar
+    expiryDate: Utløpsdato
+    daysItKeeps: Dagar han held seg
+    expiredSummary(String date): "Gjekk ut $date."
+    goodUntilSummary(String date): "Haldbar til $date."
+    renews(int count): "${_plural(count, one: 'Kvar påfylling fornyar han til 1 dag frå den dagen.', many: 'Kvar påfylling fornyar han til $count dagar frå den dagen.')}"
+    templateExpires(int count): "${_plural(count, one: 'Når han blir lagd i ei lagerliste, går han ut 1 dag seinare.', many: 'Når han blir lagd i ei lagerliste, går han ut $count dagar seinare.')}"
+    chip: Utløp
+    chipExpires(String date): "Går ut $date"
+    chipExpired(String date): "Gjekk ut $date"
+    chipKeeps(int count): "${_plural(count, one: 'Held seg 1 dag', many: 'Held seg $count dagar')}"
+  compose:
+    chip: Lager
+    count: Tal
+    level: Nivå
+    levelAmount(String amount): "Nivå · $amount"
+    targetValue(String target): "Mål: $target"
+    fullWhenEmpty: Full når tom
+  noRestockChecklist: Denne lagerlista har inga sjekkliste for påfylling, så desse oppføringane blir berre merkte her. Vel ei i innstillingane for lagerlista.
+  renewChip(String date): "Forny utløp → $date"
+  renewAction: Forny utløp
+  summaryPref: Dagleg lageroversikt
+  summaryPrefHint: Ein gong om dagen, kva som nyleg har blitt lite av eller snart går ut i lagerlistene i dette huset.
+  summaryPrefFailed: Klarte ikkje lagre innstillinga for lageroversikta.
+  links:
+    caption: Handleliste
+    tooltipLinked(String row, String list): "Kopla til $row på $list"
+    tooltipNeedsPick(int count): "${_plural(count, one: 'Ikkje kopla: 1 treff, vel eitt', many: 'Ikkje kopla: $count treff, vel eitt')}"
+    tooltipAutoOn: "Ikkje kopla enno: blir lagd til på handlelista når det blir lite"
+    tooltipAutoOff: "Ikkje kopla: blir aldri lagd til på ei handleliste"
+    rowOnList(String row, String list, String state): "$row på $list · $state"
+    stateOpen: open
+    stateChecked: kryssa av
+    stateArchived: arkivert
+    stateTrashed: i papirkorga
+    stateQuantity(String quantity): "× $quantity"
+    unlink: Kople frå
+    whichOne: Kva for ein er det?
+    candidate(String row, String list, String state): "$row, $list, $state"
+    autoLink: Legg til på handlelista når det blir lite
+    linkByHand: Kople for hand
+    chipNeedsPick(int count): "${_plural(count, one: 'Ikkje kopla · 1 treff, vel eitt', many: 'Ikkje kopla · $count treff, vel eitt')}"
+    chipNotAdded: Blir ikkje lagd til på ei handleliste
+    cardLinked(String row, String list, String state): "Kopla til $row på $list · $state"
+    linkDifferent: Kople til ei anna oppføring …
+    linkedHint: Når det blir lite av ho eller ho snart går ut, kjem denne oppføringa tilbake på den lista.
+    matches(int count): "${_plural(count, one: '1 oppføring passar', many: '$count oppføringar passar')}"
+    matchesQuestion(String matches): "$matches på sjekklista for påfylling. Kva for ei er det?"
+    link: Kople
+    autoHintOn(String item, String list): "Finn eller legg til «$item» på $list når det trengst."
+    autoHintNoChecklist: Vel ei sjekkliste for påfylling i innstillingane for lagerlista for å finne eller leggje til denne oppføringa der.
+    autoHintOff: Denne oppføringa blir berre merkt her når det blir lite av ho.
+    linkToItem: Kople til ei oppføring …
+    pickerTitle: Kople til ei oppføring på ei sjekkliste
+    pickerField: Oppføring på sjekkliste
+    pickerSearch: Søk i oppføringar på sjekklister …
+    pickerSearching: Søkjer …
+    pickerEmpty: Fann ingen oppføringar
+    pickerRow(String row, String list): "$row — $list"
+    pickerArchived: arkivert
+    pickerFailed: Klarte ikkje laste oppføringar. Sjekk tilkoplinga og prøv igjen.
+    cancel: Avbryt
+  restock:
+    added(String what, String list): "La til $what på $list"
+    revivedQuantity(String list, String row, String quantity): "Tilbake på $list: $row × $quantity"
+    revived(String list, String row): "Tilbake på $list: $row"
+    changed(String list, String row, String quantity): "$list: $row no × $quantity"
+    pinnedAt(String row, String list, String quantity): "$row på $list er festa på × $quantity"
+    pinned(String row, String list): "$row på $list er festa"
+    recovered(String row, String list): "Ikkje lenger nødvendig: $row på $list"
+    linked(String item, String row, String list): "Kopla $item til $row på $list"
+    unlinked(String item, String row, String list): "Kopla $item frå $row på $list. Det blir ikkje lagt til på ei handleliste."
+    severalMatches(String item, int count, String list): "${_plural(count, one: '$item passar med 1 oppføring på $list. Vel ei å kople til.', many: '$item passar med $count oppføringar på $list. Vel ei å kople til.')}"
+    restocked(String parts): "Fylte på $parts"
+    replaced(String parts): "Bytte ut $parts"
+    restockedReplaced(String restock, String replace): "Fylte på $restock, bytte ut $replace"
+    undidRestocked(String parts): "Angra: fylte på $parts"
+    undidReplaced(String parts): "Angra: bytte ut $parts"
+    undidRestockedReplaced(String restock, String replace): "Angra: fylte på $restock, bytte ut $replace"
+    partAdded(String item, String inventory, String amount): "$item ($inventory) +$amount"
+    partFull(String item, String inventory): "$item ($inventory) til Full"
+    partReplaced(String item, String inventory, String amount): "$item ($inventory) ×$amount"
+    partReplacedFull(String item, String inventory): "$item ($inventory), Full"
+    uncheckToUndo(String restock): "$restock · fjern krysset for å angre"
+    source(String item, String inventory): "$item ($inventory)"
+    restocks(String items): "Fyller på $items"
+    pinnedChip(String quantity): "× $quantity"
+    pinnedChipBare: Festa
+    pinnedChipTooltip: Festa, så lageret lèt det vere. Trykk for å løysa.
+    noLongerNeeded: Ikkje lenger nødvendig
+
 notesWall:
   noNotes: Ingen notat enno
   failedToLoad: Klarte ikkje laste notat
@@ -1483,6 +1786,12 @@ wear:
   accent: Aksentfarge
   accentServer: Nextcloud-fargen din
   accentApp: Pantry-fargen
+  # TRANSLATORS: {amount} is the amount on hand that changed, in the item's own wording, e.g. "3 eggs". Keep the sign in front of it.
+  stockRaised(String amount): "+$amount"
+  # TRANSLATORS: {amount} is the amount on hand that changed, in the item's own wording, e.g. "3 eggs". Keep the sign in front of it.
+  stockLowered(String amount): "−$amount"
+  stockClose: Ferdig med å justere
+  nothingNeedsRestock: Ingenting treng påfyll
 
 watch:
   title: Klokke

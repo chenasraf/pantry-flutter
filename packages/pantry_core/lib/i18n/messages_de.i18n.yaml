@@ -59,7 +59,7 @@ login:
 
 home:
   noHouses: "Noch keine Häuser."
-  noHousesBody: "Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Checklisten, Fotos und Notizen hinzuzufügen."
+  noHousesBody: "Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Listen, Fotos und Notizen hinzuzufügen."
   createHouse: Haus erstellen
   houseName: Hausname
   houseDescription: Beschreibung (optional)
@@ -73,6 +73,8 @@ home:
 nav:
   checklists: Checklisten
   checklist: Checkliste
+  lists: Listen
+  list: Liste
   photoBoard: Fotowand
   notesWall: Notizwand
 
@@ -173,6 +175,19 @@ onboarding:
   joinTripBody: "Wenn jemand in deinem Haushalt gerade einkauft, bietet dir ein Banner dessen Einkauf an, statt eines zweiten eigenen. Ihr geht ihn gemeinsam durch — was eine:r von euch abhakt, ist auch für die anderen weg."
   joinTripMockHousemate: "Dana"
   joinTripHow: "Schon unterwegs? Beim Beitreten wird dein eigener Einkauf zuerst in deinem Verlauf gespeichert. Steigst du aus einem Einkauf aus, dem du beigetreten bist, läuft er für alle anderen weiter."
+  inventoryTitle: "Wissen, was im Schrank ist"
+  inventoryBody: "Vorräte halten fest, wie viel du von allem hast und wann es abläuft. Zähl Mengen herunter, während du sie verbrauchst, und Pantry markiert, was knapp wird oder bald abläuft."
+  inventoryHow: "Gib einem Vorrat in seinen Einstellungen eine Nachkauf-Liste, und alles, was knapp wird oder abläuft, landet von selbst darauf. Hak es im Laden ab, und der Vorrat füllt sich wieder auf."
+  inventoryMockEggs: "Eier"
+  inventoryMockMilk: "Milch"
+  inventoryMockFlour: "Mehl"
+  templateTitle: "Vorlagen für das, was du immer kaufst"
+  templateBody: "Leg Artikel, die du immer wieder hinzufügst, in einer Vorlage ab. Häng sie an eine Liste, und beim Tippen dort werden ihre Artikel samt Details vorgeschlagen."
+  templateHow(String apply): "Um eine ganze Vorlage auf einmal zu übernehmen, öffne ihr Menü in der Listenauswahl und wähle ${apply}."
+  templateMockName: "Wocheneinkauf"
+  templateMockTyped: "Mi"
+  templateMockFirst: "Milch"
+  templateMockSecond: "Mineralwasser"
   dev:
     showOnboarding: "Onboarding anzeigen"
     pickLastSeenTitle: "Neuigkeiten ansehen"
@@ -183,7 +198,7 @@ onboarding:
 
 notificationsIntro:
   title: Bleib auf dem Laufenden
-  body: "Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Checklisten hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter."
+  body: "Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Listen hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter."
   bullet1: "Benachrichtigungen über Haushaltsaktivitäten"
   bullet2: Direkt von deinem Server abgerufen
   bullet3: "Funktioniert auch bei geschlossener App"
@@ -918,6 +933,296 @@ checklists:
     addItems(int count): "${_plural(count, one: '1 Eintrag hinzufügen', many: '$count Einträge hinzufügen')}"
     imported(int count): "${_plural(count, one: '1 Eintrag importiert', many: '$count Einträge importiert')}"
 
+listKinds:
+  duplicateAs: "Duplizieren als:"
+  itemsSkippedNoEdit(int count): "${_plural(count, one: '1 Element wurde übersprungen, da du es nicht bearbeiten kannst.', many: '$count Elemente wurden übersprungen, da du sie nicht bearbeiten kannst.')}"
+  itemsSkippedUncheck(int count): "${_plural(count, one: '1 Element konnte nicht als unerledigt markiert werden.', many: '$count Elemente konnten nicht als unerledigt markiert werden.')}"
+  checklist:
+    title: Checklisten
+    name: Checkliste
+    newList: Neue Checkliste
+    createTitle: Checkliste erstellen
+    editTitle: Checkliste bearbeiten
+    duplicateTitle: Checkliste duplizieren
+    duplicateFailed: Die Checkliste konnte nicht dupliziert werden
+    listMenu: Checklisten-Aktionen
+    deleteDialogTitle: Checkliste entfernen
+    emptyTitle: Noch keine Checklisten
+    emptyBody: Erstelle deine erste Checkliste, um mit dem Hinzufügen von Elementen zu beginnen.
+    trashTitle: Checklisten-Papierkorb
+    trashEmptyBody: Gelöschte Checklisten werden hier angezeigt.
+    archiveTitle: Archivierte Checklisten
+    archiveEmptyTitle: Keine archivierten Checklisten
+    archiveEmptyBody: Archivierte Checklisten werden hier angezeigt.
+    emptyTrashBody: Dadurch werden alle Checklisten, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.
+    listRestored: Checkliste wiederhergestellt
+    listMovedToTrash: Checkliste in den Papierkorb verschoben
+    listArchived: Checkliste archiviert
+    listUnarchived: Checkliste dearchiviert
+  inventory:
+    title: Bestandslisten
+    name: Bestandsliste
+    newList: Neue Bestandsliste
+    createTitle: Bestandsliste erstellen
+    editTitle: Bestandsliste bearbeiten
+    duplicateTitle: Bestandsliste duplizieren
+    duplicateFailed: Die Bestandsliste konnte nicht dupliziert werden
+    listMenu: Bestandslisten-Aktionen
+    deleteDialogTitle: Bestandsliste entfernen
+    emptyTitle: Noch keine Bestandslisten
+    emptyBody: Erstelle deine erste Bestandsliste, um mit dem Hinzufügen von Elementen zu beginnen.
+    trashTitle: Bestandslisten-Papierkorb
+    trashEmptyBody: Gelöschte Bestandslisten werden hier angezeigt.
+    archiveTitle: Archivierte Bestandslisten
+    archiveEmptyTitle: Keine archivierten Bestandslisten
+    archiveEmptyBody: Archivierte Bestandslisten werden hier angezeigt.
+    emptyTrashBody: Dadurch werden alle Bestandslisten, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.
+    listRestored: Bestandsliste wiederhergestellt
+    listMovedToTrash: Bestandsliste in den Papierkorb verschoben
+    listArchived: Bestandsliste archiviert
+    listUnarchived: Bestandsliste dearchiviert
+  template:
+    title: Vorlagen
+    name: Vorlage
+    newList: Neue Vorlage
+    createTitle: Vorlage erstellen
+    editTitle: Vorlage bearbeiten
+    duplicateTitle: Vorlage duplizieren
+    duplicateFailed: Die Vorlage konnte nicht dupliziert werden
+    listMenu: Vorlagen-Aktionen
+    deleteDialogTitle: Vorlage entfernen
+    emptyTitle: Noch keine Vorlagen
+    emptyBody: Erstelle deine erste Vorlage, um mit dem Hinzufügen von Elementen zu beginnen.
+    trashTitle: Vorlagen-Papierkorb
+    trashEmptyBody: Gelöschte Vorlagen werden hier angezeigt.
+    archiveTitle: Archivierte Vorlagen
+    archiveEmptyTitle: Keine archivierten Vorlagen
+    archiveEmptyBody: Archivierte Vorlagen werden hier angezeigt.
+    emptyTrashBody: Dadurch werden alle Vorlagen, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.
+    listRestored: Vorlage wiederhergestellt
+    listMovedToTrash: Vorlage in den Papierkorb verschoben
+    listArchived: Vorlage archiviert
+    listUnarchived: Vorlage dearchiviert
+
+templates:
+  suggestionsHeader: Vorschläge
+  fromTemplates(String names): "Aus Vorlagen: $names"
+  addedFromTemplate(String name): '"$name" aus einer Vorlage hinzugefügt'
+  drawFailed: Der Eintrag konnte nicht aus der Vorlage hinzugefügt werden
+  attachedLabel: "Vorlagen:"
+  attachedPlaceholder: Keine Vorlagen
+  attachedHint: Beim Eintippen eines neuen Eintrags werden passende Einträge aus diesen Vorlagen vorgeschlagen.
+  attachedEveryListHint(String names): Beim Eintippen eines neuen Eintrags werden passende Einträge aus diesen Vorlagen vorgeschlagen, außerdem aus $names, die für jede Liste gelten.
+  suggestInLabel: "Vorschlagen in:"
+  everyList: Jede Liste
+  suggestInPlaceholder: Keine Listen
+  suggestInHint: Beim Eintippen eines neuen Eintrags auf diesen Listen werden passende Einträge aus dieser Vorlage vorgeschlagen. Mit „Jede Liste“ werden auch später erstellte Listen einbezogen.
+  listWithKind(String list, String kind): "$list ($kind)"
+  attachFailed: Die angehängten Vorlagen konnten nicht gespeichert werden
+  fillLabel: Vorlageneinträge mit diesen Vorgaben füllen
+  fillHint: Wenn ein Eintrag aus einer Vorlage hinzugefügt wird, starten die Details, die er leer lässt, mit den Werten oben. Jede Person kann dies in ihren persönlichen Einstellungen überschreiben.
+  fillPrefLabel: Vorlageneinträge mit Eintragsvorgaben füllen
+  fillPrefHint: Wenn du einen Eintrag aus einer Vorlage hinzufügst, werden die Details, die er leer lässt, mit den Eintragsvorgaben der Liste gefüllt. Jede Liste kann dies in ihren Eintragsvorgaben abschalten.
+  fillPrefNames:
+    list: Wie die jeweilige Liste
+    always: Immer füllen
+    never: Nie füllen
+  fillPrefFailed: Die Einstellung konnte nicht gespeichert werden
+  applyToList: Auf Liste anwenden
+  applyTemplate: Vorlage anwenden
+  attachedTemplates: An diese Liste angehängt
+  otherTemplates: Andere Vorlagen
+  noTargets: Es gibt keine Checklisten oder Bestandslisten, auf die diese Vorlage angewendet werden kann.
+  noItems: Diese Vorlage hat keine Einträge.
+  alreadyOnList: Bereits auf der Liste
+  reviewSummary(String template, String list): Die angehakten Einträge aus $template in $list kopieren.
+  applyItems(int count): "${_plural(count, one: '1 Eintrag anwenden', many: '$count Einträge anwenden')}"
+  appliedAdded(int count, String list): "${_plural(count, one: '1 Eintrag zu $list hinzugefügt', many: '$count Einträge zu $list hinzugefügt')}"
+  appliedReused(int count, String list): "${_plural(count, one: '1 Eintrag war bereits auf $list und wurde zurückgeholt', many: '$count Einträge waren bereits auf $list und wurden zurückgeholt')}"
+  appliedMixed(String list, int added, int reused): "$list: $added hinzugefügt, $reused zurückgeholt"
+  applyFailed: Die Vorlage konnte nicht angewendet werden
+  loadFailed: Die Vorlagen konnten nicht geladen werden
+  back: Zurück
+
+stock:
+  inStock: Vorrätig
+  full: Voll
+  low: Knapp
+  out: Leer
+  lowBuy(String amount): "Knapp · $amount kaufen"
+  outBuy(String amount): "Leer · $amount kaufen"
+  notCounted: Nicht gezählt
+  expiredOn(String date): "Abgelaufen am $date"
+  expiredOnBuy(String date, String amount): "Abgelaufen am $date · $amount kaufen"
+  expiresToday: Läuft heute ab
+  expiresTodayBuy(String amount): "Läuft heute ab · $amount kaufen"
+  expiresTomorrow: Läuft morgen ab
+  expiresTomorrowBuy(String amount): "Läuft morgen ab · $amount kaufen"
+  expiresInDays(int count): "${_plural(count, one: 'Läuft in 1 Tag ab', many: 'Läuft in $count Tagen ab')}"
+  expiresInDaysBuy(int count, String amount): "${_plural(count, one: 'Läuft in 1 Tag ab · $amount kaufen', many: 'Läuft in $count Tagen ab · $amount kaufen')}"
+  goodUntil(String date): "Haltbar bis $date"
+  amount(String onHand, String target): "$onHand / $target"
+  decrease: Vorhandene Menge verringern
+  increase: Vorhandene Menge erhöhen
+  onHandEdit: Vorhandene Menge
+  levelButton(String level): "Bestandsstufe: $level"
+  needsRestockCount(int count): "${_plural(count, one: '1 Eintrag muss nachgekauft werden', many: '$count Einträge müssen nachgekauft werden')}"
+  filter: Bestand
+  filterAll: Alle Einträge
+  filterNeedsRestock: Nachkaufen nötig
+  filterInStock: Vorrätig
+  writeRefused: Die Bestandsänderung konnte nicht gespeichert werden. Die Bestandsliste zeigt jetzt den Stand des Servers.
+  settings:
+    action: Bestandslisten-Einstellungen
+    title: Bestandslisten-Einstellungen
+    name: Name
+    nameHint: Symbol, Farbe und Teilen funktionieren wie bei Checklisten.
+    expiryWarning: Ablaufwarnung
+    warnBefore(String days): "$days Tage vor Ablauf warnen"
+    daysBefore: Tage vor Ablauf
+    warnHint: 0 eingeben, um am Ablaufdatum selbst zu warnen.
+    restockChecklist: Nachkauf-Checkliste
+    restockNone: Keine
+    restockSetHint: Einträge, die knapp werden oder bald ablaufen, kommen auf diese Checkliste.
+    restockUnsetHint: Ohne sie werden knappe und bald ablaufende Einträge nur hier markiert.
+    notifications: Benachrichtigungen
+    stockSummary: Tägliche Bestandsübersicht
+    stockSummaryHint: Einmal am Tag den Mitgliedern sagen, was hier neu knapp wurde oder bald abläuft. Jedes Mitglied kann sie auch in den eigenen Einstellungen abschalten.
+    cancel: Abbrechen
+    save: Speichern
+  card:
+    title: Bestand
+    mode: Bestandsmodus
+    count: Anzahl
+    level: Stufe
+    countHint: Verfolge, wie viele du hast, z. B. 4 von 12 Eiern.
+    levelHint: Verfolge es als Voll, Knapp oder Leer, z. B. Mehl oder Gewürze.
+    onHand: Vorhanden
+    onHandPlaceholder: z. B. 4
+    target: Ziel
+    targetPlaceholder: z. B. 12 Eier
+    reorderPoint: Nachkaufschwelle
+    reorderPlaceholder: z. B. 4
+    stockLevel: Bestandsstufe
+    restockAmount: Nachkaufmenge
+    restockPlaceholder: z. B. 1-kg-Packung
+    convertedLevelAmount(String level, String amount): "Umgewandelt: Stufe $level, Nachkaufmenge „$amount“."
+    convertedLevel(String level): "Umgewandelt: Stufe $level."
+    convertedCount(String onHand, String target): "Umgewandelt: vorhanden „$onHand“, Ziel „$target“."
+    convertedTargetOnly(String target): "Umgewandelt: Ziel „$target“. Gib die vorhandene Menge ein."
+    convertedBlank: In eine Anzahl umgewandelt. Gib die vorhandene Menge und ein Ziel ein.
+    statusExpiredBuy(String amount): "Abgelaufen: $amount kaufen."
+    statusExpired: Abgelaufen.
+    statusExpiringBuy(String amount): "Läuft bald ab: $amount kaufen."
+    statusExpiring: Läuft bald ab.
+    statusLowBuy(String amount): "Knapp: $amount kaufen."
+    statusLow: Knapp.
+    statusOutBuy(String amount): "Leer: $amount kaufen."
+    statusOut: Leer.
+    statusUncountedTarget: "Nicht gezählt: Das Ziel hat keine Zahl, daher wird es nie knapp."
+    statusUncountedOnHand: "Nicht gezählt: Die vorhandene Menge hat keine Zahl, daher wird es nie knapp."
+    statusInStock: Vorrätig.
+    templateDefaultMode: Ohne gewählten Bestandsmodus gilt die Vorgabe der Bestandsliste.
+    templateStartsCount(String amount): "In eine Bestandsliste übernommen, startet es voll mit $amount vorhanden."
+    templateStartsLevelAmount(String amount): "In eine Bestandsliste übernommen, startet es mit Voll und wird mit $amount nachgekauft."
+    templateStartsLevel: In eine Bestandsliste übernommen, startet es mit Voll.
+    templateUncounted: In eine Bestandsliste ohne Ziel übernommen, wird es nicht gezählt.
+  expiry:
+    title: Ablauf
+    mode: Wie der Eintrag abläuft
+    none: Keiner
+    date: Datum
+    keeps: Hält N Tage
+    expiryDate: Ablaufdatum
+    daysItKeeps: Haltbarkeit in Tagen
+    expiredSummary(String date): "Abgelaufen am $date."
+    goodUntilSummary(String date): "Haltbar bis $date."
+    renews(int count): "${_plural(count, one: 'Jedes Nachkaufen setzt den Ablauf auf 1 Tag ab diesem Tag.', many: 'Jedes Nachkaufen setzt den Ablauf auf $count Tage ab diesem Tag.')}"
+    templateExpires(int count): "${_plural(count, one: 'In eine Bestandsliste übernommen, läuft es 1 Tag später ab.', many: 'In eine Bestandsliste übernommen, läuft es $count Tage später ab.')}"
+    chip: Ablauf
+    chipExpires(String date): "Läuft am $date ab"
+    chipExpired(String date): "Abgelaufen am $date"
+    chipKeeps(int count): "${_plural(count, one: 'Hält 1 Tag', many: 'Hält $count Tage')}"
+  compose:
+    chip: Bestand
+    count: Anzahl
+    level: Stufe
+    levelAmount(String amount): "Stufe · $amount"
+    targetValue(String target): "Ziel: $target"
+    fullWhenEmpty: Voll, wenn leer
+  noRestockChecklist: Diese Bestandsliste hat keine Nachkauf-Checkliste, daher werden diese Einträge nur hier markiert. Wähle eine in den Bestandslisten-Einstellungen.
+  renewChip(String date): "Ablauf erneuern → $date"
+  renewAction: Ablauf erneuern
+  summaryPref: Tägliche Bestandsübersicht
+  summaryPrefHint: Einmal am Tag, was in den Bestandslisten dieses Haushalts neu knapp wurde oder bald abläuft.
+  summaryPrefFailed: Die Einstellung zur Bestandsübersicht konnte nicht gespeichert werden.
+  links:
+    caption: Einkaufsliste
+    tooltipLinked(String row, String list): "Verknüpft mit $row auf $list"
+    tooltipNeedsPick(int count): "${_plural(count, one: 'Nicht verknüpft: 1 Treffer, wähle einen aus', many: 'Nicht verknüpft: $count Treffer, wähle einen aus')}"
+    tooltipAutoOn: "Noch nicht verknüpft: kommt auf die Einkaufsliste, wenn es knapp wird"
+    tooltipAutoOff: "Nicht verknüpft: kommt nie auf eine Einkaufsliste"
+    rowOnList(String row, String list, String state): "$row auf $list · $state"
+    stateOpen: offen
+    stateChecked: abgehakt
+    stateArchived: archiviert
+    stateTrashed: im Papierkorb
+    stateQuantity(String quantity): "× $quantity"
+    unlink: Verknüpfung lösen
+    whichOne: Welcher ist es?
+    candidate(String row, String list, String state): "$row, $list, $state"
+    autoLink: Auf die Einkaufsliste, wenn knapp
+    linkByHand: Von Hand verknüpfen
+    chipNeedsPick(int count): "${_plural(count, one: 'Nicht verknüpft · 1 Treffer, wähle einen aus', many: 'Nicht verknüpft · $count Treffer, wähle einen aus')}"
+    chipNotAdded: Kommt auf keine Einkaufsliste
+    cardLinked(String row, String list, String state): "Verknüpft mit $row auf $list · $state"
+    linkDifferent: Mit einem anderen Eintrag verknüpfen …
+    linkedHint: Wenn er knapp wird oder bald abläuft, kommt dieser Eintrag wieder auf diese Liste.
+    matches(int count): "${_plural(count, one: '1 Eintrag passt', many: '$count Einträge passen')}"
+    matchesQuestion(String matches): "$matches auf der Nachkauf-Checkliste. Welcher ist es?"
+    link: Verknüpfen
+    autoHintOn(String item, String list): "Findet oder ergänzt „$item“ auf $list, wenn er gebraucht wird."
+    autoHintNoChecklist: Wähle in den Bestandslisten-Einstellungen eine Nachkauf-Checkliste, um diesen Eintrag dort zu finden oder zu ergänzen.
+    autoHintOff: Dieser Eintrag wird nur hier markiert, wenn er knapp wird.
+    linkToItem: Mit einem Eintrag verknüpfen …
+    pickerTitle: Mit einem Checklisten-Eintrag verknüpfen
+    pickerField: Checklisten-Eintrag
+    pickerSearch: Checklisten-Einträge suchen …
+    pickerSearching: Suche …
+    pickerEmpty: Keine Checklisten-Einträge gefunden
+    pickerRow(String row, String list): "$row — $list"
+    pickerArchived: archiviert
+    pickerFailed: Checklisten-Einträge konnten nicht geladen werden. Prüfe die Verbindung und versuche es erneut.
+    cancel: Abbrechen
+  restock:
+    added(String what, String list): "$what zu $list hinzugefügt"
+    revivedQuantity(String list, String row, String quantity): "Wieder auf $list: $row × $quantity"
+    revived(String list, String row): "Wieder auf $list: $row"
+    changed(String list, String row, String quantity): "$list: $row jetzt × $quantity"
+    pinnedAt(String row, String list, String quantity): "$row auf $list ist bei × $quantity angeheftet"
+    pinned(String row, String list): "$row auf $list ist angeheftet"
+    recovered(String row, String list): "Nicht mehr nötig: $row auf $list"
+    linked(String item, String row, String list): "$item mit $row auf $list verknüpft"
+    unlinked(String item, String row, String list): "Verknüpfung von $item mit $row auf $list gelöst. Es kommt auf keine Einkaufsliste."
+    severalMatches(String item, int count, String list): "${_plural(count, one: '$item passt zu 1 Eintrag auf $list. Wähle einen zum Verknüpfen.', many: '$item passt zu $count Einträgen auf $list. Wähle einen zum Verknüpfen.')}"
+    restocked(String parts): "Nachgefüllt: $parts"
+    replaced(String parts): "Ersetzt: $parts"
+    restockedReplaced(String restock, String replace): "Nachgefüllt: $restock; ersetzt: $replace"
+    undidRestocked(String parts): "Rückgängig: nachgefüllt $parts"
+    undidReplaced(String parts): "Rückgängig: ersetzt $parts"
+    undidRestockedReplaced(String restock, String replace): "Rückgängig: nachgefüllt $restock; ersetzt $replace"
+    partAdded(String item, String inventory, String amount): "$item ($inventory) +$amount"
+    partFull(String item, String inventory): "$item ($inventory) auf Voll"
+    partReplaced(String item, String inventory, String amount): "$item ($inventory) ×$amount"
+    partReplacedFull(String item, String inventory): "$item ($inventory), Voll"
+    uncheckToUndo(String restock): "$restock · zum Rückgängigmachen abhaken aufheben"
+    source(String item, String inventory): "$item ($inventory)"
+    restocks(String items): "Füllt nach: $items"
+    pinnedChip(String quantity): "× $quantity"
+    pinnedChipBare: Angeheftet
+    pinnedChipTooltip: Angeheftet, der Bestand ändert es nicht. Tippen zum Lösen.
+    noLongerNeeded: Nicht mehr nötig
+
 notesWall:
   noNotes: Noch keine Notizen.
   failedToLoad: Notizen konnten nicht geladen werden.
@@ -1335,6 +1640,12 @@ wear:
   accent: Akzentfarbe
   accentServer: Deine Nextcloud-Farbe
   accentApp: Pantry-Farbe
+  # TRANSLATORS: {amount} is the amount on hand that changed, in the item's own wording, e.g. "3 eggs". Keep the sign in front of it.
+  stockRaised(String amount): "+$amount"
+  # TRANSLATORS: {amount} is the amount on hand that changed, in the item's own wording, e.g. "3 eggs". Keep the sign in front of it.
+  stockLowered(String amount): "−$amount"
+  stockClose: Anpassen beenden
+  nothingNeedsRestock: Nichts muss nachgekauft werden
 
 watch:
   title: Uhr

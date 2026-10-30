@@ -78,6 +78,9 @@ class Messages {
   StoresMessages get stores => StoresMessages(this);
   LabelsMessages get labels => LabelsMessages(this);
   ChecklistsMessages get checklists => ChecklistsMessages(this);
+  ListKindsMessages get listKinds => ListKindsMessages(this);
+  TemplatesMessages get templates => TemplatesMessages(this);
+  StockMessages get stock => StockMessages(this);
   NotesWallMessages get notesWall => NotesWallMessages(this);
   PhotoBoardMessages get photoBoard => PhotoBoardMessages(this);
   ShoppingMessages get shopping => ShoppingMessages(this);
@@ -401,10 +404,10 @@ class HomeMessages {
   String get noHouses => """No houses yet.""";
 
   /// ```dart
-  /// "Houses are shared spaces for your household. Create your first house to start adding checklists, photos and notes."
+  /// "Houses are shared spaces for your household. Create your first house to start adding lists, photos and notes."
   /// ```
   String get noHousesBody =>
-      """Houses are shared spaces for your household. Create your first house to start adding checklists, photos and notes.""";
+      """Houses are shared spaces for your household. Create your first house to start adding lists, photos and notes.""";
 
   /// ```dart
   /// "Create house"
@@ -466,6 +469,16 @@ class NavMessages {
   /// "Checklist"
   /// ```
   String get checklist => """Checklist""";
+
+  /// ```dart
+  /// "Lists"
+  /// ```
+  String get lists => """Lists""";
+
+  /// ```dart
+  /// "List"
+  /// ```
+  String get list => """List""";
 
   /// ```dart
   /// "Photo Board"
@@ -989,6 +1002,75 @@ Password: pantry-rocks""";
   /// ```
   String get joinTripHow =>
       """Already shopping? Joining saves your own trip to your history first. Step out of a trip you joined and it keeps running for everyone still in it.""";
+
+  /// ```dart
+  /// "Know what's in the cupboard"
+  /// ```
+  String get inventoryTitle => """Know what's in the cupboard""";
+
+  /// ```dart
+  /// "Inventories track how much of each thing you have and when it goes off. Step amounts down as you use them, and Pantry flags what runs low or is about to expire."
+  /// ```
+  String get inventoryBody =>
+      """Inventories track how much of each thing you have and when it goes off. Step amounts down as you use them, and Pantry flags what runs low or is about to expire.""";
+
+  /// ```dart
+  /// "Give an inventory a restock checklist in its settings, and anything low or expiring is put on it for you. Tick it off at the shop and the inventory fills back up."
+  /// ```
+  String get inventoryHow =>
+      """Give an inventory a restock checklist in its settings, and anything low or expiring is put on it for you. Tick it off at the shop and the inventory fills back up.""";
+
+  /// ```dart
+  /// "Eggs"
+  /// ```
+  String get inventoryMockEggs => """Eggs""";
+
+  /// ```dart
+  /// "Milk"
+  /// ```
+  String get inventoryMockMilk => """Milk""";
+
+  /// ```dart
+  /// "Flour"
+  /// ```
+  String get inventoryMockFlour => """Flour""";
+
+  /// ```dart
+  /// "Templates for what you always buy"
+  /// ```
+  String get templateTitle => """Templates for what you always buy""";
+
+  /// ```dart
+  /// "Keep the items you add again and again in a template. Attach it to a list, and typing there suggests its items, details and all."
+  /// ```
+  String get templateBody =>
+      """Keep the items you add again and again in a template. Attach it to a list, and typing there suggests its items, details and all.""";
+
+  /// ```dart
+  /// "To copy a whole template in at once, open its menu in the list switcher and pick ${apply}."
+  /// ```
+  String templateHow(String apply) =>
+      """To copy a whole template in at once, open its menu in the list switcher and pick ${apply}.""";
+
+  /// ```dart
+  /// "Weekly shop"
+  /// ```
+  String get templateMockName => """Weekly shop""";
+
+  /// ```dart
+  /// "Mi"
+  /// ```
+  String get templateMockTyped => """Mi""";
+
+  /// ```dart
+  /// "Milk"
+  /// ```
+  String get templateMockFirst => """Milk""";
+
+  /// ```dart
+  /// "Mince"
+  /// ```
+  String get templateMockSecond => """Mince""";
   DevOnboardingMessages get dev => DevOnboardingMessages(this);
 }
 
@@ -1038,10 +1120,10 @@ class NotificationsIntroMessages {
   String get title => """Stay in the loop""";
 
   /// ```dart
-  /// "Pantry can notify you when household members add items to checklists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties."
+  /// "Pantry can notify you when household members add items to lists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties."
   /// ```
   String get body =>
-      """Pantry can notify you when household members add items to checklists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties.""";
+      """Pantry can notify you when household members add items to lists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties.""";
 
   /// ```dart
   /// "Household activity alerts"
@@ -4812,6 +4894,1527 @@ class MarkdownChecklistsMessages {
       """${_plural(count, one: 'Imported 1 item', many: 'Imported $count items')}""";
 }
 
+class ListKindsMessages {
+  final Messages _parent;
+  const ListKindsMessages(this._parent);
+
+  /// ```dart
+  /// "Duplicate as:"
+  /// ```
+  String get duplicateAs => """Duplicate as:""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 item was skipped because you cannot edit it.', many: '$count items were skipped because you cannot edit them.')}"
+  /// ```
+  String itemsSkippedNoEdit(int count) =>
+      """${_plural(count, one: '1 item was skipped because you cannot edit it.', many: '$count items were skipped because you cannot edit them.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 item could not be unchecked.', many: '$count items could not be unchecked.')}"
+  /// ```
+  String itemsSkippedUncheck(int count) =>
+      """${_plural(count, one: '1 item could not be unchecked.', many: '$count items could not be unchecked.')}""";
+  ChecklistListKindsMessages get checklist => ChecklistListKindsMessages(this);
+  InventoryListKindsMessages get inventory => InventoryListKindsMessages(this);
+  TemplateListKindsMessages get template => TemplateListKindsMessages(this);
+}
+
+class ChecklistListKindsMessages {
+  final ListKindsMessages _parent;
+  const ChecklistListKindsMessages(this._parent);
+
+  /// ```dart
+  /// "Checklists"
+  /// ```
+  String get title => """Checklists""";
+
+  /// ```dart
+  /// "Checklist"
+  /// ```
+  String get name => """Checklist""";
+
+  /// ```dart
+  /// "New checklist"
+  /// ```
+  String get newList => """New checklist""";
+
+  /// ```dart
+  /// "Create a checklist"
+  /// ```
+  String get createTitle => """Create a checklist""";
+
+  /// ```dart
+  /// "Edit checklist"
+  /// ```
+  String get editTitle => """Edit checklist""";
+
+  /// ```dart
+  /// "Duplicate checklist"
+  /// ```
+  String get duplicateTitle => """Duplicate checklist""";
+
+  /// ```dart
+  /// "Could not duplicate the checklist"
+  /// ```
+  String get duplicateFailed => """Could not duplicate the checklist""";
+
+  /// ```dart
+  /// "Checklist actions"
+  /// ```
+  String get listMenu => """Checklist actions""";
+
+  /// ```dart
+  /// "Remove checklist"
+  /// ```
+  String get deleteDialogTitle => """Remove checklist""";
+
+  /// ```dart
+  /// "No checklists yet"
+  /// ```
+  String get emptyTitle => """No checklists yet""";
+
+  /// ```dart
+  /// "Create your first checklist to start adding items."
+  /// ```
+  String get emptyBody =>
+      """Create your first checklist to start adding items.""";
+
+  /// ```dart
+  /// "Checklists trash"
+  /// ```
+  String get trashTitle => """Checklists trash""";
+
+  /// ```dart
+  /// "Deleted checklists will appear here."
+  /// ```
+  String get trashEmptyBody => """Deleted checklists will appear here.""";
+
+  /// ```dart
+  /// "Archived checklists"
+  /// ```
+  String get archiveTitle => """Archived checklists""";
+
+  /// ```dart
+  /// "No archived checklists"
+  /// ```
+  String get archiveEmptyTitle => """No archived checklists""";
+
+  /// ```dart
+  /// "Archived checklists will appear here."
+  /// ```
+  String get archiveEmptyBody => """Archived checklists will appear here.""";
+
+  /// ```dart
+  /// "This will permanently delete every checklist in the trash, along with all of their items. This cannot be undone."
+  /// ```
+  String get emptyTrashBody =>
+      """This will permanently delete every checklist in the trash, along with all of their items. This cannot be undone.""";
+
+  /// ```dart
+  /// "Checklist restored"
+  /// ```
+  String get listRestored => """Checklist restored""";
+
+  /// ```dart
+  /// "Checklist moved to trash"
+  /// ```
+  String get listMovedToTrash => """Checklist moved to trash""";
+
+  /// ```dart
+  /// "Checklist archived"
+  /// ```
+  String get listArchived => """Checklist archived""";
+
+  /// ```dart
+  /// "Checklist unarchived"
+  /// ```
+  String get listUnarchived => """Checklist unarchived""";
+}
+
+class InventoryListKindsMessages {
+  final ListKindsMessages _parent;
+  const InventoryListKindsMessages(this._parent);
+
+  /// ```dart
+  /// "Inventories"
+  /// ```
+  String get title => """Inventories""";
+
+  /// ```dart
+  /// "Inventory"
+  /// ```
+  String get name => """Inventory""";
+
+  /// ```dart
+  /// "New inventory"
+  /// ```
+  String get newList => """New inventory""";
+
+  /// ```dart
+  /// "Create an inventory"
+  /// ```
+  String get createTitle => """Create an inventory""";
+
+  /// ```dart
+  /// "Edit inventory"
+  /// ```
+  String get editTitle => """Edit inventory""";
+
+  /// ```dart
+  /// "Duplicate inventory"
+  /// ```
+  String get duplicateTitle => """Duplicate inventory""";
+
+  /// ```dart
+  /// "Could not duplicate the inventory"
+  /// ```
+  String get duplicateFailed => """Could not duplicate the inventory""";
+
+  /// ```dart
+  /// "Inventory actions"
+  /// ```
+  String get listMenu => """Inventory actions""";
+
+  /// ```dart
+  /// "Remove inventory"
+  /// ```
+  String get deleteDialogTitle => """Remove inventory""";
+
+  /// ```dart
+  /// "No inventories yet"
+  /// ```
+  String get emptyTitle => """No inventories yet""";
+
+  /// ```dart
+  /// "Create your first inventory to start adding items."
+  /// ```
+  String get emptyBody =>
+      """Create your first inventory to start adding items.""";
+
+  /// ```dart
+  /// "Inventories trash"
+  /// ```
+  String get trashTitle => """Inventories trash""";
+
+  /// ```dart
+  /// "Deleted inventories will appear here."
+  /// ```
+  String get trashEmptyBody => """Deleted inventories will appear here.""";
+
+  /// ```dart
+  /// "Archived inventories"
+  /// ```
+  String get archiveTitle => """Archived inventories""";
+
+  /// ```dart
+  /// "No archived inventories"
+  /// ```
+  String get archiveEmptyTitle => """No archived inventories""";
+
+  /// ```dart
+  /// "Archived inventories will appear here."
+  /// ```
+  String get archiveEmptyBody => """Archived inventories will appear here.""";
+
+  /// ```dart
+  /// "This will permanently delete every inventory in the trash, along with all of their items. This cannot be undone."
+  /// ```
+  String get emptyTrashBody =>
+      """This will permanently delete every inventory in the trash, along with all of their items. This cannot be undone.""";
+
+  /// ```dart
+  /// "Inventory restored"
+  /// ```
+  String get listRestored => """Inventory restored""";
+
+  /// ```dart
+  /// "Inventory moved to trash"
+  /// ```
+  String get listMovedToTrash => """Inventory moved to trash""";
+
+  /// ```dart
+  /// "Inventory archived"
+  /// ```
+  String get listArchived => """Inventory archived""";
+
+  /// ```dart
+  /// "Inventory unarchived"
+  /// ```
+  String get listUnarchived => """Inventory unarchived""";
+}
+
+class TemplateListKindsMessages {
+  final ListKindsMessages _parent;
+  const TemplateListKindsMessages(this._parent);
+
+  /// ```dart
+  /// "Templates"
+  /// ```
+  String get title => """Templates""";
+
+  /// ```dart
+  /// "Template"
+  /// ```
+  String get name => """Template""";
+
+  /// ```dart
+  /// "New template"
+  /// ```
+  String get newList => """New template""";
+
+  /// ```dart
+  /// "Create a template"
+  /// ```
+  String get createTitle => """Create a template""";
+
+  /// ```dart
+  /// "Edit template"
+  /// ```
+  String get editTitle => """Edit template""";
+
+  /// ```dart
+  /// "Duplicate template"
+  /// ```
+  String get duplicateTitle => """Duplicate template""";
+
+  /// ```dart
+  /// "Could not duplicate the template"
+  /// ```
+  String get duplicateFailed => """Could not duplicate the template""";
+
+  /// ```dart
+  /// "Template actions"
+  /// ```
+  String get listMenu => """Template actions""";
+
+  /// ```dart
+  /// "Remove template"
+  /// ```
+  String get deleteDialogTitle => """Remove template""";
+
+  /// ```dart
+  /// "No templates yet"
+  /// ```
+  String get emptyTitle => """No templates yet""";
+
+  /// ```dart
+  /// "Create your first template to start adding items."
+  /// ```
+  String get emptyBody =>
+      """Create your first template to start adding items.""";
+
+  /// ```dart
+  /// "Templates trash"
+  /// ```
+  String get trashTitle => """Templates trash""";
+
+  /// ```dart
+  /// "Deleted templates will appear here."
+  /// ```
+  String get trashEmptyBody => """Deleted templates will appear here.""";
+
+  /// ```dart
+  /// "Archived templates"
+  /// ```
+  String get archiveTitle => """Archived templates""";
+
+  /// ```dart
+  /// "No archived templates"
+  /// ```
+  String get archiveEmptyTitle => """No archived templates""";
+
+  /// ```dart
+  /// "Archived templates will appear here."
+  /// ```
+  String get archiveEmptyBody => """Archived templates will appear here.""";
+
+  /// ```dart
+  /// "This will permanently delete every template in the trash, along with all of their items. This cannot be undone."
+  /// ```
+  String get emptyTrashBody =>
+      """This will permanently delete every template in the trash, along with all of their items. This cannot be undone.""";
+
+  /// ```dart
+  /// "Template restored"
+  /// ```
+  String get listRestored => """Template restored""";
+
+  /// ```dart
+  /// "Template moved to trash"
+  /// ```
+  String get listMovedToTrash => """Template moved to trash""";
+
+  /// ```dart
+  /// "Template archived"
+  /// ```
+  String get listArchived => """Template archived""";
+
+  /// ```dart
+  /// "Template unarchived"
+  /// ```
+  String get listUnarchived => """Template unarchived""";
+}
+
+class TemplatesMessages {
+  final Messages _parent;
+  const TemplatesMessages(this._parent);
+
+  /// ```dart
+  /// "Suggestions"
+  /// ```
+  String get suggestionsHeader => """Suggestions""";
+
+  /// ```dart
+  /// "From templates: $names"
+  /// ```
+  String fromTemplates(String names) => """From templates: $names""";
+
+  /// ```dart
+  /// "Added "$name" from a template"
+  /// ```
+  String addedFromTemplate(String name) => """Added "$name" from a template""";
+
+  /// ```dart
+  /// "Could not add the item from the template"
+  /// ```
+  String get drawFailed => """Could not add the item from the template""";
+
+  /// ```dart
+  /// "Templates:"
+  /// ```
+  String get attachedLabel => """Templates:""";
+
+  /// ```dart
+  /// "No templates"
+  /// ```
+  String get attachedPlaceholder => """No templates""";
+
+  /// ```dart
+  /// "Typing a new item suggests matching items from these templates."
+  /// ```
+  String get attachedHint =>
+      """Typing a new item suggests matching items from these templates.""";
+
+  /// ```dart
+  /// "Typing a new item suggests matching items from these templates, and from $names, which every list uses."
+  /// ```
+  String attachedEveryListHint(String names) =>
+      """Typing a new item suggests matching items from these templates, and from $names, which every list uses.""";
+
+  /// ```dart
+  /// "Suggest in:"
+  /// ```
+  String get suggestInLabel => """Suggest in:""";
+
+  /// ```dart
+  /// "Every list"
+  /// ```
+  String get everyList => """Every list""";
+
+  /// ```dart
+  /// "No lists"
+  /// ```
+  String get suggestInPlaceholder => """No lists""";
+
+  /// ```dart
+  /// "Typing a new item on these lists suggests matching items from this template. Selecting "Every list" includes lists made later."
+  /// ```
+  String get suggestInHint =>
+      """Typing a new item on these lists suggests matching items from this template. Selecting "Every list" includes lists made later.""";
+
+  /// ```dart
+  /// "$list ($kind)"
+  /// ```
+  String listWithKind(String list, String kind) => """$list ($kind)""";
+
+  /// ```dart
+  /// "Could not save the attached templates"
+  /// ```
+  String get attachFailed => """Could not save the attached templates""";
+
+  /// ```dart
+  /// "Fill template items from these defaults"
+  /// ```
+  String get fillLabel => """Fill template items from these defaults""";
+
+  /// ```dart
+  /// "When an item is added from a template, the details it leaves empty start with the values above. Each person can override this in their personal settings."
+  /// ```
+  String get fillHint =>
+      """When an item is added from a template, the details it leaves empty start with the values above. Each person can override this in their personal settings.""";
+
+  /// ```dart
+  /// "Fill template items from item defaults"
+  /// ```
+  String get fillPrefLabel => """Fill template items from item defaults""";
+
+  /// ```dart
+  /// "When you add an item from a template, fill the details it leaves empty from the list's item defaults. Each list can switch this off in its item defaults."
+  /// ```
+  String get fillPrefHint =>
+      """When you add an item from a template, fill the details it leaves empty from the list's item defaults. Each list can switch this off in its item defaults.""";
+  FillPrefNamesTemplatesMessages get fillPrefNames =>
+      FillPrefNamesTemplatesMessages(this);
+
+  /// ```dart
+  /// "Could not save the setting"
+  /// ```
+  String get fillPrefFailed => """Could not save the setting""";
+
+  /// ```dart
+  /// "Apply to list"
+  /// ```
+  String get applyToList => """Apply to list""";
+
+  /// ```dart
+  /// "Apply template"
+  /// ```
+  String get applyTemplate => """Apply template""";
+
+  /// ```dart
+  /// "Attached to this list"
+  /// ```
+  String get attachedTemplates => """Attached to this list""";
+
+  /// ```dart
+  /// "Other templates"
+  /// ```
+  String get otherTemplates => """Other templates""";
+
+  /// ```dart
+  /// "There are no checklists or inventories to apply this template to."
+  /// ```
+  String get noTargets =>
+      """There are no checklists or inventories to apply this template to.""";
+
+  /// ```dart
+  /// "This template has no items."
+  /// ```
+  String get noItems => """This template has no items.""";
+
+  /// ```dart
+  /// "Already on list"
+  /// ```
+  String get alreadyOnList => """Already on list""";
+
+  /// ```dart
+  /// "Copy the ticked items from $template into $list."
+  /// ```
+  String reviewSummary(String template, String list) =>
+      """Copy the ticked items from $template into $list.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Apply 1 item', many: 'Apply $count items')}"
+  /// ```
+  String applyItems(int count) =>
+      """${_plural(count, one: 'Apply 1 item', many: 'Apply $count items')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Added 1 item to $list', many: 'Added $count items to $list')}"
+  /// ```
+  String appliedAdded(int count, String list) =>
+      """${_plural(count, one: 'Added 1 item to $list', many: 'Added $count items to $list')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 item was already on $list and was brought back', many: '$count items were already on $list and were brought back')}"
+  /// ```
+  String appliedReused(int count, String list) =>
+      """${_plural(count, one: '1 item was already on $list and was brought back', many: '$count items were already on $list and were brought back')}""";
+
+  /// ```dart
+  /// "$list: $added added, $reused brought back"
+  /// ```
+  String appliedMixed(String list, int added, int reused) =>
+      """$list: $added added, $reused brought back""";
+
+  /// ```dart
+  /// "Could not apply the template"
+  /// ```
+  String get applyFailed => """Could not apply the template""";
+
+  /// ```dart
+  /// "Could not load the templates"
+  /// ```
+  String get loadFailed => """Could not load the templates""";
+
+  /// ```dart
+  /// "Back"
+  /// ```
+  String get back => """Back""";
+}
+
+class FillPrefNamesTemplatesMessages {
+  final TemplatesMessages _parent;
+  const FillPrefNamesTemplatesMessages(this._parent);
+
+  /// ```dart
+  /// "Follow each list"
+  /// ```
+  String get list => """Follow each list""";
+
+  /// ```dart
+  /// "Always fill"
+  /// ```
+  String get always => """Always fill""";
+
+  /// ```dart
+  /// "Never fill"
+  /// ```
+  String get never => """Never fill""";
+}
+
+class StockMessages {
+  final Messages _parent;
+  const StockMessages(this._parent);
+
+  /// ```dart
+  /// "In stock"
+  /// ```
+  String get inStock => """In stock""";
+
+  /// ```dart
+  /// "Full"
+  /// ```
+  String get full => """Full""";
+
+  /// ```dart
+  /// "Low"
+  /// ```
+  String get low => """Low""";
+
+  /// ```dart
+  /// "Out"
+  /// ```
+  String get out => """Out""";
+
+  /// ```dart
+  /// "Low · buy $amount"
+  /// ```
+  String lowBuy(String amount) => """Low · buy $amount""";
+
+  /// ```dart
+  /// "Out · buy $amount"
+  /// ```
+  String outBuy(String amount) => """Out · buy $amount""";
+
+  /// ```dart
+  /// "Not counted"
+  /// ```
+  String get notCounted => """Not counted""";
+
+  /// ```dart
+  /// "Expired $date"
+  /// ```
+  String expiredOn(String date) => """Expired $date""";
+
+  /// ```dart
+  /// "Expired $date · buy $amount"
+  /// ```
+  String expiredOnBuy(String date, String amount) =>
+      """Expired $date · buy $amount""";
+
+  /// ```dart
+  /// "Expires today"
+  /// ```
+  String get expiresToday => """Expires today""";
+
+  /// ```dart
+  /// "Expires today · buy $amount"
+  /// ```
+  String expiresTodayBuy(String amount) => """Expires today · buy $amount""";
+
+  /// ```dart
+  /// "Expires tomorrow"
+  /// ```
+  String get expiresTomorrow => """Expires tomorrow""";
+
+  /// ```dart
+  /// "Expires tomorrow · buy $amount"
+  /// ```
+  String expiresTomorrowBuy(String amount) =>
+      """Expires tomorrow · buy $amount""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Expires in 1 day', many: 'Expires in $count days')}"
+  /// ```
+  String expiresInDays(int count) =>
+      """${_plural(count, one: 'Expires in 1 day', many: 'Expires in $count days')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Expires in 1 day · buy $amount', many: 'Expires in $count days · buy $amount')}"
+  /// ```
+  String expiresInDaysBuy(int count, String amount) =>
+      """${_plural(count, one: 'Expires in 1 day · buy $amount', many: 'Expires in $count days · buy $amount')}""";
+
+  /// ```dart
+  /// "Good until $date"
+  /// ```
+  String goodUntil(String date) => """Good until $date""";
+
+  /// ```dart
+  /// "$onHand / $target"
+  /// ```
+  String amount(String onHand, String target) => """$onHand / $target""";
+
+  /// ```dart
+  /// "Decrease the amount on hand"
+  /// ```
+  String get decrease => """Decrease the amount on hand""";
+
+  /// ```dart
+  /// "Increase the amount on hand"
+  /// ```
+  String get increase => """Increase the amount on hand""";
+
+  /// ```dart
+  /// "Amount on hand"
+  /// ```
+  String get onHandEdit => """Amount on hand""";
+
+  /// ```dart
+  /// "Stock level: $level"
+  /// ```
+  String levelButton(String level) => """Stock level: $level""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 item needs restock', many: '$count items need restock')}"
+  /// ```
+  String needsRestockCount(int count) =>
+      """${_plural(count, one: '1 item needs restock', many: '$count items need restock')}""";
+
+  /// ```dart
+  /// "Stock"
+  /// ```
+  String get filter => """Stock""";
+
+  /// ```dart
+  /// "All items"
+  /// ```
+  String get filterAll => """All items""";
+
+  /// ```dart
+  /// "Needs restock"
+  /// ```
+  String get filterNeedsRestock => """Needs restock""";
+
+  /// ```dart
+  /// "In stock"
+  /// ```
+  String get filterInStock => """In stock""";
+
+  /// ```dart
+  /// "Could not save the stock change. The inventory now shows what the server has."
+  /// ```
+  String get writeRefused =>
+      """Could not save the stock change. The inventory now shows what the server has.""";
+  SettingsStockMessages get settings => SettingsStockMessages(this);
+  CardStockMessages get card => CardStockMessages(this);
+  ExpiryStockMessages get expiry => ExpiryStockMessages(this);
+  ComposeStockMessages get compose => ComposeStockMessages(this);
+
+  /// ```dart
+  /// "This inventory has no restock checklist, so these items are only marked here. Pick one in the inventory settings."
+  /// ```
+  String get noRestockChecklist =>
+      """This inventory has no restock checklist, so these items are only marked here. Pick one in the inventory settings.""";
+
+  /// ```dart
+  /// "Renew expiry → $date"
+  /// ```
+  String renewChip(String date) => """Renew expiry → $date""";
+
+  /// ```dart
+  /// "Renew expiry"
+  /// ```
+  String get renewAction => """Renew expiry""";
+
+  /// ```dart
+  /// "Daily stock summary"
+  /// ```
+  String get summaryPref => """Daily stock summary""";
+
+  /// ```dart
+  /// "Once a day, what newly ran low or started expiring in this house's inventories."
+  /// ```
+  String get summaryPrefHint =>
+      """Once a day, what newly ran low or started expiring in this house's inventories.""";
+
+  /// ```dart
+  /// "Could not save the stock summary setting."
+  /// ```
+  String get summaryPrefFailed =>
+      """Could not save the stock summary setting.""";
+  LinksStockMessages get links => LinksStockMessages(this);
+  RestockStockMessages get restock => RestockStockMessages(this);
+}
+
+class SettingsStockMessages {
+  final StockMessages _parent;
+  const SettingsStockMessages(this._parent);
+
+  /// ```dart
+  /// "Inventory settings"
+  /// ```
+  String get action => """Inventory settings""";
+
+  /// ```dart
+  /// "Inventory settings"
+  /// ```
+  String get title => """Inventory settings""";
+
+  /// ```dart
+  /// "Name"
+  /// ```
+  String get name => """Name""";
+
+  /// ```dart
+  /// "Icon, colour and sharing work as they do on checklists."
+  /// ```
+  String get nameHint =>
+      """Icon, colour and sharing work as they do on checklists.""";
+
+  /// ```dart
+  /// "Expiry warning"
+  /// ```
+  String get expiryWarning => """Expiry warning""";
+
+  /// ```dart
+  /// "Warn $days days before expiry"
+  /// ```
+  String warnBefore(String days) => """Warn $days days before expiry""";
+
+  /// ```dart
+  /// "Days before expiry"
+  /// ```
+  String get daysBefore => """Days before expiry""";
+
+  /// ```dart
+  /// "Set 0 to warn on the expiry date itself."
+  /// ```
+  String get warnHint => """Set 0 to warn on the expiry date itself.""";
+
+  /// ```dart
+  /// "Restock checklist"
+  /// ```
+  String get restockChecklist => """Restock checklist""";
+
+  /// ```dart
+  /// "None"
+  /// ```
+  String get restockNone => """None""";
+
+  /// ```dart
+  /// "Items that run low or start expiring are added to this checklist."
+  /// ```
+  String get restockSetHint =>
+      """Items that run low or start expiring are added to this checklist.""";
+
+  /// ```dart
+  /// "Without one, low and expiring items are only marked here."
+  /// ```
+  String get restockUnsetHint =>
+      """Without one, low and expiring items are only marked here.""";
+
+  /// ```dart
+  /// "Notifications"
+  /// ```
+  String get notifications => """Notifications""";
+
+  /// ```dart
+  /// "Daily stock summary"
+  /// ```
+  String get stockSummary => """Daily stock summary""";
+
+  /// ```dart
+  /// "Once a day, tell members what newly ran low or started expiring here. Each member can also turn it off in their personal settings."
+  /// ```
+  String get stockSummaryHint =>
+      """Once a day, tell members what newly ran low or started expiring here. Each member can also turn it off in their personal settings.""";
+
+  /// ```dart
+  /// "Cancel"
+  /// ```
+  String get cancel => """Cancel""";
+
+  /// ```dart
+  /// "Save"
+  /// ```
+  String get save => """Save""";
+}
+
+class CardStockMessages {
+  final StockMessages _parent;
+  const CardStockMessages(this._parent);
+
+  /// ```dart
+  /// "Stock"
+  /// ```
+  String get title => """Stock""";
+
+  /// ```dart
+  /// "Stock mode"
+  /// ```
+  String get mode => """Stock mode""";
+
+  /// ```dart
+  /// "Count"
+  /// ```
+  String get count => """Count""";
+
+  /// ```dart
+  /// "Level"
+  /// ```
+  String get level => """Level""";
+
+  /// ```dart
+  /// "Track how many you have, e.g. 4 of 12 eggs."
+  /// ```
+  String get countHint => """Track how many you have, e.g. 4 of 12 eggs.""";
+
+  /// ```dart
+  /// "Track it as Full, Low or Out, e.g. flour or spices."
+  /// ```
+  String get levelHint =>
+      """Track it as Full, Low or Out, e.g. flour or spices.""";
+
+  /// ```dart
+  /// "On hand"
+  /// ```
+  String get onHand => """On hand""";
+
+  /// ```dart
+  /// "e.g. 4"
+  /// ```
+  String get onHandPlaceholder => """e.g. 4""";
+
+  /// ```dart
+  /// "Target"
+  /// ```
+  String get target => """Target""";
+
+  /// ```dart
+  /// "e.g. 12 eggs"
+  /// ```
+  String get targetPlaceholder => """e.g. 12 eggs""";
+
+  /// ```dart
+  /// "Reorder point"
+  /// ```
+  String get reorderPoint => """Reorder point""";
+
+  /// ```dart
+  /// "e.g. 4"
+  /// ```
+  String get reorderPlaceholder => """e.g. 4""";
+
+  /// ```dart
+  /// "Stock level"
+  /// ```
+  String get stockLevel => """Stock level""";
+
+  /// ```dart
+  /// "Restock amount"
+  /// ```
+  String get restockAmount => """Restock amount""";
+
+  /// ```dart
+  /// "e.g. 1 kg bag"
+  /// ```
+  String get restockPlaceholder => """e.g. 1 kg bag""";
+
+  /// ```dart
+  /// "Converted: level $level, restock amount "$amount"."
+  /// ```
+  String convertedLevelAmount(String level, String amount) =>
+      """Converted: level $level, restock amount "$amount".""";
+
+  /// ```dart
+  /// "Converted: level $level."
+  /// ```
+  String convertedLevel(String level) => """Converted: level $level.""";
+
+  /// ```dart
+  /// "Converted: on hand "$onHand", target "$target"."
+  /// ```
+  String convertedCount(String onHand, String target) =>
+      """Converted: on hand "$onHand", target "$target".""";
+
+  /// ```dart
+  /// "Converted: target "$target". Enter the amount on hand."
+  /// ```
+  String convertedTargetOnly(String target) =>
+      """Converted: target "$target". Enter the amount on hand.""";
+
+  /// ```dart
+  /// "Converted to a count. Enter the amount on hand and a target."
+  /// ```
+  String get convertedBlank =>
+      """Converted to a count. Enter the amount on hand and a target.""";
+
+  /// ```dart
+  /// "Expired: buy $amount."
+  /// ```
+  String statusExpiredBuy(String amount) => """Expired: buy $amount.""";
+
+  /// ```dart
+  /// "Expired."
+  /// ```
+  String get statusExpired => """Expired.""";
+
+  /// ```dart
+  /// "Expiring soon: buy $amount."
+  /// ```
+  String statusExpiringBuy(String amount) => """Expiring soon: buy $amount.""";
+
+  /// ```dart
+  /// "Expiring soon."
+  /// ```
+  String get statusExpiring => """Expiring soon.""";
+
+  /// ```dart
+  /// "Low: buy $amount."
+  /// ```
+  String statusLowBuy(String amount) => """Low: buy $amount.""";
+
+  /// ```dart
+  /// "Low."
+  /// ```
+  String get statusLow => """Low.""";
+
+  /// ```dart
+  /// "Out: buy $amount."
+  /// ```
+  String statusOutBuy(String amount) => """Out: buy $amount.""";
+
+  /// ```dart
+  /// "Out."
+  /// ```
+  String get statusOut => """Out.""";
+
+  /// ```dart
+  /// "Not counted: the target has no number, so it never runs low."
+  /// ```
+  String get statusUncountedTarget =>
+      """Not counted: the target has no number, so it never runs low.""";
+
+  /// ```dart
+  /// "Not counted: on hand has no number, so it never runs low."
+  /// ```
+  String get statusUncountedOnHand =>
+      """Not counted: on hand has no number, so it never runs low.""";
+
+  /// ```dart
+  /// "In stock."
+  /// ```
+  String get statusInStock => """In stock.""";
+
+  /// ```dart
+  /// "With no stock mode picked, it uses the inventory's default."
+  /// ```
+  String get templateDefaultMode =>
+      """With no stock mode picked, it uses the inventory's default.""";
+
+  /// ```dart
+  /// "Drawn into an inventory, it starts full with $amount on hand."
+  /// ```
+  String templateStartsCount(String amount) =>
+      """Drawn into an inventory, it starts full with $amount on hand.""";
+
+  /// ```dart
+  /// "Drawn into an inventory, it starts Full and restocks $amount."
+  /// ```
+  String templateStartsLevelAmount(String amount) =>
+      """Drawn into an inventory, it starts Full and restocks $amount.""";
+
+  /// ```dart
+  /// "Drawn into an inventory, it starts Full."
+  /// ```
+  String get templateStartsLevel =>
+      """Drawn into an inventory, it starts Full.""";
+
+  /// ```dart
+  /// "Drawn into an inventory without a target, it is not counted."
+  /// ```
+  String get templateUncounted =>
+      """Drawn into an inventory without a target, it is not counted.""";
+}
+
+class ExpiryStockMessages {
+  final StockMessages _parent;
+  const ExpiryStockMessages(this._parent);
+
+  /// ```dart
+  /// "Expiry"
+  /// ```
+  String get title => """Expiry""";
+
+  /// ```dart
+  /// "How the item expires"
+  /// ```
+  String get mode => """How the item expires""";
+
+  /// ```dart
+  /// "None"
+  /// ```
+  String get none => """None""";
+
+  /// ```dart
+  /// "Date"
+  /// ```
+  String get date => """Date""";
+
+  /// ```dart
+  /// "Keeps N days"
+  /// ```
+  String get keeps => """Keeps N days""";
+
+  /// ```dart
+  /// "Expiry date"
+  /// ```
+  String get expiryDate => """Expiry date""";
+
+  /// ```dart
+  /// "Days it keeps"
+  /// ```
+  String get daysItKeeps => """Days it keeps""";
+
+  /// ```dart
+  /// "Expired $date."
+  /// ```
+  String expiredSummary(String date) => """Expired $date.""";
+
+  /// ```dart
+  /// "Good until $date."
+  /// ```
+  String goodUntilSummary(String date) => """Good until $date.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Each restock renews it to 1 day from that day.', many: 'Each restock renews it to $count days from that day.')}"
+  /// ```
+  String renews(int count) =>
+      """${_plural(count, one: 'Each restock renews it to 1 day from that day.', many: 'Each restock renews it to $count days from that day.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Drawn into an inventory, it expires 1 day later.', many: 'Drawn into an inventory, it expires $count days later.')}"
+  /// ```
+  String templateExpires(int count) =>
+      """${_plural(count, one: 'Drawn into an inventory, it expires 1 day later.', many: 'Drawn into an inventory, it expires $count days later.')}""";
+
+  /// ```dart
+  /// "Expiry"
+  /// ```
+  String get chip => """Expiry""";
+
+  /// ```dart
+  /// "Expires $date"
+  /// ```
+  String chipExpires(String date) => """Expires $date""";
+
+  /// ```dart
+  /// "Expired $date"
+  /// ```
+  String chipExpired(String date) => """Expired $date""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Keeps 1 day', many: 'Keeps $count days')}"
+  /// ```
+  String chipKeeps(int count) =>
+      """${_plural(count, one: 'Keeps 1 day', many: 'Keeps $count days')}""";
+}
+
+class ComposeStockMessages {
+  final StockMessages _parent;
+  const ComposeStockMessages(this._parent);
+
+  /// ```dart
+  /// "Stock"
+  /// ```
+  String get chip => """Stock""";
+
+  /// ```dart
+  /// "Count"
+  /// ```
+  String get count => """Count""";
+
+  /// ```dart
+  /// "Level"
+  /// ```
+  String get level => """Level""";
+
+  /// ```dart
+  /// "Level · $amount"
+  /// ```
+  String levelAmount(String amount) => """Level · $amount""";
+
+  /// ```dart
+  /// "Target: $target"
+  /// ```
+  String targetValue(String target) => """Target: $target""";
+
+  /// ```dart
+  /// "Full when empty"
+  /// ```
+  String get fullWhenEmpty => """Full when empty""";
+}
+
+class LinksStockMessages {
+  final StockMessages _parent;
+  const LinksStockMessages(this._parent);
+
+  /// ```dart
+  /// "Shopping list"
+  /// ```
+  String get caption => """Shopping list""";
+
+  /// ```dart
+  /// "Linked to $row on $list"
+  /// ```
+  String tooltipLinked(String row, String list) =>
+      """Linked to $row on $list""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Not linked: 1 match, pick one', many: 'Not linked: $count matches, pick one')}"
+  /// ```
+  String tooltipNeedsPick(int count) =>
+      """${_plural(count, one: 'Not linked: 1 match, pick one', many: 'Not linked: $count matches, pick one')}""";
+
+  /// ```dart
+  /// "Not linked yet: added to the shopping list when low"
+  /// ```
+  String get tooltipAutoOn =>
+      """Not linked yet: added to the shopping list when low""";
+
+  /// ```dart
+  /// "Not linked: never added to a shopping list"
+  /// ```
+  String get tooltipAutoOff => """Not linked: never added to a shopping list""";
+
+  /// ```dart
+  /// "$row on $list · $state"
+  /// ```
+  String rowOnList(String row, String list, String state) =>
+      """$row on $list · $state""";
+
+  /// ```dart
+  /// "open"
+  /// ```
+  String get stateOpen => """open""";
+
+  /// ```dart
+  /// "checked"
+  /// ```
+  String get stateChecked => """checked""";
+
+  /// ```dart
+  /// "archived"
+  /// ```
+  String get stateArchived => """archived""";
+
+  /// ```dart
+  /// "in the trash"
+  /// ```
+  String get stateTrashed => """in the trash""";
+
+  /// ```dart
+  /// "× $quantity"
+  /// ```
+  String stateQuantity(String quantity) => """× $quantity""";
+
+  /// ```dart
+  /// "Unlink"
+  /// ```
+  String get unlink => """Unlink""";
+
+  /// ```dart
+  /// "Which one is it?"
+  /// ```
+  String get whichOne => """Which one is it?""";
+
+  /// ```dart
+  /// "$row, $list, $state"
+  /// ```
+  String candidate(String row, String list, String state) =>
+      """$row, $list, $state""";
+
+  /// ```dart
+  /// "Add to shopping list when low"
+  /// ```
+  String get autoLink => """Add to shopping list when low""";
+
+  /// ```dart
+  /// "Link by hand"
+  /// ```
+  String get linkByHand => """Link by hand""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Not linked · 1 match, pick one', many: 'Not linked · $count matches, pick one')}"
+  /// ```
+  String chipNeedsPick(int count) =>
+      """${_plural(count, one: 'Not linked · 1 match, pick one', many: 'Not linked · $count matches, pick one')}""";
+
+  /// ```dart
+  /// "Not added to a shopping list"
+  /// ```
+  String get chipNotAdded => """Not added to a shopping list""";
+
+  /// ```dart
+  /// "Linked to $row on $list · $state"
+  /// ```
+  String cardLinked(String row, String list, String state) =>
+      """Linked to $row on $list · $state""";
+
+  /// ```dart
+  /// "Link to a different item …"
+  /// ```
+  String get linkDifferent => """Link to a different item …""";
+
+  /// ```dart
+  /// "When it runs low or starts expiring, this item is put back on that list."
+  /// ```
+  String get linkedHint =>
+      """When it runs low or starts expiring, this item is put back on that list.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 item matches', many: '$count items match')}"
+  /// ```
+  String matches(int count) =>
+      """${_plural(count, one: '1 item matches', many: '$count items match')}""";
+
+  /// ```dart
+  /// "$matches on the restock checklist. Which one is this?"
+  /// ```
+  String matchesQuestion(String matches) =>
+      """$matches on the restock checklist. Which one is this?""";
+
+  /// ```dart
+  /// "Link"
+  /// ```
+  String get link => """Link""";
+
+  /// ```dart
+  /// "Finds or adds "$item" on $list when it is needed."
+  /// ```
+  String autoHintOn(String item, String list) =>
+      """Finds or adds "$item" on $list when it is needed.""";
+
+  /// ```dart
+  /// "Pick a restock checklist in the inventory settings to find or add this item there."
+  /// ```
+  String get autoHintNoChecklist =>
+      """Pick a restock checklist in the inventory settings to find or add this item there.""";
+
+  /// ```dart
+  /// "This item is only marked here when it runs low."
+  /// ```
+  String get autoHintOff =>
+      """This item is only marked here when it runs low.""";
+
+  /// ```dart
+  /// "Link to an item …"
+  /// ```
+  String get linkToItem => """Link to an item …""";
+
+  /// ```dart
+  /// "Link to a checklist item"
+  /// ```
+  String get pickerTitle => """Link to a checklist item""";
+
+  /// ```dart
+  /// "Checklist item"
+  /// ```
+  String get pickerField => """Checklist item""";
+
+  /// ```dart
+  /// "Search checklist items …"
+  /// ```
+  String get pickerSearch => """Search checklist items …""";
+
+  /// ```dart
+  /// "Searching …"
+  /// ```
+  String get pickerSearching => """Searching …""";
+
+  /// ```dart
+  /// "No checklist items found"
+  /// ```
+  String get pickerEmpty => """No checklist items found""";
+
+  /// ```dart
+  /// "$row — $list"
+  /// ```
+  String pickerRow(String row, String list) => """$row — $list""";
+
+  /// ```dart
+  /// "archived"
+  /// ```
+  String get pickerArchived => """archived""";
+
+  /// ```dart
+  /// "Could not load checklist items. Check your connection and try again."
+  /// ```
+  String get pickerFailed =>
+      """Could not load checklist items. Check your connection and try again.""";
+
+  /// ```dart
+  /// "Cancel"
+  /// ```
+  String get cancel => """Cancel""";
+}
+
+class RestockStockMessages {
+  final StockMessages _parent;
+  const RestockStockMessages(this._parent);
+
+  /// ```dart
+  /// "Added $what to $list"
+  /// ```
+  String added(String what, String list) => """Added $what to $list""";
+
+  /// ```dart
+  /// "Back on $list: $row × $quantity"
+  /// ```
+  String revivedQuantity(String list, String row, String quantity) =>
+      """Back on $list: $row × $quantity""";
+
+  /// ```dart
+  /// "Back on $list: $row"
+  /// ```
+  String revived(String list, String row) => """Back on $list: $row""";
+
+  /// ```dart
+  /// "$list: $row now × $quantity"
+  /// ```
+  String changed(String list, String row, String quantity) =>
+      """$list: $row now × $quantity""";
+
+  /// ```dart
+  /// "$row on $list is pinned at × $quantity"
+  /// ```
+  String pinnedAt(String row, String list, String quantity) =>
+      """$row on $list is pinned at × $quantity""";
+
+  /// ```dart
+  /// "$row on $list is pinned"
+  /// ```
+  String pinned(String row, String list) => """$row on $list is pinned""";
+
+  /// ```dart
+  /// "No longer needed: $row on $list"
+  /// ```
+  String recovered(String row, String list) =>
+      """No longer needed: $row on $list""";
+
+  /// ```dart
+  /// "Linked $item to $row on $list"
+  /// ```
+  String linked(String item, String row, String list) =>
+      """Linked $item to $row on $list""";
+
+  /// ```dart
+  /// "Unlinked $item from $row on $list. It will not be added to a shopping list."
+  /// ```
+  String unlinked(String item, String row, String list) =>
+      """Unlinked $item from $row on $list. It will not be added to a shopping list.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '$item matches 1 item on $list. Pick one to link.', many: '$item matches $count items on $list. Pick one to link.')}"
+  /// ```
+  String severalMatches(String item, int count, String list) =>
+      """${_plural(count, one: '$item matches 1 item on $list. Pick one to link.', many: '$item matches $count items on $list. Pick one to link.')}""";
+
+  /// ```dart
+  /// "Restocked $parts"
+  /// ```
+  String restocked(String parts) => """Restocked $parts""";
+
+  /// ```dart
+  /// "Replaced $parts"
+  /// ```
+  String replaced(String parts) => """Replaced $parts""";
+
+  /// ```dart
+  /// "Restocked $restock, replaced $replace"
+  /// ```
+  String restockedReplaced(String restock, String replace) =>
+      """Restocked $restock, replaced $replace""";
+
+  /// ```dart
+  /// "Undid: restocked $parts"
+  /// ```
+  String undidRestocked(String parts) => """Undid: restocked $parts""";
+
+  /// ```dart
+  /// "Undid: replaced $parts"
+  /// ```
+  String undidReplaced(String parts) => """Undid: replaced $parts""";
+
+  /// ```dart
+  /// "Undid: restocked $restock, replaced $replace"
+  /// ```
+  String undidRestockedReplaced(String restock, String replace) =>
+      """Undid: restocked $restock, replaced $replace""";
+
+  /// ```dart
+  /// "$item ($inventory) +$amount"
+  /// ```
+  String partAdded(String item, String inventory, String amount) =>
+      """$item ($inventory) +$amount""";
+
+  /// ```dart
+  /// "$item ($inventory) to Full"
+  /// ```
+  String partFull(String item, String inventory) =>
+      """$item ($inventory) to Full""";
+
+  /// ```dart
+  /// "$item ($inventory) ×$amount"
+  /// ```
+  String partReplaced(String item, String inventory, String amount) =>
+      """$item ($inventory) ×$amount""";
+
+  /// ```dart
+  /// "$item ($inventory), Full"
+  /// ```
+  String partReplacedFull(String item, String inventory) =>
+      """$item ($inventory), Full""";
+
+  /// ```dart
+  /// "$restock · uncheck to undo"
+  /// ```
+  String uncheckToUndo(String restock) => """$restock · uncheck to undo""";
+
+  /// ```dart
+  /// "$item ($inventory)"
+  /// ```
+  String source(String item, String inventory) => """$item ($inventory)""";
+
+  /// ```dart
+  /// "Restocks $items"
+  /// ```
+  String restocks(String items) => """Restocks $items""";
+
+  /// ```dart
+  /// "× $quantity"
+  /// ```
+  String pinnedChip(String quantity) => """× $quantity""";
+
+  /// ```dart
+  /// "Pinned"
+  /// ```
+  String get pinnedChipBare => """Pinned""";
+
+  /// ```dart
+  /// "Pinned, so stock leaves it. Tap to unpin."
+  /// ```
+  String get pinnedChipTooltip =>
+      """Pinned, so stock leaves it. Tap to unpin.""";
+
+  /// ```dart
+  /// "No longer needed"
+  /// ```
+  String get noLongerNeeded => """No longer needed""";
+}
+
 class NotesWallMessages {
   final Messages _parent;
   const NotesWallMessages(this._parent);
@@ -6932,6 +8535,26 @@ class WearMessages {
   /// "Pantry color"
   /// ```
   String get accentApp => """Pantry color""";
+
+  /// ```dart
+  /// "+$amount"
+  /// ```
+  String stockRaised(String amount) => """+$amount""";
+
+  /// ```dart
+  /// "−$amount"
+  /// ```
+  String stockLowered(String amount) => """−$amount""";
+
+  /// ```dart
+  /// "Done adjusting"
+  /// ```
+  String get stockClose => """Done adjusting""";
+
+  /// ```dart
+  /// "Nothing needs restock"
+  /// ```
+  String get nothingNeedsRestock => """Nothing needs restock""";
 }
 
 class WatchMessages {
@@ -7442,7 +9065,7 @@ Please complete login in your browser.""",
       """Couldn't read the server's certificate to verify it. The connection may be unstable, or the server may be unreachable.""",
   """home.noHouses""": """No houses yet.""",
   """home.noHousesBody""":
-      """Houses are shared spaces for your household. Create your first house to start adding checklists, photos and notes.""",
+      """Houses are shared spaces for your household. Create your first house to start adding lists, photos and notes.""",
   """home.createHouse""": """Create house""",
   """home.houseName""": """House name""",
   """home.houseDescription""": """Description (optional)""",
@@ -7455,6 +9078,8 @@ Please complete login in your browser.""",
   """home.learnMore""": """Learn more""",
   """nav.checklists""": """Checklists""",
   """nav.checklist""": """Checklist""",
+  """nav.lists""": """Lists""",
+  """nav.list""": """List""",
   """nav.photoBoard""": """Photo Board""",
   """nav.notesWall""": """Notes Wall""",
   """widget.chooseListsTitle""": """Choose lists""",
@@ -7569,6 +9194,21 @@ Password: pantry-rocks""",
   """onboarding.joinTripMockHousemate""": """Dana""",
   """onboarding.joinTripHow""":
       """Already shopping? Joining saves your own trip to your history first. Step out of a trip you joined and it keeps running for everyone still in it.""",
+  """onboarding.inventoryTitle""": """Know what's in the cupboard""",
+  """onboarding.inventoryBody""":
+      """Inventories track how much of each thing you have and when it goes off. Step amounts down as you use them, and Pantry flags what runs low or is about to expire.""",
+  """onboarding.inventoryHow""":
+      """Give an inventory a restock checklist in its settings, and anything low or expiring is put on it for you. Tick it off at the shop and the inventory fills back up.""",
+  """onboarding.inventoryMockEggs""": """Eggs""",
+  """onboarding.inventoryMockMilk""": """Milk""",
+  """onboarding.inventoryMockFlour""": """Flour""",
+  """onboarding.templateTitle""": """Templates for what you always buy""",
+  """onboarding.templateBody""":
+      """Keep the items you add again and again in a template. Attach it to a list, and typing there suggests its items, details and all.""",
+  """onboarding.templateMockName""": """Weekly shop""",
+  """onboarding.templateMockTyped""": """Mi""",
+  """onboarding.templateMockFirst""": """Milk""",
+  """onboarding.templateMockSecond""": """Mince""",
   """onboarding.dev.showOnboarding""": """Show onboarding""",
   """onboarding.dev.pickLastSeenTitle""": """Preview what's new""",
   """onboarding.dev.pickLastSeenBody""":
@@ -7578,7 +9218,7 @@ Password: pantry-rocks""",
   """onboarding.dev.sendTestNotification""": """Send test notification""",
   """notificationsIntro.title""": """Stay in the loop""",
   """notificationsIntro.body""":
-      """Pantry can notify you when household members add items to checklists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties.""",
+      """Pantry can notify you when household members add items to lists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties.""",
   """notificationsIntro.bullet1""": """Household activity alerts""",
   """notificationsIntro.bullet2""": """Fetched directly from your server""",
   """notificationsIntro.bullet3""": """Works even when the app is closed""",
@@ -8291,6 +9931,243 @@ Password: pantry-rocks""",
       """Reuse existing items instead of adding duplicates""",
   """checklists.markdown.defaultFields""":
       """Defaults applied to every imported item""",
+  """listKinds.duplicateAs""": """Duplicate as:""",
+  """listKinds.checklist.title""": """Checklists""",
+  """listKinds.checklist.name""": """Checklist""",
+  """listKinds.checklist.newList""": """New checklist""",
+  """listKinds.checklist.createTitle""": """Create a checklist""",
+  """listKinds.checklist.editTitle""": """Edit checklist""",
+  """listKinds.checklist.duplicateTitle""": """Duplicate checklist""",
+  """listKinds.checklist.duplicateFailed""":
+      """Could not duplicate the checklist""",
+  """listKinds.checklist.listMenu""": """Checklist actions""",
+  """listKinds.checklist.deleteDialogTitle""": """Remove checklist""",
+  """listKinds.checklist.emptyTitle""": """No checklists yet""",
+  """listKinds.checklist.emptyBody""":
+      """Create your first checklist to start adding items.""",
+  """listKinds.checklist.trashTitle""": """Checklists trash""",
+  """listKinds.checklist.trashEmptyBody""":
+      """Deleted checklists will appear here.""",
+  """listKinds.checklist.archiveTitle""": """Archived checklists""",
+  """listKinds.checklist.archiveEmptyTitle""": """No archived checklists""",
+  """listKinds.checklist.archiveEmptyBody""":
+      """Archived checklists will appear here.""",
+  """listKinds.checklist.emptyTrashBody""":
+      """This will permanently delete every checklist in the trash, along with all of their items. This cannot be undone.""",
+  """listKinds.checklist.listRestored""": """Checklist restored""",
+  """listKinds.checklist.listMovedToTrash""": """Checklist moved to trash""",
+  """listKinds.checklist.listArchived""": """Checklist archived""",
+  """listKinds.checklist.listUnarchived""": """Checklist unarchived""",
+  """listKinds.inventory.title""": """Inventories""",
+  """listKinds.inventory.name""": """Inventory""",
+  """listKinds.inventory.newList""": """New inventory""",
+  """listKinds.inventory.createTitle""": """Create an inventory""",
+  """listKinds.inventory.editTitle""": """Edit inventory""",
+  """listKinds.inventory.duplicateTitle""": """Duplicate inventory""",
+  """listKinds.inventory.duplicateFailed""":
+      """Could not duplicate the inventory""",
+  """listKinds.inventory.listMenu""": """Inventory actions""",
+  """listKinds.inventory.deleteDialogTitle""": """Remove inventory""",
+  """listKinds.inventory.emptyTitle""": """No inventories yet""",
+  """listKinds.inventory.emptyBody""":
+      """Create your first inventory to start adding items.""",
+  """listKinds.inventory.trashTitle""": """Inventories trash""",
+  """listKinds.inventory.trashEmptyBody""":
+      """Deleted inventories will appear here.""",
+  """listKinds.inventory.archiveTitle""": """Archived inventories""",
+  """listKinds.inventory.archiveEmptyTitle""": """No archived inventories""",
+  """listKinds.inventory.archiveEmptyBody""":
+      """Archived inventories will appear here.""",
+  """listKinds.inventory.emptyTrashBody""":
+      """This will permanently delete every inventory in the trash, along with all of their items. This cannot be undone.""",
+  """listKinds.inventory.listRestored""": """Inventory restored""",
+  """listKinds.inventory.listMovedToTrash""": """Inventory moved to trash""",
+  """listKinds.inventory.listArchived""": """Inventory archived""",
+  """listKinds.inventory.listUnarchived""": """Inventory unarchived""",
+  """listKinds.template.title""": """Templates""",
+  """listKinds.template.name""": """Template""",
+  """listKinds.template.newList""": """New template""",
+  """listKinds.template.createTitle""": """Create a template""",
+  """listKinds.template.editTitle""": """Edit template""",
+  """listKinds.template.duplicateTitle""": """Duplicate template""",
+  """listKinds.template.duplicateFailed""":
+      """Could not duplicate the template""",
+  """listKinds.template.listMenu""": """Template actions""",
+  """listKinds.template.deleteDialogTitle""": """Remove template""",
+  """listKinds.template.emptyTitle""": """No templates yet""",
+  """listKinds.template.emptyBody""":
+      """Create your first template to start adding items.""",
+  """listKinds.template.trashTitle""": """Templates trash""",
+  """listKinds.template.trashEmptyBody""":
+      """Deleted templates will appear here.""",
+  """listKinds.template.archiveTitle""": """Archived templates""",
+  """listKinds.template.archiveEmptyTitle""": """No archived templates""",
+  """listKinds.template.archiveEmptyBody""":
+      """Archived templates will appear here.""",
+  """listKinds.template.emptyTrashBody""":
+      """This will permanently delete every template in the trash, along with all of their items. This cannot be undone.""",
+  """listKinds.template.listRestored""": """Template restored""",
+  """listKinds.template.listMovedToTrash""": """Template moved to trash""",
+  """listKinds.template.listArchived""": """Template archived""",
+  """listKinds.template.listUnarchived""": """Template unarchived""",
+  """templates.suggestionsHeader""": """Suggestions""",
+  """templates.drawFailed""": """Could not add the item from the template""",
+  """templates.attachedLabel""": """Templates:""",
+  """templates.attachedPlaceholder""": """No templates""",
+  """templates.attachedHint""":
+      """Typing a new item suggests matching items from these templates.""",
+  """templates.suggestInLabel""": """Suggest in:""",
+  """templates.everyList""": """Every list""",
+  """templates.suggestInPlaceholder""": """No lists""",
+  """templates.suggestInHint""":
+      """Typing a new item on these lists suggests matching items from this template. Selecting "Every list" includes lists made later.""",
+  """templates.attachFailed""": """Could not save the attached templates""",
+  """templates.fillLabel""": """Fill template items from these defaults""",
+  """templates.fillHint""":
+      """When an item is added from a template, the details it leaves empty start with the values above. Each person can override this in their personal settings.""",
+  """templates.fillPrefLabel""": """Fill template items from item defaults""",
+  """templates.fillPrefHint""":
+      """When you add an item from a template, fill the details it leaves empty from the list's item defaults. Each list can switch this off in its item defaults.""",
+  """templates.fillPrefNames.list""": """Follow each list""",
+  """templates.fillPrefNames.always""": """Always fill""",
+  """templates.fillPrefNames.never""": """Never fill""",
+  """templates.fillPrefFailed""": """Could not save the setting""",
+  """templates.applyToList""": """Apply to list""",
+  """templates.applyTemplate""": """Apply template""",
+  """templates.attachedTemplates""": """Attached to this list""",
+  """templates.otherTemplates""": """Other templates""",
+  """templates.noTargets""":
+      """There are no checklists or inventories to apply this template to.""",
+  """templates.noItems""": """This template has no items.""",
+  """templates.alreadyOnList""": """Already on list""",
+  """templates.applyFailed""": """Could not apply the template""",
+  """templates.loadFailed""": """Could not load the templates""",
+  """templates.back""": """Back""",
+  """stock.inStock""": """In stock""",
+  """stock.full""": """Full""",
+  """stock.low""": """Low""",
+  """stock.out""": """Out""",
+  """stock.notCounted""": """Not counted""",
+  """stock.expiresToday""": """Expires today""",
+  """stock.expiresTomorrow""": """Expires tomorrow""",
+  """stock.decrease""": """Decrease the amount on hand""",
+  """stock.increase""": """Increase the amount on hand""",
+  """stock.onHandEdit""": """Amount on hand""",
+  """stock.filter""": """Stock""",
+  """stock.filterAll""": """All items""",
+  """stock.filterNeedsRestock""": """Needs restock""",
+  """stock.filterInStock""": """In stock""",
+  """stock.writeRefused""":
+      """Could not save the stock change. The inventory now shows what the server has.""",
+  """stock.settings.action""": """Inventory settings""",
+  """stock.settings.title""": """Inventory settings""",
+  """stock.settings.name""": """Name""",
+  """stock.settings.nameHint""":
+      """Icon, colour and sharing work as they do on checklists.""",
+  """stock.settings.expiryWarning""": """Expiry warning""",
+  """stock.settings.daysBefore""": """Days before expiry""",
+  """stock.settings.warnHint""": """Set 0 to warn on the expiry date itself.""",
+  """stock.settings.restockChecklist""": """Restock checklist""",
+  """stock.settings.restockNone""": """None""",
+  """stock.settings.restockSetHint""":
+      """Items that run low or start expiring are added to this checklist.""",
+  """stock.settings.restockUnsetHint""":
+      """Without one, low and expiring items are only marked here.""",
+  """stock.settings.notifications""": """Notifications""",
+  """stock.settings.stockSummary""": """Daily stock summary""",
+  """stock.settings.stockSummaryHint""":
+      """Once a day, tell members what newly ran low or started expiring here. Each member can also turn it off in their personal settings.""",
+  """stock.settings.cancel""": """Cancel""",
+  """stock.settings.save""": """Save""",
+  """stock.card.title""": """Stock""",
+  """stock.card.mode""": """Stock mode""",
+  """stock.card.count""": """Count""",
+  """stock.card.level""": """Level""",
+  """stock.card.countHint""": """Track how many you have, e.g. 4 of 12 eggs.""",
+  """stock.card.levelHint""":
+      """Track it as Full, Low or Out, e.g. flour or spices.""",
+  """stock.card.onHand""": """On hand""",
+  """stock.card.onHandPlaceholder""": """e.g. 4""",
+  """stock.card.target""": """Target""",
+  """stock.card.targetPlaceholder""": """e.g. 12 eggs""",
+  """stock.card.reorderPoint""": """Reorder point""",
+  """stock.card.reorderPlaceholder""": """e.g. 4""",
+  """stock.card.stockLevel""": """Stock level""",
+  """stock.card.restockAmount""": """Restock amount""",
+  """stock.card.restockPlaceholder""": """e.g. 1 kg bag""",
+  """stock.card.convertedBlank""":
+      """Converted to a count. Enter the amount on hand and a target.""",
+  """stock.card.statusExpired""": """Expired.""",
+  """stock.card.statusExpiring""": """Expiring soon.""",
+  """stock.card.statusLow""": """Low.""",
+  """stock.card.statusOut""": """Out.""",
+  """stock.card.statusUncountedTarget""":
+      """Not counted: the target has no number, so it never runs low.""",
+  """stock.card.statusUncountedOnHand""":
+      """Not counted: on hand has no number, so it never runs low.""",
+  """stock.card.statusInStock""": """In stock.""",
+  """stock.card.templateDefaultMode""":
+      """With no stock mode picked, it uses the inventory's default.""",
+  """stock.card.templateStartsLevel""":
+      """Drawn into an inventory, it starts Full.""",
+  """stock.card.templateUncounted""":
+      """Drawn into an inventory without a target, it is not counted.""",
+  """stock.expiry.title""": """Expiry""",
+  """stock.expiry.mode""": """How the item expires""",
+  """stock.expiry.none""": """None""",
+  """stock.expiry.date""": """Date""",
+  """stock.expiry.keeps""": """Keeps N days""",
+  """stock.expiry.expiryDate""": """Expiry date""",
+  """stock.expiry.daysItKeeps""": """Days it keeps""",
+  """stock.expiry.chip""": """Expiry""",
+  """stock.compose.chip""": """Stock""",
+  """stock.compose.count""": """Count""",
+  """stock.compose.level""": """Level""",
+  """stock.compose.fullWhenEmpty""": """Full when empty""",
+  """stock.noRestockChecklist""":
+      """This inventory has no restock checklist, so these items are only marked here. Pick one in the inventory settings.""",
+  """stock.renewAction""": """Renew expiry""",
+  """stock.summaryPref""": """Daily stock summary""",
+  """stock.summaryPrefHint""":
+      """Once a day, what newly ran low or started expiring in this house's inventories.""",
+  """stock.summaryPrefFailed""":
+      """Could not save the stock summary setting.""",
+  """stock.links.caption""": """Shopping list""",
+  """stock.links.tooltipAutoOn""":
+      """Not linked yet: added to the shopping list when low""",
+  """stock.links.tooltipAutoOff""":
+      """Not linked: never added to a shopping list""",
+  """stock.links.stateOpen""": """open""",
+  """stock.links.stateChecked""": """checked""",
+  """stock.links.stateArchived""": """archived""",
+  """stock.links.stateTrashed""": """in the trash""",
+  """stock.links.unlink""": """Unlink""",
+  """stock.links.whichOne""": """Which one is it?""",
+  """stock.links.autoLink""": """Add to shopping list when low""",
+  """stock.links.linkByHand""": """Link by hand""",
+  """stock.links.chipNotAdded""": """Not added to a shopping list""",
+  """stock.links.linkDifferent""": """Link to a different item …""",
+  """stock.links.linkedHint""":
+      """When it runs low or starts expiring, this item is put back on that list.""",
+  """stock.links.link""": """Link""",
+  """stock.links.autoHintNoChecklist""":
+      """Pick a restock checklist in the inventory settings to find or add this item there.""",
+  """stock.links.autoHintOff""":
+      """This item is only marked here when it runs low.""",
+  """stock.links.linkToItem""": """Link to an item …""",
+  """stock.links.pickerTitle""": """Link to a checklist item""",
+  """stock.links.pickerField""": """Checklist item""",
+  """stock.links.pickerSearch""": """Search checklist items …""",
+  """stock.links.pickerSearching""": """Searching …""",
+  """stock.links.pickerEmpty""": """No checklist items found""",
+  """stock.links.pickerArchived""": """archived""",
+  """stock.links.pickerFailed""":
+      """Could not load checklist items. Check your connection and try again.""",
+  """stock.links.cancel""": """Cancel""",
+  """stock.restock.pinnedChipBare""": """Pinned""",
+  """stock.restock.pinnedChipTooltip""":
+      """Pinned, so stock leaves it. Tap to unpin.""",
+  """stock.restock.noLongerNeeded""": """No longer needed""",
   """notesWall.noNotes""": """No notes yet.""",
   """notesWall.failedToLoad""": """Failed to load notes.""",
   """notesWall.saveFailed""": """Failed to save note.""",
@@ -8650,6 +10527,8 @@ Password: pantry-rocks""",
   """wear.accent""": """Accent""",
   """wear.accentServer""": """Your Nextcloud color""",
   """wear.accentApp""": """Pantry color""",
+  """wear.stockClose""": """Done adjusting""",
+  """wear.nothingNeedsRestock""": """Nothing needs restock""",
   """watch.title""": """Watch""",
   """watch.requestWarning""":
       """Only allow this if the watch is yours. It gets the same access to your household as this phone.""",

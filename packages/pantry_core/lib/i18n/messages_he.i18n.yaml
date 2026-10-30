@@ -73,6 +73,8 @@ home:
 nav:
   checklists: רשימות
   checklist: רשימה
+  lists: רשימות
+  list: רשימה
   photoBoard: לוח תמונות
   notesWall: קיר הערות
 
@@ -173,6 +175,19 @@ onboarding:
   joinTripBody: "כשמישהו בבית יצא לקניות, כרזה מציעה לך להצטרף לקנייה שלו במקום לפתוח עוד אחת משלך. אתם עוברים עליה יחד — מה שאחד מכם מסמן נעלם גם לשני."
   joinTripMockHousemate: "דנה"
   joinTripHow: "כבר באמצע קנייה? ההצטרפות שומרת קודם את הקנייה שלך בהיסטוריה. אם תצא מקנייה שהצטרפת אליה, היא ממשיכה לכל מי שנשאר בה."
+  inventoryTitle: "לדעת מה יש בארון"
+  inventoryBody: "מלאים עוקבים אחרי כמה יש לך מכל דבר ומתי הוא פג תוקף. מורידים כמויות תוך כדי שימוש, ו-Pantry מסמן מה עומד להיגמר או לפוג."
+  inventoryHow: "הגדירו למלאי רשימת השלמה בהגדרות שלו, וכל מה שנגמר או פג תוקף יתווסף אליה. מסמנים אותו בחנות והמלאי מתמלא בחזרה."
+  inventoryMockEggs: "ביצים"
+  inventoryMockMilk: "חלב"
+  inventoryMockFlour: "קמח"
+  templateTitle: "תבניות למה שקונים תמיד"
+  templateBody: "שמרו בתבנית את הפריטים שאתם מוסיפים שוב ושוב. צרפו אותה לרשימה, והקלדה ברשימה תציע את הפריטים שלה, עם כל הפרטים."
+  templateHow(String apply): "כדי להעתיק תבנית שלמה בבת אחת, פתחו את התפריט שלה בבורר הרשימות ובחרו ${apply}."
+  templateMockName: "קניות שבועיות"
+  templateMockTyped: "חל"
+  templateMockFirst: "חלב"
+  templateMockSecond: "חלה"
   dev:
     showOnboarding: "הצג היכרות"
     pickLastSeenTitle: "תצוגה מקדימה של החדש"
@@ -918,6 +933,296 @@ checklists:
     addItems(int count): "${_plural(count, one: 'הוספת פריט אחד', many: 'הוספת $count פריטים')}"
     imported(int count): "${_plural(count, one: 'יובא פריט אחד', many: 'יובאו $count פריטים')}"
 
+listKinds:
+  duplicateAs: "שכפל בתור:"
+  itemsSkippedNoEdit(int count): "${_plural(count, one: 'פריט אחד דולג כי אין לך הרשאה לערוך אותו.', many: '$count פריטים דולגו כי אין לך הרשאה לערוך אותם.')}"
+  itemsSkippedUncheck(int count): "${_plural(count, one: 'לא ניתן היה לבטל את הסימון של פריט אחד.', many: 'לא ניתן היה לבטל את הסימון של $count פריטים.')}"
+  checklist:
+    title: רשימות סימון
+    name: רשימת סימון
+    newList: רשימת סימון חדשה
+    createTitle: צוררשימת סימון
+    editTitle: ערוךרשימת סימון
+    duplicateTitle: שכפלרשימת סימון
+    duplicateFailed: לא ניתן היה לשכפל את רשימת הסימון
+    listMenu: פעולות רשימת סימון
+    deleteDialogTitle: הסררשימת סימון
+    emptyTitle: אין רשימות סימון עדיין
+    emptyBody: צור את רשימת הסימון הראשונה שלך כדי להתחיל להוסיף פריטים.
+    trashTitle: אשפת רשימות סימון
+    trashEmptyBody: רשימות סימון שנמחקו יופיעו כאן.
+    archiveTitle: רשימות סימון בארכיון
+    archiveEmptyTitle: אין רשימות סימון בארכיון
+    archiveEmptyBody: רשימות סימון שהועברו לארכיון יופיעו כאן.
+    emptyTrashBody: פעולה זו תמחק לצמיתות את כל רשימות הסימון שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו.
+    listRestored: רשימת הסימון שוחזרה
+    listMovedToTrash: רשימת הסימון הועברה לאשפה
+    listArchived: רשימת הסימון הועברה לארכיון
+    listUnarchived: רשימת הסימון הוצאה מהארכיון
+  inventory:
+    title: רשימות מלאי
+    name: רשימת מלאי
+    newList: רשימת מלאי חדשה
+    createTitle: צוררשימת מלאי
+    editTitle: ערוךרשימת מלאי
+    duplicateTitle: שכפלרשימת מלאי
+    duplicateFailed: לא ניתן היה לשכפל את רשימת המלאי
+    listMenu: פעולות רשימת מלאי
+    deleteDialogTitle: הסררשימת מלאי
+    emptyTitle: אין רשימות מלאי עדיין
+    emptyBody: צור את רשימת המלאי הראשונה שלך כדי להתחיל להוסיף פריטים.
+    trashTitle: אשפת רשימות מלאי
+    trashEmptyBody: רשימות מלאי שנמחקו יופיעו כאן.
+    archiveTitle: רשימות מלאי בארכיון
+    archiveEmptyTitle: אין רשימות מלאי בארכיון
+    archiveEmptyBody: רשימות מלאי שהועברו לארכיון יופיעו כאן.
+    emptyTrashBody: פעולה זו תמחק לצמיתות את כל רשימות המלאי שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו.
+    listRestored: רשימת המלאי שוחזרה
+    listMovedToTrash: רשימת המלאי הועברה לאשפה
+    listArchived: רשימת המלאי הועברה לארכיון
+    listUnarchived: רשימת המלאי הוצאה מהארכיון
+  template:
+    title: תבניות
+    name: תבנית
+    newList: תבנית חדשה
+    createTitle: צורתבנית
+    editTitle: ערוךתבנית
+    duplicateTitle: שכפלתבנית
+    duplicateFailed: לא ניתן היה לשכפל את התבנית
+    listMenu: פעולות תבנית
+    deleteDialogTitle: הסרתבנית
+    emptyTitle: אין תבניות עדיין
+    emptyBody: צור את התבנית הראשונה שלך כדי להתחיל להוסיף פריטים.
+    trashTitle: אשפת תבניות
+    trashEmptyBody: תבניות שנמחקו יופיעו כאן.
+    archiveTitle: תבניות בארכיון
+    archiveEmptyTitle: אין תבניות בארכיון
+    archiveEmptyBody: תבניות שהועברו לארכיון יופיעו כאן.
+    emptyTrashBody: פעולה זו תמחק לצמיתות את כל התבניות שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו.
+    listRestored: התבנית שוחזרה
+    listMovedToTrash: התבנית הועברה לאשפה
+    listArchived: התבנית הועברה לארכיון
+    listUnarchived: התבנית הוצאה מהארכיון
+
+templates:
+  suggestionsHeader: הצעות
+  fromTemplates(String names): "מתבניות: $names"
+  addedFromTemplate(String name): '"$name" נוסף מתבנית'
+  drawFailed: לא ניתן היה להוסיף את הפריט מהתבנית
+  attachedLabel: "תבניות:"
+  attachedPlaceholder: אין תבניות
+  attachedHint: הקלדת פריט חדש מציעה פריטים תואמים מהתבניות האלה.
+  attachedEveryListHint(String names): הקלדת פריט חדש מציעה פריטים תואמים מהתבניות האלה, וגם מ־$names, שמשמשות את כל הרשימות.
+  suggestInLabel: "הצעה ברשימות:"
+  everyList: כל הרשימות
+  suggestInPlaceholder: אין רשימות
+  suggestInHint: הקלדת פריט חדש ברשימות האלה מציעה פריטים תואמים מהתבנית הזו. בחירה ב"כל הרשימות" כוללת גם רשימות שייווצרו בהמשך.
+  listWithKind(String list, String kind): "$list ($kind)"
+  attachFailed: לא ניתן היה לשמור את התבניות המצורפות
+  fillLabel: מילוי פריטי תבנית מברירות המחדל האלה
+  fillHint: כשפריט נוסף מתבנית, הפרטים שהוא משאיר ריקים מתחילים עם הערכים שלמעלה. כל אחד יכול לשנות זאת בהגדרות האישיות שלו.
+  fillPrefLabel: מילוי פריטי תבנית מברירות המחדל לפריטים
+  fillPrefHint: כשמוסיפים פריט מתבנית, הפרטים שהוא משאיר ריקים מתמלאים מברירות המחדל לפריטים של הרשימה. כל רשימה יכולה לכבות זאת בברירות המחדל לפריטים שלה.
+  fillPrefNames:
+    list: לפי כל רשימה
+    always: תמיד למלא
+    never: אף פעם לא למלא
+  fillPrefFailed: לא ניתן היה לשמור את ההגדרה
+  applyToList: החלה על רשימה
+  applyTemplate: החלת תבנית
+  attachedTemplates: מצורפות לרשימה הזו
+  otherTemplates: תבניות אחרות
+  noTargets: אין רשימות סימון או רשימות מלאי שאפשר להחיל עליהן את התבנית הזו.
+  noItems: אין פריטים בתבנית הזו.
+  alreadyOnList: כבר ברשימה
+  reviewSummary(String template, String list): העתקת הפריטים המסומנים מ־$template אל $list.
+  applyItems(int count): "${_plural(count, one: 'החלת פריט אחד', many: 'החלת $count פריטים')}"
+  appliedAdded(int count, String list): "${_plural(count, one: 'נוסף פריט אחד אל $list', many: 'נוספו $count פריטים אל $list')}"
+  appliedReused(int count, String list): "${_plural(count, one: 'פריט אחד כבר היה ב־$list והוחזר', many: '$count פריטים כבר היו ב־$list והוחזרו')}"
+  appliedMixed(String list, int added, int reused): "$list: $added נוספו, $reused הוחזרו"
+  applyFailed: לא ניתן היה להחיל את התבנית
+  loadFailed: לא ניתן היה לטעון את התבניות
+  back: חזרה
+
+stock:
+  inStock: במלאי
+  full: מלא
+  low: נמוך
+  out: אזל
+  lowBuy(String amount): "נמוך · לקנות $amount"
+  outBuy(String amount): "אזל · לקנות $amount"
+  notCounted: לא נספר
+  expiredOn(String date): "פג תוקף ב-$date"
+  expiredOnBuy(String date, String amount): "פג תוקף ב-$date · לקנות $amount"
+  expiresToday: פג תוקף היום
+  expiresTodayBuy(String amount): "פג תוקף היום · לקנות $amount"
+  expiresTomorrow: פג תוקף מחר
+  expiresTomorrowBuy(String amount): "פג תוקף מחר · לקנות $amount"
+  expiresInDays(int count): "${_plural(count, one: 'פג תוקף בעוד יום אחד', many: 'פג תוקף בעוד $count ימים')}"
+  expiresInDaysBuy(int count, String amount): "${_plural(count, one: 'פג תוקף בעוד יום אחד · לקנות $amount', many: 'פג תוקף בעוד $count ימים · לקנות $amount')}"
+  goodUntil(String date): "בתוקף עד $date"
+  amount(String onHand, String target): "$onHand / $target"
+  decrease: הפחתת הכמות הקיימת
+  increase: הגדלת הכמות הקיימת
+  onHandEdit: כמות קיימת
+  levelButton(String level): "רמת מלאי: $level"
+  needsRestockCount(int count): "${_plural(count, one: 'פריט אחד צריך חידוש מלאי', many: '$count פריטים צריכים חידוש מלאי')}"
+  filter: מלאי
+  filterAll: כל הפריטים
+  filterNeedsRestock: צריך חידוש מלאי
+  filterInStock: במלאי
+  writeRefused: לא ניתן היה לשמור את שינוי המלאי. רשימת המלאי מציגה כעת את מה שיש בשרת.
+  settings:
+    action: הגדרות רשימת המלאי
+    title: הגדרות רשימת המלאי
+    name: שם
+    nameHint: סמל, צבע ושיתוף פועלים כמו ברשימות סימון.
+    expiryWarning: התראת תפוגה
+    warnBefore(String days): "התראה $days ימים לפני התפוגה"
+    daysBefore: ימים לפני התפוגה
+    warnHint: יש להזין 0 כדי לקבל התראה ביום התפוגה עצמו.
+    restockChecklist: רשימת סימון לחידוש מלאי
+    restockNone: ללא
+    restockSetHint: פריטים שנגמרים או מתקרבים לתפוגה נוספים לרשימת הסימון הזו.
+    restockUnsetHint: בלעדיה, פריטים נמוכים או שמתקרבים לתפוגה רק מסומנים כאן.
+    notifications: התראות
+    stockSummary: סיכום מלאי יומי
+    stockSummaryHint: פעם ביום, לספר לחברים מה נגמר או התחיל להתקרב לתפוגה כאן. כל חבר יכול גם לכבות זאת בהגדרות האישיות.
+    cancel: ביטול
+    save: שמירה
+  card:
+    title: מלאי
+    mode: מצב מלאי
+    count: כמות
+    level: רמה
+    countHint: מעקב אחר כמה יש לך, למשל 4 מתוך 12 ביצים.
+    levelHint: מעקב כמלא, נמוך או אזל, למשל קמח או תבלינים.
+    onHand: קיים
+    onHandPlaceholder: למשל 4
+    target: יעד
+    targetPlaceholder: למשל 12 ביצים
+    reorderPoint: סף הזמנה מחדש
+    reorderPlaceholder: למשל 4
+    stockLevel: רמת מלאי
+    restockAmount: כמות לחידוש
+    restockPlaceholder: למשל שקית של 1 ק״ג
+    convertedLevelAmount(String level, String amount): 'הומר: רמה $level, כמות לחידוש "$amount".'
+    convertedLevel(String level): "הומר: רמה $level."
+    convertedCount(String onHand, String target): 'הומר: קיים "$onHand", יעד "$target".'
+    convertedTargetOnly(String target): 'הומר: יעד "$target". יש להזין את הכמות הקיימת.'
+    convertedBlank: הומר לכמות. יש להזין את הכמות הקיימת ויעד.
+    statusExpiredBuy(String amount): "פג תוקף: לקנות $amount."
+    statusExpired: פג תוקף.
+    statusExpiringBuy(String amount): "תוקף עומד לפוג: לקנות $amount."
+    statusExpiring: תוקף עומד לפוג.
+    statusLowBuy(String amount): "נמוך: לקנות $amount."
+    statusLow: נמוך.
+    statusOutBuy(String amount): "אזל: לקנות $amount."
+    statusOut: אזל.
+    statusUncountedTarget: "לא נספר: ליעד אין מספר, ולכן הוא אף פעם לא נמוך."
+    statusUncountedOnHand: "לא נספר: לכמות הקיימת אין מספר, ולכן הוא אף פעם לא נמוך."
+    statusInStock: במלאי.
+    templateDefaultMode: כשלא נבחר מצב מלאי, נעשה שימוש בברירת המחדל של רשימת המלאי.
+    templateStartsCount(String amount): "כשהוא נוסף לרשימת מלאי, הוא מתחיל מלא עם $amount קיים."
+    templateStartsLevelAmount(String amount): "כשהוא נוסף לרשימת מלאי, הוא מתחיל במצב מלא ומתחדש ב-$amount."
+    templateStartsLevel: כשהוא נוסף לרשימת מלאי, הוא מתחיל במצב מלא.
+    templateUncounted: כשהוא נוסף לרשימת מלאי ללא יעד, הוא לא נספר.
+  expiry:
+    title: תפוגה
+    mode: איך פג תוקף הפריט
+    none: ללא
+    date: תאריך
+    keeps: נשמר N ימים
+    expiryDate: תאריך תפוגה
+    daysItKeeps: ימים שהוא נשמר
+    expiredSummary(String date): "פג תוקף ב-$date."
+    goodUntilSummary(String date): "בתוקף עד $date."
+    renews(int count): "${_plural(count, one: 'כל חידוש מלאי מאריך את התוקף ליום אחד מאותו יום.', many: 'כל חידוש מלאי מאריך את התוקף ל-$count ימים מאותו יום.')}"
+    templateExpires(int count): "${_plural(count, one: 'כשהוא נוסף לרשימת מלאי, תוקפו פג יום אחד לאחר מכן.', many: 'כשהוא נוסף לרשימת מלאי, תוקפו פג $count ימים לאחר מכן.')}"
+    chip: תפוגה
+    chipExpires(String date): "יפוג ב-$date"
+    chipExpired(String date): "פג תוקף ב-$date"
+    chipKeeps(int count): "${_plural(count, one: 'נשמר יום אחד', many: 'נשמר $count ימים')}"
+  compose:
+    chip: מלאי
+    count: כמות
+    level: רמה
+    levelAmount(String amount): "רמה · $amount"
+    targetValue(String target): "יעד: $target"
+    fullWhenEmpty: מלא כשריק
+  noRestockChecklist: לרשימת המלאי הזו אין רשימת סימון לחידוש מלאי, ולכן הפריטים האלה רק מסומנים כאן. אפשר לבחור אחת בהגדרות רשימת המלאי.
+  renewChip(String date): "חידוש תפוגה ← $date"
+  renewAction: חידוש תפוגה
+  summaryPref: סיכום מלאי יומי
+  summaryPrefHint: פעם ביום, מה נגמר או התחיל להתקרב לתפוגה ברשימות המלאי של הבית הזה.
+  summaryPrefFailed: לא ניתן היה לשמור את הגדרת סיכום המלאי.
+  links:
+    caption: רשימת קניות
+    tooltipLinked(String row, String list): "מקושר ל$row ב$list"
+    tooltipNeedsPick(int count): "${_plural(count, one: 'לא מקושר: התאמה אחת, יש לבחור', many: 'לא מקושר: $count התאמות, יש לבחור אחת')}"
+    tooltipAutoOn: "עדיין לא מקושר: יתווסף לרשימת הקניות כשיהיה נמוך"
+    tooltipAutoOff: "לא מקושר: לעולם לא יתווסף לרשימת קניות"
+    rowOnList(String row, String list, String state): "$row ב$list · $state"
+    stateOpen: פתוח
+    stateChecked: מסומן
+    stateArchived: בארכיון
+    stateTrashed: בסל המחזור
+    stateQuantity(String quantity): "× $quantity"
+    unlink: ביטול קישור
+    whichOne: איזה מהם?
+    candidate(String row, String list, String state): "$row, $list, $state"
+    autoLink: להוסיף לרשימת הקניות כשנמוך
+    linkByHand: קישור ידני
+    chipNeedsPick(int count): "${_plural(count, one: 'לא מקושר · התאמה אחת, יש לבחור', many: 'לא מקושר · $count התאמות, יש לבחור אחת')}"
+    chipNotAdded: לא מתווסף לרשימת קניות
+    cardLinked(String row, String list, String state): "מקושר ל$row ב$list · $state"
+    linkDifferent: קישור לפריט אחר …
+    linkedHint: כשהפריט נגמר או מתקרב לתפוגה, הוא חוזר לרשימה הזו.
+    matches(int count): "${_plural(count, one: 'פריט אחד מתאים', many: '$count פריטים מתאימים')}"
+    matchesQuestion(String matches): "$matches ברשימת הסימון לחידוש מלאי. איזה מהם זה?"
+    link: קישור
+    autoHintOn(String item, String list): 'מוצא או מוסיף את "$item" ב$list כשצריך.'
+    autoHintNoChecklist: יש לבחור רשימת סימון לחידוש מלאי בהגדרות רשימת המלאי כדי למצוא או להוסיף שם את הפריט.
+    autoHintOff: הפריט הזה רק מסומן כאן כשהוא נמוך.
+    linkToItem: קישור לפריט …
+    pickerTitle: קישור לפריט ברשימת סימון
+    pickerField: פריט ברשימת סימון
+    pickerSearch: חיפוש פריטים ברשימות סימון …
+    pickerSearching: מחפש …
+    pickerEmpty: לא נמצאו פריטים
+    pickerRow(String row, String list): "$row — $list"
+    pickerArchived: בארכיון
+    pickerFailed: לא ניתן היה לטעון פריטים. יש לבדוק את החיבור ולנסות שוב.
+    cancel: ביטול
+  restock:
+    added(String what, String list): "$what נוסף ל$list"
+    revivedQuantity(String list, String row, String quantity): "שוב ב$list: $row × $quantity"
+    revived(String list, String row): "שוב ב$list: $row"
+    changed(String list, String row, String quantity): "$list: $row עכשיו × $quantity"
+    pinnedAt(String row, String list, String quantity): "$row ב$list מוצמד על × $quantity"
+    pinned(String row, String list): "$row ב$list מוצמד"
+    recovered(String row, String list): "כבר לא נחוץ: $row ב$list"
+    linked(String item, String row, String list): "$item קושר ל$row ב$list"
+    unlinked(String item, String row, String list): "הקישור של $item ל$row ב$list בוטל. הוא לא יתווסף לרשימת קניות."
+    severalMatches(String item, int count, String list): "${_plural(count, one: '$item מתאים לפריט אחד ב$list. יש לבחור אחד לקישור.', many: '$item מתאים ל-$count פריטים ב$list. יש לבחור אחד לקישור.')}"
+    restocked(String parts): "חודש מלאי: $parts"
+    replaced(String parts): "הוחלף: $parts"
+    restockedReplaced(String restock, String replace): "חודש מלאי: $restock; הוחלף: $replace"
+    undidRestocked(String parts): "בוטל: חידוש מלאי $parts"
+    undidReplaced(String parts): "בוטל: החלפה $parts"
+    undidRestockedReplaced(String restock, String replace): "בוטל: חידוש מלאי $restock; החלפה $replace"
+    partAdded(String item, String inventory, String amount): "$item ($inventory) +$amount"
+    partFull(String item, String inventory): "$item ($inventory) למלא"
+    partReplaced(String item, String inventory, String amount): "$item ($inventory) ×$amount"
+    partReplacedFull(String item, String inventory): "$item ($inventory), מלא"
+    uncheckToUndo(String restock): "$restock · ביטול הסימון יבטל"
+    source(String item, String inventory): "$item ($inventory)"
+    restocks(String items): "מחדש מלאי: $items"
+    pinnedChip(String quantity): "× $quantity"
+    pinnedChipBare: מוצמד
+    pinnedChipTooltip: מוצמד, המלאי לא משנה אותו. הקשה מבטלת את ההצמדה.
+    noLongerNeeded: כבר לא נחוץ
+
 notesWall:
   noNotes: אין הערות עדיין.
   failedToLoad: טעינת ההערות נכשלה.
@@ -1335,6 +1640,12 @@ wear:
   accent: צבע הדגשה
   accentServer: צבע ה־Nextcloud שלך
   accentApp: צבע Pantry
+  # TRANSLATORS: {amount} is the amount on hand that changed, in the item's own wording, e.g. "3 eggs". Keep the sign in front of it.
+  stockRaised(String amount): "+$amount"
+  # TRANSLATORS: {amount} is the amount on hand that changed, in the item's own wording, e.g. "3 eggs". Keep the sign in front of it.
+  stockLowered(String amount): "−$amount"
+  stockClose: סיום עדכון
+  nothingNeedsRestock: אין פריטים שצריך להשלים
 
 watch:
   title: שעון

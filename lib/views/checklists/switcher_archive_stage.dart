@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 
@@ -13,11 +14,15 @@ import 'switcher_trash_stage.dart';
 /// Unarchive as the one-tap recover action.
 class ArchiveStage extends StatefulWidget {
   final ChecklistsController controller;
+
+  /// Whose archive is shown; each kind has its own.
+  final ListKind kind;
   final VoidCallback onBack;
 
   const ArchiveStage({
     super.key,
     required this.controller,
+    this.kind = ListKind.checklist,
     required this.onBack,
   });
 
@@ -41,7 +46,7 @@ class _ArchiveStageState extends State<ArchiveStage> {
       _error = null;
     });
     try {
-      await widget.controller.loadArchivedLists();
+      await widget.controller.loadArchivedLists(kind: widget.kind);
     } catch (_) {
       if (!mounted) return;
       _error = m.checklists.failedToLoadArchivedLists;
@@ -69,7 +74,7 @@ class _ArchiveStageState extends State<ArchiveStage> {
               ),
               const SizedBox(width: 4),
               Text(
-                m.checklists.archivedListsTitle,
+                widget.kind.strings.archiveTitle,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
@@ -100,7 +105,7 @@ class _ArchiveStageState extends State<ArchiveStage> {
             padding: const EdgeInsets.symmetric(vertical: 24),
             child: Center(
               child: Text(
-                m.checklists.archivedListsEmpty,
+                widget.kind.strings.archiveEmptyBody,
                 style: TextStyle(color: cs.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),

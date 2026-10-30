@@ -83,6 +83,10 @@ class _SheetHostState extends State<SheetHost> {
   ChecklistList? _editing;
   late ChecklistList? _duplicating = widget.duplicating;
 
+  /// The kind whose lists the switcher shows. Browsing another kind leaves the
+  /// open list alone until one of its lists is picked.
+  late ListKind _kind = widget.controller.kind;
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
@@ -122,57 +126,7 @@ class _SheetHostState extends State<SheetHost> {
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: surfaces.dragHandle(),
               ),
-            if (_stage == _Stage.list)
-              AnimatedBuilder(
-                animation: widget.controller,
-                builder: (_, _) => ListStage(
-                  controller: widget.controller,
-                  itemCountForList: widget.itemCountForList,
-                  onCreateNew: () => setState(() => _stage = _Stage.create),
-                  onEdit: (list) => setState(() {
-                    _editing = list;
-                    _stage = _Stage.edit;
-                  }),
-                  onDuplicate: (list) => setState(() {
-                    _duplicating = list;
-                    _stage = _Stage.duplicate;
-                  }),
-                  onOpenTrash: () => setState(() => _stage = _Stage.trash),
-                  onOpenArchive: () => setState(() => _stage = _Stage.archive),
-                ),
-              )
-            else if (_stage == _Stage.create)
-              ListFormStage(
-                controller: widget.controller,
-                onBack: () => setState(() => _stage = _Stage.list),
-                onSaved: () => Navigator.pop(context),
-              )
-            else if (_stage == _Stage.edit)
-              ListFormStage(
-                controller: widget.controller,
-                existing: _editing,
-                onBack: () => setState(() => _stage = _Stage.list),
-                onSaved: () => setState(() => _stage = _Stage.list),
-              )
-            else if (_stage == _Stage.duplicate)
-              DuplicateListStage(
-                controller: widget.controller,
-                source: _duplicating!,
-                onBack: widget.duplicating != null
-                    ? () => Navigator.pop(context)
-                    : () => setState(() => _stage = _Stage.list),
-                onDuplicated: () => Navigator.pop(context),
-              )
-            else if (_stage == _Stage.trash)
-              TrashStage(
-                controller: widget.controller,
-                onBack: () => setState(() => _stage = _Stage.list),
-              )
-            else
-              ArchiveStage(
-                controller: widget.controller,
-                onBack: () => setState(() => _stage = _Stage.list),
-              ),
+            Flexible(child: _stageView()),
           ],
         ),
       ),
@@ -192,4 +146,58 @@ class _SheetHostState extends State<SheetHost> {
             ),
           );
   }
+
+  Widget _stageView() => switch (_stage) {
+    _Stage.list => AnimatedBuilder(
+      animation: widget.controller,
+      builder: (_, _) => ListStage(
+        controller: widget.controller,
+        kind: _kind,
+        onKindChanged: (kind) => setState(() => _kind = kind),
+        itemCountForList: widget.itemCountForList,
+        onCreateNew: () => setState(() => _stage = _Stage.create),
+        onEdit: (list) => setState(() {
+          _editing = list;
+          _stage = _Stage.edit;
+        }),
+        onDuplicate: (list) => setState(() {
+          _duplicating = list;
+          _stage = _Stage.duplicate;
+        }),
+        onOpenTrash: () => setState(() => _stage = _Stage.trash),
+        onOpenArchive: () => setState(() => _stage = _Stage.archive),
+      ),
+    ),
+    _Stage.create => ListFormStage(
+      controller: widget.controller,
+      kind: _kind,
+      onBack: () => setState(() => _stage = _Stage.list),
+      onSaved: () => Navigator.pop(context),
+    ),
+    _Stage.edit => ListFormStage(
+      controller: widget.controller,
+      kind: _editing!.kind,
+      existing: _editing,
+      onBack: () => setState(() => _stage = _Stage.list),
+      onSaved: () => setState(() => _stage = _Stage.list),
+    ),
+    _Stage.duplicate => DuplicateListStage(
+      controller: widget.controller,
+      source: _duplicating!,
+      onBack: widget.duplicating != null
+          ? () => Navigator.pop(context)
+          : () => setState(() => _stage = _Stage.list),
+      onDuplicated: () => Navigator.pop(context),
+    ),
+    _Stage.trash => TrashStage(
+      controller: widget.controller,
+      kind: _kind,
+      onBack: () => setState(() => _stage = _Stage.list),
+    ),
+    _Stage.archive => ArchiveStage(
+      controller: widget.controller,
+      kind: _kind,
+      onBack: () => setState(() => _stage = _Stage.list),
+    ),
+  };
 }

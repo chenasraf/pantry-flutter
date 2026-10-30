@@ -1,7 +1,9 @@
+import 'package:pantry_core/models/stock.dart';
 import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/item_defaults.dart';
+import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/models/label.dart';
 import 'package:pantry_core/models/note.dart';
@@ -140,11 +142,9 @@ class SyncExecutor {
     if (sessionId == null || itemId == null) return SyncResult.empty;
     switch (op.op) {
       case SyncOpKind.create:
-        await svc.checkItem(op.houseId, sessionId, itemId);
-        return SyncResult.empty;
+        return SyncResult(await svc.checkItem(op.houseId, sessionId, itemId));
       case SyncOpKind.delete:
-        await svc.uncheckItem(op.houseId, sessionId, itemId);
-        return SyncResult.empty;
+        return SyncResult(await svc.uncheckItem(op.houseId, sessionId, itemId));
       default:
         return SyncResult.empty;
     }
@@ -209,6 +209,7 @@ class SyncExecutor {
       case SyncOpKind.create:
         final list = await svc.createList(
           houseId,
+          kind: ListKind.parse(op.body['kind']),
           name: op.body['name'] as String,
           description: op.body['description'] as String?,
           icon: op.body['icon'] as String?,
@@ -241,6 +242,9 @@ class SyncExecutor {
           defaultRrule: op.body['defaultRrule'] as String?,
           defaultRepeatFromCompletion:
               op.body['defaultRepeatFromCompletion'] as bool?,
+          expiryLeadDays: op.body['expiryLeadDays'] as int?,
+          restockChecklistId: op.body['restockChecklistId'] as int?,
+          stockSummary: op.body['stockSummary'] as bool?,
         );
         return SyncResult(list);
       case SyncOpKind.setItemDefaults:
@@ -273,7 +277,10 @@ class SyncExecutor {
         await svc.permanentlyDeleteList(houseId, id);
         return SyncResult.empty;
       case SyncOpKind.emptyTrash:
-        await svc.emptyListsTrash(houseId);
+        await svc.emptyListsTrash(
+          houseId,
+          kind: ListKind.parse(op.body['kind']),
+        );
         return SyncResult.empty;
       case SyncOpKind.reorder:
         final raw = (op.body['order'] as List).cast<Map>();
@@ -315,11 +322,21 @@ class SyncExecutor {
           barcode: op.body['barcode'] as String?,
           prices: _pricesFromBody(op.body['prices']),
           customFields: _customFieldsFromBody(op.body['customFields']),
+          stockMode: StockMode.tryParse(op.body['stockMode']),
+          stockLevel: StockLevel.tryParse(op.body['stockLevel']),
+          target: op.body['target'] as String?,
+          reorderPoint: op.body['reorderPoint'] as String?,
+          expiresAt: op.body['expiresAt'] as int?,
+          shelfLifeDays: op.body['shelfLifeDays'] as int?,
         );
         return SyncResult(item);
       case SyncOpKind.update:
         if (listId == null || id == null) return SyncResult.empty;
-        final item = await svc.updateItem(
+        final patch = {...op.body}..remove(stockLinkTargetKey);
+        if (patch.isEmpty && op.body.containsKey(stockLinkTargetKey)) {
+          return SyncResult(await _applyStockLink(svc, op, listId, id));
+        }
+        var item = await svc.updateItem(
           houseId,
           listId,
           id,
@@ -336,7 +353,20 @@ class SyncExecutor {
           barcode: op.body['barcode'] as String?,
           prices: _pricesFromBody(op.body['prices']),
           customFields: _customFieldsFromBody(op.body['customFields']),
+          stockMode: StockMode.tryParse(op.body['stockMode']),
+          stockLevel: StockLevel.tryParse(op.body['stockLevel']),
+          target: op.body['target'] as String?,
+          reorderPoint: op.body['reorderPoint'] as String?,
+          expiresAt: op.body['expiresAt'] as int?,
+          shelfLifeDays: op.body['shelfLifeDays'] as int?,
+          autoLink: op.body['autoLink'] as bool?,
+          quantityPinned: op.body['quantityPinned'] as bool?,
         );
+        if (op.body.containsKey(stockLinkTargetKey)) {
+          final linked = await _applyStockLink(svc, op, listId, id);
+          // The patch's sync feedback belongs to the same member action.
+          item = linked.withSyncFeedbackOf(item);
+        }
         return SyncResult(item);
       case SyncOpKind.delete:
         if (listId == null || id == null) return SyncResult.empty;
@@ -387,6 +417,21 @@ class SyncExecutor {
       case SyncOpKind.batch:
         return _executeItemBatch(svc, houseId, op);
     }
+  }
+
+  /// Links an inventory item to the checklist item the op names, or unlinks it
+  /// when that is 0. The link rides an item update so it queues, collapses and
+  /// replays like every other item write, last choice winning.
+  Future<ListItem> _applyStockLink(
+    ChecklistService svc,
+    SyncOp op,
+    int listId,
+    int itemId,
+  ) async {
+    final target = op.body[stockLinkTargetKey] as int;
+    return target > 0
+        ? svc.linkItem(op.houseId, listId, itemId, target)
+        : svc.unlinkItem(op.houseId, listId, itemId);
   }
 
   /// Attach a queued image to an item. The bytes sit in [PendingUploadStore]

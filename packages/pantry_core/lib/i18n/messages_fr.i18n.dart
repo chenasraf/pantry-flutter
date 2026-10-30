@@ -79,6 +79,9 @@ class MessagesFr extends Messages {
   StoresMessagesFr get stores => StoresMessagesFr(this);
   LabelsMessagesFr get labels => LabelsMessagesFr(this);
   ChecklistsMessagesFr get checklists => ChecklistsMessagesFr(this);
+  ListKindsMessagesFr get listKinds => ListKindsMessagesFr(this);
+  TemplatesMessagesFr get templates => TemplatesMessagesFr(this);
+  StockMessagesFr get stock => StockMessagesFr(this);
   NotesWallMessagesFr get notesWall => NotesWallMessagesFr(this);
   PhotoBoardMessagesFr get photoBoard => PhotoBoardMessagesFr(this);
   ShoppingMessagesFr get shopping => ShoppingMessagesFr(this);
@@ -470,6 +473,16 @@ class NavMessagesFr extends NavMessages {
   /// "Liste"
   /// ```
   String get checklist => """Liste""";
+
+  /// ```dart
+  /// "Listes"
+  /// ```
+  String get lists => """Listes""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get list => """Liste""";
 
   /// ```dart
   /// "Tableau photos"
@@ -999,6 +1012,75 @@ Mot de passe : pantry-rocks""";
   /// ```
   String get joinTripHow =>
       """Déjà en courses ? Rejoindre enregistre d'abord les vôtres dans votre historique. Si vous quittez des courses que vous avez rejointes, elles continuent pour ceux qui y restent.""";
+
+  /// ```dart
+  /// "Sachez ce qu'il y a dans le placard"
+  /// ```
+  String get inventoryTitle => """Sachez ce qu'il y a dans le placard""";
+
+  /// ```dart
+  /// "Les inventaires suivent la quantité de chaque chose et sa date de péremption. Diminuez les quantités au fil de l'usage, et Pantry signale ce qui vient à manquer ou va bientôt périmer."
+  /// ```
+  String get inventoryBody =>
+      """Les inventaires suivent la quantité de chaque chose et sa date de péremption. Diminuez les quantités au fil de l'usage, et Pantry signale ce qui vient à manquer ou va bientôt périmer.""";
+
+  /// ```dart
+  /// "Donnez à un inventaire une liste de réapprovisionnement dans ses réglages, et tout ce qui manque ou périme y est ajouté pour vous. Cochez-le au magasin et l'inventaire se remplit à nouveau."
+  /// ```
+  String get inventoryHow =>
+      """Donnez à un inventaire une liste de réapprovisionnement dans ses réglages, et tout ce qui manque ou périme y est ajouté pour vous. Cochez-le au magasin et l'inventaire se remplit à nouveau.""";
+
+  /// ```dart
+  /// "Œufs"
+  /// ```
+  String get inventoryMockEggs => """Œufs""";
+
+  /// ```dart
+  /// "Lait"
+  /// ```
+  String get inventoryMockMilk => """Lait""";
+
+  /// ```dart
+  /// "Farine"
+  /// ```
+  String get inventoryMockFlour => """Farine""";
+
+  /// ```dart
+  /// "Des modèles pour vos achats habituels"
+  /// ```
+  String get templateTitle => """Des modèles pour vos achats habituels""";
+
+  /// ```dart
+  /// "Rangez dans un modèle les articles que vous ajoutez sans cesse. Associez-le à une liste, et en tapant dans celle-ci ses articles vous sont suggérés, avec tous leurs détails."
+  /// ```
+  String get templateBody =>
+      """Rangez dans un modèle les articles que vous ajoutez sans cesse. Associez-le à une liste, et en tapant dans celle-ci ses articles vous sont suggérés, avec tous leurs détails.""";
+
+  /// ```dart
+  /// "Pour copier tout un modèle d'un coup, ouvrez son menu dans le sélecteur de listes et choisissez ${apply}."
+  /// ```
+  String templateHow(String apply) =>
+      """Pour copier tout un modèle d'un coup, ouvrez son menu dans le sélecteur de listes et choisissez ${apply}.""";
+
+  /// ```dart
+  /// "Courses de la semaine"
+  /// ```
+  String get templateMockName => """Courses de la semaine""";
+
+  /// ```dart
+  /// "La"
+  /// ```
+  String get templateMockTyped => """La""";
+
+  /// ```dart
+  /// "Lait"
+  /// ```
+  String get templateMockFirst => """Lait""";
+
+  /// ```dart
+  /// "Lardons"
+  /// ```
+  String get templateMockSecond => """Lardons""";
   DevOnboardingMessagesFr get dev => DevOnboardingMessagesFr(this);
 }
 
@@ -4868,6 +4950,1545 @@ class MarkdownChecklistsMessagesFr extends MarkdownChecklistsMessages {
       """${_plural(count, one: '1 élément importé', many: '$count éléments importés')}""";
 }
 
+class ListKindsMessagesFr extends ListKindsMessages {
+  final MessagesFr _parent;
+  const ListKindsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Dupliquer en tant que :"
+  /// ```
+  String get duplicateAs => """Dupliquer en tant que :""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article a été ignoré, car vous n’êtes pas autorisé à le modifier.', many: '$count articles ont été ignorés, car vous n’êtes pas autorisé à les modifier.')}"
+  /// ```
+  String itemsSkippedNoEdit(int count) =>
+      """${_plural(count, one: '1 article a été ignoré, car vous n’êtes pas autorisé à le modifier.', many: '$count articles ont été ignorés, car vous n’êtes pas autorisé à les modifier.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article n’a pas pu être décoché.', many: '$count articles n’ont pas pu être décochés.')}"
+  /// ```
+  String itemsSkippedUncheck(int count) =>
+      """${_plural(count, one: '1 article n’a pas pu être décoché.', many: '$count articles n’ont pas pu être décochés.')}""";
+  ChecklistListKindsMessagesFr get checklist =>
+      ChecklistListKindsMessagesFr(this);
+  InventoryListKindsMessagesFr get inventory =>
+      InventoryListKindsMessagesFr(this);
+  TemplateListKindsMessagesFr get template => TemplateListKindsMessagesFr(this);
+}
+
+class ChecklistListKindsMessagesFr extends ChecklistListKindsMessages {
+  final ListKindsMessagesFr _parent;
+  const ChecklistListKindsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Listes de contrôle"
+  /// ```
+  String get title => """Listes de contrôle""";
+
+  /// ```dart
+  /// "Liste de contrôle"
+  /// ```
+  String get name => """Liste de contrôle""";
+
+  /// ```dart
+  /// "Nouvelle liste de contrôle"
+  /// ```
+  String get newList => """Nouvelle liste de contrôle""";
+
+  /// ```dart
+  /// "Créer une liste de contrôle"
+  /// ```
+  String get createTitle => """Créer une liste de contrôle""";
+
+  /// ```dart
+  /// "Modifier la liste de contrôle"
+  /// ```
+  String get editTitle => """Modifier la liste de contrôle""";
+
+  /// ```dart
+  /// "Dupliquer la liste de contrôle"
+  /// ```
+  String get duplicateTitle => """Dupliquer la liste de contrôle""";
+
+  /// ```dart
+  /// "Impossible de dupliquer la liste de contrôle"
+  /// ```
+  String get duplicateFailed =>
+      """Impossible de dupliquer la liste de contrôle""";
+
+  /// ```dart
+  /// "Actions de la liste de contrôle"
+  /// ```
+  String get listMenu => """Actions de la liste de contrôle""";
+
+  /// ```dart
+  /// "Supprimer la liste de contrôle"
+  /// ```
+  String get deleteDialogTitle => """Supprimer la liste de contrôle""";
+
+  /// ```dart
+  /// "Aucune liste de contrôle pour le moment"
+  /// ```
+  String get emptyTitle => """Aucune liste de contrôle pour le moment""";
+
+  /// ```dart
+  /// "Créez votre première liste de contrôle pour commencer à ajouter des articles."
+  /// ```
+  String get emptyBody =>
+      """Créez votre première liste de contrôle pour commencer à ajouter des articles.""";
+
+  /// ```dart
+  /// "Corbeille des listes de contrôle"
+  /// ```
+  String get trashTitle => """Corbeille des listes de contrôle""";
+
+  /// ```dart
+  /// "Les listes de contrôle supprimées apparaîtront ici."
+  /// ```
+  String get trashEmptyBody =>
+      """Les listes de contrôle supprimées apparaîtront ici.""";
+
+  /// ```dart
+  /// "Listes de contrôle archivées"
+  /// ```
+  String get archiveTitle => """Listes de contrôle archivées""";
+
+  /// ```dart
+  /// "Aucune liste de contrôle archivée"
+  /// ```
+  String get archiveEmptyTitle => """Aucune liste de contrôle archivée""";
+
+  /// ```dart
+  /// "Les listes de contrôle archivées apparaîtront ici."
+  /// ```
+  String get archiveEmptyBody =>
+      """Les listes de contrôle archivées apparaîtront ici.""";
+
+  /// ```dart
+  /// "Toutes les listes de contrôle présentes dans la corbeille, ainsi que leurs articles, seront définitivement supprimées. Cette action est irréversible."
+  /// ```
+  String get emptyTrashBody =>
+      """Toutes les listes de contrôle présentes dans la corbeille, ainsi que leurs articles, seront définitivement supprimées. Cette action est irréversible.""";
+
+  /// ```dart
+  /// "Liste de contrôle restaurée"
+  /// ```
+  String get listRestored => """Liste de contrôle restaurée""";
+
+  /// ```dart
+  /// "Liste de contrôle déplacée vers la corbeille"
+  /// ```
+  String get listMovedToTrash =>
+      """Liste de contrôle déplacée vers la corbeille""";
+
+  /// ```dart
+  /// "Liste de contrôle archivée"
+  /// ```
+  String get listArchived => """Liste de contrôle archivée""";
+
+  /// ```dart
+  /// "Liste de contrôle désarchivée"
+  /// ```
+  String get listUnarchived => """Liste de contrôle désarchivée""";
+}
+
+class InventoryListKindsMessagesFr extends InventoryListKindsMessages {
+  final ListKindsMessagesFr _parent;
+  const InventoryListKindsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Inventaires"
+  /// ```
+  String get title => """Inventaires""";
+
+  /// ```dart
+  /// "Inventaire"
+  /// ```
+  String get name => """Inventaire""";
+
+  /// ```dart
+  /// "Nouvel inventaire"
+  /// ```
+  String get newList => """Nouvel inventaire""";
+
+  /// ```dart
+  /// "Créer un inventaire"
+  /// ```
+  String get createTitle => """Créer un inventaire""";
+
+  /// ```dart
+  /// "Modifier l'inventaire"
+  /// ```
+  String get editTitle => """Modifier l'inventaire""";
+
+  /// ```dart
+  /// "Dupliquer l'inventaire"
+  /// ```
+  String get duplicateTitle => """Dupliquer l'inventaire""";
+
+  /// ```dart
+  /// "Impossible de dupliquer l'inventaire"
+  /// ```
+  String get duplicateFailed => """Impossible de dupliquer l'inventaire""";
+
+  /// ```dart
+  /// "Actions de l'inventaire"
+  /// ```
+  String get listMenu => """Actions de l'inventaire""";
+
+  /// ```dart
+  /// "Supprimer l'inventaire"
+  /// ```
+  String get deleteDialogTitle => """Supprimer l'inventaire""";
+
+  /// ```dart
+  /// "Aucun inventaire pour le moment"
+  /// ```
+  String get emptyTitle => """Aucun inventaire pour le moment""";
+
+  /// ```dart
+  /// "Créez votre premier inventaire pour commencer à ajouter des articles."
+  /// ```
+  String get emptyBody =>
+      """Créez votre premier inventaire pour commencer à ajouter des articles.""";
+
+  /// ```dart
+  /// "Corbeille des inventaires"
+  /// ```
+  String get trashTitle => """Corbeille des inventaires""";
+
+  /// ```dart
+  /// "Les inventaires supprimés apparaîtront ici."
+  /// ```
+  String get trashEmptyBody =>
+      """Les inventaires supprimés apparaîtront ici.""";
+
+  /// ```dart
+  /// "Inventaires archivés"
+  /// ```
+  String get archiveTitle => """Inventaires archivés""";
+
+  /// ```dart
+  /// "Aucun inventaire archivé"
+  /// ```
+  String get archiveEmptyTitle => """Aucun inventaire archivé""";
+
+  /// ```dart
+  /// "Les inventaires archivés apparaîtront ici."
+  /// ```
+  String get archiveEmptyBody =>
+      """Les inventaires archivés apparaîtront ici.""";
+
+  /// ```dart
+  /// "Tous les inventaires présents dans la corbeille, ainsi que leurs articles, seront définitivement supprimés. Cette action est irréversible."
+  /// ```
+  String get emptyTrashBody =>
+      """Tous les inventaires présents dans la corbeille, ainsi que leurs articles, seront définitivement supprimés. Cette action est irréversible.""";
+
+  /// ```dart
+  /// "Inventaire restauré"
+  /// ```
+  String get listRestored => """Inventaire restauré""";
+
+  /// ```dart
+  /// "Inventaire déplacé vers la corbeille"
+  /// ```
+  String get listMovedToTrash => """Inventaire déplacé vers la corbeille""";
+
+  /// ```dart
+  /// "Inventaire archivé"
+  /// ```
+  String get listArchived => """Inventaire archivé""";
+
+  /// ```dart
+  /// "Inventaire désarchivé"
+  /// ```
+  String get listUnarchived => """Inventaire désarchivé""";
+}
+
+class TemplateListKindsMessagesFr extends TemplateListKindsMessages {
+  final ListKindsMessagesFr _parent;
+  const TemplateListKindsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Modèles"
+  /// ```
+  String get title => """Modèles""";
+
+  /// ```dart
+  /// "Modèle"
+  /// ```
+  String get name => """Modèle""";
+
+  /// ```dart
+  /// "Nouveau modèle"
+  /// ```
+  String get newList => """Nouveau modèle""";
+
+  /// ```dart
+  /// "Créer un modèle"
+  /// ```
+  String get createTitle => """Créer un modèle""";
+
+  /// ```dart
+  /// "Modifier le modèle"
+  /// ```
+  String get editTitle => """Modifier le modèle""";
+
+  /// ```dart
+  /// "Dupliquer le modèle"
+  /// ```
+  String get duplicateTitle => """Dupliquer le modèle""";
+
+  /// ```dart
+  /// "Impossible de dupliquer le modèle"
+  /// ```
+  String get duplicateFailed => """Impossible de dupliquer le modèle""";
+
+  /// ```dart
+  /// "Actions du modèle"
+  /// ```
+  String get listMenu => """Actions du modèle""";
+
+  /// ```dart
+  /// "Supprimer le modèle"
+  /// ```
+  String get deleteDialogTitle => """Supprimer le modèle""";
+
+  /// ```dart
+  /// "Aucun modèle pour le moment"
+  /// ```
+  String get emptyTitle => """Aucun modèle pour le moment""";
+
+  /// ```dart
+  /// "Créez votre premier modèle pour commencer à ajouter des articles."
+  /// ```
+  String get emptyBody =>
+      """Créez votre premier modèle pour commencer à ajouter des articles.""";
+
+  /// ```dart
+  /// "Corbeille des modèles"
+  /// ```
+  String get trashTitle => """Corbeille des modèles""";
+
+  /// ```dart
+  /// "Les modèles supprimés apparaîtront ici."
+  /// ```
+  String get trashEmptyBody => """Les modèles supprimés apparaîtront ici.""";
+
+  /// ```dart
+  /// "Modèles archivés"
+  /// ```
+  String get archiveTitle => """Modèles archivés""";
+
+  /// ```dart
+  /// "Aucun modèle archivé"
+  /// ```
+  String get archiveEmptyTitle => """Aucun modèle archivé""";
+
+  /// ```dart
+  /// "Les modèles archivés apparaîtront ici."
+  /// ```
+  String get archiveEmptyBody => """Les modèles archivés apparaîtront ici.""";
+
+  /// ```dart
+  /// "Tous les modèles présents dans la corbeille, ainsi que leurs articles, seront définitivement supprimés. Cette action est irréversible."
+  /// ```
+  String get emptyTrashBody =>
+      """Tous les modèles présents dans la corbeille, ainsi que leurs articles, seront définitivement supprimés. Cette action est irréversible.""";
+
+  /// ```dart
+  /// "Modèle restauré"
+  /// ```
+  String get listRestored => """Modèle restauré""";
+
+  /// ```dart
+  /// "Modèle déplacé vers la corbeille"
+  /// ```
+  String get listMovedToTrash => """Modèle déplacé vers la corbeille""";
+
+  /// ```dart
+  /// "Modèle archivé"
+  /// ```
+  String get listArchived => """Modèle archivé""";
+
+  /// ```dart
+  /// "Modèle désarchivé"
+  /// ```
+  String get listUnarchived => """Modèle désarchivé""";
+}
+
+class TemplatesMessagesFr extends TemplatesMessages {
+  final MessagesFr _parent;
+  const TemplatesMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Suggestions"
+  /// ```
+  String get suggestionsHeader => """Suggestions""";
+
+  /// ```dart
+  /// "Depuis les modèles : $names"
+  /// ```
+  String fromTemplates(String names) => """Depuis les modèles : $names""";
+
+  /// ```dart
+  /// ""$name" ajouté depuis un modèle"
+  /// ```
+  String addedFromTemplate(String name) =>
+      """"$name" ajouté depuis un modèle""";
+
+  /// ```dart
+  /// "Impossible d'ajouter l'article depuis le modèle"
+  /// ```
+  String get drawFailed =>
+      """Impossible d'ajouter l'article depuis le modèle""";
+
+  /// ```dart
+  /// "Modèles :"
+  /// ```
+  String get attachedLabel => """Modèles :""";
+
+  /// ```dart
+  /// "Aucun modèle"
+  /// ```
+  String get attachedPlaceholder => """Aucun modèle""";
+
+  /// ```dart
+  /// "La saisie d'un nouvel article suggère les articles correspondants de ces modèles."
+  /// ```
+  String get attachedHint =>
+      """La saisie d'un nouvel article suggère les articles correspondants de ces modèles.""";
+
+  /// ```dart
+  /// "La saisie d'un nouvel article suggère les articles correspondants de ces modèles, ainsi que de $names, utilisés par toutes les listes."
+  /// ```
+  String attachedEveryListHint(String names) =>
+      """La saisie d'un nouvel article suggère les articles correspondants de ces modèles, ainsi que de $names, utilisés par toutes les listes.""";
+
+  /// ```dart
+  /// "Suggérer dans :"
+  /// ```
+  String get suggestInLabel => """Suggérer dans :""";
+
+  /// ```dart
+  /// "Toutes les listes"
+  /// ```
+  String get everyList => """Toutes les listes""";
+
+  /// ```dart
+  /// "Aucune liste"
+  /// ```
+  String get suggestInPlaceholder => """Aucune liste""";
+
+  /// ```dart
+  /// "La saisie d'un nouvel article dans ces listes suggère les articles correspondants de ce modèle. Sélectionner « Toutes les listes » inclut aussi les listes créées par la suite."
+  /// ```
+  String get suggestInHint =>
+      """La saisie d'un nouvel article dans ces listes suggère les articles correspondants de ce modèle. Sélectionner « Toutes les listes » inclut aussi les listes créées par la suite.""";
+
+  /// ```dart
+  /// "$list ($kind)"
+  /// ```
+  String listWithKind(String list, String kind) => """$list ($kind)""";
+
+  /// ```dart
+  /// "Impossible d'enregistrer les modèles associés"
+  /// ```
+  String get attachFailed =>
+      """Impossible d'enregistrer les modèles associés""";
+
+  /// ```dart
+  /// "Remplir les articles de modèle avec ces valeurs"
+  /// ```
+  String get fillLabel => """Remplir les articles de modèle avec ces valeurs""";
+
+  /// ```dart
+  /// "Lorsqu'un article est ajouté depuis un modèle, les détails qu'il laisse vides démarrent avec les valeurs ci-dessus. Chaque personne peut modifier ce comportement dans ses paramètres personnels."
+  /// ```
+  String get fillHint =>
+      """Lorsqu'un article est ajouté depuis un modèle, les détails qu'il laisse vides démarrent avec les valeurs ci-dessus. Chaque personne peut modifier ce comportement dans ses paramètres personnels.""";
+
+  /// ```dart
+  /// "Remplir les articles de modèle avec les valeurs par défaut"
+  /// ```
+  String get fillPrefLabel =>
+      """Remplir les articles de modèle avec les valeurs par défaut""";
+
+  /// ```dart
+  /// "Lorsque vous ajoutez un article depuis un modèle, les détails qu'il laisse vides sont remplis avec les valeurs par défaut des articles de la liste. Chaque liste peut désactiver ce comportement dans ses valeurs par défaut."
+  /// ```
+  String get fillPrefHint =>
+      """Lorsque vous ajoutez un article depuis un modèle, les détails qu'il laisse vides sont remplis avec les valeurs par défaut des articles de la liste. Chaque liste peut désactiver ce comportement dans ses valeurs par défaut.""";
+  FillPrefNamesTemplatesMessagesFr get fillPrefNames =>
+      FillPrefNamesTemplatesMessagesFr(this);
+
+  /// ```dart
+  /// "Impossible d'enregistrer le paramètre"
+  /// ```
+  String get fillPrefFailed => """Impossible d'enregistrer le paramètre""";
+
+  /// ```dart
+  /// "Appliquer à une liste"
+  /// ```
+  String get applyToList => """Appliquer à une liste""";
+
+  /// ```dart
+  /// "Appliquer le modèle"
+  /// ```
+  String get applyTemplate => """Appliquer le modèle""";
+
+  /// ```dart
+  /// "Associés à cette liste"
+  /// ```
+  String get attachedTemplates => """Associés à cette liste""";
+
+  /// ```dart
+  /// "Autres modèles"
+  /// ```
+  String get otherTemplates => """Autres modèles""";
+
+  /// ```dart
+  /// "Aucune liste de contrôle ni aucun inventaire auquel appliquer ce modèle."
+  /// ```
+  String get noTargets =>
+      """Aucune liste de contrôle ni aucun inventaire auquel appliquer ce modèle.""";
+
+  /// ```dart
+  /// "Ce modèle ne contient aucun article."
+  /// ```
+  String get noItems => """Ce modèle ne contient aucun article.""";
+
+  /// ```dart
+  /// "Déjà dans la liste"
+  /// ```
+  String get alreadyOnList => """Déjà dans la liste""";
+
+  /// ```dart
+  /// "Copier les articles cochés de $template dans $list."
+  /// ```
+  String reviewSummary(String template, String list) =>
+      """Copier les articles cochés de $template dans $list.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Appliquer 1 article', many: 'Appliquer $count articles')}"
+  /// ```
+  String applyItems(int count) =>
+      """${_plural(count, one: 'Appliquer 1 article', many: 'Appliquer $count articles')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article ajouté à $list', many: '$count articles ajoutés à $list')}"
+  /// ```
+  String appliedAdded(int count, String list) =>
+      """${_plural(count, one: '1 article ajouté à $list', many: '$count articles ajoutés à $list')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article était déjà dans $list et a été rétabli', many: '$count articles étaient déjà dans $list et ont été rétablis')}"
+  /// ```
+  String appliedReused(int count, String list) =>
+      """${_plural(count, one: '1 article était déjà dans $list et a été rétabli', many: '$count articles étaient déjà dans $list et ont été rétablis')}""";
+
+  /// ```dart
+  /// "$list : $added ajoutés, $reused rétablis"
+  /// ```
+  String appliedMixed(String list, int added, int reused) =>
+      """$list : $added ajoutés, $reused rétablis""";
+
+  /// ```dart
+  /// "Impossible d'appliquer le modèle"
+  /// ```
+  String get applyFailed => """Impossible d'appliquer le modèle""";
+
+  /// ```dart
+  /// "Impossible de charger les modèles"
+  /// ```
+  String get loadFailed => """Impossible de charger les modèles""";
+
+  /// ```dart
+  /// "Retour"
+  /// ```
+  String get back => """Retour""";
+}
+
+class FillPrefNamesTemplatesMessagesFr extends FillPrefNamesTemplatesMessages {
+  final TemplatesMessagesFr _parent;
+  const FillPrefNamesTemplatesMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Selon chaque liste"
+  /// ```
+  String get list => """Selon chaque liste""";
+
+  /// ```dart
+  /// "Toujours remplir"
+  /// ```
+  String get always => """Toujours remplir""";
+
+  /// ```dart
+  /// "Ne jamais remplir"
+  /// ```
+  String get never => """Ne jamais remplir""";
+}
+
+class StockMessagesFr extends StockMessages {
+  final MessagesFr _parent;
+  const StockMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "En stock"
+  /// ```
+  String get inStock => """En stock""";
+
+  /// ```dart
+  /// "Plein"
+  /// ```
+  String get full => """Plein""";
+
+  /// ```dart
+  /// "Bas"
+  /// ```
+  String get low => """Bas""";
+
+  /// ```dart
+  /// "Épuisé"
+  /// ```
+  String get out => """Épuisé""";
+
+  /// ```dart
+  /// "Bas · acheter $amount"
+  /// ```
+  String lowBuy(String amount) => """Bas · acheter $amount""";
+
+  /// ```dart
+  /// "Épuisé · acheter $amount"
+  /// ```
+  String outBuy(String amount) => """Épuisé · acheter $amount""";
+
+  /// ```dart
+  /// "Non compté"
+  /// ```
+  String get notCounted => """Non compté""";
+
+  /// ```dart
+  /// "Périmé le $date"
+  /// ```
+  String expiredOn(String date) => """Périmé le $date""";
+
+  /// ```dart
+  /// "Périmé le $date · acheter $amount"
+  /// ```
+  String expiredOnBuy(String date, String amount) =>
+      """Périmé le $date · acheter $amount""";
+
+  /// ```dart
+  /// "Périme aujourd’hui"
+  /// ```
+  String get expiresToday => """Périme aujourd’hui""";
+
+  /// ```dart
+  /// "Périme aujourd’hui · acheter $amount"
+  /// ```
+  String expiresTodayBuy(String amount) =>
+      """Périme aujourd’hui · acheter $amount""";
+
+  /// ```dart
+  /// "Périme demain"
+  /// ```
+  String get expiresTomorrow => """Périme demain""";
+
+  /// ```dart
+  /// "Périme demain · acheter $amount"
+  /// ```
+  String expiresTomorrowBuy(String amount) =>
+      """Périme demain · acheter $amount""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Périme dans 1 jour', many: 'Périme dans $count jours')}"
+  /// ```
+  String expiresInDays(int count) =>
+      """${_plural(count, one: 'Périme dans 1 jour', many: 'Périme dans $count jours')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Périme dans 1 jour · acheter $amount', many: 'Périme dans $count jours · acheter $amount')}"
+  /// ```
+  String expiresInDaysBuy(int count, String amount) =>
+      """${_plural(count, one: 'Périme dans 1 jour · acheter $amount', many: 'Périme dans $count jours · acheter $amount')}""";
+
+  /// ```dart
+  /// "Bon jusqu’au $date"
+  /// ```
+  String goodUntil(String date) => """Bon jusqu’au $date""";
+
+  /// ```dart
+  /// "$onHand / $target"
+  /// ```
+  String amount(String onHand, String target) => """$onHand / $target""";
+
+  /// ```dart
+  /// "Diminuer la quantité disponible"
+  /// ```
+  String get decrease => """Diminuer la quantité disponible""";
+
+  /// ```dart
+  /// "Augmenter la quantité disponible"
+  /// ```
+  String get increase => """Augmenter la quantité disponible""";
+
+  /// ```dart
+  /// "Quantité disponible"
+  /// ```
+  String get onHandEdit => """Quantité disponible""";
+
+  /// ```dart
+  /// "Niveau de stock : $level"
+  /// ```
+  String levelButton(String level) => """Niveau de stock : $level""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article à réapprovisionner', many: '$count articles à réapprovisionner')}"
+  /// ```
+  String needsRestockCount(int count) =>
+      """${_plural(count, one: '1 article à réapprovisionner', many: '$count articles à réapprovisionner')}""";
+
+  /// ```dart
+  /// "Stock"
+  /// ```
+  String get filter => """Stock""";
+
+  /// ```dart
+  /// "Tous les articles"
+  /// ```
+  String get filterAll => """Tous les articles""";
+
+  /// ```dart
+  /// "À réapprovisionner"
+  /// ```
+  String get filterNeedsRestock => """À réapprovisionner""";
+
+  /// ```dart
+  /// "En stock"
+  /// ```
+  String get filterInStock => """En stock""";
+
+  /// ```dart
+  /// "Impossible d’enregistrer la modification du stock. L’inventaire affiche maintenant les données du serveur."
+  /// ```
+  String get writeRefused =>
+      """Impossible d’enregistrer la modification du stock. L’inventaire affiche maintenant les données du serveur.""";
+  SettingsStockMessagesFr get settings => SettingsStockMessagesFr(this);
+  CardStockMessagesFr get card => CardStockMessagesFr(this);
+  ExpiryStockMessagesFr get expiry => ExpiryStockMessagesFr(this);
+  ComposeStockMessagesFr get compose => ComposeStockMessagesFr(this);
+
+  /// ```dart
+  /// "Cet inventaire n’a pas de liste de réapprovisionnement, ces articles sont donc seulement signalés ici. Choisissez-en une dans les paramètres de l’inventaire."
+  /// ```
+  String get noRestockChecklist =>
+      """Cet inventaire n’a pas de liste de réapprovisionnement, ces articles sont donc seulement signalés ici. Choisissez-en une dans les paramètres de l’inventaire.""";
+
+  /// ```dart
+  /// "Renouveler la péremption → $date"
+  /// ```
+  String renewChip(String date) => """Renouveler la péremption → $date""";
+
+  /// ```dart
+  /// "Renouveler la péremption"
+  /// ```
+  String get renewAction => """Renouveler la péremption""";
+
+  /// ```dart
+  /// "Résumé quotidien du stock"
+  /// ```
+  String get summaryPref => """Résumé quotidien du stock""";
+
+  /// ```dart
+  /// "Une fois par jour, ce qui vient de s’épuiser ou arrive à péremption dans les inventaires de ce foyer."
+  /// ```
+  String get summaryPrefHint =>
+      """Une fois par jour, ce qui vient de s’épuiser ou arrive à péremption dans les inventaires de ce foyer.""";
+
+  /// ```dart
+  /// "Impossible d’enregistrer le réglage du résumé du stock."
+  /// ```
+  String get summaryPrefFailed =>
+      """Impossible d’enregistrer le réglage du résumé du stock.""";
+  LinksStockMessagesFr get links => LinksStockMessagesFr(this);
+  RestockStockMessagesFr get restock => RestockStockMessagesFr(this);
+}
+
+class SettingsStockMessagesFr extends SettingsStockMessages {
+  final StockMessagesFr _parent;
+  const SettingsStockMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Paramètres de l’inventaire"
+  /// ```
+  String get action => """Paramètres de l’inventaire""";
+
+  /// ```dart
+  /// "Paramètres de l’inventaire"
+  /// ```
+  String get title => """Paramètres de l’inventaire""";
+
+  /// ```dart
+  /// "Nom"
+  /// ```
+  String get name => """Nom""";
+
+  /// ```dart
+  /// "L’icône, la couleur et le partage fonctionnent comme pour les listes de contrôle."
+  /// ```
+  String get nameHint =>
+      """L’icône, la couleur et le partage fonctionnent comme pour les listes de contrôle.""";
+
+  /// ```dart
+  /// "Alerte de péremption"
+  /// ```
+  String get expiryWarning => """Alerte de péremption""";
+
+  /// ```dart
+  /// "Avertir $days jours avant la péremption"
+  /// ```
+  String warnBefore(String days) =>
+      """Avertir $days jours avant la péremption""";
+
+  /// ```dart
+  /// "Jours avant la péremption"
+  /// ```
+  String get daysBefore => """Jours avant la péremption""";
+
+  /// ```dart
+  /// "Indiquez 0 pour être averti le jour même de la péremption."
+  /// ```
+  String get warnHint =>
+      """Indiquez 0 pour être averti le jour même de la péremption.""";
+
+  /// ```dart
+  /// "Liste de réapprovisionnement"
+  /// ```
+  String get restockChecklist => """Liste de réapprovisionnement""";
+
+  /// ```dart
+  /// "Aucune"
+  /// ```
+  String get restockNone => """Aucune""";
+
+  /// ```dart
+  /// "Les articles qui s’épuisent ou arrivent à péremption sont ajoutés à cette liste de contrôle."
+  /// ```
+  String get restockSetHint =>
+      """Les articles qui s’épuisent ou arrivent à péremption sont ajoutés à cette liste de contrôle.""";
+
+  /// ```dart
+  /// "Sans elle, les articles bas ou bientôt périmés sont seulement signalés ici."
+  /// ```
+  String get restockUnsetHint =>
+      """Sans elle, les articles bas ou bientôt périmés sont seulement signalés ici.""";
+
+  /// ```dart
+  /// "Notifications"
+  /// ```
+  String get notifications => """Notifications""";
+
+  /// ```dart
+  /// "Résumé quotidien du stock"
+  /// ```
+  String get stockSummary => """Résumé quotidien du stock""";
+
+  /// ```dart
+  /// "Une fois par jour, indique aux membres ce qui vient de s’épuiser ou arrive à péremption ici. Chaque membre peut aussi le désactiver dans ses paramètres personnels."
+  /// ```
+  String get stockSummaryHint =>
+      """Une fois par jour, indique aux membres ce qui vient de s’épuiser ou arrive à péremption ici. Chaque membre peut aussi le désactiver dans ses paramètres personnels.""";
+
+  /// ```dart
+  /// "Annuler"
+  /// ```
+  String get cancel => """Annuler""";
+
+  /// ```dart
+  /// "Enregistrer"
+  /// ```
+  String get save => """Enregistrer""";
+}
+
+class CardStockMessagesFr extends CardStockMessages {
+  final StockMessagesFr _parent;
+  const CardStockMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Stock"
+  /// ```
+  String get title => """Stock""";
+
+  /// ```dart
+  /// "Mode de stock"
+  /// ```
+  String get mode => """Mode de stock""";
+
+  /// ```dart
+  /// "Quantité"
+  /// ```
+  String get count => """Quantité""";
+
+  /// ```dart
+  /// "Niveau"
+  /// ```
+  String get level => """Niveau""";
+
+  /// ```dart
+  /// "Suivez combien vous en avez, p. ex. 4 œufs sur 12."
+  /// ```
+  String get countHint =>
+      """Suivez combien vous en avez, p. ex. 4 œufs sur 12.""";
+
+  /// ```dart
+  /// "Suivez-le en Plein, Bas ou Épuisé, p. ex. farine ou épices."
+  /// ```
+  String get levelHint =>
+      """Suivez-le en Plein, Bas ou Épuisé, p. ex. farine ou épices.""";
+
+  /// ```dart
+  /// "Disponible"
+  /// ```
+  String get onHand => """Disponible""";
+
+  /// ```dart
+  /// "p. ex. 4"
+  /// ```
+  String get onHandPlaceholder => """p. ex. 4""";
+
+  /// ```dart
+  /// "Objectif"
+  /// ```
+  String get target => """Objectif""";
+
+  /// ```dart
+  /// "p. ex. 12 œufs"
+  /// ```
+  String get targetPlaceholder => """p. ex. 12 œufs""";
+
+  /// ```dart
+  /// "Seuil de réapprovisionnement"
+  /// ```
+  String get reorderPoint => """Seuil de réapprovisionnement""";
+
+  /// ```dart
+  /// "p. ex. 4"
+  /// ```
+  String get reorderPlaceholder => """p. ex. 4""";
+
+  /// ```dart
+  /// "Niveau de stock"
+  /// ```
+  String get stockLevel => """Niveau de stock""";
+
+  /// ```dart
+  /// "Quantité à racheter"
+  /// ```
+  String get restockAmount => """Quantité à racheter""";
+
+  /// ```dart
+  /// "p. ex. sachet de 1 kg"
+  /// ```
+  String get restockPlaceholder => """p. ex. sachet de 1 kg""";
+
+  /// ```dart
+  /// "Converti : niveau $level, quantité à racheter « $amount »."
+  /// ```
+  String convertedLevelAmount(String level, String amount) =>
+      """Converti : niveau $level, quantité à racheter « $amount ».""";
+
+  /// ```dart
+  /// "Converti : niveau $level."
+  /// ```
+  String convertedLevel(String level) => """Converti : niveau $level.""";
+
+  /// ```dart
+  /// "Converti : disponible « $onHand », objectif « $target »."
+  /// ```
+  String convertedCount(String onHand, String target) =>
+      """Converti : disponible « $onHand », objectif « $target ».""";
+
+  /// ```dart
+  /// "Converti : objectif « $target ». Saisissez la quantité disponible."
+  /// ```
+  String convertedTargetOnly(String target) =>
+      """Converti : objectif « $target ». Saisissez la quantité disponible.""";
+
+  /// ```dart
+  /// "Converti en quantité. Saisissez la quantité disponible et un objectif."
+  /// ```
+  String get convertedBlank =>
+      """Converti en quantité. Saisissez la quantité disponible et un objectif.""";
+
+  /// ```dart
+  /// "Périmé : acheter $amount."
+  /// ```
+  String statusExpiredBuy(String amount) => """Périmé : acheter $amount.""";
+
+  /// ```dart
+  /// "Périmé."
+  /// ```
+  String get statusExpired => """Périmé.""";
+
+  /// ```dart
+  /// "Bientôt périmé : acheter $amount."
+  /// ```
+  String statusExpiringBuy(String amount) =>
+      """Bientôt périmé : acheter $amount.""";
+
+  /// ```dart
+  /// "Bientôt périmé."
+  /// ```
+  String get statusExpiring => """Bientôt périmé.""";
+
+  /// ```dart
+  /// "Bas : acheter $amount."
+  /// ```
+  String statusLowBuy(String amount) => """Bas : acheter $amount.""";
+
+  /// ```dart
+  /// "Bas."
+  /// ```
+  String get statusLow => """Bas.""";
+
+  /// ```dart
+  /// "Épuisé : acheter $amount."
+  /// ```
+  String statusOutBuy(String amount) => """Épuisé : acheter $amount.""";
+
+  /// ```dart
+  /// "Épuisé."
+  /// ```
+  String get statusOut => """Épuisé.""";
+
+  /// ```dart
+  /// "Non compté : l’objectif n’a pas de nombre, il n’est donc jamais bas."
+  /// ```
+  String get statusUncountedTarget =>
+      """Non compté : l’objectif n’a pas de nombre, il n’est donc jamais bas.""";
+
+  /// ```dart
+  /// "Non compté : la quantité disponible n’a pas de nombre, il n’est donc jamais bas."
+  /// ```
+  String get statusUncountedOnHand =>
+      """Non compté : la quantité disponible n’a pas de nombre, il n’est donc jamais bas.""";
+
+  /// ```dart
+  /// "En stock."
+  /// ```
+  String get statusInStock => """En stock.""";
+
+  /// ```dart
+  /// "Sans mode de stock choisi, il utilise celui de l’inventaire par défaut."
+  /// ```
+  String get templateDefaultMode =>
+      """Sans mode de stock choisi, il utilise celui de l’inventaire par défaut.""";
+
+  /// ```dart
+  /// "Ajouté à un inventaire, il démarre plein avec $amount disponible."
+  /// ```
+  String templateStartsCount(String amount) =>
+      """Ajouté à un inventaire, il démarre plein avec $amount disponible.""";
+
+  /// ```dart
+  /// "Ajouté à un inventaire, il démarre Plein et se réapprovisionne de $amount."
+  /// ```
+  String templateStartsLevelAmount(String amount) =>
+      """Ajouté à un inventaire, il démarre Plein et se réapprovisionne de $amount.""";
+
+  /// ```dart
+  /// "Ajouté à un inventaire, il démarre Plein."
+  /// ```
+  String get templateStartsLevel =>
+      """Ajouté à un inventaire, il démarre Plein.""";
+
+  /// ```dart
+  /// "Ajouté à un inventaire sans objectif, il n’est pas compté."
+  /// ```
+  String get templateUncounted =>
+      """Ajouté à un inventaire sans objectif, il n’est pas compté.""";
+}
+
+class ExpiryStockMessagesFr extends ExpiryStockMessages {
+  final StockMessagesFr _parent;
+  const ExpiryStockMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Péremption"
+  /// ```
+  String get title => """Péremption""";
+
+  /// ```dart
+  /// "Comment l’article se périme"
+  /// ```
+  String get mode => """Comment l’article se périme""";
+
+  /// ```dart
+  /// "Aucune"
+  /// ```
+  String get none => """Aucune""";
+
+  /// ```dart
+  /// "Date"
+  /// ```
+  String get date => """Date""";
+
+  /// ```dart
+  /// "Se conserve N jours"
+  /// ```
+  String get keeps => """Se conserve N jours""";
+
+  /// ```dart
+  /// "Date de péremption"
+  /// ```
+  String get expiryDate => """Date de péremption""";
+
+  /// ```dart
+  /// "Jours de conservation"
+  /// ```
+  String get daysItKeeps => """Jours de conservation""";
+
+  /// ```dart
+  /// "Périmé le $date."
+  /// ```
+  String expiredSummary(String date) => """Périmé le $date.""";
+
+  /// ```dart
+  /// "Bon jusqu’au $date."
+  /// ```
+  String goodUntilSummary(String date) => """Bon jusqu’au $date.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Chaque réapprovisionnement la repousse à 1 jour à partir de ce jour.', many: 'Chaque réapprovisionnement la repousse à $count jours à partir de ce jour.')}"
+  /// ```
+  String renews(int count) =>
+      """${_plural(count, one: 'Chaque réapprovisionnement la repousse à 1 jour à partir de ce jour.', many: 'Chaque réapprovisionnement la repousse à $count jours à partir de ce jour.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Ajouté à un inventaire, il périme 1 jour plus tard.', many: 'Ajouté à un inventaire, il périme $count jours plus tard.')}"
+  /// ```
+  String templateExpires(int count) =>
+      """${_plural(count, one: 'Ajouté à un inventaire, il périme 1 jour plus tard.', many: 'Ajouté à un inventaire, il périme $count jours plus tard.')}""";
+
+  /// ```dart
+  /// "Péremption"
+  /// ```
+  String get chip => """Péremption""";
+
+  /// ```dart
+  /// "Périme le $date"
+  /// ```
+  String chipExpires(String date) => """Périme le $date""";
+
+  /// ```dart
+  /// "Périmé le $date"
+  /// ```
+  String chipExpired(String date) => """Périmé le $date""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Se conserve 1 jour', many: 'Se conserve $count jours')}"
+  /// ```
+  String chipKeeps(int count) =>
+      """${_plural(count, one: 'Se conserve 1 jour', many: 'Se conserve $count jours')}""";
+}
+
+class ComposeStockMessagesFr extends ComposeStockMessages {
+  final StockMessagesFr _parent;
+  const ComposeStockMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Stock"
+  /// ```
+  String get chip => """Stock""";
+
+  /// ```dart
+  /// "Quantité"
+  /// ```
+  String get count => """Quantité""";
+
+  /// ```dart
+  /// "Niveau"
+  /// ```
+  String get level => """Niveau""";
+
+  /// ```dart
+  /// "Niveau · $amount"
+  /// ```
+  String levelAmount(String amount) => """Niveau · $amount""";
+
+  /// ```dart
+  /// "Objectif : $target"
+  /// ```
+  String targetValue(String target) => """Objectif : $target""";
+
+  /// ```dart
+  /// "Plein si vide"
+  /// ```
+  String get fullWhenEmpty => """Plein si vide""";
+}
+
+class LinksStockMessagesFr extends LinksStockMessages {
+  final StockMessagesFr _parent;
+  const LinksStockMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Liste de courses"
+  /// ```
+  String get caption => """Liste de courses""";
+
+  /// ```dart
+  /// "Lié à $row sur $list"
+  /// ```
+  String tooltipLinked(String row, String list) => """Lié à $row sur $list""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Non lié : 1 correspondance, choisissez-en une', many: 'Non lié : $count correspondances, choisissez-en une')}"
+  /// ```
+  String tooltipNeedsPick(int count) =>
+      """${_plural(count, one: 'Non lié : 1 correspondance, choisissez-en une', many: 'Non lié : $count correspondances, choisissez-en une')}""";
+
+  /// ```dart
+  /// "Pas encore lié : ajouté à la liste de courses quand il est bas"
+  /// ```
+  String get tooltipAutoOn =>
+      """Pas encore lié : ajouté à la liste de courses quand il est bas""";
+
+  /// ```dart
+  /// "Non lié : jamais ajouté à une liste de courses"
+  /// ```
+  String get tooltipAutoOff =>
+      """Non lié : jamais ajouté à une liste de courses""";
+
+  /// ```dart
+  /// "$row sur $list · $state"
+  /// ```
+  String rowOnList(String row, String list, String state) =>
+      """$row sur $list · $state""";
+
+  /// ```dart
+  /// "à faire"
+  /// ```
+  String get stateOpen => """à faire""";
+
+  /// ```dart
+  /// "coché"
+  /// ```
+  String get stateChecked => """coché""";
+
+  /// ```dart
+  /// "archivé"
+  /// ```
+  String get stateArchived => """archivé""";
+
+  /// ```dart
+  /// "dans la corbeille"
+  /// ```
+  String get stateTrashed => """dans la corbeille""";
+
+  /// ```dart
+  /// "× $quantity"
+  /// ```
+  String stateQuantity(String quantity) => """× $quantity""";
+
+  /// ```dart
+  /// "Délier"
+  /// ```
+  String get unlink => """Délier""";
+
+  /// ```dart
+  /// "Lequel est-ce ?"
+  /// ```
+  String get whichOne => """Lequel est-ce ?""";
+
+  /// ```dart
+  /// "$row, $list, $state"
+  /// ```
+  String candidate(String row, String list, String state) =>
+      """$row, $list, $state""";
+
+  /// ```dart
+  /// "Ajouter à la liste de courses quand il est bas"
+  /// ```
+  String get autoLink => """Ajouter à la liste de courses quand il est bas""";
+
+  /// ```dart
+  /// "Lier à la main"
+  /// ```
+  String get linkByHand => """Lier à la main""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Non lié · 1 correspondance, choisissez-en une', many: 'Non lié · $count correspondances, choisissez-en une')}"
+  /// ```
+  String chipNeedsPick(int count) =>
+      """${_plural(count, one: 'Non lié · 1 correspondance, choisissez-en une', many: 'Non lié · $count correspondances, choisissez-en une')}""";
+
+  /// ```dart
+  /// "Jamais ajouté à une liste de courses"
+  /// ```
+  String get chipNotAdded => """Jamais ajouté à une liste de courses""";
+
+  /// ```dart
+  /// "Lié à $row sur $list · $state"
+  /// ```
+  String cardLinked(String row, String list, String state) =>
+      """Lié à $row sur $list · $state""";
+
+  /// ```dart
+  /// "Lier à un autre article …"
+  /// ```
+  String get linkDifferent => """Lier à un autre article …""";
+
+  /// ```dart
+  /// "Quand il s’épuise ou arrive à péremption, cet article revient sur cette liste."
+  /// ```
+  String get linkedHint =>
+      """Quand il s’épuise ou arrive à péremption, cet article revient sur cette liste.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article correspond', many: '$count articles correspondent')}"
+  /// ```
+  String matches(int count) =>
+      """${_plural(count, one: '1 article correspond', many: '$count articles correspondent')}""";
+
+  /// ```dart
+  /// "$matches sur la liste de réapprovisionnement. Lequel est-ce ?"
+  /// ```
+  String matchesQuestion(String matches) =>
+      """$matches sur la liste de réapprovisionnement. Lequel est-ce ?""";
+
+  /// ```dart
+  /// "Lier"
+  /// ```
+  String get link => """Lier""";
+
+  /// ```dart
+  /// "Trouve ou ajoute « $item » sur $list quand il le faut."
+  /// ```
+  String autoHintOn(String item, String list) =>
+      """Trouve ou ajoute « $item » sur $list quand il le faut.""";
+
+  /// ```dart
+  /// "Choisissez une liste de réapprovisionnement dans les paramètres de l’inventaire pour y trouver ou ajouter cet article."
+  /// ```
+  String get autoHintNoChecklist =>
+      """Choisissez une liste de réapprovisionnement dans les paramètres de l’inventaire pour y trouver ou ajouter cet article.""";
+
+  /// ```dart
+  /// "Cet article est seulement signalé ici quand il est bas."
+  /// ```
+  String get autoHintOff =>
+      """Cet article est seulement signalé ici quand il est bas.""";
+
+  /// ```dart
+  /// "Lier à un article …"
+  /// ```
+  String get linkToItem => """Lier à un article …""";
+
+  /// ```dart
+  /// "Lier à un article de liste"
+  /// ```
+  String get pickerTitle => """Lier à un article de liste""";
+
+  /// ```dart
+  /// "Article de liste"
+  /// ```
+  String get pickerField => """Article de liste""";
+
+  /// ```dart
+  /// "Rechercher des articles …"
+  /// ```
+  String get pickerSearch => """Rechercher des articles …""";
+
+  /// ```dart
+  /// "Recherche …"
+  /// ```
+  String get pickerSearching => """Recherche …""";
+
+  /// ```dart
+  /// "Aucun article trouvé"
+  /// ```
+  String get pickerEmpty => """Aucun article trouvé""";
+
+  /// ```dart
+  /// "$row — $list"
+  /// ```
+  String pickerRow(String row, String list) => """$row — $list""";
+
+  /// ```dart
+  /// "archivé"
+  /// ```
+  String get pickerArchived => """archivé""";
+
+  /// ```dart
+  /// "Impossible de charger les articles. Vérifiez la connexion et réessayez."
+  /// ```
+  String get pickerFailed =>
+      """Impossible de charger les articles. Vérifiez la connexion et réessayez.""";
+
+  /// ```dart
+  /// "Annuler"
+  /// ```
+  String get cancel => """Annuler""";
+}
+
+class RestockStockMessagesFr extends RestockStockMessages {
+  final StockMessagesFr _parent;
+  const RestockStockMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "$what ajouté à $list"
+  /// ```
+  String added(String what, String list) => """$what ajouté à $list""";
+
+  /// ```dart
+  /// "De retour sur $list : $row × $quantity"
+  /// ```
+  String revivedQuantity(String list, String row, String quantity) =>
+      """De retour sur $list : $row × $quantity""";
+
+  /// ```dart
+  /// "De retour sur $list : $row"
+  /// ```
+  String revived(String list, String row) => """De retour sur $list : $row""";
+
+  /// ```dart
+  /// "$list : $row maintenant × $quantity"
+  /// ```
+  String changed(String list, String row, String quantity) =>
+      """$list : $row maintenant × $quantity""";
+
+  /// ```dart
+  /// "$row sur $list est épinglé à × $quantity"
+  /// ```
+  String pinnedAt(String row, String list, String quantity) =>
+      """$row sur $list est épinglé à × $quantity""";
+
+  /// ```dart
+  /// "$row sur $list est épinglé"
+  /// ```
+  String pinned(String row, String list) => """$row sur $list est épinglé""";
+
+  /// ```dart
+  /// "Plus nécessaire : $row sur $list"
+  /// ```
+  String recovered(String row, String list) =>
+      """Plus nécessaire : $row sur $list""";
+
+  /// ```dart
+  /// "$item lié à $row sur $list"
+  /// ```
+  String linked(String item, String row, String list) =>
+      """$item lié à $row sur $list""";
+
+  /// ```dart
+  /// "$item délié de $row sur $list. Il ne sera ajouté à aucune liste de courses."
+  /// ```
+  String unlinked(String item, String row, String list) =>
+      """$item délié de $row sur $list. Il ne sera ajouté à aucune liste de courses.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '$item correspond à 1 article sur $list. Choisissez-en un à lier.', many: '$item correspond à $count articles sur $list. Choisissez-en un à lier.')}"
+  /// ```
+  String severalMatches(String item, int count, String list) =>
+      """${_plural(count, one: '$item correspond à 1 article sur $list. Choisissez-en un à lier.', many: '$item correspond à $count articles sur $list. Choisissez-en un à lier.')}""";
+
+  /// ```dart
+  /// "Réapprovisionné $parts"
+  /// ```
+  String restocked(String parts) => """Réapprovisionné $parts""";
+
+  /// ```dart
+  /// "Remplacé $parts"
+  /// ```
+  String replaced(String parts) => """Remplacé $parts""";
+
+  /// ```dart
+  /// "Réapprovisionné $restock, remplacé $replace"
+  /// ```
+  String restockedReplaced(String restock, String replace) =>
+      """Réapprovisionné $restock, remplacé $replace""";
+
+  /// ```dart
+  /// "Annulé : réapprovisionné $parts"
+  /// ```
+  String undidRestocked(String parts) => """Annulé : réapprovisionné $parts""";
+
+  /// ```dart
+  /// "Annulé : remplacé $parts"
+  /// ```
+  String undidReplaced(String parts) => """Annulé : remplacé $parts""";
+
+  /// ```dart
+  /// "Annulé : réapprovisionné $restock, remplacé $replace"
+  /// ```
+  String undidRestockedReplaced(String restock, String replace) =>
+      """Annulé : réapprovisionné $restock, remplacé $replace""";
+
+  /// ```dart
+  /// "$item ($inventory) +$amount"
+  /// ```
+  String partAdded(String item, String inventory, String amount) =>
+      """$item ($inventory) +$amount""";
+
+  /// ```dart
+  /// "$item ($inventory) à Plein"
+  /// ```
+  String partFull(String item, String inventory) =>
+      """$item ($inventory) à Plein""";
+
+  /// ```dart
+  /// "$item ($inventory) ×$amount"
+  /// ```
+  String partReplaced(String item, String inventory, String amount) =>
+      """$item ($inventory) ×$amount""";
+
+  /// ```dart
+  /// "$item ($inventory), Plein"
+  /// ```
+  String partReplacedFull(String item, String inventory) =>
+      """$item ($inventory), Plein""";
+
+  /// ```dart
+  /// "$restock · décochez pour annuler"
+  /// ```
+  String uncheckToUndo(String restock) =>
+      """$restock · décochez pour annuler""";
+
+  /// ```dart
+  /// "$item ($inventory)"
+  /// ```
+  String source(String item, String inventory) => """$item ($inventory)""";
+
+  /// ```dart
+  /// "Réapprovisionne $items"
+  /// ```
+  String restocks(String items) => """Réapprovisionne $items""";
+
+  /// ```dart
+  /// "× $quantity"
+  /// ```
+  String pinnedChip(String quantity) => """× $quantity""";
+
+  /// ```dart
+  /// "Épinglé"
+  /// ```
+  String get pinnedChipBare => """Épinglé""";
+
+  /// ```dart
+  /// "Épinglé, le stock n'y touche pas. Touchez pour désépingler."
+  /// ```
+  String get pinnedChipTooltip =>
+      """Épinglé, le stock n'y touche pas. Touchez pour désépingler.""";
+
+  /// ```dart
+  /// "Plus nécessaire"
+  /// ```
+  String get noLongerNeeded => """Plus nécessaire""";
+}
+
 class NotesWallMessagesFr extends NotesWallMessages {
   final MessagesFr _parent;
   const NotesWallMessagesFr(this._parent) : super(_parent);
@@ -7002,6 +8623,26 @@ class WearMessagesFr extends WearMessages {
   /// "Couleur de Pantry"
   /// ```
   String get accentApp => """Couleur de Pantry""";
+
+  /// ```dart
+  /// "+$amount"
+  /// ```
+  String stockRaised(String amount) => """+$amount""";
+
+  /// ```dart
+  /// "−$amount"
+  /// ```
+  String stockLowered(String amount) => """−$amount""";
+
+  /// ```dart
+  /// "Terminer l’ajustement"
+  /// ```
+  String get stockClose => """Terminer l’ajustement""";
+
+  /// ```dart
+  /// "Rien à réapprovisionner"
+  /// ```
+  String get nothingNeedsRestock => """Rien à réapprovisionner""";
 }
 
 class WatchMessagesFr extends WatchMessages {
@@ -7532,6 +9173,8 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """home.learnMore""": """En savoir plus""",
   """nav.checklists""": """Listes""",
   """nav.checklist""": """Liste""",
+  """nav.lists""": """Listes""",
+  """nav.list""": """Liste""",
   """nav.photoBoard""": """Tableau photos""",
   """nav.notesWall""": """Mur de notes""",
   """widget.chooseListsTitle""": """Choisir les listes""",
@@ -7656,6 +9299,21 @@ Mot de passe : pantry-rocks""",
   """onboarding.joinTripMockHousemate""": """Dana""",
   """onboarding.joinTripHow""":
       """Déjà en courses ? Rejoindre enregistre d'abord les vôtres dans votre historique. Si vous quittez des courses que vous avez rejointes, elles continuent pour ceux qui y restent.""",
+  """onboarding.inventoryTitle""": """Sachez ce qu'il y a dans le placard""",
+  """onboarding.inventoryBody""":
+      """Les inventaires suivent la quantité de chaque chose et sa date de péremption. Diminuez les quantités au fil de l'usage, et Pantry signale ce qui vient à manquer ou va bientôt périmer.""",
+  """onboarding.inventoryHow""":
+      """Donnez à un inventaire une liste de réapprovisionnement dans ses réglages, et tout ce qui manque ou périme y est ajouté pour vous. Cochez-le au magasin et l'inventaire se remplit à nouveau.""",
+  """onboarding.inventoryMockEggs""": """Œufs""",
+  """onboarding.inventoryMockMilk""": """Lait""",
+  """onboarding.inventoryMockFlour""": """Farine""",
+  """onboarding.templateTitle""": """Des modèles pour vos achats habituels""",
+  """onboarding.templateBody""":
+      """Rangez dans un modèle les articles que vous ajoutez sans cesse. Associez-le à une liste, et en tapant dans celle-ci ses articles vous sont suggérés, avec tous leurs détails.""",
+  """onboarding.templateMockName""": """Courses de la semaine""",
+  """onboarding.templateMockTyped""": """La""",
+  """onboarding.templateMockFirst""": """Lait""",
+  """onboarding.templateMockSecond""": """Lardons""",
   """onboarding.dev.showOnboarding""": """Afficher l'intro""",
   """onboarding.dev.pickLastSeenTitle""": """Aperçu des nouveautés""",
   """onboarding.dev.pickLastSeenBody""":
@@ -8417,6 +10075,257 @@ Mot de passe : pantry-rocks""",
       """Réutiliser les éléments existants au lieu d'ajouter des doublons""",
   """checklists.markdown.defaultFields""":
       """Valeurs appliquées à chaque élément importé""",
+  """listKinds.duplicateAs""": """Dupliquer en tant que :""",
+  """listKinds.checklist.title""": """Listes de contrôle""",
+  """listKinds.checklist.name""": """Liste de contrôle""",
+  """listKinds.checklist.newList""": """Nouvelle liste de contrôle""",
+  """listKinds.checklist.createTitle""": """Créer une liste de contrôle""",
+  """listKinds.checklist.editTitle""": """Modifier la liste de contrôle""",
+  """listKinds.checklist.duplicateTitle""":
+      """Dupliquer la liste de contrôle""",
+  """listKinds.checklist.duplicateFailed""":
+      """Impossible de dupliquer la liste de contrôle""",
+  """listKinds.checklist.listMenu""": """Actions de la liste de contrôle""",
+  """listKinds.checklist.deleteDialogTitle""":
+      """Supprimer la liste de contrôle""",
+  """listKinds.checklist.emptyTitle""":
+      """Aucune liste de contrôle pour le moment""",
+  """listKinds.checklist.emptyBody""":
+      """Créez votre première liste de contrôle pour commencer à ajouter des articles.""",
+  """listKinds.checklist.trashTitle""": """Corbeille des listes de contrôle""",
+  """listKinds.checklist.trashEmptyBody""":
+      """Les listes de contrôle supprimées apparaîtront ici.""",
+  """listKinds.checklist.archiveTitle""": """Listes de contrôle archivées""",
+  """listKinds.checklist.archiveEmptyTitle""":
+      """Aucune liste de contrôle archivée""",
+  """listKinds.checklist.archiveEmptyBody""":
+      """Les listes de contrôle archivées apparaîtront ici.""",
+  """listKinds.checklist.emptyTrashBody""":
+      """Toutes les listes de contrôle présentes dans la corbeille, ainsi que leurs articles, seront définitivement supprimées. Cette action est irréversible.""",
+  """listKinds.checklist.listRestored""": """Liste de contrôle restaurée""",
+  """listKinds.checklist.listMovedToTrash""":
+      """Liste de contrôle déplacée vers la corbeille""",
+  """listKinds.checklist.listArchived""": """Liste de contrôle archivée""",
+  """listKinds.checklist.listUnarchived""": """Liste de contrôle désarchivée""",
+  """listKinds.inventory.title""": """Inventaires""",
+  """listKinds.inventory.name""": """Inventaire""",
+  """listKinds.inventory.newList""": """Nouvel inventaire""",
+  """listKinds.inventory.createTitle""": """Créer un inventaire""",
+  """listKinds.inventory.editTitle""": """Modifier l'inventaire""",
+  """listKinds.inventory.duplicateTitle""": """Dupliquer l'inventaire""",
+  """listKinds.inventory.duplicateFailed""":
+      """Impossible de dupliquer l'inventaire""",
+  """listKinds.inventory.listMenu""": """Actions de l'inventaire""",
+  """listKinds.inventory.deleteDialogTitle""": """Supprimer l'inventaire""",
+  """listKinds.inventory.emptyTitle""": """Aucun inventaire pour le moment""",
+  """listKinds.inventory.emptyBody""":
+      """Créez votre premier inventaire pour commencer à ajouter des articles.""",
+  """listKinds.inventory.trashTitle""": """Corbeille des inventaires""",
+  """listKinds.inventory.trashEmptyBody""":
+      """Les inventaires supprimés apparaîtront ici.""",
+  """listKinds.inventory.archiveTitle""": """Inventaires archivés""",
+  """listKinds.inventory.archiveEmptyTitle""": """Aucun inventaire archivé""",
+  """listKinds.inventory.archiveEmptyBody""":
+      """Les inventaires archivés apparaîtront ici.""",
+  """listKinds.inventory.emptyTrashBody""":
+      """Tous les inventaires présents dans la corbeille, ainsi que leurs articles, seront définitivement supprimés. Cette action est irréversible.""",
+  """listKinds.inventory.listRestored""": """Inventaire restauré""",
+  """listKinds.inventory.listMovedToTrash""":
+      """Inventaire déplacé vers la corbeille""",
+  """listKinds.inventory.listArchived""": """Inventaire archivé""",
+  """listKinds.inventory.listUnarchived""": """Inventaire désarchivé""",
+  """listKinds.template.title""": """Modèles""",
+  """listKinds.template.name""": """Modèle""",
+  """listKinds.template.newList""": """Nouveau modèle""",
+  """listKinds.template.createTitle""": """Créer un modèle""",
+  """listKinds.template.editTitle""": """Modifier le modèle""",
+  """listKinds.template.duplicateTitle""": """Dupliquer le modèle""",
+  """listKinds.template.duplicateFailed""":
+      """Impossible de dupliquer le modèle""",
+  """listKinds.template.listMenu""": """Actions du modèle""",
+  """listKinds.template.deleteDialogTitle""": """Supprimer le modèle""",
+  """listKinds.template.emptyTitle""": """Aucun modèle pour le moment""",
+  """listKinds.template.emptyBody""":
+      """Créez votre premier modèle pour commencer à ajouter des articles.""",
+  """listKinds.template.trashTitle""": """Corbeille des modèles""",
+  """listKinds.template.trashEmptyBody""":
+      """Les modèles supprimés apparaîtront ici.""",
+  """listKinds.template.archiveTitle""": """Modèles archivés""",
+  """listKinds.template.archiveEmptyTitle""": """Aucun modèle archivé""",
+  """listKinds.template.archiveEmptyBody""":
+      """Les modèles archivés apparaîtront ici.""",
+  """listKinds.template.emptyTrashBody""":
+      """Tous les modèles présents dans la corbeille, ainsi que leurs articles, seront définitivement supprimés. Cette action est irréversible.""",
+  """listKinds.template.listRestored""": """Modèle restauré""",
+  """listKinds.template.listMovedToTrash""":
+      """Modèle déplacé vers la corbeille""",
+  """listKinds.template.listArchived""": """Modèle archivé""",
+  """listKinds.template.listUnarchived""": """Modèle désarchivé""",
+  """templates.suggestionsHeader""": """Suggestions""",
+  """templates.drawFailed""":
+      """Impossible d'ajouter l'article depuis le modèle""",
+  """templates.attachedLabel""": """Modèles :""",
+  """templates.attachedPlaceholder""": """Aucun modèle""",
+  """templates.attachedHint""":
+      """La saisie d'un nouvel article suggère les articles correspondants de ces modèles.""",
+  """templates.suggestInLabel""": """Suggérer dans :""",
+  """templates.everyList""": """Toutes les listes""",
+  """templates.suggestInPlaceholder""": """Aucune liste""",
+  """templates.suggestInHint""":
+      """La saisie d'un nouvel article dans ces listes suggère les articles correspondants de ce modèle. Sélectionner « Toutes les listes » inclut aussi les listes créées par la suite.""",
+  """templates.attachFailed""":
+      """Impossible d'enregistrer les modèles associés""",
+  """templates.fillLabel""":
+      """Remplir les articles de modèle avec ces valeurs""",
+  """templates.fillHint""":
+      """Lorsqu'un article est ajouté depuis un modèle, les détails qu'il laisse vides démarrent avec les valeurs ci-dessus. Chaque personne peut modifier ce comportement dans ses paramètres personnels.""",
+  """templates.fillPrefLabel""":
+      """Remplir les articles de modèle avec les valeurs par défaut""",
+  """templates.fillPrefHint""":
+      """Lorsque vous ajoutez un article depuis un modèle, les détails qu'il laisse vides sont remplis avec les valeurs par défaut des articles de la liste. Chaque liste peut désactiver ce comportement dans ses valeurs par défaut.""",
+  """templates.fillPrefNames.list""": """Selon chaque liste""",
+  """templates.fillPrefNames.always""": """Toujours remplir""",
+  """templates.fillPrefNames.never""": """Ne jamais remplir""",
+  """templates.fillPrefFailed""": """Impossible d'enregistrer le paramètre""",
+  """templates.applyToList""": """Appliquer à une liste""",
+  """templates.applyTemplate""": """Appliquer le modèle""",
+  """templates.attachedTemplates""": """Associés à cette liste""",
+  """templates.otherTemplates""": """Autres modèles""",
+  """templates.noTargets""":
+      """Aucune liste de contrôle ni aucun inventaire auquel appliquer ce modèle.""",
+  """templates.noItems""": """Ce modèle ne contient aucun article.""",
+  """templates.alreadyOnList""": """Déjà dans la liste""",
+  """templates.applyFailed""": """Impossible d'appliquer le modèle""",
+  """templates.loadFailed""": """Impossible de charger les modèles""",
+  """templates.back""": """Retour""",
+  """stock.inStock""": """En stock""",
+  """stock.full""": """Plein""",
+  """stock.low""": """Bas""",
+  """stock.out""": """Épuisé""",
+  """stock.notCounted""": """Non compté""",
+  """stock.expiresToday""": """Périme aujourd’hui""",
+  """stock.expiresTomorrow""": """Périme demain""",
+  """stock.decrease""": """Diminuer la quantité disponible""",
+  """stock.increase""": """Augmenter la quantité disponible""",
+  """stock.onHandEdit""": """Quantité disponible""",
+  """stock.filter""": """Stock""",
+  """stock.filterAll""": """Tous les articles""",
+  """stock.filterNeedsRestock""": """À réapprovisionner""",
+  """stock.filterInStock""": """En stock""",
+  """stock.writeRefused""":
+      """Impossible d’enregistrer la modification du stock. L’inventaire affiche maintenant les données du serveur.""",
+  """stock.settings.action""": """Paramètres de l’inventaire""",
+  """stock.settings.title""": """Paramètres de l’inventaire""",
+  """stock.settings.name""": """Nom""",
+  """stock.settings.nameHint""":
+      """L’icône, la couleur et le partage fonctionnent comme pour les listes de contrôle.""",
+  """stock.settings.expiryWarning""": """Alerte de péremption""",
+  """stock.settings.daysBefore""": """Jours avant la péremption""",
+  """stock.settings.warnHint""":
+      """Indiquez 0 pour être averti le jour même de la péremption.""",
+  """stock.settings.restockChecklist""": """Liste de réapprovisionnement""",
+  """stock.settings.restockNone""": """Aucune""",
+  """stock.settings.restockSetHint""":
+      """Les articles qui s’épuisent ou arrivent à péremption sont ajoutés à cette liste de contrôle.""",
+  """stock.settings.restockUnsetHint""":
+      """Sans elle, les articles bas ou bientôt périmés sont seulement signalés ici.""",
+  """stock.settings.notifications""": """Notifications""",
+  """stock.settings.stockSummary""": """Résumé quotidien du stock""",
+  """stock.settings.stockSummaryHint""":
+      """Une fois par jour, indique aux membres ce qui vient de s’épuiser ou arrive à péremption ici. Chaque membre peut aussi le désactiver dans ses paramètres personnels.""",
+  """stock.settings.cancel""": """Annuler""",
+  """stock.settings.save""": """Enregistrer""",
+  """stock.card.title""": """Stock""",
+  """stock.card.mode""": """Mode de stock""",
+  """stock.card.count""": """Quantité""",
+  """stock.card.level""": """Niveau""",
+  """stock.card.countHint""":
+      """Suivez combien vous en avez, p. ex. 4 œufs sur 12.""",
+  """stock.card.levelHint""":
+      """Suivez-le en Plein, Bas ou Épuisé, p. ex. farine ou épices.""",
+  """stock.card.onHand""": """Disponible""",
+  """stock.card.onHandPlaceholder""": """p. ex. 4""",
+  """stock.card.target""": """Objectif""",
+  """stock.card.targetPlaceholder""": """p. ex. 12 œufs""",
+  """stock.card.reorderPoint""": """Seuil de réapprovisionnement""",
+  """stock.card.reorderPlaceholder""": """p. ex. 4""",
+  """stock.card.stockLevel""": """Niveau de stock""",
+  """stock.card.restockAmount""": """Quantité à racheter""",
+  """stock.card.restockPlaceholder""": """p. ex. sachet de 1 kg""",
+  """stock.card.convertedBlank""":
+      """Converti en quantité. Saisissez la quantité disponible et un objectif.""",
+  """stock.card.statusExpired""": """Périmé.""",
+  """stock.card.statusExpiring""": """Bientôt périmé.""",
+  """stock.card.statusLow""": """Bas.""",
+  """stock.card.statusOut""": """Épuisé.""",
+  """stock.card.statusUncountedTarget""":
+      """Non compté : l’objectif n’a pas de nombre, il n’est donc jamais bas.""",
+  """stock.card.statusUncountedOnHand""":
+      """Non compté : la quantité disponible n’a pas de nombre, il n’est donc jamais bas.""",
+  """stock.card.statusInStock""": """En stock.""",
+  """stock.card.templateDefaultMode""":
+      """Sans mode de stock choisi, il utilise celui de l’inventaire par défaut.""",
+  """stock.card.templateStartsLevel""":
+      """Ajouté à un inventaire, il démarre Plein.""",
+  """stock.card.templateUncounted""":
+      """Ajouté à un inventaire sans objectif, il n’est pas compté.""",
+  """stock.expiry.title""": """Péremption""",
+  """stock.expiry.mode""": """Comment l’article se périme""",
+  """stock.expiry.none""": """Aucune""",
+  """stock.expiry.date""": """Date""",
+  """stock.expiry.keeps""": """Se conserve N jours""",
+  """stock.expiry.expiryDate""": """Date de péremption""",
+  """stock.expiry.daysItKeeps""": """Jours de conservation""",
+  """stock.expiry.chip""": """Péremption""",
+  """stock.compose.chip""": """Stock""",
+  """stock.compose.count""": """Quantité""",
+  """stock.compose.level""": """Niveau""",
+  """stock.compose.fullWhenEmpty""": """Plein si vide""",
+  """stock.noRestockChecklist""":
+      """Cet inventaire n’a pas de liste de réapprovisionnement, ces articles sont donc seulement signalés ici. Choisissez-en une dans les paramètres de l’inventaire.""",
+  """stock.renewAction""": """Renouveler la péremption""",
+  """stock.summaryPref""": """Résumé quotidien du stock""",
+  """stock.summaryPrefHint""":
+      """Une fois par jour, ce qui vient de s’épuiser ou arrive à péremption dans les inventaires de ce foyer.""",
+  """stock.summaryPrefFailed""":
+      """Impossible d’enregistrer le réglage du résumé du stock.""",
+  """stock.links.caption""": """Liste de courses""",
+  """stock.links.tooltipAutoOn""":
+      """Pas encore lié : ajouté à la liste de courses quand il est bas""",
+  """stock.links.tooltipAutoOff""":
+      """Non lié : jamais ajouté à une liste de courses""",
+  """stock.links.stateOpen""": """à faire""",
+  """stock.links.stateChecked""": """coché""",
+  """stock.links.stateArchived""": """archivé""",
+  """stock.links.stateTrashed""": """dans la corbeille""",
+  """stock.links.unlink""": """Délier""",
+  """stock.links.whichOne""": """Lequel est-ce ?""",
+  """stock.links.autoLink""":
+      """Ajouter à la liste de courses quand il est bas""",
+  """stock.links.linkByHand""": """Lier à la main""",
+  """stock.links.chipNotAdded""": """Jamais ajouté à une liste de courses""",
+  """stock.links.linkDifferent""": """Lier à un autre article …""",
+  """stock.links.linkedHint""":
+      """Quand il s’épuise ou arrive à péremption, cet article revient sur cette liste.""",
+  """stock.links.link""": """Lier""",
+  """stock.links.autoHintNoChecklist""":
+      """Choisissez une liste de réapprovisionnement dans les paramètres de l’inventaire pour y trouver ou ajouter cet article.""",
+  """stock.links.autoHintOff""":
+      """Cet article est seulement signalé ici quand il est bas.""",
+  """stock.links.linkToItem""": """Lier à un article …""",
+  """stock.links.pickerTitle""": """Lier à un article de liste""",
+  """stock.links.pickerField""": """Article de liste""",
+  """stock.links.pickerSearch""": """Rechercher des articles …""",
+  """stock.links.pickerSearching""": """Recherche …""",
+  """stock.links.pickerEmpty""": """Aucun article trouvé""",
+  """stock.links.pickerArchived""": """archivé""",
+  """stock.links.pickerFailed""":
+      """Impossible de charger les articles. Vérifiez la connexion et réessayez.""",
+  """stock.links.cancel""": """Annuler""",
+  """stock.restock.pinnedChipBare""": """Épinglé""",
+  """stock.restock.pinnedChipTooltip""":
+      """Épinglé, le stock n'y touche pas. Touchez pour désépingler.""",
+  """stock.restock.noLongerNeeded""": """Plus nécessaire""",
   """notesWall.noNotes""": """Aucune note pour le moment.""",
   """notesWall.failedToLoad""": """Impossible de charger les notes.""",
   """notesWall.saveFailed""": """Impossible d'enregistrer la note.""",
@@ -8789,6 +10698,8 @@ Mot de passe : pantry-rocks""",
   """wear.accent""": """Couleur d'accent""",
   """wear.accentServer""": """Votre couleur Nextcloud""",
   """wear.accentApp""": """Couleur de Pantry""",
+  """wear.stockClose""": """Terminer l’ajustement""",
+  """wear.nothingNeedsRestock""": """Rien à réapprovisionner""",
   """watch.title""": """Montre""",
   """watch.requestWarning""":
       """N'autorisez que si la montre est la vôtre. Elle obtient le même accès à votre foyer que ce téléphone.""",

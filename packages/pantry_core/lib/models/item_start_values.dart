@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/item_defaults.dart';
+import 'package:pantry_core/models/stock.dart';
 
 /// What a new item's chips start with, resolved from a list's [ItemDefaults].
 @immutable
@@ -13,6 +14,13 @@ class ItemStartValues {
   final RecurrenceDefaultValue recurrence;
   final List<FieldValue> customFieldValues;
 
+  /// Inventory items: how stock is tracked and the target, reorder point and
+  /// shelf life it starts with.
+  final StockMode? stockMode;
+  final String? target;
+  final String? reorderPoint;
+  final int? shelfLifeDays;
+
   const ItemStartValues({
     this.categoryId,
     this.storeIds = const [],
@@ -20,6 +28,10 @@ class ItemStartValues {
     this.quantity = '',
     this.recurrence = RecurrenceDefaultValue.staple,
     this.customFieldValues = const [],
+    this.stockMode,
+    this.target,
+    this.reorderPoint,
+    this.shelfLifeDays,
   });
 
   /// Resolve [defaults] for a new item on list [listId]. Custom fields start
@@ -57,6 +69,10 @@ class ItemStartValues {
           (defaults?.recurrence.prefill ?? RecurrenceDefaultValue.staple)
               .normalized(),
       customFieldValues: fieldValues.values.toList(),
+      stockMode: defaults?.stockMode.prefill,
+      target: defaults?.target.prefill,
+      reorderPoint: defaults?.reorderPoint.prefill,
+      shelfLifeDays: defaults?.shelfLifeDays.prefill,
     );
   }
 }
@@ -114,6 +130,7 @@ ItemDefaultsPatch rememberPatch(
   required Iterable<int> labelIds,
   required List<FieldValue> customFieldValues,
   required Iterable<FieldDefinition> fieldDefs,
+  StockMode? stockMode,
 }) {
   if (defaults == null) return const ItemDefaultsPatch();
   final entries = <String, ItemDefaultPatchEntry>{};
@@ -158,6 +175,14 @@ ItemDefaultsPatch rememberPatch(
     (a, b) => listEquals(a ?? const [], b),
     (v) => v,
   );
+
+  if (stockMode != null &&
+      defaults.stockMode.mode == ItemDefaultMode.remember &&
+      defaults.stockMode.value != stockMode) {
+    entries[ItemDefaults.stockModeKey] = ItemDefaultPatchEntry.value(
+      stockMode.wire,
+    );
+  }
 
   final defsById = {for (final d in fieldDefs) d.id: d};
   final usedById = {for (final v in customFieldValues) v.fieldId: v};

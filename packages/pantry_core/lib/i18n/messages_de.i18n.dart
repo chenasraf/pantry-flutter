@@ -79,6 +79,9 @@ class MessagesDe extends Messages {
   StoresMessagesDe get stores => StoresMessagesDe(this);
   LabelsMessagesDe get labels => LabelsMessagesDe(this);
   ChecklistsMessagesDe get checklists => ChecklistsMessagesDe(this);
+  ListKindsMessagesDe get listKinds => ListKindsMessagesDe(this);
+  TemplatesMessagesDe get templates => TemplatesMessagesDe(this);
+  StockMessagesDe get stock => StockMessagesDe(this);
   NotesWallMessagesDe get notesWall => NotesWallMessagesDe(this);
   PhotoBoardMessagesDe get photoBoard => PhotoBoardMessagesDe(this);
   ShoppingMessagesDe get shopping => ShoppingMessagesDe(this);
@@ -403,10 +406,10 @@ class HomeMessagesDe extends HomeMessages {
   String get noHouses => """Noch keine Häuser.""";
 
   /// ```dart
-  /// "Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Checklisten, Fotos und Notizen hinzuzufügen."
+  /// "Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Listen, Fotos und Notizen hinzuzufügen."
   /// ```
   String get noHousesBody =>
-      """Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Checklisten, Fotos und Notizen hinzuzufügen.""";
+      """Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Listen, Fotos und Notizen hinzuzufügen.""";
 
   /// ```dart
   /// "Haus erstellen"
@@ -468,6 +471,16 @@ class NavMessagesDe extends NavMessages {
   /// "Checkliste"
   /// ```
   String get checklist => """Checkliste""";
+
+  /// ```dart
+  /// "Listen"
+  /// ```
+  String get lists => """Listen""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get list => """Liste""";
 
   /// ```dart
   /// "Fotowand"
@@ -995,6 +1008,75 @@ Passwort: pantry-rocks""";
   /// ```
   String get joinTripHow =>
       """Schon unterwegs? Beim Beitreten wird dein eigener Einkauf zuerst in deinem Verlauf gespeichert. Steigst du aus einem Einkauf aus, dem du beigetreten bist, läuft er für alle anderen weiter.""";
+
+  /// ```dart
+  /// "Wissen, was im Schrank ist"
+  /// ```
+  String get inventoryTitle => """Wissen, was im Schrank ist""";
+
+  /// ```dart
+  /// "Vorräte halten fest, wie viel du von allem hast und wann es abläuft. Zähl Mengen herunter, während du sie verbrauchst, und Pantry markiert, was knapp wird oder bald abläuft."
+  /// ```
+  String get inventoryBody =>
+      """Vorräte halten fest, wie viel du von allem hast und wann es abläuft. Zähl Mengen herunter, während du sie verbrauchst, und Pantry markiert, was knapp wird oder bald abläuft.""";
+
+  /// ```dart
+  /// "Gib einem Vorrat in seinen Einstellungen eine Nachkauf-Liste, und alles, was knapp wird oder abläuft, landet von selbst darauf. Hak es im Laden ab, und der Vorrat füllt sich wieder auf."
+  /// ```
+  String get inventoryHow =>
+      """Gib einem Vorrat in seinen Einstellungen eine Nachkauf-Liste, und alles, was knapp wird oder abläuft, landet von selbst darauf. Hak es im Laden ab, und der Vorrat füllt sich wieder auf.""";
+
+  /// ```dart
+  /// "Eier"
+  /// ```
+  String get inventoryMockEggs => """Eier""";
+
+  /// ```dart
+  /// "Milch"
+  /// ```
+  String get inventoryMockMilk => """Milch""";
+
+  /// ```dart
+  /// "Mehl"
+  /// ```
+  String get inventoryMockFlour => """Mehl""";
+
+  /// ```dart
+  /// "Vorlagen für das, was du immer kaufst"
+  /// ```
+  String get templateTitle => """Vorlagen für das, was du immer kaufst""";
+
+  /// ```dart
+  /// "Leg Artikel, die du immer wieder hinzufügst, in einer Vorlage ab. Häng sie an eine Liste, und beim Tippen dort werden ihre Artikel samt Details vorgeschlagen."
+  /// ```
+  String get templateBody =>
+      """Leg Artikel, die du immer wieder hinzufügst, in einer Vorlage ab. Häng sie an eine Liste, und beim Tippen dort werden ihre Artikel samt Details vorgeschlagen.""";
+
+  /// ```dart
+  /// "Um eine ganze Vorlage auf einmal zu übernehmen, öffne ihr Menü in der Listenauswahl und wähle ${apply}."
+  /// ```
+  String templateHow(String apply) =>
+      """Um eine ganze Vorlage auf einmal zu übernehmen, öffne ihr Menü in der Listenauswahl und wähle ${apply}.""";
+
+  /// ```dart
+  /// "Wocheneinkauf"
+  /// ```
+  String get templateMockName => """Wocheneinkauf""";
+
+  /// ```dart
+  /// "Mi"
+  /// ```
+  String get templateMockTyped => """Mi""";
+
+  /// ```dart
+  /// "Milch"
+  /// ```
+  String get templateMockFirst => """Milch""";
+
+  /// ```dart
+  /// "Mineralwasser"
+  /// ```
+  String get templateMockSecond => """Mineralwasser""";
   DevOnboardingMessagesDe get dev => DevOnboardingMessagesDe(this);
 }
 
@@ -1044,10 +1126,10 @@ class NotificationsIntroMessagesDe extends NotificationsIntroMessages {
   String get title => """Bleib auf dem Laufenden""";
 
   /// ```dart
-  /// "Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Checklisten hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter."
+  /// "Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Listen hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter."
   /// ```
   String get body =>
-      """Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Checklisten hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter.""";
+      """Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Listen hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter.""";
 
   /// ```dart
   /// "Benachrichtigungen über Haushaltsaktivitäten"
@@ -4871,6 +4953,1548 @@ class MarkdownChecklistsMessagesDe extends MarkdownChecklistsMessages {
       """${_plural(count, one: '1 Eintrag importiert', many: '$count Einträge importiert')}""";
 }
 
+class ListKindsMessagesDe extends ListKindsMessages {
+  final MessagesDe _parent;
+  const ListKindsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Duplizieren als:"
+  /// ```
+  String get duplicateAs => """Duplizieren als:""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Element wurde übersprungen, da du es nicht bearbeiten kannst.', many: '$count Elemente wurden übersprungen, da du sie nicht bearbeiten kannst.')}"
+  /// ```
+  String itemsSkippedNoEdit(int count) =>
+      """${_plural(count, one: '1 Element wurde übersprungen, da du es nicht bearbeiten kannst.', many: '$count Elemente wurden übersprungen, da du sie nicht bearbeiten kannst.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Element konnte nicht als unerledigt markiert werden.', many: '$count Elemente konnten nicht als unerledigt markiert werden.')}"
+  /// ```
+  String itemsSkippedUncheck(int count) =>
+      """${_plural(count, one: '1 Element konnte nicht als unerledigt markiert werden.', many: '$count Elemente konnten nicht als unerledigt markiert werden.')}""";
+  ChecklistListKindsMessagesDe get checklist =>
+      ChecklistListKindsMessagesDe(this);
+  InventoryListKindsMessagesDe get inventory =>
+      InventoryListKindsMessagesDe(this);
+  TemplateListKindsMessagesDe get template => TemplateListKindsMessagesDe(this);
+}
+
+class ChecklistListKindsMessagesDe extends ChecklistListKindsMessages {
+  final ListKindsMessagesDe _parent;
+  const ChecklistListKindsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Checklisten"
+  /// ```
+  String get title => """Checklisten""";
+
+  /// ```dart
+  /// "Checkliste"
+  /// ```
+  String get name => """Checkliste""";
+
+  /// ```dart
+  /// "Neue Checkliste"
+  /// ```
+  String get newList => """Neue Checkliste""";
+
+  /// ```dart
+  /// "Checkliste erstellen"
+  /// ```
+  String get createTitle => """Checkliste erstellen""";
+
+  /// ```dart
+  /// "Checkliste bearbeiten"
+  /// ```
+  String get editTitle => """Checkliste bearbeiten""";
+
+  /// ```dart
+  /// "Checkliste duplizieren"
+  /// ```
+  String get duplicateTitle => """Checkliste duplizieren""";
+
+  /// ```dart
+  /// "Die Checkliste konnte nicht dupliziert werden"
+  /// ```
+  String get duplicateFailed =>
+      """Die Checkliste konnte nicht dupliziert werden""";
+
+  /// ```dart
+  /// "Checklisten-Aktionen"
+  /// ```
+  String get listMenu => """Checklisten-Aktionen""";
+
+  /// ```dart
+  /// "Checkliste entfernen"
+  /// ```
+  String get deleteDialogTitle => """Checkliste entfernen""";
+
+  /// ```dart
+  /// "Noch keine Checklisten"
+  /// ```
+  String get emptyTitle => """Noch keine Checklisten""";
+
+  /// ```dart
+  /// "Erstelle deine erste Checkliste, um mit dem Hinzufügen von Elementen zu beginnen."
+  /// ```
+  String get emptyBody =>
+      """Erstelle deine erste Checkliste, um mit dem Hinzufügen von Elementen zu beginnen.""";
+
+  /// ```dart
+  /// "Checklisten-Papierkorb"
+  /// ```
+  String get trashTitle => """Checklisten-Papierkorb""";
+
+  /// ```dart
+  /// "Gelöschte Checklisten werden hier angezeigt."
+  /// ```
+  String get trashEmptyBody =>
+      """Gelöschte Checklisten werden hier angezeigt.""";
+
+  /// ```dart
+  /// "Archivierte Checklisten"
+  /// ```
+  String get archiveTitle => """Archivierte Checklisten""";
+
+  /// ```dart
+  /// "Keine archivierten Checklisten"
+  /// ```
+  String get archiveEmptyTitle => """Keine archivierten Checklisten""";
+
+  /// ```dart
+  /// "Archivierte Checklisten werden hier angezeigt."
+  /// ```
+  String get archiveEmptyBody =>
+      """Archivierte Checklisten werden hier angezeigt.""";
+
+  /// ```dart
+  /// "Dadurch werden alle Checklisten, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden."
+  /// ```
+  String get emptyTrashBody =>
+      """Dadurch werden alle Checklisten, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.""";
+
+  /// ```dart
+  /// "Checkliste wiederhergestellt"
+  /// ```
+  String get listRestored => """Checkliste wiederhergestellt""";
+
+  /// ```dart
+  /// "Checkliste in den Papierkorb verschoben"
+  /// ```
+  String get listMovedToTrash => """Checkliste in den Papierkorb verschoben""";
+
+  /// ```dart
+  /// "Checkliste archiviert"
+  /// ```
+  String get listArchived => """Checkliste archiviert""";
+
+  /// ```dart
+  /// "Checkliste dearchiviert"
+  /// ```
+  String get listUnarchived => """Checkliste dearchiviert""";
+}
+
+class InventoryListKindsMessagesDe extends InventoryListKindsMessages {
+  final ListKindsMessagesDe _parent;
+  const InventoryListKindsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Bestandslisten"
+  /// ```
+  String get title => """Bestandslisten""";
+
+  /// ```dart
+  /// "Bestandsliste"
+  /// ```
+  String get name => """Bestandsliste""";
+
+  /// ```dart
+  /// "Neue Bestandsliste"
+  /// ```
+  String get newList => """Neue Bestandsliste""";
+
+  /// ```dart
+  /// "Bestandsliste erstellen"
+  /// ```
+  String get createTitle => """Bestandsliste erstellen""";
+
+  /// ```dart
+  /// "Bestandsliste bearbeiten"
+  /// ```
+  String get editTitle => """Bestandsliste bearbeiten""";
+
+  /// ```dart
+  /// "Bestandsliste duplizieren"
+  /// ```
+  String get duplicateTitle => """Bestandsliste duplizieren""";
+
+  /// ```dart
+  /// "Die Bestandsliste konnte nicht dupliziert werden"
+  /// ```
+  String get duplicateFailed =>
+      """Die Bestandsliste konnte nicht dupliziert werden""";
+
+  /// ```dart
+  /// "Bestandslisten-Aktionen"
+  /// ```
+  String get listMenu => """Bestandslisten-Aktionen""";
+
+  /// ```dart
+  /// "Bestandsliste entfernen"
+  /// ```
+  String get deleteDialogTitle => """Bestandsliste entfernen""";
+
+  /// ```dart
+  /// "Noch keine Bestandslisten"
+  /// ```
+  String get emptyTitle => """Noch keine Bestandslisten""";
+
+  /// ```dart
+  /// "Erstelle deine erste Bestandsliste, um mit dem Hinzufügen von Elementen zu beginnen."
+  /// ```
+  String get emptyBody =>
+      """Erstelle deine erste Bestandsliste, um mit dem Hinzufügen von Elementen zu beginnen.""";
+
+  /// ```dart
+  /// "Bestandslisten-Papierkorb"
+  /// ```
+  String get trashTitle => """Bestandslisten-Papierkorb""";
+
+  /// ```dart
+  /// "Gelöschte Bestandslisten werden hier angezeigt."
+  /// ```
+  String get trashEmptyBody =>
+      """Gelöschte Bestandslisten werden hier angezeigt.""";
+
+  /// ```dart
+  /// "Archivierte Bestandslisten"
+  /// ```
+  String get archiveTitle => """Archivierte Bestandslisten""";
+
+  /// ```dart
+  /// "Keine archivierten Bestandslisten"
+  /// ```
+  String get archiveEmptyTitle => """Keine archivierten Bestandslisten""";
+
+  /// ```dart
+  /// "Archivierte Bestandslisten werden hier angezeigt."
+  /// ```
+  String get archiveEmptyBody =>
+      """Archivierte Bestandslisten werden hier angezeigt.""";
+
+  /// ```dart
+  /// "Dadurch werden alle Bestandslisten, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden."
+  /// ```
+  String get emptyTrashBody =>
+      """Dadurch werden alle Bestandslisten, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.""";
+
+  /// ```dart
+  /// "Bestandsliste wiederhergestellt"
+  /// ```
+  String get listRestored => """Bestandsliste wiederhergestellt""";
+
+  /// ```dart
+  /// "Bestandsliste in den Papierkorb verschoben"
+  /// ```
+  String get listMovedToTrash =>
+      """Bestandsliste in den Papierkorb verschoben""";
+
+  /// ```dart
+  /// "Bestandsliste archiviert"
+  /// ```
+  String get listArchived => """Bestandsliste archiviert""";
+
+  /// ```dart
+  /// "Bestandsliste dearchiviert"
+  /// ```
+  String get listUnarchived => """Bestandsliste dearchiviert""";
+}
+
+class TemplateListKindsMessagesDe extends TemplateListKindsMessages {
+  final ListKindsMessagesDe _parent;
+  const TemplateListKindsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Vorlagen"
+  /// ```
+  String get title => """Vorlagen""";
+
+  /// ```dart
+  /// "Vorlage"
+  /// ```
+  String get name => """Vorlage""";
+
+  /// ```dart
+  /// "Neue Vorlage"
+  /// ```
+  String get newList => """Neue Vorlage""";
+
+  /// ```dart
+  /// "Vorlage erstellen"
+  /// ```
+  String get createTitle => """Vorlage erstellen""";
+
+  /// ```dart
+  /// "Vorlage bearbeiten"
+  /// ```
+  String get editTitle => """Vorlage bearbeiten""";
+
+  /// ```dart
+  /// "Vorlage duplizieren"
+  /// ```
+  String get duplicateTitle => """Vorlage duplizieren""";
+
+  /// ```dart
+  /// "Die Vorlage konnte nicht dupliziert werden"
+  /// ```
+  String get duplicateFailed =>
+      """Die Vorlage konnte nicht dupliziert werden""";
+
+  /// ```dart
+  /// "Vorlagen-Aktionen"
+  /// ```
+  String get listMenu => """Vorlagen-Aktionen""";
+
+  /// ```dart
+  /// "Vorlage entfernen"
+  /// ```
+  String get deleteDialogTitle => """Vorlage entfernen""";
+
+  /// ```dart
+  /// "Noch keine Vorlagen"
+  /// ```
+  String get emptyTitle => """Noch keine Vorlagen""";
+
+  /// ```dart
+  /// "Erstelle deine erste Vorlage, um mit dem Hinzufügen von Elementen zu beginnen."
+  /// ```
+  String get emptyBody =>
+      """Erstelle deine erste Vorlage, um mit dem Hinzufügen von Elementen zu beginnen.""";
+
+  /// ```dart
+  /// "Vorlagen-Papierkorb"
+  /// ```
+  String get trashTitle => """Vorlagen-Papierkorb""";
+
+  /// ```dart
+  /// "Gelöschte Vorlagen werden hier angezeigt."
+  /// ```
+  String get trashEmptyBody => """Gelöschte Vorlagen werden hier angezeigt.""";
+
+  /// ```dart
+  /// "Archivierte Vorlagen"
+  /// ```
+  String get archiveTitle => """Archivierte Vorlagen""";
+
+  /// ```dart
+  /// "Keine archivierten Vorlagen"
+  /// ```
+  String get archiveEmptyTitle => """Keine archivierten Vorlagen""";
+
+  /// ```dart
+  /// "Archivierte Vorlagen werden hier angezeigt."
+  /// ```
+  String get archiveEmptyBody =>
+      """Archivierte Vorlagen werden hier angezeigt.""";
+
+  /// ```dart
+  /// "Dadurch werden alle Vorlagen, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden."
+  /// ```
+  String get emptyTrashBody =>
+      """Dadurch werden alle Vorlagen, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.""";
+
+  /// ```dart
+  /// "Vorlage wiederhergestellt"
+  /// ```
+  String get listRestored => """Vorlage wiederhergestellt""";
+
+  /// ```dart
+  /// "Vorlage in den Papierkorb verschoben"
+  /// ```
+  String get listMovedToTrash => """Vorlage in den Papierkorb verschoben""";
+
+  /// ```dart
+  /// "Vorlage archiviert"
+  /// ```
+  String get listArchived => """Vorlage archiviert""";
+
+  /// ```dart
+  /// "Vorlage dearchiviert"
+  /// ```
+  String get listUnarchived => """Vorlage dearchiviert""";
+}
+
+class TemplatesMessagesDe extends TemplatesMessages {
+  final MessagesDe _parent;
+  const TemplatesMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Vorschläge"
+  /// ```
+  String get suggestionsHeader => """Vorschläge""";
+
+  /// ```dart
+  /// "Aus Vorlagen: $names"
+  /// ```
+  String fromTemplates(String names) => """Aus Vorlagen: $names""";
+
+  /// ```dart
+  /// ""$name" aus einer Vorlage hinzugefügt"
+  /// ```
+  String addedFromTemplate(String name) =>
+      """"$name" aus einer Vorlage hinzugefügt""";
+
+  /// ```dart
+  /// "Der Eintrag konnte nicht aus der Vorlage hinzugefügt werden"
+  /// ```
+  String get drawFailed =>
+      """Der Eintrag konnte nicht aus der Vorlage hinzugefügt werden""";
+
+  /// ```dart
+  /// "Vorlagen:"
+  /// ```
+  String get attachedLabel => """Vorlagen:""";
+
+  /// ```dart
+  /// "Keine Vorlagen"
+  /// ```
+  String get attachedPlaceholder => """Keine Vorlagen""";
+
+  /// ```dart
+  /// "Beim Eintippen eines neuen Eintrags werden passende Einträge aus diesen Vorlagen vorgeschlagen."
+  /// ```
+  String get attachedHint =>
+      """Beim Eintippen eines neuen Eintrags werden passende Einträge aus diesen Vorlagen vorgeschlagen.""";
+
+  /// ```dart
+  /// "Beim Eintippen eines neuen Eintrags werden passende Einträge aus diesen Vorlagen vorgeschlagen, außerdem aus $names, die für jede Liste gelten."
+  /// ```
+  String attachedEveryListHint(String names) =>
+      """Beim Eintippen eines neuen Eintrags werden passende Einträge aus diesen Vorlagen vorgeschlagen, außerdem aus $names, die für jede Liste gelten.""";
+
+  /// ```dart
+  /// "Vorschlagen in:"
+  /// ```
+  String get suggestInLabel => """Vorschlagen in:""";
+
+  /// ```dart
+  /// "Jede Liste"
+  /// ```
+  String get everyList => """Jede Liste""";
+
+  /// ```dart
+  /// "Keine Listen"
+  /// ```
+  String get suggestInPlaceholder => """Keine Listen""";
+
+  /// ```dart
+  /// "Beim Eintippen eines neuen Eintrags auf diesen Listen werden passende Einträge aus dieser Vorlage vorgeschlagen. Mit „Jede Liste“ werden auch später erstellte Listen einbezogen."
+  /// ```
+  String get suggestInHint =>
+      """Beim Eintippen eines neuen Eintrags auf diesen Listen werden passende Einträge aus dieser Vorlage vorgeschlagen. Mit „Jede Liste“ werden auch später erstellte Listen einbezogen.""";
+
+  /// ```dart
+  /// "$list ($kind)"
+  /// ```
+  String listWithKind(String list, String kind) => """$list ($kind)""";
+
+  /// ```dart
+  /// "Die angehängten Vorlagen konnten nicht gespeichert werden"
+  /// ```
+  String get attachFailed =>
+      """Die angehängten Vorlagen konnten nicht gespeichert werden""";
+
+  /// ```dart
+  /// "Vorlageneinträge mit diesen Vorgaben füllen"
+  /// ```
+  String get fillLabel => """Vorlageneinträge mit diesen Vorgaben füllen""";
+
+  /// ```dart
+  /// "Wenn ein Eintrag aus einer Vorlage hinzugefügt wird, starten die Details, die er leer lässt, mit den Werten oben. Jede Person kann dies in ihren persönlichen Einstellungen überschreiben."
+  /// ```
+  String get fillHint =>
+      """Wenn ein Eintrag aus einer Vorlage hinzugefügt wird, starten die Details, die er leer lässt, mit den Werten oben. Jede Person kann dies in ihren persönlichen Einstellungen überschreiben.""";
+
+  /// ```dart
+  /// "Vorlageneinträge mit Eintragsvorgaben füllen"
+  /// ```
+  String get fillPrefLabel =>
+      """Vorlageneinträge mit Eintragsvorgaben füllen""";
+
+  /// ```dart
+  /// "Wenn du einen Eintrag aus einer Vorlage hinzufügst, werden die Details, die er leer lässt, mit den Eintragsvorgaben der Liste gefüllt. Jede Liste kann dies in ihren Eintragsvorgaben abschalten."
+  /// ```
+  String get fillPrefHint =>
+      """Wenn du einen Eintrag aus einer Vorlage hinzufügst, werden die Details, die er leer lässt, mit den Eintragsvorgaben der Liste gefüllt. Jede Liste kann dies in ihren Eintragsvorgaben abschalten.""";
+  FillPrefNamesTemplatesMessagesDe get fillPrefNames =>
+      FillPrefNamesTemplatesMessagesDe(this);
+
+  /// ```dart
+  /// "Die Einstellung konnte nicht gespeichert werden"
+  /// ```
+  String get fillPrefFailed =>
+      """Die Einstellung konnte nicht gespeichert werden""";
+
+  /// ```dart
+  /// "Auf Liste anwenden"
+  /// ```
+  String get applyToList => """Auf Liste anwenden""";
+
+  /// ```dart
+  /// "Vorlage anwenden"
+  /// ```
+  String get applyTemplate => """Vorlage anwenden""";
+
+  /// ```dart
+  /// "An diese Liste angehängt"
+  /// ```
+  String get attachedTemplates => """An diese Liste angehängt""";
+
+  /// ```dart
+  /// "Andere Vorlagen"
+  /// ```
+  String get otherTemplates => """Andere Vorlagen""";
+
+  /// ```dart
+  /// "Es gibt keine Checklisten oder Bestandslisten, auf die diese Vorlage angewendet werden kann."
+  /// ```
+  String get noTargets =>
+      """Es gibt keine Checklisten oder Bestandslisten, auf die diese Vorlage angewendet werden kann.""";
+
+  /// ```dart
+  /// "Diese Vorlage hat keine Einträge."
+  /// ```
+  String get noItems => """Diese Vorlage hat keine Einträge.""";
+
+  /// ```dart
+  /// "Bereits auf der Liste"
+  /// ```
+  String get alreadyOnList => """Bereits auf der Liste""";
+
+  /// ```dart
+  /// "Die angehakten Einträge aus $template in $list kopieren."
+  /// ```
+  String reviewSummary(String template, String list) =>
+      """Die angehakten Einträge aus $template in $list kopieren.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag anwenden', many: '$count Einträge anwenden')}"
+  /// ```
+  String applyItems(int count) =>
+      """${_plural(count, one: '1 Eintrag anwenden', many: '$count Einträge anwenden')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag zu $list hinzugefügt', many: '$count Einträge zu $list hinzugefügt')}"
+  /// ```
+  String appliedAdded(int count, String list) =>
+      """${_plural(count, one: '1 Eintrag zu $list hinzugefügt', many: '$count Einträge zu $list hinzugefügt')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag war bereits auf $list und wurde zurückgeholt', many: '$count Einträge waren bereits auf $list und wurden zurückgeholt')}"
+  /// ```
+  String appliedReused(int count, String list) =>
+      """${_plural(count, one: '1 Eintrag war bereits auf $list und wurde zurückgeholt', many: '$count Einträge waren bereits auf $list und wurden zurückgeholt')}""";
+
+  /// ```dart
+  /// "$list: $added hinzugefügt, $reused zurückgeholt"
+  /// ```
+  String appliedMixed(String list, int added, int reused) =>
+      """$list: $added hinzugefügt, $reused zurückgeholt""";
+
+  /// ```dart
+  /// "Die Vorlage konnte nicht angewendet werden"
+  /// ```
+  String get applyFailed => """Die Vorlage konnte nicht angewendet werden""";
+
+  /// ```dart
+  /// "Die Vorlagen konnten nicht geladen werden"
+  /// ```
+  String get loadFailed => """Die Vorlagen konnten nicht geladen werden""";
+
+  /// ```dart
+  /// "Zurück"
+  /// ```
+  String get back => """Zurück""";
+}
+
+class FillPrefNamesTemplatesMessagesDe extends FillPrefNamesTemplatesMessages {
+  final TemplatesMessagesDe _parent;
+  const FillPrefNamesTemplatesMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Wie die jeweilige Liste"
+  /// ```
+  String get list => """Wie die jeweilige Liste""";
+
+  /// ```dart
+  /// "Immer füllen"
+  /// ```
+  String get always => """Immer füllen""";
+
+  /// ```dart
+  /// "Nie füllen"
+  /// ```
+  String get never => """Nie füllen""";
+}
+
+class StockMessagesDe extends StockMessages {
+  final MessagesDe _parent;
+  const StockMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Vorrätig"
+  /// ```
+  String get inStock => """Vorrätig""";
+
+  /// ```dart
+  /// "Voll"
+  /// ```
+  String get full => """Voll""";
+
+  /// ```dart
+  /// "Knapp"
+  /// ```
+  String get low => """Knapp""";
+
+  /// ```dart
+  /// "Leer"
+  /// ```
+  String get out => """Leer""";
+
+  /// ```dart
+  /// "Knapp · $amount kaufen"
+  /// ```
+  String lowBuy(String amount) => """Knapp · $amount kaufen""";
+
+  /// ```dart
+  /// "Leer · $amount kaufen"
+  /// ```
+  String outBuy(String amount) => """Leer · $amount kaufen""";
+
+  /// ```dart
+  /// "Nicht gezählt"
+  /// ```
+  String get notCounted => """Nicht gezählt""";
+
+  /// ```dart
+  /// "Abgelaufen am $date"
+  /// ```
+  String expiredOn(String date) => """Abgelaufen am $date""";
+
+  /// ```dart
+  /// "Abgelaufen am $date · $amount kaufen"
+  /// ```
+  String expiredOnBuy(String date, String amount) =>
+      """Abgelaufen am $date · $amount kaufen""";
+
+  /// ```dart
+  /// "Läuft heute ab"
+  /// ```
+  String get expiresToday => """Läuft heute ab""";
+
+  /// ```dart
+  /// "Läuft heute ab · $amount kaufen"
+  /// ```
+  String expiresTodayBuy(String amount) =>
+      """Läuft heute ab · $amount kaufen""";
+
+  /// ```dart
+  /// "Läuft morgen ab"
+  /// ```
+  String get expiresTomorrow => """Läuft morgen ab""";
+
+  /// ```dart
+  /// "Läuft morgen ab · $amount kaufen"
+  /// ```
+  String expiresTomorrowBuy(String amount) =>
+      """Läuft morgen ab · $amount kaufen""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Läuft in 1 Tag ab', many: 'Läuft in $count Tagen ab')}"
+  /// ```
+  String expiresInDays(int count) =>
+      """${_plural(count, one: 'Läuft in 1 Tag ab', many: 'Läuft in $count Tagen ab')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Läuft in 1 Tag ab · $amount kaufen', many: 'Läuft in $count Tagen ab · $amount kaufen')}"
+  /// ```
+  String expiresInDaysBuy(int count, String amount) =>
+      """${_plural(count, one: 'Läuft in 1 Tag ab · $amount kaufen', many: 'Läuft in $count Tagen ab · $amount kaufen')}""";
+
+  /// ```dart
+  /// "Haltbar bis $date"
+  /// ```
+  String goodUntil(String date) => """Haltbar bis $date""";
+
+  /// ```dart
+  /// "$onHand / $target"
+  /// ```
+  String amount(String onHand, String target) => """$onHand / $target""";
+
+  /// ```dart
+  /// "Vorhandene Menge verringern"
+  /// ```
+  String get decrease => """Vorhandene Menge verringern""";
+
+  /// ```dart
+  /// "Vorhandene Menge erhöhen"
+  /// ```
+  String get increase => """Vorhandene Menge erhöhen""";
+
+  /// ```dart
+  /// "Vorhandene Menge"
+  /// ```
+  String get onHandEdit => """Vorhandene Menge""";
+
+  /// ```dart
+  /// "Bestandsstufe: $level"
+  /// ```
+  String levelButton(String level) => """Bestandsstufe: $level""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag muss nachgekauft werden', many: '$count Einträge müssen nachgekauft werden')}"
+  /// ```
+  String needsRestockCount(int count) =>
+      """${_plural(count, one: '1 Eintrag muss nachgekauft werden', many: '$count Einträge müssen nachgekauft werden')}""";
+
+  /// ```dart
+  /// "Bestand"
+  /// ```
+  String get filter => """Bestand""";
+
+  /// ```dart
+  /// "Alle Einträge"
+  /// ```
+  String get filterAll => """Alle Einträge""";
+
+  /// ```dart
+  /// "Nachkaufen nötig"
+  /// ```
+  String get filterNeedsRestock => """Nachkaufen nötig""";
+
+  /// ```dart
+  /// "Vorrätig"
+  /// ```
+  String get filterInStock => """Vorrätig""";
+
+  /// ```dart
+  /// "Die Bestandsänderung konnte nicht gespeichert werden. Die Bestandsliste zeigt jetzt den Stand des Servers."
+  /// ```
+  String get writeRefused =>
+      """Die Bestandsänderung konnte nicht gespeichert werden. Die Bestandsliste zeigt jetzt den Stand des Servers.""";
+  SettingsStockMessagesDe get settings => SettingsStockMessagesDe(this);
+  CardStockMessagesDe get card => CardStockMessagesDe(this);
+  ExpiryStockMessagesDe get expiry => ExpiryStockMessagesDe(this);
+  ComposeStockMessagesDe get compose => ComposeStockMessagesDe(this);
+
+  /// ```dart
+  /// "Diese Bestandsliste hat keine Nachkauf-Checkliste, daher werden diese Einträge nur hier markiert. Wähle eine in den Bestandslisten-Einstellungen."
+  /// ```
+  String get noRestockChecklist =>
+      """Diese Bestandsliste hat keine Nachkauf-Checkliste, daher werden diese Einträge nur hier markiert. Wähle eine in den Bestandslisten-Einstellungen.""";
+
+  /// ```dart
+  /// "Ablauf erneuern → $date"
+  /// ```
+  String renewChip(String date) => """Ablauf erneuern → $date""";
+
+  /// ```dart
+  /// "Ablauf erneuern"
+  /// ```
+  String get renewAction => """Ablauf erneuern""";
+
+  /// ```dart
+  /// "Tägliche Bestandsübersicht"
+  /// ```
+  String get summaryPref => """Tägliche Bestandsübersicht""";
+
+  /// ```dart
+  /// "Einmal am Tag, was in den Bestandslisten dieses Haushalts neu knapp wurde oder bald abläuft."
+  /// ```
+  String get summaryPrefHint =>
+      """Einmal am Tag, was in den Bestandslisten dieses Haushalts neu knapp wurde oder bald abläuft.""";
+
+  /// ```dart
+  /// "Die Einstellung zur Bestandsübersicht konnte nicht gespeichert werden."
+  /// ```
+  String get summaryPrefFailed =>
+      """Die Einstellung zur Bestandsübersicht konnte nicht gespeichert werden.""";
+  LinksStockMessagesDe get links => LinksStockMessagesDe(this);
+  RestockStockMessagesDe get restock => RestockStockMessagesDe(this);
+}
+
+class SettingsStockMessagesDe extends SettingsStockMessages {
+  final StockMessagesDe _parent;
+  const SettingsStockMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Bestandslisten-Einstellungen"
+  /// ```
+  String get action => """Bestandslisten-Einstellungen""";
+
+  /// ```dart
+  /// "Bestandslisten-Einstellungen"
+  /// ```
+  String get title => """Bestandslisten-Einstellungen""";
+
+  /// ```dart
+  /// "Name"
+  /// ```
+  String get name => """Name""";
+
+  /// ```dart
+  /// "Symbol, Farbe und Teilen funktionieren wie bei Checklisten."
+  /// ```
+  String get nameHint =>
+      """Symbol, Farbe und Teilen funktionieren wie bei Checklisten.""";
+
+  /// ```dart
+  /// "Ablaufwarnung"
+  /// ```
+  String get expiryWarning => """Ablaufwarnung""";
+
+  /// ```dart
+  /// "$days Tage vor Ablauf warnen"
+  /// ```
+  String warnBefore(String days) => """$days Tage vor Ablauf warnen""";
+
+  /// ```dart
+  /// "Tage vor Ablauf"
+  /// ```
+  String get daysBefore => """Tage vor Ablauf""";
+
+  /// ```dart
+  /// "0 eingeben, um am Ablaufdatum selbst zu warnen."
+  /// ```
+  String get warnHint => """0 eingeben, um am Ablaufdatum selbst zu warnen.""";
+
+  /// ```dart
+  /// "Nachkauf-Checkliste"
+  /// ```
+  String get restockChecklist => """Nachkauf-Checkliste""";
+
+  /// ```dart
+  /// "Keine"
+  /// ```
+  String get restockNone => """Keine""";
+
+  /// ```dart
+  /// "Einträge, die knapp werden oder bald ablaufen, kommen auf diese Checkliste."
+  /// ```
+  String get restockSetHint =>
+      """Einträge, die knapp werden oder bald ablaufen, kommen auf diese Checkliste.""";
+
+  /// ```dart
+  /// "Ohne sie werden knappe und bald ablaufende Einträge nur hier markiert."
+  /// ```
+  String get restockUnsetHint =>
+      """Ohne sie werden knappe und bald ablaufende Einträge nur hier markiert.""";
+
+  /// ```dart
+  /// "Benachrichtigungen"
+  /// ```
+  String get notifications => """Benachrichtigungen""";
+
+  /// ```dart
+  /// "Tägliche Bestandsübersicht"
+  /// ```
+  String get stockSummary => """Tägliche Bestandsübersicht""";
+
+  /// ```dart
+  /// "Einmal am Tag den Mitgliedern sagen, was hier neu knapp wurde oder bald abläuft. Jedes Mitglied kann sie auch in den eigenen Einstellungen abschalten."
+  /// ```
+  String get stockSummaryHint =>
+      """Einmal am Tag den Mitgliedern sagen, was hier neu knapp wurde oder bald abläuft. Jedes Mitglied kann sie auch in den eigenen Einstellungen abschalten.""";
+
+  /// ```dart
+  /// "Abbrechen"
+  /// ```
+  String get cancel => """Abbrechen""";
+
+  /// ```dart
+  /// "Speichern"
+  /// ```
+  String get save => """Speichern""";
+}
+
+class CardStockMessagesDe extends CardStockMessages {
+  final StockMessagesDe _parent;
+  const CardStockMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Bestand"
+  /// ```
+  String get title => """Bestand""";
+
+  /// ```dart
+  /// "Bestandsmodus"
+  /// ```
+  String get mode => """Bestandsmodus""";
+
+  /// ```dart
+  /// "Anzahl"
+  /// ```
+  String get count => """Anzahl""";
+
+  /// ```dart
+  /// "Stufe"
+  /// ```
+  String get level => """Stufe""";
+
+  /// ```dart
+  /// "Verfolge, wie viele du hast, z. B. 4 von 12 Eiern."
+  /// ```
+  String get countHint =>
+      """Verfolge, wie viele du hast, z. B. 4 von 12 Eiern.""";
+
+  /// ```dart
+  /// "Verfolge es als Voll, Knapp oder Leer, z. B. Mehl oder Gewürze."
+  /// ```
+  String get levelHint =>
+      """Verfolge es als Voll, Knapp oder Leer, z. B. Mehl oder Gewürze.""";
+
+  /// ```dart
+  /// "Vorhanden"
+  /// ```
+  String get onHand => """Vorhanden""";
+
+  /// ```dart
+  /// "z. B. 4"
+  /// ```
+  String get onHandPlaceholder => """z. B. 4""";
+
+  /// ```dart
+  /// "Ziel"
+  /// ```
+  String get target => """Ziel""";
+
+  /// ```dart
+  /// "z. B. 12 Eier"
+  /// ```
+  String get targetPlaceholder => """z. B. 12 Eier""";
+
+  /// ```dart
+  /// "Nachkaufschwelle"
+  /// ```
+  String get reorderPoint => """Nachkaufschwelle""";
+
+  /// ```dart
+  /// "z. B. 4"
+  /// ```
+  String get reorderPlaceholder => """z. B. 4""";
+
+  /// ```dart
+  /// "Bestandsstufe"
+  /// ```
+  String get stockLevel => """Bestandsstufe""";
+
+  /// ```dart
+  /// "Nachkaufmenge"
+  /// ```
+  String get restockAmount => """Nachkaufmenge""";
+
+  /// ```dart
+  /// "z. B. 1-kg-Packung"
+  /// ```
+  String get restockPlaceholder => """z. B. 1-kg-Packung""";
+
+  /// ```dart
+  /// "Umgewandelt: Stufe $level, Nachkaufmenge „$amount“."
+  /// ```
+  String convertedLevelAmount(String level, String amount) =>
+      """Umgewandelt: Stufe $level, Nachkaufmenge „$amount“.""";
+
+  /// ```dart
+  /// "Umgewandelt: Stufe $level."
+  /// ```
+  String convertedLevel(String level) => """Umgewandelt: Stufe $level.""";
+
+  /// ```dart
+  /// "Umgewandelt: vorhanden „$onHand“, Ziel „$target“."
+  /// ```
+  String convertedCount(String onHand, String target) =>
+      """Umgewandelt: vorhanden „$onHand“, Ziel „$target“.""";
+
+  /// ```dart
+  /// "Umgewandelt: Ziel „$target“. Gib die vorhandene Menge ein."
+  /// ```
+  String convertedTargetOnly(String target) =>
+      """Umgewandelt: Ziel „$target“. Gib die vorhandene Menge ein.""";
+
+  /// ```dart
+  /// "In eine Anzahl umgewandelt. Gib die vorhandene Menge und ein Ziel ein."
+  /// ```
+  String get convertedBlank =>
+      """In eine Anzahl umgewandelt. Gib die vorhandene Menge und ein Ziel ein.""";
+
+  /// ```dart
+  /// "Abgelaufen: $amount kaufen."
+  /// ```
+  String statusExpiredBuy(String amount) => """Abgelaufen: $amount kaufen.""";
+
+  /// ```dart
+  /// "Abgelaufen."
+  /// ```
+  String get statusExpired => """Abgelaufen.""";
+
+  /// ```dart
+  /// "Läuft bald ab: $amount kaufen."
+  /// ```
+  String statusExpiringBuy(String amount) =>
+      """Läuft bald ab: $amount kaufen.""";
+
+  /// ```dart
+  /// "Läuft bald ab."
+  /// ```
+  String get statusExpiring => """Läuft bald ab.""";
+
+  /// ```dart
+  /// "Knapp: $amount kaufen."
+  /// ```
+  String statusLowBuy(String amount) => """Knapp: $amount kaufen.""";
+
+  /// ```dart
+  /// "Knapp."
+  /// ```
+  String get statusLow => """Knapp.""";
+
+  /// ```dart
+  /// "Leer: $amount kaufen."
+  /// ```
+  String statusOutBuy(String amount) => """Leer: $amount kaufen.""";
+
+  /// ```dart
+  /// "Leer."
+  /// ```
+  String get statusOut => """Leer.""";
+
+  /// ```dart
+  /// "Nicht gezählt: Das Ziel hat keine Zahl, daher wird es nie knapp."
+  /// ```
+  String get statusUncountedTarget =>
+      """Nicht gezählt: Das Ziel hat keine Zahl, daher wird es nie knapp.""";
+
+  /// ```dart
+  /// "Nicht gezählt: Die vorhandene Menge hat keine Zahl, daher wird es nie knapp."
+  /// ```
+  String get statusUncountedOnHand =>
+      """Nicht gezählt: Die vorhandene Menge hat keine Zahl, daher wird es nie knapp.""";
+
+  /// ```dart
+  /// "Vorrätig."
+  /// ```
+  String get statusInStock => """Vorrätig.""";
+
+  /// ```dart
+  /// "Ohne gewählten Bestandsmodus gilt die Vorgabe der Bestandsliste."
+  /// ```
+  String get templateDefaultMode =>
+      """Ohne gewählten Bestandsmodus gilt die Vorgabe der Bestandsliste.""";
+
+  /// ```dart
+  /// "In eine Bestandsliste übernommen, startet es voll mit $amount vorhanden."
+  /// ```
+  String templateStartsCount(String amount) =>
+      """In eine Bestandsliste übernommen, startet es voll mit $amount vorhanden.""";
+
+  /// ```dart
+  /// "In eine Bestandsliste übernommen, startet es mit Voll und wird mit $amount nachgekauft."
+  /// ```
+  String templateStartsLevelAmount(String amount) =>
+      """In eine Bestandsliste übernommen, startet es mit Voll und wird mit $amount nachgekauft.""";
+
+  /// ```dart
+  /// "In eine Bestandsliste übernommen, startet es mit Voll."
+  /// ```
+  String get templateStartsLevel =>
+      """In eine Bestandsliste übernommen, startet es mit Voll.""";
+
+  /// ```dart
+  /// "In eine Bestandsliste ohne Ziel übernommen, wird es nicht gezählt."
+  /// ```
+  String get templateUncounted =>
+      """In eine Bestandsliste ohne Ziel übernommen, wird es nicht gezählt.""";
+}
+
+class ExpiryStockMessagesDe extends ExpiryStockMessages {
+  final StockMessagesDe _parent;
+  const ExpiryStockMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Ablauf"
+  /// ```
+  String get title => """Ablauf""";
+
+  /// ```dart
+  /// "Wie der Eintrag abläuft"
+  /// ```
+  String get mode => """Wie der Eintrag abläuft""";
+
+  /// ```dart
+  /// "Keiner"
+  /// ```
+  String get none => """Keiner""";
+
+  /// ```dart
+  /// "Datum"
+  /// ```
+  String get date => """Datum""";
+
+  /// ```dart
+  /// "Hält N Tage"
+  /// ```
+  String get keeps => """Hält N Tage""";
+
+  /// ```dart
+  /// "Ablaufdatum"
+  /// ```
+  String get expiryDate => """Ablaufdatum""";
+
+  /// ```dart
+  /// "Haltbarkeit in Tagen"
+  /// ```
+  String get daysItKeeps => """Haltbarkeit in Tagen""";
+
+  /// ```dart
+  /// "Abgelaufen am $date."
+  /// ```
+  String expiredSummary(String date) => """Abgelaufen am $date.""";
+
+  /// ```dart
+  /// "Haltbar bis $date."
+  /// ```
+  String goodUntilSummary(String date) => """Haltbar bis $date.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Jedes Nachkaufen setzt den Ablauf auf 1 Tag ab diesem Tag.', many: 'Jedes Nachkaufen setzt den Ablauf auf $count Tage ab diesem Tag.')}"
+  /// ```
+  String renews(int count) =>
+      """${_plural(count, one: 'Jedes Nachkaufen setzt den Ablauf auf 1 Tag ab diesem Tag.', many: 'Jedes Nachkaufen setzt den Ablauf auf $count Tage ab diesem Tag.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'In eine Bestandsliste übernommen, läuft es 1 Tag später ab.', many: 'In eine Bestandsliste übernommen, läuft es $count Tage später ab.')}"
+  /// ```
+  String templateExpires(int count) =>
+      """${_plural(count, one: 'In eine Bestandsliste übernommen, läuft es 1 Tag später ab.', many: 'In eine Bestandsliste übernommen, läuft es $count Tage später ab.')}""";
+
+  /// ```dart
+  /// "Ablauf"
+  /// ```
+  String get chip => """Ablauf""";
+
+  /// ```dart
+  /// "Läuft am $date ab"
+  /// ```
+  String chipExpires(String date) => """Läuft am $date ab""";
+
+  /// ```dart
+  /// "Abgelaufen am $date"
+  /// ```
+  String chipExpired(String date) => """Abgelaufen am $date""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Hält 1 Tag', many: 'Hält $count Tage')}"
+  /// ```
+  String chipKeeps(int count) =>
+      """${_plural(count, one: 'Hält 1 Tag', many: 'Hält $count Tage')}""";
+}
+
+class ComposeStockMessagesDe extends ComposeStockMessages {
+  final StockMessagesDe _parent;
+  const ComposeStockMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Bestand"
+  /// ```
+  String get chip => """Bestand""";
+
+  /// ```dart
+  /// "Anzahl"
+  /// ```
+  String get count => """Anzahl""";
+
+  /// ```dart
+  /// "Stufe"
+  /// ```
+  String get level => """Stufe""";
+
+  /// ```dart
+  /// "Stufe · $amount"
+  /// ```
+  String levelAmount(String amount) => """Stufe · $amount""";
+
+  /// ```dart
+  /// "Ziel: $target"
+  /// ```
+  String targetValue(String target) => """Ziel: $target""";
+
+  /// ```dart
+  /// "Voll, wenn leer"
+  /// ```
+  String get fullWhenEmpty => """Voll, wenn leer""";
+}
+
+class LinksStockMessagesDe extends LinksStockMessages {
+  final StockMessagesDe _parent;
+  const LinksStockMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Einkaufsliste"
+  /// ```
+  String get caption => """Einkaufsliste""";
+
+  /// ```dart
+  /// "Verknüpft mit $row auf $list"
+  /// ```
+  String tooltipLinked(String row, String list) =>
+      """Verknüpft mit $row auf $list""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Nicht verknüpft: 1 Treffer, wähle einen aus', many: 'Nicht verknüpft: $count Treffer, wähle einen aus')}"
+  /// ```
+  String tooltipNeedsPick(int count) =>
+      """${_plural(count, one: 'Nicht verknüpft: 1 Treffer, wähle einen aus', many: 'Nicht verknüpft: $count Treffer, wähle einen aus')}""";
+
+  /// ```dart
+  /// "Noch nicht verknüpft: kommt auf die Einkaufsliste, wenn es knapp wird"
+  /// ```
+  String get tooltipAutoOn =>
+      """Noch nicht verknüpft: kommt auf die Einkaufsliste, wenn es knapp wird""";
+
+  /// ```dart
+  /// "Nicht verknüpft: kommt nie auf eine Einkaufsliste"
+  /// ```
+  String get tooltipAutoOff =>
+      """Nicht verknüpft: kommt nie auf eine Einkaufsliste""";
+
+  /// ```dart
+  /// "$row auf $list · $state"
+  /// ```
+  String rowOnList(String row, String list, String state) =>
+      """$row auf $list · $state""";
+
+  /// ```dart
+  /// "offen"
+  /// ```
+  String get stateOpen => """offen""";
+
+  /// ```dart
+  /// "abgehakt"
+  /// ```
+  String get stateChecked => """abgehakt""";
+
+  /// ```dart
+  /// "archiviert"
+  /// ```
+  String get stateArchived => """archiviert""";
+
+  /// ```dart
+  /// "im Papierkorb"
+  /// ```
+  String get stateTrashed => """im Papierkorb""";
+
+  /// ```dart
+  /// "× $quantity"
+  /// ```
+  String stateQuantity(String quantity) => """× $quantity""";
+
+  /// ```dart
+  /// "Verknüpfung lösen"
+  /// ```
+  String get unlink => """Verknüpfung lösen""";
+
+  /// ```dart
+  /// "Welcher ist es?"
+  /// ```
+  String get whichOne => """Welcher ist es?""";
+
+  /// ```dart
+  /// "$row, $list, $state"
+  /// ```
+  String candidate(String row, String list, String state) =>
+      """$row, $list, $state""";
+
+  /// ```dart
+  /// "Auf die Einkaufsliste, wenn knapp"
+  /// ```
+  String get autoLink => """Auf die Einkaufsliste, wenn knapp""";
+
+  /// ```dart
+  /// "Von Hand verknüpfen"
+  /// ```
+  String get linkByHand => """Von Hand verknüpfen""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Nicht verknüpft · 1 Treffer, wähle einen aus', many: 'Nicht verknüpft · $count Treffer, wähle einen aus')}"
+  /// ```
+  String chipNeedsPick(int count) =>
+      """${_plural(count, one: 'Nicht verknüpft · 1 Treffer, wähle einen aus', many: 'Nicht verknüpft · $count Treffer, wähle einen aus')}""";
+
+  /// ```dart
+  /// "Kommt auf keine Einkaufsliste"
+  /// ```
+  String get chipNotAdded => """Kommt auf keine Einkaufsliste""";
+
+  /// ```dart
+  /// "Verknüpft mit $row auf $list · $state"
+  /// ```
+  String cardLinked(String row, String list, String state) =>
+      """Verknüpft mit $row auf $list · $state""";
+
+  /// ```dart
+  /// "Mit einem anderen Eintrag verknüpfen …"
+  /// ```
+  String get linkDifferent => """Mit einem anderen Eintrag verknüpfen …""";
+
+  /// ```dart
+  /// "Wenn er knapp wird oder bald abläuft, kommt dieser Eintrag wieder auf diese Liste."
+  /// ```
+  String get linkedHint =>
+      """Wenn er knapp wird oder bald abläuft, kommt dieser Eintrag wieder auf diese Liste.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag passt', many: '$count Einträge passen')}"
+  /// ```
+  String matches(int count) =>
+      """${_plural(count, one: '1 Eintrag passt', many: '$count Einträge passen')}""";
+
+  /// ```dart
+  /// "$matches auf der Nachkauf-Checkliste. Welcher ist es?"
+  /// ```
+  String matchesQuestion(String matches) =>
+      """$matches auf der Nachkauf-Checkliste. Welcher ist es?""";
+
+  /// ```dart
+  /// "Verknüpfen"
+  /// ```
+  String get link => """Verknüpfen""";
+
+  /// ```dart
+  /// "Findet oder ergänzt „$item“ auf $list, wenn er gebraucht wird."
+  /// ```
+  String autoHintOn(String item, String list) =>
+      """Findet oder ergänzt „$item“ auf $list, wenn er gebraucht wird.""";
+
+  /// ```dart
+  /// "Wähle in den Bestandslisten-Einstellungen eine Nachkauf-Checkliste, um diesen Eintrag dort zu finden oder zu ergänzen."
+  /// ```
+  String get autoHintNoChecklist =>
+      """Wähle in den Bestandslisten-Einstellungen eine Nachkauf-Checkliste, um diesen Eintrag dort zu finden oder zu ergänzen.""";
+
+  /// ```dart
+  /// "Dieser Eintrag wird nur hier markiert, wenn er knapp wird."
+  /// ```
+  String get autoHintOff =>
+      """Dieser Eintrag wird nur hier markiert, wenn er knapp wird.""";
+
+  /// ```dart
+  /// "Mit einem Eintrag verknüpfen …"
+  /// ```
+  String get linkToItem => """Mit einem Eintrag verknüpfen …""";
+
+  /// ```dart
+  /// "Mit einem Checklisten-Eintrag verknüpfen"
+  /// ```
+  String get pickerTitle => """Mit einem Checklisten-Eintrag verknüpfen""";
+
+  /// ```dart
+  /// "Checklisten-Eintrag"
+  /// ```
+  String get pickerField => """Checklisten-Eintrag""";
+
+  /// ```dart
+  /// "Checklisten-Einträge suchen …"
+  /// ```
+  String get pickerSearch => """Checklisten-Einträge suchen …""";
+
+  /// ```dart
+  /// "Suche …"
+  /// ```
+  String get pickerSearching => """Suche …""";
+
+  /// ```dart
+  /// "Keine Checklisten-Einträge gefunden"
+  /// ```
+  String get pickerEmpty => """Keine Checklisten-Einträge gefunden""";
+
+  /// ```dart
+  /// "$row — $list"
+  /// ```
+  String pickerRow(String row, String list) => """$row — $list""";
+
+  /// ```dart
+  /// "archiviert"
+  /// ```
+  String get pickerArchived => """archiviert""";
+
+  /// ```dart
+  /// "Checklisten-Einträge konnten nicht geladen werden. Prüfe die Verbindung und versuche es erneut."
+  /// ```
+  String get pickerFailed =>
+      """Checklisten-Einträge konnten nicht geladen werden. Prüfe die Verbindung und versuche es erneut.""";
+
+  /// ```dart
+  /// "Abbrechen"
+  /// ```
+  String get cancel => """Abbrechen""";
+}
+
+class RestockStockMessagesDe extends RestockStockMessages {
+  final StockMessagesDe _parent;
+  const RestockStockMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "$what zu $list hinzugefügt"
+  /// ```
+  String added(String what, String list) => """$what zu $list hinzugefügt""";
+
+  /// ```dart
+  /// "Wieder auf $list: $row × $quantity"
+  /// ```
+  String revivedQuantity(String list, String row, String quantity) =>
+      """Wieder auf $list: $row × $quantity""";
+
+  /// ```dart
+  /// "Wieder auf $list: $row"
+  /// ```
+  String revived(String list, String row) => """Wieder auf $list: $row""";
+
+  /// ```dart
+  /// "$list: $row jetzt × $quantity"
+  /// ```
+  String changed(String list, String row, String quantity) =>
+      """$list: $row jetzt × $quantity""";
+
+  /// ```dart
+  /// "$row auf $list ist bei × $quantity angeheftet"
+  /// ```
+  String pinnedAt(String row, String list, String quantity) =>
+      """$row auf $list ist bei × $quantity angeheftet""";
+
+  /// ```dart
+  /// "$row auf $list ist angeheftet"
+  /// ```
+  String pinned(String row, String list) => """$row auf $list ist angeheftet""";
+
+  /// ```dart
+  /// "Nicht mehr nötig: $row auf $list"
+  /// ```
+  String recovered(String row, String list) =>
+      """Nicht mehr nötig: $row auf $list""";
+
+  /// ```dart
+  /// "$item mit $row auf $list verknüpft"
+  /// ```
+  String linked(String item, String row, String list) =>
+      """$item mit $row auf $list verknüpft""";
+
+  /// ```dart
+  /// "Verknüpfung von $item mit $row auf $list gelöst. Es kommt auf keine Einkaufsliste."
+  /// ```
+  String unlinked(String item, String row, String list) =>
+      """Verknüpfung von $item mit $row auf $list gelöst. Es kommt auf keine Einkaufsliste.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '$item passt zu 1 Eintrag auf $list. Wähle einen zum Verknüpfen.', many: '$item passt zu $count Einträgen auf $list. Wähle einen zum Verknüpfen.')}"
+  /// ```
+  String severalMatches(String item, int count, String list) =>
+      """${_plural(count, one: '$item passt zu 1 Eintrag auf $list. Wähle einen zum Verknüpfen.', many: '$item passt zu $count Einträgen auf $list. Wähle einen zum Verknüpfen.')}""";
+
+  /// ```dart
+  /// "Nachgefüllt: $parts"
+  /// ```
+  String restocked(String parts) => """Nachgefüllt: $parts""";
+
+  /// ```dart
+  /// "Ersetzt: $parts"
+  /// ```
+  String replaced(String parts) => """Ersetzt: $parts""";
+
+  /// ```dart
+  /// "Nachgefüllt: $restock; ersetzt: $replace"
+  /// ```
+  String restockedReplaced(String restock, String replace) =>
+      """Nachgefüllt: $restock; ersetzt: $replace""";
+
+  /// ```dart
+  /// "Rückgängig: nachgefüllt $parts"
+  /// ```
+  String undidRestocked(String parts) => """Rückgängig: nachgefüllt $parts""";
+
+  /// ```dart
+  /// "Rückgängig: ersetzt $parts"
+  /// ```
+  String undidReplaced(String parts) => """Rückgängig: ersetzt $parts""";
+
+  /// ```dart
+  /// "Rückgängig: nachgefüllt $restock; ersetzt $replace"
+  /// ```
+  String undidRestockedReplaced(String restock, String replace) =>
+      """Rückgängig: nachgefüllt $restock; ersetzt $replace""";
+
+  /// ```dart
+  /// "$item ($inventory) +$amount"
+  /// ```
+  String partAdded(String item, String inventory, String amount) =>
+      """$item ($inventory) +$amount""";
+
+  /// ```dart
+  /// "$item ($inventory) auf Voll"
+  /// ```
+  String partFull(String item, String inventory) =>
+      """$item ($inventory) auf Voll""";
+
+  /// ```dart
+  /// "$item ($inventory) ×$amount"
+  /// ```
+  String partReplaced(String item, String inventory, String amount) =>
+      """$item ($inventory) ×$amount""";
+
+  /// ```dart
+  /// "$item ($inventory), Voll"
+  /// ```
+  String partReplacedFull(String item, String inventory) =>
+      """$item ($inventory), Voll""";
+
+  /// ```dart
+  /// "$restock · zum Rückgängigmachen abhaken aufheben"
+  /// ```
+  String uncheckToUndo(String restock) =>
+      """$restock · zum Rückgängigmachen abhaken aufheben""";
+
+  /// ```dart
+  /// "$item ($inventory)"
+  /// ```
+  String source(String item, String inventory) => """$item ($inventory)""";
+
+  /// ```dart
+  /// "Füllt nach: $items"
+  /// ```
+  String restocks(String items) => """Füllt nach: $items""";
+
+  /// ```dart
+  /// "× $quantity"
+  /// ```
+  String pinnedChip(String quantity) => """× $quantity""";
+
+  /// ```dart
+  /// "Angeheftet"
+  /// ```
+  String get pinnedChipBare => """Angeheftet""";
+
+  /// ```dart
+  /// "Angeheftet, der Bestand ändert es nicht. Tippen zum Lösen."
+  /// ```
+  String get pinnedChipTooltip =>
+      """Angeheftet, der Bestand ändert es nicht. Tippen zum Lösen.""";
+
+  /// ```dart
+  /// "Nicht mehr nötig"
+  /// ```
+  String get noLongerNeeded => """Nicht mehr nötig""";
+}
+
 class NotesWallMessagesDe extends NotesWallMessages {
   final MessagesDe _parent;
   const NotesWallMessagesDe(this._parent) : super(_parent);
@@ -7008,6 +8632,26 @@ class WearMessagesDe extends WearMessages {
   /// "Pantry-Farbe"
   /// ```
   String get accentApp => """Pantry-Farbe""";
+
+  /// ```dart
+  /// "+$amount"
+  /// ```
+  String stockRaised(String amount) => """+$amount""";
+
+  /// ```dart
+  /// "−$amount"
+  /// ```
+  String stockLowered(String amount) => """−$amount""";
+
+  /// ```dart
+  /// "Anpassen beenden"
+  /// ```
+  String get stockClose => """Anpassen beenden""";
+
+  /// ```dart
+  /// "Nichts muss nachgekauft werden"
+  /// ```
+  String get nothingNeedsRestock => """Nichts muss nachgekauft werden""";
 }
 
 class WatchMessagesDe extends WatchMessages {
@@ -7523,7 +9167,7 @@ Bitte melde dich in deinem Browser an.""",
       """Das Zertifikat des Servers konnte nicht zur Überprüfung gelesen werden. Die Verbindung ist möglicherweise instabil oder der Server nicht erreichbar.""",
   """home.noHouses""": """Noch keine Häuser.""",
   """home.noHousesBody""":
-      """Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Checklisten, Fotos und Notizen hinzuzufügen.""",
+      """Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Listen, Fotos und Notizen hinzuzufügen.""",
   """home.createHouse""": """Haus erstellen""",
   """home.houseName""": """Hausname""",
   """home.houseDescription""": """Beschreibung (optional)""",
@@ -7536,6 +9180,8 @@ Bitte melde dich in deinem Browser an.""",
   """home.learnMore""": """Mehr erfahren""",
   """nav.checklists""": """Checklisten""",
   """nav.checklist""": """Checkliste""",
+  """nav.lists""": """Listen""",
+  """nav.list""": """Liste""",
   """nav.photoBoard""": """Fotowand""",
   """nav.notesWall""": """Notizwand""",
   """widget.chooseListsTitle""": """Listen auswählen""",
@@ -7655,6 +9301,21 @@ Passwort: pantry-rocks""",
   """onboarding.joinTripMockHousemate""": """Dana""",
   """onboarding.joinTripHow""":
       """Schon unterwegs? Beim Beitreten wird dein eigener Einkauf zuerst in deinem Verlauf gespeichert. Steigst du aus einem Einkauf aus, dem du beigetreten bist, läuft er für alle anderen weiter.""",
+  """onboarding.inventoryTitle""": """Wissen, was im Schrank ist""",
+  """onboarding.inventoryBody""":
+      """Vorräte halten fest, wie viel du von allem hast und wann es abläuft. Zähl Mengen herunter, während du sie verbrauchst, und Pantry markiert, was knapp wird oder bald abläuft.""",
+  """onboarding.inventoryHow""":
+      """Gib einem Vorrat in seinen Einstellungen eine Nachkauf-Liste, und alles, was knapp wird oder abläuft, landet von selbst darauf. Hak es im Laden ab, und der Vorrat füllt sich wieder auf.""",
+  """onboarding.inventoryMockEggs""": """Eier""",
+  """onboarding.inventoryMockMilk""": """Milch""",
+  """onboarding.inventoryMockFlour""": """Mehl""",
+  """onboarding.templateTitle""": """Vorlagen für das, was du immer kaufst""",
+  """onboarding.templateBody""":
+      """Leg Artikel, die du immer wieder hinzufügst, in einer Vorlage ab. Häng sie an eine Liste, und beim Tippen dort werden ihre Artikel samt Details vorgeschlagen.""",
+  """onboarding.templateMockName""": """Wocheneinkauf""",
+  """onboarding.templateMockTyped""": """Mi""",
+  """onboarding.templateMockFirst""": """Milch""",
+  """onboarding.templateMockSecond""": """Mineralwasser""",
   """onboarding.dev.showOnboarding""": """Onboarding anzeigen""",
   """onboarding.dev.pickLastSeenTitle""": """Neuigkeiten ansehen""",
   """onboarding.dev.pickLastSeenBody""":
@@ -7664,7 +9325,7 @@ Passwort: pantry-rocks""",
   """onboarding.dev.sendTestNotification""": """Testbenachrichtigung senden""",
   """notificationsIntro.title""": """Bleib auf dem Laufenden""",
   """notificationsIntro.body""":
-      """Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Checklisten hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter.""",
+      """Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Listen hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter.""",
   """notificationsIntro.bullet1""":
       """Benachrichtigungen über Haushaltsaktivitäten""",
   """notificationsIntro.bullet2""": """Direkt von deinem Server abgerufen""",
@@ -8423,6 +10084,254 @@ Passwort: pantry-rocks""",
       """Vorhandene Einträge wiederverwenden statt Duplikate hinzuzufügen""",
   """checklists.markdown.defaultFields""":
       """Standardwerte für jeden importierten Eintrag""",
+  """listKinds.duplicateAs""": """Duplizieren als:""",
+  """listKinds.checklist.title""": """Checklisten""",
+  """listKinds.checklist.name""": """Checkliste""",
+  """listKinds.checklist.newList""": """Neue Checkliste""",
+  """listKinds.checklist.createTitle""": """Checkliste erstellen""",
+  """listKinds.checklist.editTitle""": """Checkliste bearbeiten""",
+  """listKinds.checklist.duplicateTitle""": """Checkliste duplizieren""",
+  """listKinds.checklist.duplicateFailed""":
+      """Die Checkliste konnte nicht dupliziert werden""",
+  """listKinds.checklist.listMenu""": """Checklisten-Aktionen""",
+  """listKinds.checklist.deleteDialogTitle""": """Checkliste entfernen""",
+  """listKinds.checklist.emptyTitle""": """Noch keine Checklisten""",
+  """listKinds.checklist.emptyBody""":
+      """Erstelle deine erste Checkliste, um mit dem Hinzufügen von Elementen zu beginnen.""",
+  """listKinds.checklist.trashTitle""": """Checklisten-Papierkorb""",
+  """listKinds.checklist.trashEmptyBody""":
+      """Gelöschte Checklisten werden hier angezeigt.""",
+  """listKinds.checklist.archiveTitle""": """Archivierte Checklisten""",
+  """listKinds.checklist.archiveEmptyTitle""":
+      """Keine archivierten Checklisten""",
+  """listKinds.checklist.archiveEmptyBody""":
+      """Archivierte Checklisten werden hier angezeigt.""",
+  """listKinds.checklist.emptyTrashBody""":
+      """Dadurch werden alle Checklisten, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.""",
+  """listKinds.checklist.listRestored""": """Checkliste wiederhergestellt""",
+  """listKinds.checklist.listMovedToTrash""":
+      """Checkliste in den Papierkorb verschoben""",
+  """listKinds.checklist.listArchived""": """Checkliste archiviert""",
+  """listKinds.checklist.listUnarchived""": """Checkliste dearchiviert""",
+  """listKinds.inventory.title""": """Bestandslisten""",
+  """listKinds.inventory.name""": """Bestandsliste""",
+  """listKinds.inventory.newList""": """Neue Bestandsliste""",
+  """listKinds.inventory.createTitle""": """Bestandsliste erstellen""",
+  """listKinds.inventory.editTitle""": """Bestandsliste bearbeiten""",
+  """listKinds.inventory.duplicateTitle""": """Bestandsliste duplizieren""",
+  """listKinds.inventory.duplicateFailed""":
+      """Die Bestandsliste konnte nicht dupliziert werden""",
+  """listKinds.inventory.listMenu""": """Bestandslisten-Aktionen""",
+  """listKinds.inventory.deleteDialogTitle""": """Bestandsliste entfernen""",
+  """listKinds.inventory.emptyTitle""": """Noch keine Bestandslisten""",
+  """listKinds.inventory.emptyBody""":
+      """Erstelle deine erste Bestandsliste, um mit dem Hinzufügen von Elementen zu beginnen.""",
+  """listKinds.inventory.trashTitle""": """Bestandslisten-Papierkorb""",
+  """listKinds.inventory.trashEmptyBody""":
+      """Gelöschte Bestandslisten werden hier angezeigt.""",
+  """listKinds.inventory.archiveTitle""": """Archivierte Bestandslisten""",
+  """listKinds.inventory.archiveEmptyTitle""":
+      """Keine archivierten Bestandslisten""",
+  """listKinds.inventory.archiveEmptyBody""":
+      """Archivierte Bestandslisten werden hier angezeigt.""",
+  """listKinds.inventory.emptyTrashBody""":
+      """Dadurch werden alle Bestandslisten, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.""",
+  """listKinds.inventory.listRestored""": """Bestandsliste wiederhergestellt""",
+  """listKinds.inventory.listMovedToTrash""":
+      """Bestandsliste in den Papierkorb verschoben""",
+  """listKinds.inventory.listArchived""": """Bestandsliste archiviert""",
+  """listKinds.inventory.listUnarchived""": """Bestandsliste dearchiviert""",
+  """listKinds.template.title""": """Vorlagen""",
+  """listKinds.template.name""": """Vorlage""",
+  """listKinds.template.newList""": """Neue Vorlage""",
+  """listKinds.template.createTitle""": """Vorlage erstellen""",
+  """listKinds.template.editTitle""": """Vorlage bearbeiten""",
+  """listKinds.template.duplicateTitle""": """Vorlage duplizieren""",
+  """listKinds.template.duplicateFailed""":
+      """Die Vorlage konnte nicht dupliziert werden""",
+  """listKinds.template.listMenu""": """Vorlagen-Aktionen""",
+  """listKinds.template.deleteDialogTitle""": """Vorlage entfernen""",
+  """listKinds.template.emptyTitle""": """Noch keine Vorlagen""",
+  """listKinds.template.emptyBody""":
+      """Erstelle deine erste Vorlage, um mit dem Hinzufügen von Elementen zu beginnen.""",
+  """listKinds.template.trashTitle""": """Vorlagen-Papierkorb""",
+  """listKinds.template.trashEmptyBody""":
+      """Gelöschte Vorlagen werden hier angezeigt.""",
+  """listKinds.template.archiveTitle""": """Archivierte Vorlagen""",
+  """listKinds.template.archiveEmptyTitle""": """Keine archivierten Vorlagen""",
+  """listKinds.template.archiveEmptyBody""":
+      """Archivierte Vorlagen werden hier angezeigt.""",
+  """listKinds.template.emptyTrashBody""":
+      """Dadurch werden alle Vorlagen, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.""",
+  """listKinds.template.listRestored""": """Vorlage wiederhergestellt""",
+  """listKinds.template.listMovedToTrash""":
+      """Vorlage in den Papierkorb verschoben""",
+  """listKinds.template.listArchived""": """Vorlage archiviert""",
+  """listKinds.template.listUnarchived""": """Vorlage dearchiviert""",
+  """templates.suggestionsHeader""": """Vorschläge""",
+  """templates.drawFailed""":
+      """Der Eintrag konnte nicht aus der Vorlage hinzugefügt werden""",
+  """templates.attachedLabel""": """Vorlagen:""",
+  """templates.attachedPlaceholder""": """Keine Vorlagen""",
+  """templates.attachedHint""":
+      """Beim Eintippen eines neuen Eintrags werden passende Einträge aus diesen Vorlagen vorgeschlagen.""",
+  """templates.suggestInLabel""": """Vorschlagen in:""",
+  """templates.everyList""": """Jede Liste""",
+  """templates.suggestInPlaceholder""": """Keine Listen""",
+  """templates.suggestInHint""":
+      """Beim Eintippen eines neuen Eintrags auf diesen Listen werden passende Einträge aus dieser Vorlage vorgeschlagen. Mit „Jede Liste“ werden auch später erstellte Listen einbezogen.""",
+  """templates.attachFailed""":
+      """Die angehängten Vorlagen konnten nicht gespeichert werden""",
+  """templates.fillLabel""": """Vorlageneinträge mit diesen Vorgaben füllen""",
+  """templates.fillHint""":
+      """Wenn ein Eintrag aus einer Vorlage hinzugefügt wird, starten die Details, die er leer lässt, mit den Werten oben. Jede Person kann dies in ihren persönlichen Einstellungen überschreiben.""",
+  """templates.fillPrefLabel""":
+      """Vorlageneinträge mit Eintragsvorgaben füllen""",
+  """templates.fillPrefHint""":
+      """Wenn du einen Eintrag aus einer Vorlage hinzufügst, werden die Details, die er leer lässt, mit den Eintragsvorgaben der Liste gefüllt. Jede Liste kann dies in ihren Eintragsvorgaben abschalten.""",
+  """templates.fillPrefNames.list""": """Wie die jeweilige Liste""",
+  """templates.fillPrefNames.always""": """Immer füllen""",
+  """templates.fillPrefNames.never""": """Nie füllen""",
+  """templates.fillPrefFailed""":
+      """Die Einstellung konnte nicht gespeichert werden""",
+  """templates.applyToList""": """Auf Liste anwenden""",
+  """templates.applyTemplate""": """Vorlage anwenden""",
+  """templates.attachedTemplates""": """An diese Liste angehängt""",
+  """templates.otherTemplates""": """Andere Vorlagen""",
+  """templates.noTargets""":
+      """Es gibt keine Checklisten oder Bestandslisten, auf die diese Vorlage angewendet werden kann.""",
+  """templates.noItems""": """Diese Vorlage hat keine Einträge.""",
+  """templates.alreadyOnList""": """Bereits auf der Liste""",
+  """templates.applyFailed""": """Die Vorlage konnte nicht angewendet werden""",
+  """templates.loadFailed""": """Die Vorlagen konnten nicht geladen werden""",
+  """templates.back""": """Zurück""",
+  """stock.inStock""": """Vorrätig""",
+  """stock.full""": """Voll""",
+  """stock.low""": """Knapp""",
+  """stock.out""": """Leer""",
+  """stock.notCounted""": """Nicht gezählt""",
+  """stock.expiresToday""": """Läuft heute ab""",
+  """stock.expiresTomorrow""": """Läuft morgen ab""",
+  """stock.decrease""": """Vorhandene Menge verringern""",
+  """stock.increase""": """Vorhandene Menge erhöhen""",
+  """stock.onHandEdit""": """Vorhandene Menge""",
+  """stock.filter""": """Bestand""",
+  """stock.filterAll""": """Alle Einträge""",
+  """stock.filterNeedsRestock""": """Nachkaufen nötig""",
+  """stock.filterInStock""": """Vorrätig""",
+  """stock.writeRefused""":
+      """Die Bestandsänderung konnte nicht gespeichert werden. Die Bestandsliste zeigt jetzt den Stand des Servers.""",
+  """stock.settings.action""": """Bestandslisten-Einstellungen""",
+  """stock.settings.title""": """Bestandslisten-Einstellungen""",
+  """stock.settings.name""": """Name""",
+  """stock.settings.nameHint""":
+      """Symbol, Farbe und Teilen funktionieren wie bei Checklisten.""",
+  """stock.settings.expiryWarning""": """Ablaufwarnung""",
+  """stock.settings.daysBefore""": """Tage vor Ablauf""",
+  """stock.settings.warnHint""":
+      """0 eingeben, um am Ablaufdatum selbst zu warnen.""",
+  """stock.settings.restockChecklist""": """Nachkauf-Checkliste""",
+  """stock.settings.restockNone""": """Keine""",
+  """stock.settings.restockSetHint""":
+      """Einträge, die knapp werden oder bald ablaufen, kommen auf diese Checkliste.""",
+  """stock.settings.restockUnsetHint""":
+      """Ohne sie werden knappe und bald ablaufende Einträge nur hier markiert.""",
+  """stock.settings.notifications""": """Benachrichtigungen""",
+  """stock.settings.stockSummary""": """Tägliche Bestandsübersicht""",
+  """stock.settings.stockSummaryHint""":
+      """Einmal am Tag den Mitgliedern sagen, was hier neu knapp wurde oder bald abläuft. Jedes Mitglied kann sie auch in den eigenen Einstellungen abschalten.""",
+  """stock.settings.cancel""": """Abbrechen""",
+  """stock.settings.save""": """Speichern""",
+  """stock.card.title""": """Bestand""",
+  """stock.card.mode""": """Bestandsmodus""",
+  """stock.card.count""": """Anzahl""",
+  """stock.card.level""": """Stufe""",
+  """stock.card.countHint""":
+      """Verfolge, wie viele du hast, z. B. 4 von 12 Eiern.""",
+  """stock.card.levelHint""":
+      """Verfolge es als Voll, Knapp oder Leer, z. B. Mehl oder Gewürze.""",
+  """stock.card.onHand""": """Vorhanden""",
+  """stock.card.onHandPlaceholder""": """z. B. 4""",
+  """stock.card.target""": """Ziel""",
+  """stock.card.targetPlaceholder""": """z. B. 12 Eier""",
+  """stock.card.reorderPoint""": """Nachkaufschwelle""",
+  """stock.card.reorderPlaceholder""": """z. B. 4""",
+  """stock.card.stockLevel""": """Bestandsstufe""",
+  """stock.card.restockAmount""": """Nachkaufmenge""",
+  """stock.card.restockPlaceholder""": """z. B. 1-kg-Packung""",
+  """stock.card.convertedBlank""":
+      """In eine Anzahl umgewandelt. Gib die vorhandene Menge und ein Ziel ein.""",
+  """stock.card.statusExpired""": """Abgelaufen.""",
+  """stock.card.statusExpiring""": """Läuft bald ab.""",
+  """stock.card.statusLow""": """Knapp.""",
+  """stock.card.statusOut""": """Leer.""",
+  """stock.card.statusUncountedTarget""":
+      """Nicht gezählt: Das Ziel hat keine Zahl, daher wird es nie knapp.""",
+  """stock.card.statusUncountedOnHand""":
+      """Nicht gezählt: Die vorhandene Menge hat keine Zahl, daher wird es nie knapp.""",
+  """stock.card.statusInStock""": """Vorrätig.""",
+  """stock.card.templateDefaultMode""":
+      """Ohne gewählten Bestandsmodus gilt die Vorgabe der Bestandsliste.""",
+  """stock.card.templateStartsLevel""":
+      """In eine Bestandsliste übernommen, startet es mit Voll.""",
+  """stock.card.templateUncounted""":
+      """In eine Bestandsliste ohne Ziel übernommen, wird es nicht gezählt.""",
+  """stock.expiry.title""": """Ablauf""",
+  """stock.expiry.mode""": """Wie der Eintrag abläuft""",
+  """stock.expiry.none""": """Keiner""",
+  """stock.expiry.date""": """Datum""",
+  """stock.expiry.keeps""": """Hält N Tage""",
+  """stock.expiry.expiryDate""": """Ablaufdatum""",
+  """stock.expiry.daysItKeeps""": """Haltbarkeit in Tagen""",
+  """stock.expiry.chip""": """Ablauf""",
+  """stock.compose.chip""": """Bestand""",
+  """stock.compose.count""": """Anzahl""",
+  """stock.compose.level""": """Stufe""",
+  """stock.compose.fullWhenEmpty""": """Voll, wenn leer""",
+  """stock.noRestockChecklist""":
+      """Diese Bestandsliste hat keine Nachkauf-Checkliste, daher werden diese Einträge nur hier markiert. Wähle eine in den Bestandslisten-Einstellungen.""",
+  """stock.renewAction""": """Ablauf erneuern""",
+  """stock.summaryPref""": """Tägliche Bestandsübersicht""",
+  """stock.summaryPrefHint""":
+      """Einmal am Tag, was in den Bestandslisten dieses Haushalts neu knapp wurde oder bald abläuft.""",
+  """stock.summaryPrefFailed""":
+      """Die Einstellung zur Bestandsübersicht konnte nicht gespeichert werden.""",
+  """stock.links.caption""": """Einkaufsliste""",
+  """stock.links.tooltipAutoOn""":
+      """Noch nicht verknüpft: kommt auf die Einkaufsliste, wenn es knapp wird""",
+  """stock.links.tooltipAutoOff""":
+      """Nicht verknüpft: kommt nie auf eine Einkaufsliste""",
+  """stock.links.stateOpen""": """offen""",
+  """stock.links.stateChecked""": """abgehakt""",
+  """stock.links.stateArchived""": """archiviert""",
+  """stock.links.stateTrashed""": """im Papierkorb""",
+  """stock.links.unlink""": """Verknüpfung lösen""",
+  """stock.links.whichOne""": """Welcher ist es?""",
+  """stock.links.autoLink""": """Auf die Einkaufsliste, wenn knapp""",
+  """stock.links.linkByHand""": """Von Hand verknüpfen""",
+  """stock.links.chipNotAdded""": """Kommt auf keine Einkaufsliste""",
+  """stock.links.linkDifferent""": """Mit einem anderen Eintrag verknüpfen …""",
+  """stock.links.linkedHint""":
+      """Wenn er knapp wird oder bald abläuft, kommt dieser Eintrag wieder auf diese Liste.""",
+  """stock.links.link""": """Verknüpfen""",
+  """stock.links.autoHintNoChecklist""":
+      """Wähle in den Bestandslisten-Einstellungen eine Nachkauf-Checkliste, um diesen Eintrag dort zu finden oder zu ergänzen.""",
+  """stock.links.autoHintOff""":
+      """Dieser Eintrag wird nur hier markiert, wenn er knapp wird.""",
+  """stock.links.linkToItem""": """Mit einem Eintrag verknüpfen …""",
+  """stock.links.pickerTitle""": """Mit einem Checklisten-Eintrag verknüpfen""",
+  """stock.links.pickerField""": """Checklisten-Eintrag""",
+  """stock.links.pickerSearch""": """Checklisten-Einträge suchen …""",
+  """stock.links.pickerSearching""": """Suche …""",
+  """stock.links.pickerEmpty""": """Keine Checklisten-Einträge gefunden""",
+  """stock.links.pickerArchived""": """archiviert""",
+  """stock.links.pickerFailed""":
+      """Checklisten-Einträge konnten nicht geladen werden. Prüfe die Verbindung und versuche es erneut.""",
+  """stock.links.cancel""": """Abbrechen""",
+  """stock.restock.pinnedChipBare""": """Angeheftet""",
+  """stock.restock.pinnedChipTooltip""":
+      """Angeheftet, der Bestand ändert es nicht. Tippen zum Lösen.""",
+  """stock.restock.noLongerNeeded""": """Nicht mehr nötig""",
   """notesWall.noNotes""": """Noch keine Notizen.""",
   """notesWall.failedToLoad""": """Notizen konnten nicht geladen werden.""",
   """notesWall.saveFailed""": """Notiz konnte nicht gespeichert werden.""",
@@ -8800,6 +10709,8 @@ Passwort: pantry-rocks""",
   """wear.accent""": """Akzentfarbe""",
   """wear.accentServer""": """Deine Nextcloud-Farbe""",
   """wear.accentApp""": """Pantry-Farbe""",
+  """wear.stockClose""": """Anpassen beenden""",
+  """wear.nothingNeedsRestock""": """Nichts muss nachgekauft werden""",
   """watch.title""": """Uhr""",
   """watch.requestWarning""":
       """Erlaube das nur, wenn die Uhr dir gehört. Sie erhält denselben Zugriff auf deinen Haushalt wie dieses Telefon.""",

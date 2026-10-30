@@ -104,6 +104,15 @@ class ItemCard extends StatelessWidget {
                   color: marked ? scheme.primary : Colors.white38,
                 ),
                 const SizedBox(width: 8),
+                // An item that restocks an inventory, as on the phone.
+                if (item.restocks.isNotEmpty) ...[
+                  Icon(
+                    Icons.inventory_2_outlined,
+                    size: 12,
+                    color: scheme.primary,
+                  ),
+                  const SizedBox(width: 4),
+                ],
                 Expanded(
                   child: Text(
                     item.name,
@@ -132,11 +141,19 @@ class ItemCard extends StatelessWidget {
                 if (item.quantity != null &&
                     PrefsService.instance.isItemChipVisible(
                       ItemChipKind.quantity.key,
-                    ))
+                    )) ...[
+                  // Set by hand, so stock leaves it alone.
+                  if (item.quantityPinned && !item.done)
+                    Icon(
+                      Icons.push_pin_outlined,
+                      size: 11,
+                      color: scheme.primary,
+                    ),
                   Text(
                     item.quantity!,
                     style: const TextStyle(fontSize: 11, color: Colors.white54),
                   ),
+                ],
               ],
             ),
             if (expansion > 0)
@@ -155,7 +172,7 @@ class ItemCard extends StatelessWidget {
                     opacity: eased,
                     child: Padding(
                       padding: const EdgeInsetsDirectional.only(top: 3),
-                      child: _MetaLine(item: item, controller: controller),
+                      child: ItemMetaLine(item: item, controller: controller),
                     ),
                   ),
                 ),
@@ -199,11 +216,22 @@ class ItemCard extends StatelessWidget {
 /// and the picker reads in the order the row does. Nothing caps the count:
 /// the row clips at the card's edge, on the card the wearer is reading, and
 /// the lever against it is the picker.
-class _MetaLine extends StatelessWidget {
+///
+/// An inventory row passes its stock chips as [leading] and sets [entitiesOnly]:
+/// it shows only the category, store and label chips after them.
+class ItemMetaLine extends StatelessWidget {
   final ListItem item;
   final ChecklistsController controller;
+  final List<Widget> leading;
+  final bool entitiesOnly;
 
-  const _MetaLine({required this.item, required this.controller});
+  const ItemMetaLine({
+    super.key,
+    required this.item,
+    required this.controller,
+    this.leading = const [],
+    this.entitiesOnly = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -211,6 +239,10 @@ class _MetaLine extends StatelessWidget {
     final prefs = PrefsService.instance;
     final grouping = controller.grouping;
     final parts = <Widget>[];
+    for (final child in leading) {
+      if (parts.isNotEmpty) parts.add(const SizedBox(width: 5));
+      parts.add(child);
+    }
 
     void chip(ItemChipKind kind, Widget child) {
       if (!prefs.isItemChipVisible(kind.key)) return;
@@ -259,6 +291,7 @@ class _MetaLine extends StatelessWidget {
         ),
       );
     }
+    if (entitiesOnly) return _clipped(parts);
     final resolved = resolveItemPrice(
       item.prices,
       controller.session?.activeStoreId,
@@ -331,14 +364,16 @@ class _MetaLine extends StatelessWidget {
       );
     }
 
-    // Never scrolled — it is here so a row of chips wider than the card clips
-    // at the edge instead of raising an overflow. Its *height* is the chips'
-    // own, so a wearer's font size is answered by a taller line rather than by
-    // chips drawn through the row below.
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      physics: const NeverScrollableScrollPhysics(),
-      child: Row(mainAxisSize: MainAxisSize.min, children: parts),
-    );
+    return _clipped(parts);
   }
+
+  // Never scrolled — it is here so a row of chips wider than the card clips at
+  // the edge instead of raising an overflow. Its *height* is the chips' own,
+  // so a wearer's font size is answered by a taller line rather than by chips
+  // drawn through the row below.
+  Widget _clipped(List<Widget> parts) => SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    physics: const NeverScrollableScrollPhysics(),
+    child: Row(mainAxisSize: MainAxisSize.min, children: parts),
+  );
 }

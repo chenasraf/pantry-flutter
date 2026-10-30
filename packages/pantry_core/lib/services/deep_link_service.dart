@@ -12,16 +12,21 @@ class DeepLink {
   final int? listId;
   final int? itemId;
 
+  /// Opens [listId], an inventory, on its Needs restock filter.
+  final bool needsRestock;
+
   const DeepLink({
     required this.tabIndex,
     this.houseId,
     this.listId,
     this.itemId,
+    this.needsRestock = false,
   });
 
   /// Serialize to a compact string for notification payloads.
   String encode() =>
-      '$tabIndex:${houseId ?? ''}:${listId ?? ''}:${itemId ?? ''}';
+      '$tabIndex:${houseId ?? ''}:${listId ?? ''}:${itemId ?? ''}'
+      '${needsRestock ? ':restock' : ''}';
 
   /// Parse a payload string. Returns null if invalid. Tolerates the older
   /// two-field form (`tab:house`) so payloads already scheduled still decode.
@@ -38,6 +43,7 @@ class DeepLink {
       houseId: at(1),
       listId: at(2),
       itemId: at(3),
+      needsRestock: parts.length > 4 && parts[4] == 'restock',
     );
   }
 }

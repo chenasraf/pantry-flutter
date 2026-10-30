@@ -11,6 +11,7 @@ import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry/views/checklists/restock_markers.dart';
 import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/views/shopping/shopping_item_row.dart';
 import 'package:pantry/views/shopping/shopping_session_controller.dart';
@@ -550,6 +551,9 @@ class ShoppingBottomBar extends StatelessWidget {
                           item.name,
                           textDirection: detectTextDirection(item.name),
                         ),
+                        subtitle: RestockStatusLine.showsFor(item)
+                            ? RestockStatusLine(item: item)
+                            : null,
                         trailing: item.formattedPrice != null
                             ? Text(item.formattedPrice!)
                             : null,

@@ -64,6 +64,11 @@ class WearRow extends StatelessWidget {
   /// tapping a card that does nothing.
   final String? reason;
 
+  /// A short count on the trailing edge — an inventory's items that need
+  /// restock — with [badgeLabel] read out in its place.
+  final String? badge;
+  final String? badgeLabel;
+
   final VoidCallback? onTap;
 
   const WearRow({
@@ -80,6 +85,8 @@ class WearRow extends StatelessWidget {
     this.warning = false,
     this.spent = false,
     this.reason,
+    this.badge,
+    this.badgeLabel,
     this.onTap,
   });
 
@@ -182,6 +189,12 @@ class WearRow extends StatelessWidget {
                   ],
                 ),
               ),
+              if (badge != null) ...[
+                const SizedBox(width: 6),
+                _Badge(text: badge!, label: badgeLabel),
+                if (selected || checkbox || toggled != null)
+                  const SizedBox(width: 6),
+              ],
               if (toggled != null)
                 _Toggle(on: toggled!, tint: scheme.primary)
               else if (checkbox)
@@ -234,6 +247,40 @@ class _Toggle extends StatelessWidget {
           width: _knob,
           height: _knob,
           decoration: WearSurface.indicator(on ? tint : Colors.white54),
+        ),
+      ),
+    ),
+  );
+}
+
+class _Badge extends StatelessWidget {
+  final String text;
+  final String? label;
+
+  const _Badge({required this.text, this.label});
+
+  static const _ink = Color(0xFFE5A50A);
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: label,
+    excludeSemantics: label != null,
+    child: Container(
+      padding: const EdgeInsetsDirectional.symmetric(
+        horizontal: 6,
+        vertical: 1,
+      ),
+      decoration: BoxDecoration(
+        color: _ink.withValues(alpha: 0.18),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 11,
+          height: 1.1,
+          fontWeight: FontWeight.w700,
+          color: _ink,
         ),
       ),
     ),

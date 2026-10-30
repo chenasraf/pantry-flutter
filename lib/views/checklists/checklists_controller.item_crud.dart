@@ -1,10 +1,34 @@
 part of 'checklists_controller.dart';
 
 extension ChecklistsControllerItemCrud on ChecklistsController {
-  Future<void> moveItem(ListItem item, int targetListId) async {
-    // Cross-list move is online-only for v1 — its semantics interact with
-    // both source and target list caches in ways that don't simplify well
-    // through the basic SyncOp shapes. Falls back to a direct API call.
+  /// Whether moving or copying between these lists crosses kinds, which only
+  /// the house-wide batch endpoints do.
+  bool _crossesKinds(int sourceListId, int targetListId) =>
+      _checklistService.kindOf(sourceListId) !=
+      _checklistService.kindOf(targetListId);
+
+  /// Moves [item] onto another list, of any kind. Returns how many items the
+  /// server skipped (0 or 1).
+  Future<int> moveItem(ListItem item, int targetListId) async {
+    // Cross-list move is online-only — its semantics interact with both source
+    // and target list caches in ways that don't simplify well through the
+    // basic SyncOp shapes. Falls back to a direct API call.
+    if (_crossesKinds(item.listId, targetListId)) {
+      final result = await _checklistService.batchMoveItems(
+        houseId,
+        itemIds: [item.id],
+        targetListId: targetListId,
+      );
+      if (result.skipped.isEmpty) {
+        // The item now has another kind's shape, so no view of this kind
+        // keeps it.
+        _items.removeWhere((i) => i.id == item.id);
+        _cacheVisibleItems();
+        _checklistService.invalidateItemsFor(targetListId);
+        notifyListeners();
+      }
+      return result.skipped.length;
+    }
     final updated = await _checklistService.moveItem(
       houseId,
       item.listId,
@@ -22,12 +46,24 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
       _checklistService.cacheItems(_currentList!.id, List.of(_items));
     }
     notifyListeners();
+    return 0;
   }
 
-  Future<void> copyItem(ListItem item, int targetListId) async {
+  /// Copies [item] onto another list, of any kind. Returns how many items the
+  /// server skipped (0 or 1).
+  Future<int> copyItem(ListItem item, int targetListId) async {
     // Online-only for the same reason as [moveItem] — the new item lives on
     // a list the user isn't currently viewing, so cache reconciliation
     // doesn't fit the per-list SyncOp shapes.
+    if (_crossesKinds(item.listId, targetListId)) {
+      final result = await _checklistService.batchCopyItems(
+        houseId,
+        itemIds: [item.id],
+        targetListId: targetListId,
+      );
+      _checklistService.invalidateItemsFor(targetListId);
+      return result.skipped.length;
+    }
     final created = await _checklistService.copyItem(
       houseId,
       item.listId,
@@ -41,6 +77,7 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
       _cacheVisibleItems();
     }
     notifyListeners();
+    return 0;
   }
 
   Future<ListItem> addItem({
@@ -56,6 +93,12 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
     String? barcode,
     List<ItemPrice>? prices,
     List<FieldValue>? customFields,
+    StockMode? stockMode,
+    StockLevel? stockLevel,
+    String? target,
+    String? reorderPoint,
+    int? expiresAt,
+    int? shelfLifeDays,
   }) async {
     final list = _currentList;
     if (list == null || list.id == kAllListsId) {
@@ -79,6 +122,12 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
       barcode: barcode,
       prices: prices,
       customFields: customFields,
+      stockMode: stockMode,
+      stockLevel: stockLevel,
+      target: target,
+      reorderPoint: reorderPoint,
+      expiresAt: expiresAt,
+      shelfLifeDays: shelfLifeDays,
     );
   }
 
@@ -100,11 +149,19 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
     String? barcode,
     List<ItemPrice>? prices,
     List<FieldValue>? customFields,
+    StockMode? stockMode,
+    StockLevel? stockLevel,
+    String? target,
+    String? reorderPoint,
+    int? expiresAt,
+    int? shelfLifeDays,
   }) async {
     final listId = targetListId;
     final tempId = _sync.newTempId();
     final loginName = AuthService.instance.credentials?.loginName;
-    final synthetic = ListItem(
+    final inventory = _isInventoryList(listId);
+    final mode = stockMode ?? StockMode.count;
+    var synthetic = ListItem(
       id: tempId,
       listId: listId,
       name: name,
@@ -112,7 +169,9 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
       categoryId: categoryId,
       storeIds: storeIds ?? const [],
       labelIds: labelIds ?? const [],
-      quantity: quantity,
+      quantity: inventory && mode == StockMode.count
+          ? startingOnHand(quantity, target)
+          : quantity,
       done: false,
       rrule: rrule,
       repeatFromCompletion: repeatFromCompletion ?? false,
@@ -121,10 +180,24 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
       barcode: barcode,
       prices: prices ?? const [],
       customFields: customFields ?? const [],
+      stockMode: inventory ? mode : stockMode,
+      stockLevel: inventory ? (stockLevel ?? StockLevel.full) : null,
+      target: target,
+      reorderPoint: reorderPoint,
+      expiresAt: expiresAt,
+      shelfLifeDays: shelfLifeDays,
       sortOrder: 0,
       createdAt: _now(),
       updatedAt: _now(),
     );
+    if (inventory) {
+      synthetic = _withLocalStock(
+        synthetic,
+        synthetic,
+        sentExpiresAt: expiresAt,
+        sentShelfLifeDays: shelfLifeDays,
+      );
+    }
     _items.insert(_insertIndexFor(synthetic), synthetic);
     // In meta mode `_items` is the aggregate across every list, so it's cached
     // under the All-lists slot rather than the target list's — the target list
@@ -153,6 +226,12 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
           if (prices != null) 'prices': prices.map((p) => p.toJson()).toList(),
           if (customFields != null)
             'customFields': customFields.map((v) => v.toJson()).toList(),
+          'stockMode': ?stockMode?.wire,
+          'stockLevel': ?stockLevel?.wire,
+          'target': ?target,
+          'reorderPoint': ?reorderPoint,
+          'expiresAt': ?expiresAt,
+          'shelfLifeDays': ?shelfLifeDays,
         },
         createdAt: _now(),
       ),
@@ -259,8 +338,16 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
     String? barcode,
     List<ItemPrice>? prices,
     List<FieldValue>? customFields,
+    StockMode? stockMode,
+    StockLevel? stockLevel,
+    String? target,
+    String? reorderPoint,
+    int? expiresAt,
+    int? shelfLifeDays,
   }) async {
-    final updated = item.copyWith(
+    _sendStagedStock(item.id);
+    _renewOffers.remove(item.id);
+    var updated = item.copyWith(
       name: name,
       description: description,
       quantity: quantity,
@@ -276,17 +363,39 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
       prices: prices,
       // Same contract for custom-field values.
       customFields: customFields,
+      // Stock texts clear on "", dates and shelf lives on 0, as on the wire.
+      stockMode: stockMode,
+      stockLevel: stockLevel,
+      target: target,
+      clearTarget: target != null && target.trim().isEmpty,
+      reorderPoint: reorderPoint,
+      clearReorderPoint: reorderPoint != null && reorderPoint.trim().isEmpty,
+      expiresAt: expiresAt,
+      clearExpiresAt: expiresAt == 0,
+      shelfLifeDays: shelfLifeDays,
+      clearShelfLifeDays: shelfLifeDays == 0,
       updatedAt: _now(),
     );
+    if (_isInventoryList(item.listId)) {
+      updated = _withLocalStock(
+        item,
+        updated,
+        sentExpiresAt: expiresAt,
+        sentShelfLifeDays: shelfLifeDays,
+        raisesFromEmpty: quantity != null || stockLevel != null,
+      );
+    }
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index != -1) {
       _items[index] = updated;
       _cacheVisibleItems(item.listId);
       notifyListeners();
     }
+    final opUuid = SyncIds.newOpUuid();
+    _trackStockFeedback(opUuid, item);
     _sync.enqueue(
       SyncOp(
-        uuid: SyncIds.newOpUuid(),
+        uuid: opUuid,
         entity: SyncEntity.checklistItem,
         op: SyncOpKind.update,
         houseId: houseId,
@@ -308,6 +417,12 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
           if (prices != null) 'prices': prices.map((p) => p.toJson()).toList(),
           if (customFields != null)
             'customFields': customFields.map((v) => v.toJson()).toList(),
+          'stockMode': ?stockMode?.wire,
+          'stockLevel': ?stockLevel?.wire,
+          'target': ?target,
+          'reorderPoint': ?reorderPoint,
+          'expiresAt': ?expiresAt,
+          'shelfLifeDays': ?shelfLifeDays,
         },
         createdAt: _now(),
       ),
@@ -546,14 +661,22 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index == -1) return;
 
-    _items[index] = item.copyWith(done: !item.done, updatedAt: _now());
+    // An uncheck takes back what the tick restocked; the server says what a
+    // tick restocks once it lands.
+    _items[index] = item.copyWith(
+      done: !item.done,
+      clearRestock: item.done,
+      updatedAt: _now(),
+    );
     _cacheVisibleItems(item.listId);
     if (!item.done) _stampCompletionIfClosed(item.listId);
     notifyListeners();
 
+    final opUuid = SyncIds.newOpUuid();
+    _trackStockFeedback(opUuid, item);
     _sync.enqueue(
       SyncOp(
-        uuid: SyncIds.newOpUuid(),
+        uuid: opUuid,
         entity: SyncEntity.checklistItem,
         op: SyncOpKind.toggle,
         houseId: houseId,
@@ -584,6 +707,6 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
     final stamped = _lists[i].copyWith(lastCompletedAt: _now() ~/ 1000);
     _lists[i] = stamped;
     if (_currentList?.id == listId) _currentList = stamped;
-    _checklistService.cacheLists(houseId, _lists);
+    _checklistService.cacheListsOfEveryKind(houseId, _lists);
   }
 }
