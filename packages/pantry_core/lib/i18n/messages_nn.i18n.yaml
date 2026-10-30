@@ -241,6 +241,19 @@ onboarding:
   joinTripBody: "Når nokon i huset er ute og handlar, tilbyr eit banner deg handleturen deira i staden for ein til av din eigen. De går han saman — det ein av dykk kryssar av, er borte for den andre."
   joinTripMockHousemate: "Dana"
   joinTripHow: "Alt i gang med din eigen? Blir du med, blir han først lagra i historikken din. Går du ut av ein handletur du blei med på, held han fram for alle som er att i han."
+  inventoryTitle: "Vit kva som er i skapet"
+  inventoryBody: "Lager held styr på kor mykje du har av kvar ting og når det går ut. Tel ned mengdene medan du brukar dei, og Pantry merkjer det som minkar eller snart går ut."
+  inventoryHow: "Gje eit lager ei påfyllingsliste i innstillingane, så kjem alt som minkar eller går ut på ho av seg sjølv. Kryss det av i butikken, og lageret blir fylt opp att."
+  inventoryMockEggs: "Egg"
+  inventoryMockMilk: "Mjølk"
+  inventoryMockFlour: "Mjøl"
+  templateTitle: "Malar for det du alltid kjøper"
+  templateBody: "Ta vare på varene du legg til om att og om att i ein mal. Knyt han til ei liste, så føreslår skriving der varene hans, med alle detaljar."
+  templateHow(String apply): "For å kopiere heile malen på ein gong, opna menyen hans i listeveljaren og vel ${apply}."
+  templateMockName: "Vekehandel"
+  templateMockTyped: "Mj"
+  templateMockFirst: "Mjølk"
+  templateMockSecond: "Mjøl"
   dev:
     showOnboarding: Vis oppstartshjelp
     pickLastSeenTitle: Førehandsvis kva som er nytt

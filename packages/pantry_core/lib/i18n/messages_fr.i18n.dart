@@ -1012,6 +1012,75 @@ Mot de passe : pantry-rocks""";
   /// ```
   String get joinTripHow =>
       """Déjà en courses ? Rejoindre enregistre d'abord les vôtres dans votre historique. Si vous quittez des courses que vous avez rejointes, elles continuent pour ceux qui y restent.""";
+
+  /// ```dart
+  /// "Sachez ce qu'il y a dans le placard"
+  /// ```
+  String get inventoryTitle => """Sachez ce qu'il y a dans le placard""";
+
+  /// ```dart
+  /// "Les inventaires suivent la quantité de chaque chose et sa date de péremption. Diminuez les quantités au fil de l'usage, et Pantry signale ce qui vient à manquer ou va bientôt périmer."
+  /// ```
+  String get inventoryBody =>
+      """Les inventaires suivent la quantité de chaque chose et sa date de péremption. Diminuez les quantités au fil de l'usage, et Pantry signale ce qui vient à manquer ou va bientôt périmer.""";
+
+  /// ```dart
+  /// "Donnez à un inventaire une liste de réapprovisionnement dans ses réglages, et tout ce qui manque ou périme y est ajouté pour vous. Cochez-le au magasin et l'inventaire se remplit à nouveau."
+  /// ```
+  String get inventoryHow =>
+      """Donnez à un inventaire une liste de réapprovisionnement dans ses réglages, et tout ce qui manque ou périme y est ajouté pour vous. Cochez-le au magasin et l'inventaire se remplit à nouveau.""";
+
+  /// ```dart
+  /// "Œufs"
+  /// ```
+  String get inventoryMockEggs => """Œufs""";
+
+  /// ```dart
+  /// "Lait"
+  /// ```
+  String get inventoryMockMilk => """Lait""";
+
+  /// ```dart
+  /// "Farine"
+  /// ```
+  String get inventoryMockFlour => """Farine""";
+
+  /// ```dart
+  /// "Des modèles pour vos achats habituels"
+  /// ```
+  String get templateTitle => """Des modèles pour vos achats habituels""";
+
+  /// ```dart
+  /// "Rangez dans un modèle les articles que vous ajoutez sans cesse. Associez-le à une liste, et en tapant dans celle-ci ses articles vous sont suggérés, avec tous leurs détails."
+  /// ```
+  String get templateBody =>
+      """Rangez dans un modèle les articles que vous ajoutez sans cesse. Associez-le à une liste, et en tapant dans celle-ci ses articles vous sont suggérés, avec tous leurs détails.""";
+
+  /// ```dart
+  /// "Pour copier tout un modèle d'un coup, ouvrez son menu dans le sélecteur de listes et choisissez ${apply}."
+  /// ```
+  String templateHow(String apply) =>
+      """Pour copier tout un modèle d'un coup, ouvrez son menu dans le sélecteur de listes et choisissez ${apply}.""";
+
+  /// ```dart
+  /// "Courses de la semaine"
+  /// ```
+  String get templateMockName => """Courses de la semaine""";
+
+  /// ```dart
+  /// "La"
+  /// ```
+  String get templateMockTyped => """La""";
+
+  /// ```dart
+  /// "Lait"
+  /// ```
+  String get templateMockFirst => """Lait""";
+
+  /// ```dart
+  /// "Lardons"
+  /// ```
+  String get templateMockSecond => """Lardons""";
   DevOnboardingMessagesFr get dev => DevOnboardingMessagesFr(this);
 }
 
@@ -9230,6 +9299,21 @@ Mot de passe : pantry-rocks""",
   """onboarding.joinTripMockHousemate""": """Dana""",
   """onboarding.joinTripHow""":
       """Déjà en courses ? Rejoindre enregistre d'abord les vôtres dans votre historique. Si vous quittez des courses que vous avez rejointes, elles continuent pour ceux qui y restent.""",
+  """onboarding.inventoryTitle""": """Sachez ce qu'il y a dans le placard""",
+  """onboarding.inventoryBody""":
+      """Les inventaires suivent la quantité de chaque chose et sa date de péremption. Diminuez les quantités au fil de l'usage, et Pantry signale ce qui vient à manquer ou va bientôt périmer.""",
+  """onboarding.inventoryHow""":
+      """Donnez à un inventaire une liste de réapprovisionnement dans ses réglages, et tout ce qui manque ou périme y est ajouté pour vous. Cochez-le au magasin et l'inventaire se remplit à nouveau.""",
+  """onboarding.inventoryMockEggs""": """Œufs""",
+  """onboarding.inventoryMockMilk""": """Lait""",
+  """onboarding.inventoryMockFlour""": """Farine""",
+  """onboarding.templateTitle""": """Des modèles pour vos achats habituels""",
+  """onboarding.templateBody""":
+      """Rangez dans un modèle les articles que vous ajoutez sans cesse. Associez-le à une liste, et en tapant dans celle-ci ses articles vous sont suggérés, avec tous leurs détails.""",
+  """onboarding.templateMockName""": """Courses de la semaine""",
+  """onboarding.templateMockTyped""": """La""",
+  """onboarding.templateMockFirst""": """Lait""",
+  """onboarding.templateMockSecond""": """Lardons""",
   """onboarding.dev.showOnboarding""": """Afficher l'intro""",
   """onboarding.dev.pickLastSeenTitle""": """Aperçu des nouveautés""",
   """onboarding.dev.pickLastSeenBody""":

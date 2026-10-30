@@ -1008,6 +1008,75 @@ Contraseña: pantry-rocks""";
   /// ```
   String get joinTripHow =>
       """¿Ya estabas comprando? Al unirte, tu compra se guarda primero en tu historial. Si sales de una compra a la que te uniste, sigue en marcha para quienes queden en ella.""";
+
+  /// ```dart
+  /// "Sabe qué hay en la despensa"
+  /// ```
+  String get inventoryTitle => """Sabe qué hay en la despensa""";
+
+  /// ```dart
+  /// "Los inventarios llevan la cuenta de cuánto tienes de cada cosa y de cuándo caduca. Ve bajando las cantidades a medida que las usas, y Pantry marca lo que escasea o está a punto de caducar."
+  /// ```
+  String get inventoryBody =>
+      """Los inventarios llevan la cuenta de cuánto tienes de cada cosa y de cuándo caduca. Ve bajando las cantidades a medida que las usas, y Pantry marca lo que escasea o está a punto de caducar.""";
+
+  /// ```dart
+  /// "Asigna a un inventario una lista de reposición en sus ajustes, y todo lo que escasee o caduque se añadirá a ella. Márcalo en la tienda y el inventario vuelve a llenarse."
+  /// ```
+  String get inventoryHow =>
+      """Asigna a un inventario una lista de reposición en sus ajustes, y todo lo que escasee o caduque se añadirá a ella. Márcalo en la tienda y el inventario vuelve a llenarse.""";
+
+  /// ```dart
+  /// "Huevos"
+  /// ```
+  String get inventoryMockEggs => """Huevos""";
+
+  /// ```dart
+  /// "Leche"
+  /// ```
+  String get inventoryMockMilk => """Leche""";
+
+  /// ```dart
+  /// "Harina"
+  /// ```
+  String get inventoryMockFlour => """Harina""";
+
+  /// ```dart
+  /// "Plantillas para lo que siempre compras"
+  /// ```
+  String get templateTitle => """Plantillas para lo que siempre compras""";
+
+  /// ```dart
+  /// "Guarda en una plantilla los artículos que añades una y otra vez. Asóciala a una lista, y al escribir en ella se sugerirán sus artículos, con todos sus detalles."
+  /// ```
+  String get templateBody =>
+      """Guarda en una plantilla los artículos que añades una y otra vez. Asóciala a una lista, y al escribir en ella se sugerirán sus artículos, con todos sus detalles.""";
+
+  /// ```dart
+  /// "Para copiar una plantilla entera de una vez, abre su menú en el selector de listas y elige ${apply}."
+  /// ```
+  String templateHow(String apply) =>
+      """Para copiar una plantilla entera de una vez, abre su menú en el selector de listas y elige ${apply}.""";
+
+  /// ```dart
+  /// "Compra semanal"
+  /// ```
+  String get templateMockName => """Compra semanal""";
+
+  /// ```dart
+  /// "Le"
+  /// ```
+  String get templateMockTyped => """Le""";
+
+  /// ```dart
+  /// "Leche"
+  /// ```
+  String get templateMockFirst => """Leche""";
+
+  /// ```dart
+  /// "Lechuga"
+  /// ```
+  String get templateMockSecond => """Lechuga""";
   DevOnboardingMessagesEs get dev => DevOnboardingMessagesEs(this);
 }
 
@@ -9218,6 +9287,21 @@ Contraseña: pantry-rocks""",
   """onboarding.joinTripMockHousemate""": """Dana""",
   """onboarding.joinTripHow""":
       """¿Ya estabas comprando? Al unirte, tu compra se guarda primero en tu historial. Si sales de una compra a la que te uniste, sigue en marcha para quienes queden en ella.""",
+  """onboarding.inventoryTitle""": """Sabe qué hay en la despensa""",
+  """onboarding.inventoryBody""":
+      """Los inventarios llevan la cuenta de cuánto tienes de cada cosa y de cuándo caduca. Ve bajando las cantidades a medida que las usas, y Pantry marca lo que escasea o está a punto de caducar.""",
+  """onboarding.inventoryHow""":
+      """Asigna a un inventario una lista de reposición en sus ajustes, y todo lo que escasee o caduque se añadirá a ella. Márcalo en la tienda y el inventario vuelve a llenarse.""",
+  """onboarding.inventoryMockEggs""": """Huevos""",
+  """onboarding.inventoryMockMilk""": """Leche""",
+  """onboarding.inventoryMockFlour""": """Harina""",
+  """onboarding.templateTitle""": """Plantillas para lo que siempre compras""",
+  """onboarding.templateBody""":
+      """Guarda en una plantilla los artículos que añades una y otra vez. Asóciala a una lista, y al escribir en ella se sugerirán sus artículos, con todos sus detalles.""",
+  """onboarding.templateMockName""": """Compra semanal""",
+  """onboarding.templateMockTyped""": """Le""",
+  """onboarding.templateMockFirst""": """Leche""",
+  """onboarding.templateMockSecond""": """Lechuga""",
   """onboarding.dev.showOnboarding""": """Mostrar introducción""",
   """onboarding.dev.pickLastSeenTitle""": """Ver novedades""",
   """onboarding.dev.pickLastSeenBody""":

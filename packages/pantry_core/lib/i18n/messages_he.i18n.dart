@@ -1002,6 +1002,75 @@ class OnboardingMessagesHe extends OnboardingMessages {
   /// ```
   String get joinTripHow =>
       """כבר באמצע קנייה? ההצטרפות שומרת קודם את הקנייה שלך בהיסטוריה. אם תצא מקנייה שהצטרפת אליה, היא ממשיכה לכל מי שנשאר בה.""";
+
+  /// ```dart
+  /// "לדעת מה יש בארון"
+  /// ```
+  String get inventoryTitle => """לדעת מה יש בארון""";
+
+  /// ```dart
+  /// "מלאים עוקבים אחרי כמה יש לך מכל דבר ומתי הוא פג תוקף. מורידים כמויות תוך כדי שימוש, ו-Pantry מסמן מה עומד להיגמר או לפוג."
+  /// ```
+  String get inventoryBody =>
+      """מלאים עוקבים אחרי כמה יש לך מכל דבר ומתי הוא פג תוקף. מורידים כמויות תוך כדי שימוש, ו-Pantry מסמן מה עומד להיגמר או לפוג.""";
+
+  /// ```dart
+  /// "הגדירו למלאי רשימת השלמה בהגדרות שלו, וכל מה שנגמר או פג תוקף יתווסף אליה. מסמנים אותו בחנות והמלאי מתמלא בחזרה."
+  /// ```
+  String get inventoryHow =>
+      """הגדירו למלאי רשימת השלמה בהגדרות שלו, וכל מה שנגמר או פג תוקף יתווסף אליה. מסמנים אותו בחנות והמלאי מתמלא בחזרה.""";
+
+  /// ```dart
+  /// "ביצים"
+  /// ```
+  String get inventoryMockEggs => """ביצים""";
+
+  /// ```dart
+  /// "חלב"
+  /// ```
+  String get inventoryMockMilk => """חלב""";
+
+  /// ```dart
+  /// "קמח"
+  /// ```
+  String get inventoryMockFlour => """קמח""";
+
+  /// ```dart
+  /// "תבניות למה שקונים תמיד"
+  /// ```
+  String get templateTitle => """תבניות למה שקונים תמיד""";
+
+  /// ```dart
+  /// "שמרו בתבנית את הפריטים שאתם מוסיפים שוב ושוב. צרפו אותה לרשימה, והקלדה ברשימה תציע את הפריטים שלה, עם כל הפרטים."
+  /// ```
+  String get templateBody =>
+      """שמרו בתבנית את הפריטים שאתם מוסיפים שוב ושוב. צרפו אותה לרשימה, והקלדה ברשימה תציע את הפריטים שלה, עם כל הפרטים.""";
+
+  /// ```dart
+  /// "כדי להעתיק תבנית שלמה בבת אחת, פתחו את התפריט שלה בבורר הרשימות ובחרו ${apply}."
+  /// ```
+  String templateHow(String apply) =>
+      """כדי להעתיק תבנית שלמה בבת אחת, פתחו את התפריט שלה בבורר הרשימות ובחרו ${apply}.""";
+
+  /// ```dart
+  /// "קניות שבועיות"
+  /// ```
+  String get templateMockName => """קניות שבועיות""";
+
+  /// ```dart
+  /// "חל"
+  /// ```
+  String get templateMockTyped => """חל""";
+
+  /// ```dart
+  /// "חלב"
+  /// ```
+  String get templateMockFirst => """חלב""";
+
+  /// ```dart
+  /// "חלה"
+  /// ```
+  String get templateMockSecond => """חלה""";
   DevOnboardingMessagesHe get dev => DevOnboardingMessagesHe(this);
 }
 
@@ -9115,6 +9184,21 @@ Map<String, String> get messagesHeMap => {
   """onboarding.joinTripMockHousemate""": """דנה""",
   """onboarding.joinTripHow""":
       """כבר באמצע קנייה? ההצטרפות שומרת קודם את הקנייה שלך בהיסטוריה. אם תצא מקנייה שהצטרפת אליה, היא ממשיכה לכל מי שנשאר בה.""",
+  """onboarding.inventoryTitle""": """לדעת מה יש בארון""",
+  """onboarding.inventoryBody""":
+      """מלאים עוקבים אחרי כמה יש לך מכל דבר ומתי הוא פג תוקף. מורידים כמויות תוך כדי שימוש, ו-Pantry מסמן מה עומד להיגמר או לפוג.""",
+  """onboarding.inventoryHow""":
+      """הגדירו למלאי רשימת השלמה בהגדרות שלו, וכל מה שנגמר או פג תוקף יתווסף אליה. מסמנים אותו בחנות והמלאי מתמלא בחזרה.""",
+  """onboarding.inventoryMockEggs""": """ביצים""",
+  """onboarding.inventoryMockMilk""": """חלב""",
+  """onboarding.inventoryMockFlour""": """קמח""",
+  """onboarding.templateTitle""": """תבניות למה שקונים תמיד""",
+  """onboarding.templateBody""":
+      """שמרו בתבנית את הפריטים שאתם מוסיפים שוב ושוב. צרפו אותה לרשימה, והקלדה ברשימה תציע את הפריטים שלה, עם כל הפרטים.""",
+  """onboarding.templateMockName""": """קניות שבועיות""",
+  """onboarding.templateMockTyped""": """חל""",
+  """onboarding.templateMockFirst""": """חלב""",
+  """onboarding.templateMockSecond""": """חלה""",
   """onboarding.dev.showOnboarding""": """הצג היכרות""",
   """onboarding.dev.pickLastSeenTitle""": """תצוגה מקדימה של החדש""",
   """onboarding.dev.pickLastSeenBody""":

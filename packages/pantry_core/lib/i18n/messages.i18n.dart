@@ -1002,6 +1002,75 @@ Password: pantry-rocks""";
   /// ```
   String get joinTripHow =>
       """Already shopping? Joining saves your own trip to your history first. Step out of a trip you joined and it keeps running for everyone still in it.""";
+
+  /// ```dart
+  /// "Know what's in the cupboard"
+  /// ```
+  String get inventoryTitle => """Know what's in the cupboard""";
+
+  /// ```dart
+  /// "Inventories track how much of each thing you have and when it goes off. Step amounts down as you use them, and Pantry flags what runs low or is about to expire."
+  /// ```
+  String get inventoryBody =>
+      """Inventories track how much of each thing you have and when it goes off. Step amounts down as you use them, and Pantry flags what runs low or is about to expire.""";
+
+  /// ```dart
+  /// "Give an inventory a restock checklist in its settings, and anything low or expiring is put on it for you. Tick it off at the shop and the inventory fills back up."
+  /// ```
+  String get inventoryHow =>
+      """Give an inventory a restock checklist in its settings, and anything low or expiring is put on it for you. Tick it off at the shop and the inventory fills back up.""";
+
+  /// ```dart
+  /// "Eggs"
+  /// ```
+  String get inventoryMockEggs => """Eggs""";
+
+  /// ```dart
+  /// "Milk"
+  /// ```
+  String get inventoryMockMilk => """Milk""";
+
+  /// ```dart
+  /// "Flour"
+  /// ```
+  String get inventoryMockFlour => """Flour""";
+
+  /// ```dart
+  /// "Templates for what you always buy"
+  /// ```
+  String get templateTitle => """Templates for what you always buy""";
+
+  /// ```dart
+  /// "Keep the items you add again and again in a template. Attach it to a list, and typing there suggests its items, details and all."
+  /// ```
+  String get templateBody =>
+      """Keep the items you add again and again in a template. Attach it to a list, and typing there suggests its items, details and all.""";
+
+  /// ```dart
+  /// "To copy a whole template in at once, open its menu in the list switcher and pick ${apply}."
+  /// ```
+  String templateHow(String apply) =>
+      """To copy a whole template in at once, open its menu in the list switcher and pick ${apply}.""";
+
+  /// ```dart
+  /// "Weekly shop"
+  /// ```
+  String get templateMockName => """Weekly shop""";
+
+  /// ```dart
+  /// "Mi"
+  /// ```
+  String get templateMockTyped => """Mi""";
+
+  /// ```dart
+  /// "Milk"
+  /// ```
+  String get templateMockFirst => """Milk""";
+
+  /// ```dart
+  /// "Mince"
+  /// ```
+  String get templateMockSecond => """Mince""";
   DevOnboardingMessages get dev => DevOnboardingMessages(this);
 }
 
@@ -9125,6 +9194,21 @@ Password: pantry-rocks""",
   """onboarding.joinTripMockHousemate""": """Dana""",
   """onboarding.joinTripHow""":
       """Already shopping? Joining saves your own trip to your history first. Step out of a trip you joined and it keeps running for everyone still in it.""",
+  """onboarding.inventoryTitle""": """Know what's in the cupboard""",
+  """onboarding.inventoryBody""":
+      """Inventories track how much of each thing you have and when it goes off. Step amounts down as you use them, and Pantry flags what runs low or is about to expire.""",
+  """onboarding.inventoryHow""":
+      """Give an inventory a restock checklist in its settings, and anything low or expiring is put on it for you. Tick it off at the shop and the inventory fills back up.""",
+  """onboarding.inventoryMockEggs""": """Eggs""",
+  """onboarding.inventoryMockMilk""": """Milk""",
+  """onboarding.inventoryMockFlour""": """Flour""",
+  """onboarding.templateTitle""": """Templates for what you always buy""",
+  """onboarding.templateBody""":
+      """Keep the items you add again and again in a template. Attach it to a list, and typing there suggests its items, details and all.""",
+  """onboarding.templateMockName""": """Weekly shop""",
+  """onboarding.templateMockTyped""": """Mi""",
+  """onboarding.templateMockFirst""": """Milk""",
+  """onboarding.templateMockSecond""": """Mince""",
   """onboarding.dev.showOnboarding""": """Show onboarding""",
   """onboarding.dev.pickLastSeenTitle""": """Preview what's new""",
   """onboarding.dev.pickLastSeenBody""":

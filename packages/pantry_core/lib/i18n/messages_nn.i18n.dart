@@ -1005,6 +1005,75 @@ Passord: pantry""";
   /// ```
   String get joinTripHow =>
       """Alt i gang med din eigen? Blir du med, blir han først lagra i historikken din. Går du ut av ein handletur du blei med på, held han fram for alle som er att i han.""";
+
+  /// ```dart
+  /// "Vit kva som er i skapet"
+  /// ```
+  String get inventoryTitle => """Vit kva som er i skapet""";
+
+  /// ```dart
+  /// "Lager held styr på kor mykje du har av kvar ting og når det går ut. Tel ned mengdene medan du brukar dei, og Pantry merkjer det som minkar eller snart går ut."
+  /// ```
+  String get inventoryBody =>
+      """Lager held styr på kor mykje du har av kvar ting og når det går ut. Tel ned mengdene medan du brukar dei, og Pantry merkjer det som minkar eller snart går ut.""";
+
+  /// ```dart
+  /// "Gje eit lager ei påfyllingsliste i innstillingane, så kjem alt som minkar eller går ut på ho av seg sjølv. Kryss det av i butikken, og lageret blir fylt opp att."
+  /// ```
+  String get inventoryHow =>
+      """Gje eit lager ei påfyllingsliste i innstillingane, så kjem alt som minkar eller går ut på ho av seg sjølv. Kryss det av i butikken, og lageret blir fylt opp att.""";
+
+  /// ```dart
+  /// "Egg"
+  /// ```
+  String get inventoryMockEggs => """Egg""";
+
+  /// ```dart
+  /// "Mjølk"
+  /// ```
+  String get inventoryMockMilk => """Mjølk""";
+
+  /// ```dart
+  /// "Mjøl"
+  /// ```
+  String get inventoryMockFlour => """Mjøl""";
+
+  /// ```dart
+  /// "Malar for det du alltid kjøper"
+  /// ```
+  String get templateTitle => """Malar for det du alltid kjøper""";
+
+  /// ```dart
+  /// "Ta vare på varene du legg til om att og om att i ein mal. Knyt han til ei liste, så føreslår skriving der varene hans, med alle detaljar."
+  /// ```
+  String get templateBody =>
+      """Ta vare på varene du legg til om att og om att i ein mal. Knyt han til ei liste, så føreslår skriving der varene hans, med alle detaljar.""";
+
+  /// ```dart
+  /// "For å kopiere heile malen på ein gong, opna menyen hans i listeveljaren og vel ${apply}."
+  /// ```
+  String templateHow(String apply) =>
+      """For å kopiere heile malen på ein gong, opna menyen hans i listeveljaren og vel ${apply}.""";
+
+  /// ```dart
+  /// "Vekehandel"
+  /// ```
+  String get templateMockName => """Vekehandel""";
+
+  /// ```dart
+  /// "Mj"
+  /// ```
+  String get templateMockTyped => """Mj""";
+
+  /// ```dart
+  /// "Mjølk"
+  /// ```
+  String get templateMockFirst => """Mjølk""";
+
+  /// ```dart
+  /// "Mjøl"
+  /// ```
+  String get templateMockSecond => """Mjøl""";
   DevOnboardingMessagesNn get dev => DevOnboardingMessagesNn(this);
 }
 
@@ -9157,6 +9226,21 @@ Passord: pantry""",
   """onboarding.joinTripMockHousemate""": """Dana""",
   """onboarding.joinTripHow""":
       """Alt i gang med din eigen? Blir du med, blir han først lagra i historikken din. Går du ut av ein handletur du blei med på, held han fram for alle som er att i han.""",
+  """onboarding.inventoryTitle""": """Vit kva som er i skapet""",
+  """onboarding.inventoryBody""":
+      """Lager held styr på kor mykje du har av kvar ting og når det går ut. Tel ned mengdene medan du brukar dei, og Pantry merkjer det som minkar eller snart går ut.""",
+  """onboarding.inventoryHow""":
+      """Gje eit lager ei påfyllingsliste i innstillingane, så kjem alt som minkar eller går ut på ho av seg sjølv. Kryss det av i butikken, og lageret blir fylt opp att.""",
+  """onboarding.inventoryMockEggs""": """Egg""",
+  """onboarding.inventoryMockMilk""": """Mjølk""",
+  """onboarding.inventoryMockFlour""": """Mjøl""",
+  """onboarding.templateTitle""": """Malar for det du alltid kjøper""",
+  """onboarding.templateBody""":
+      """Ta vare på varene du legg til om att og om att i ein mal. Knyt han til ei liste, så føreslår skriving der varene hans, med alle detaljar.""",
+  """onboarding.templateMockName""": """Vekehandel""",
+  """onboarding.templateMockTyped""": """Mj""",
+  """onboarding.templateMockFirst""": """Mjølk""",
+  """onboarding.templateMockSecond""": """Mjøl""",
   """onboarding.dev.showOnboarding""": """Vis oppstartshjelp""",
   """onboarding.dev.pickLastSeenTitle""": """Førehandsvis kva som er nytt""",
   """onboarding.dev.pickLastSeenBody""":

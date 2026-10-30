@@ -1008,6 +1008,75 @@ Passwort: pantry-rocks""";
   /// ```
   String get joinTripHow =>
       """Schon unterwegs? Beim Beitreten wird dein eigener Einkauf zuerst in deinem Verlauf gespeichert. Steigst du aus einem Einkauf aus, dem du beigetreten bist, läuft er für alle anderen weiter.""";
+
+  /// ```dart
+  /// "Wissen, was im Schrank ist"
+  /// ```
+  String get inventoryTitle => """Wissen, was im Schrank ist""";
+
+  /// ```dart
+  /// "Vorräte halten fest, wie viel du von allem hast und wann es abläuft. Zähl Mengen herunter, während du sie verbrauchst, und Pantry markiert, was knapp wird oder bald abläuft."
+  /// ```
+  String get inventoryBody =>
+      """Vorräte halten fest, wie viel du von allem hast und wann es abläuft. Zähl Mengen herunter, während du sie verbrauchst, und Pantry markiert, was knapp wird oder bald abläuft.""";
+
+  /// ```dart
+  /// "Gib einem Vorrat in seinen Einstellungen eine Nachkauf-Liste, und alles, was knapp wird oder abläuft, landet von selbst darauf. Hak es im Laden ab, und der Vorrat füllt sich wieder auf."
+  /// ```
+  String get inventoryHow =>
+      """Gib einem Vorrat in seinen Einstellungen eine Nachkauf-Liste, und alles, was knapp wird oder abläuft, landet von selbst darauf. Hak es im Laden ab, und der Vorrat füllt sich wieder auf.""";
+
+  /// ```dart
+  /// "Eier"
+  /// ```
+  String get inventoryMockEggs => """Eier""";
+
+  /// ```dart
+  /// "Milch"
+  /// ```
+  String get inventoryMockMilk => """Milch""";
+
+  /// ```dart
+  /// "Mehl"
+  /// ```
+  String get inventoryMockFlour => """Mehl""";
+
+  /// ```dart
+  /// "Vorlagen für das, was du immer kaufst"
+  /// ```
+  String get templateTitle => """Vorlagen für das, was du immer kaufst""";
+
+  /// ```dart
+  /// "Leg Artikel, die du immer wieder hinzufügst, in einer Vorlage ab. Häng sie an eine Liste, und beim Tippen dort werden ihre Artikel samt Details vorgeschlagen."
+  /// ```
+  String get templateBody =>
+      """Leg Artikel, die du immer wieder hinzufügst, in einer Vorlage ab. Häng sie an eine Liste, und beim Tippen dort werden ihre Artikel samt Details vorgeschlagen.""";
+
+  /// ```dart
+  /// "Um eine ganze Vorlage auf einmal zu übernehmen, öffne ihr Menü in der Listenauswahl und wähle ${apply}."
+  /// ```
+  String templateHow(String apply) =>
+      """Um eine ganze Vorlage auf einmal zu übernehmen, öffne ihr Menü in der Listenauswahl und wähle ${apply}.""";
+
+  /// ```dart
+  /// "Wocheneinkauf"
+  /// ```
+  String get templateMockName => """Wocheneinkauf""";
+
+  /// ```dart
+  /// "Mi"
+  /// ```
+  String get templateMockTyped => """Mi""";
+
+  /// ```dart
+  /// "Milch"
+  /// ```
+  String get templateMockFirst => """Milch""";
+
+  /// ```dart
+  /// "Mineralwasser"
+  /// ```
+  String get templateMockSecond => """Mineralwasser""";
   DevOnboardingMessagesDe get dev => DevOnboardingMessagesDe(this);
 }
 
@@ -9232,6 +9301,21 @@ Passwort: pantry-rocks""",
   """onboarding.joinTripMockHousemate""": """Dana""",
   """onboarding.joinTripHow""":
       """Schon unterwegs? Beim Beitreten wird dein eigener Einkauf zuerst in deinem Verlauf gespeichert. Steigst du aus einem Einkauf aus, dem du beigetreten bist, läuft er für alle anderen weiter.""",
+  """onboarding.inventoryTitle""": """Wissen, was im Schrank ist""",
+  """onboarding.inventoryBody""":
+      """Vorräte halten fest, wie viel du von allem hast und wann es abläuft. Zähl Mengen herunter, während du sie verbrauchst, und Pantry markiert, was knapp wird oder bald abläuft.""",
+  """onboarding.inventoryHow""":
+      """Gib einem Vorrat in seinen Einstellungen eine Nachkauf-Liste, und alles, was knapp wird oder abläuft, landet von selbst darauf. Hak es im Laden ab, und der Vorrat füllt sich wieder auf.""",
+  """onboarding.inventoryMockEggs""": """Eier""",
+  """onboarding.inventoryMockMilk""": """Milch""",
+  """onboarding.inventoryMockFlour""": """Mehl""",
+  """onboarding.templateTitle""": """Vorlagen für das, was du immer kaufst""",
+  """onboarding.templateBody""":
+      """Leg Artikel, die du immer wieder hinzufügst, in einer Vorlage ab. Häng sie an eine Liste, und beim Tippen dort werden ihre Artikel samt Details vorgeschlagen.""",
+  """onboarding.templateMockName""": """Wocheneinkauf""",
+  """onboarding.templateMockTyped""": """Mi""",
+  """onboarding.templateMockFirst""": """Milch""",
+  """onboarding.templateMockSecond""": """Mineralwasser""",
   """onboarding.dev.showOnboarding""": """Onboarding anzeigen""",
   """onboarding.dev.pickLastSeenTitle""": """Neuigkeiten ansehen""",
   """onboarding.dev.pickLastSeenBody""":
