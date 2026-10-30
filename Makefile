@@ -30,6 +30,12 @@ space := $(empty) $(empty)
 SKIP_PLATFORMS := android wear ios macos
 SKIP_LIST := $(subst $(comma),$(space),$(SKIP))
 
+# Deploys publish a finished release unless told otherwise, e.g.
+# `make ios-deploy STATUS=draft` or `make android-deploy TRACK=internal`.
+TRACK ?= production
+STATUS ?= completed
+DEST ?= appstore
+
 # Usage: $(call deploy_step,<platform>,<target>,<args>)
 deploy_step = $(if $(filter $(1),$(SKIP_LIST)),@echo "[$(1)] skipped" | tee -a $(RELEASE_LOG),$(call labeled,$(1),$(2),$(3)))
 
@@ -130,16 +136,17 @@ help:
 	@echo "    release-all         Build and release all platforms"
 	@echo ""
 	@echo "  Deploying:"
-	@echo "    android-deploy      Build AAB and upload to Google Play (TRACK=internal|beta|production, STATUS=draft|completed)"
+	@echo "    (defaults publish a finished release: TRACK=production, STATUS=completed, DEST=appstore)"
+	@echo "    android-deploy      Build AAB and upload to Google Play (TRACK=internal|alpha|beta|production, STATUS=draft|completed)"
 	@echo "    android-promote     Promote release between tracks (FROM=internal, TO=production, STATUS=draft|completed)"
-	@echo "    wear-deploy         Build the Wear OS AAB and upload to Google Play's wear:<TRACK>"
-	@echo "    ios-deploy          Build IPA and upload (DEST=testflight|appstore, default: testflight)"
+	@echo "    wear-deploy         Build the Wear OS AAB and upload to Google Play's wear:<TRACK> (TRACK, STATUS as above)"
+	@echo "    ios-deploy          Build IPA and upload (DEST=testflight|appstore, STATUS=draft|completed; draft skips review)"
 	@echo "    ios-submit          Submit the existing App Store build for review (no upload)"
-	@echo "    macos-deploy        Build PKG and upload (DEST=testflight|appstore, default: testflight)"
+	@echo "    macos-deploy        Build PKG and upload (DEST=testflight|appstore, STATUS=draft|completed; draft skips review)"
 	@echo "    macos-submit        Submit the existing Mac App Store build for review (no upload)"
 	@echo "    deploy-production   Build and deploy to production (Google Play + App Store)"
 	@echo "    deploy-beta         Build and deploy to beta (Google Play beta + TestFlight)"
-	@echo "                        Both accept SKIP=android,wear,ios,macos and log to release.log"
+	@echo "                        Both accept STATUS, SKIP=android,wear,ios,macos and log to release.log"
 
 # Setup
 .PHONY: get
@@ -579,10 +586,10 @@ windows-release: windows-build
 
 .PHONY: android-upload
 android-upload:
-	@echo "$(or $(TRACK),beta)" | grep -qE '^(internal|alpha|beta|production)$$' || (echo "Error: Invalid TRACK '$(TRACK)'. Must be: internal, alpha, beta, production"; exit 1)
-	@echo "$(or $(STATUS),draft)" | grep -qE '^(draft|completed|halted|inProgress)$$' || (echo "Error: Invalid STATUS '$(STATUS)'. Must be: draft, completed, halted, inProgress"; exit 1)
-	@echo "Track: $(or $(TRACK),internal) | Status: $(or $(STATUS),draft)"
-	bundle exec fastlane deploy track:$(or $(TRACK),internal) status:$(or $(STATUS),draft)
+	@echo "$(TRACK)" | grep -qE '^(internal|alpha|beta|production)$$' || (echo "Error: Invalid TRACK '$(TRACK)'. Must be: internal, alpha, beta, production"; exit 1)
+	@echo "$(STATUS)" | grep -qE '^(draft|completed|halted|inProgress)$$' || (echo "Error: Invalid STATUS '$(STATUS)'. Must be: draft, completed, halted, inProgress"; exit 1)
+	@echo "Track: $(TRACK) | Status: $(STATUS)"
+	bundle exec fastlane deploy track:$(TRACK) status:$(STATUS)
 
 .PHONY: android-deploy
 android-deploy: android-build-aab android-upload
@@ -591,16 +598,17 @@ android-deploy: android-build-aab android-upload
 android-promote:
 	@echo "$(or $(FROM),internal)" | grep -qE '^(internal|alpha|beta|production)$$' || (echo "Error: Invalid FROM '$(FROM)'. Must be: internal, alpha, beta, production"; exit 1)
 	@echo "$(or $(TO),production)" | grep -qE '^(internal|alpha|beta|production)$$' || (echo "Error: Invalid TO '$(TO)'. Must be: internal, alpha, beta, production"; exit 1)
-	@echo "$(or $(STATUS),draft)" | grep -qE '^(draft|completed|halted|inProgress)$$' || (echo "Error: Invalid STATUS '$(STATUS)'. Must be: draft, completed, halted, inProgress"; exit 1)
-	@echo "Promote: $(or $(FROM),internal) -> $(or $(TO),production) | Status: $(or $(STATUS),draft)"
-	bundle exec fastlane promote from:$(or $(FROM),internal) to:$(or $(TO),production) status:$(or $(STATUS),draft)
+	@echo "$(STATUS)" | grep -qE '^(draft|completed|halted|inProgress)$$' || (echo "Error: Invalid STATUS '$(STATUS)'. Must be: draft, completed, halted, inProgress"; exit 1)
+	@echo "Promote: $(or $(FROM),internal) -> $(or $(TO),production) | Status: $(STATUS)"
+	bundle exec fastlane promote from:$(or $(FROM),internal) to:$(or $(TO),production) status:$(STATUS)
 
 .PHONY: ios-upload
 ios-upload:
-	@echo "$(or $(DEST),testflight)" | grep -qE '^(testflight|appstore)$$' || (echo "Error: Invalid DEST '$(DEST)'. Must be: testflight, appstore"; exit 1)
-	@echo "Destination: $(or $(DEST),testflight)"
-	@if [ "$(or $(DEST),testflight)" = "appstore" ]; then \
-		bundle exec fastlane ios release; \
+	@echo "$(DEST)" | grep -qE '^(testflight|appstore)$$' || (echo "Error: Invalid DEST '$(DEST)'. Must be: testflight, appstore"; exit 1)
+	@echo "$(STATUS)" | grep -qE '^(draft|completed)$$' || (echo "Error: Invalid STATUS '$(STATUS)'. Must be: draft, completed"; exit 1)
+	@echo "Destination: $(DEST) | Status: $(STATUS)"
+	@if [ "$(DEST)" = "appstore" ]; then \
+		bundle exec fastlane ios release status:$(STATUS); \
 	else \
 		bundle exec fastlane ios beta; \
 	fi
@@ -614,10 +622,11 @@ ios-submit:
 
 .PHONY: macos-upload
 macos-upload:
-	@echo "$(or $(DEST),testflight)" | grep -qE '^(testflight|appstore)$$' || (echo "Error: Invalid DEST '$(DEST)'. Must be: testflight, appstore"; exit 1)
-	@echo "Destination: $(or $(DEST),testflight)"
-	@if [ "$(or $(DEST),testflight)" = "appstore" ]; then \
-		bundle exec fastlane mac release; \
+	@echo "$(DEST)" | grep -qE '^(testflight|appstore)$$' || (echo "Error: Invalid DEST '$(DEST)'. Must be: testflight, appstore"; exit 1)
+	@echo "$(STATUS)" | grep -qE '^(draft|completed)$$' || (echo "Error: Invalid STATUS '$(STATUS)'. Must be: draft, completed"; exit 1)
+	@echo "Destination: $(DEST) | Status: $(STATUS)"
+	@if [ "$(DEST)" = "appstore" ]; then \
+		bundle exec fastlane mac release status:$(STATUS); \
 	else \
 		bundle exec fastlane mac beta; \
 	fi
@@ -633,10 +642,10 @@ macos-submit:
 # independently of the mobile track, so TRACK here names the wear track.
 .PHONY: wear-upload
 wear-upload:
-	@echo "$(or $(TRACK),beta)" | grep -qE '^(internal|alpha|beta|production)$$' || (echo "Error: Invalid TRACK '$(TRACK)'. Must be: internal, alpha, beta, production"; exit 1)
-	@echo "$(or $(STATUS),draft)" | grep -qE '^(draft|completed|halted|inProgress)$$' || (echo "Error: Invalid STATUS '$(STATUS)'. Must be: draft, completed, halted, inProgress"; exit 1)
-	@echo "Track: wear:$(or $(TRACK),internal) | Status: $(or $(STATUS),draft)"
-	bundle exec fastlane deploy_wear track:$(or $(TRACK),internal) status:$(or $(STATUS),draft)
+	@echo "$(TRACK)" | grep -qE '^(internal|alpha|beta|production)$$' || (echo "Error: Invalid TRACK '$(TRACK)'. Must be: internal, alpha, beta, production"; exit 1)
+	@echo "$(STATUS)" | grep -qE '^(draft|completed|halted|inProgress)$$' || (echo "Error: Invalid STATUS '$(STATUS)'. Must be: draft, completed, halted, inProgress"; exit 1)
+	@echo "Track: wear:$(TRACK) | Status: $(STATUS)"
+	bundle exec fastlane deploy_wear track:$(TRACK) status:$(STATUS)
 
 .PHONY: wear-deploy
 wear-deploy: wear-build-aab wear-upload
@@ -661,15 +670,15 @@ release-log-reset:
 
 .PHONY: deploy-production
 deploy-production: check-skip release-log-reset
-	$(call deploy_step,android,android-deploy,TRACK=production STATUS=completed)
-	$(call deploy_step,wear,wear-deploy,TRACK=production STATUS=completed)
-	$(call deploy_step,ios,ios-deploy,DEST=appstore)
-	$(call deploy_step,macos,macos-deploy,DEST=appstore)
+	$(call deploy_step,android,android-deploy,TRACK=production STATUS=$(STATUS))
+	$(call deploy_step,wear,wear-deploy,TRACK=production STATUS=$(STATUS))
+	$(call deploy_step,ios,ios-deploy,DEST=appstore STATUS=$(STATUS))
+	$(call deploy_step,macos,macos-deploy,DEST=appstore STATUS=$(STATUS))
 
 .PHONY: deploy-beta
 deploy-beta: check-skip release-log-reset
-	$(call deploy_step,android,android-deploy,TRACK=beta STATUS=completed)
-	$(call deploy_step,wear,wear-deploy,TRACK=beta STATUS=completed)
+	$(call deploy_step,android,android-deploy,TRACK=beta STATUS=$(STATUS))
+	$(call deploy_step,wear,wear-deploy,TRACK=beta STATUS=$(STATUS))
 	$(call deploy_step,ios,ios-deploy,DEST=testflight)
 	$(call deploy_step,macos,macos-deploy,DEST=testflight)
 
