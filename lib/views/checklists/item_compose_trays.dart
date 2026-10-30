@@ -476,25 +476,47 @@ class TypeTray extends StatelessWidget {
 class ImageTray extends StatelessWidget {
   final Uint8List? bytes;
   final VoidCallback onPick;
+  final VoidCallback? onTakePhoto;
+  final VoidCallback onReplace;
   final VoidCallback onRemove;
 
   const ImageTray({
     super.key,
     required this.bytes,
     required this.onPick,
+    this.onTakePhoto,
+    required this.onReplace,
     required this.onRemove,
   });
 
   @override
   Widget build(BuildContext context) {
+    final f = m.checklists.itemForm;
     return _TrayShell(
       label: m.checklists.compose.chipImage,
       child: bytes == null
-          ? OutlinedButton.icon(
-              onPressed: onPick,
-              icon: const Icon(Icons.add_photo_alternate_outlined),
-              label: Text(m.checklists.itemForm.addImage),
-            )
+          ? onTakePhoto == null
+                ? OutlinedButton.icon(
+                    onPressed: onPick,
+                    icon: const Icon(Icons.add_photo_alternate_outlined),
+                    label: Text(f.addImage),
+                  )
+                : Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      OutlinedButton.icon(
+                        onPressed: onTakePhoto,
+                        icon: const Icon(Icons.photo_camera_outlined),
+                        label: Text(f.takePhoto),
+                      ),
+                      OutlinedButton.icon(
+                        onPressed: onPick,
+                        icon: const Icon(Icons.add_photo_alternate_outlined),
+                        label: Text(f.chooseImage),
+                      ),
+                    ],
+                  )
           : Row(
               children: [
                 ClipRRect(
@@ -512,7 +534,7 @@ class ImageTray extends StatelessWidget {
                     spacing: 8,
                     children: [
                       OutlinedButton.icon(
-                        onPressed: onPick,
+                        onPressed: onReplace,
                         icon: const Icon(Icons.swap_horiz, size: 16),
                         label: Text(m.checklists.itemForm.replaceImage),
                       ),

@@ -22,6 +22,7 @@ import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/quantity.dart';
 import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/utils/app_toast.dart';
+import 'package:pantry/utils/apple_host_info.dart';
 import 'package:pantry/views/checklists/barcode_scan_view.dart';
 import 'package:pantry/views/custom_fields/item_custom_fields_editor.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
@@ -31,6 +32,7 @@ import 'package:pantry_core/utils/stock_rules.dart';
 import 'item_compose_chips.dart';
 import 'item_compose_trays.dart';
 import 'item_draft.dart';
+import 'item_form_image.dart';
 import 'price_input.dart';
 import 'stock_cards.dart';
 
@@ -282,6 +284,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   Tray? _openTray;
   bool _submitting = false;
   bool _multiple = false;
+  bool _cameraSupported = !PlatformInfo.isDesktop;
 
   /// True once the user touches the custom-fields tray. Until then the item
   /// falls back to the fields' default seeds, recomputed from the live target.
@@ -350,6 +353,12 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       }
     });
     _nameCtrl.addListener(_onNameChanged);
+    if (_cameraSupported) {
+      isiOSAppOnMac().then((onMac) {
+        if (!mounted || !onMac) return;
+        setState(() => _cameraSupported = false);
+      });
+    }
   }
 
   @override
@@ -614,10 +623,23 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     // mounts, so there's nothing to sync here.
   }
 
-  Future<void> _pickImage() async {
+  Future<void> _replaceImage() async {
+    if (!_cameraSupported) {
+      await _pickImage(ImageSource.gallery);
+      return;
+    }
+    final source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) => const ImageSourceSheet(),
+    );
+    if (source != null) await _pickImage(source);
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
     final picker = ImagePicker();
-    final f = await picker.pickImage(source: ImageSource.gallery);
-    if (f == null) return;
+    final f = await picker.pickImage(source: source);
+    if (f == null || !mounted) return;
     final bytes = await f.readAsBytes();
     setState(() {
       _draft.imageFile = f;
@@ -957,7 +979,11 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       case Tray.image:
         trayChild = ImageTray(
           bytes: _draft.imageBytes,
-          onPick: _pickImage,
+          onPick: () => _pickImage(ImageSource.gallery),
+          onTakePhoto: _cameraSupported
+              ? () => _pickImage(ImageSource.camera)
+              : null,
+          onReplace: _replaceImage,
           onRemove: _removeImage,
         );
       case null:
