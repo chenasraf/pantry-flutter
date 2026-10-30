@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.38.0](https://github.com/chenasraf/pantry-flutter/compare/v0.37.1...v0.38.0) (2026-10-30)
+
+
+### Features
+
+* **about:** link to the documentation and updated privacy policy ([15f36ad](https://github.com/chenasraf/pantry-flutter/commit/15f36ad98dac316328210ba02668d2b2784a5b85))
+* **lists:** inventories and templates ([#200](https://github.com/chenasraf/pantry-flutter/issues/200)) ([286ce10](https://github.com/chenasraf/pantry-flutter/commit/286ce10a77893aadba474ae266173ee9183d2093))
+* **notes:** create and edit tables in rich text notes ([3538dc9](https://github.com/chenasraf/pantry-flutter/commit/3538dc930a0aae9234d5500d65aab0a363b0ded3)), closes [#196](https://github.com/chenasraf/pantry-flutter/issues/196)
+* **shopping:** shop all stores at once in a single combined list ([ecbb51e](https://github.com/chenasraf/pantry-flutter/commit/ecbb51ed8bd0e5d02f4a3afd0e5bf1ec71926015))
+* **widget:** tap items to complete them and open the list from the header ([1a341cc](https://github.com/chenasraf/pantry-flutter/commit/1a341cc127c827e6173cf902d7b94f4f2d5b150a)), closes [#198](https://github.com/chenasraf/pantry-flutter/issues/198)
+
+
+### Bug Fixes
+
+* **lists:** move an item straight into its new category when you change it ([2fdaedb](https://github.com/chenasraf/pantry-flutter/commit/2fdaedbd191b94d38533aca095b659ad8331b901))
+* **lists:** take a photo with your camera when adding an item ([93c3f1d](https://github.com/chenasraf/pantry-flutter/commit/93c3f1d86c0ac2b103dd3f585ecbddcb69219306))
+* **network:** reuse server connections instead of opening a new one for every request ([9dac3e2](https://github.com/chenasraf/pantry-flutter/commit/9dac3e2db952eb442242ac234de0391c5ed16350)), closes [#199](https://github.com/chenasraf/pantry-flutter/issues/199)
+* **sync:** let you know when a change couldn't be saved, with an option to retry ([68c3b34](https://github.com/chenasraf/pantry-flutter/commit/68c3b3454215be554fd425dfd51ac8d5a1e107a2))
+* **sync:** save your changes even when your server's address has moved ([0372587](https://github.com/chenasraf/pantry-flutter/commit/03725875ab459da0c42e1ec51ddcc7c98d6fc99e))
+
 ## [0.37.1](https://github.com/chenasraf/pantry-flutter/compare/v0.37.0...v0.37.1) (2026-10-17)
 
 

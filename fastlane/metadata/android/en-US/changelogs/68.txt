@@ -1,0 +1,11 @@
+Features
+- link to the documentation and updated privacy policy
+- inventories and templates ([#200](https://github.com/chenasraf/pantry-flutter/issues/200))
+- create and edit tables in rich text notes
+- shop all stores at once in a single combined list
+- tap items to complete them and open the list from the header
+Bug Fixes
+- move an item straight into its new category when you change it
+- take a photo with your camera when adding an item
+
+… see full notes on GitHub.
