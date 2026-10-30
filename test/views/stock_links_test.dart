@@ -458,9 +458,10 @@ void main() {
         'Groceries: Eggs now × 6',
       );
       expect(of(RestockSyncKind.changed, quantity: '6').kind, ToastKind.info);
+      expect(of(RestockSyncKind.pinned).text, 'Eggs on Groceries is pinned');
       expect(
-        of(RestockSyncKind.pinned).text,
-        'Eggs on Groceries was set by hand, left as it is',
+        of(RestockSyncKind.pinned, quantity: '6').text,
+        'Eggs on Groceries is pinned at × 6',
       );
       expect(
         of(RestockSyncKind.recovered).text,

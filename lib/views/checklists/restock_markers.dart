@@ -10,7 +10,7 @@ import 'restock_feedback.dart';
 /// The marks a checklist item linked to inventories carries, in the list and
 /// in Shopping Mode alike.
 extension RestockMarkers on ListItem {
-  /// The quantity chip turns into the set-by-hand chip.
+  /// The quantity chip turns into the pinned chip.
   bool get showsPinnedQuantity => quantityPinned && !done;
 
   /// The success line under a ticked item saying what the tick restocked.
@@ -52,7 +52,7 @@ class RestocksMarker extends StatelessWidget {
   }
 }
 
-/// "× 4 · set by hand" with a pin, standing in for the quantity chip of an
+/// "× 4" with a pin, standing in for the quantity chip of an
 /// item whose quantity a member set. Tapping it hands the quantity back to
 /// stock.
 class PinnedQuantityChip extends StatelessWidget {
@@ -68,10 +68,10 @@ class PinnedQuantityChip extends StatelessWidget {
     final q = quantity?.trim() ?? '';
     final r = m.stock.restock;
     return Tooltip(
-      message: r.setByHandTooltip,
+      message: r.pinnedChipTooltip,
       child: EntityChip(
         leading: Icon(Icons.push_pin_outlined, size: 13, color: accent),
-        label: q.isEmpty ? r.setByHandBare : r.setByHand(q),
+        label: q.isEmpty ? r.pinnedChipBare : r.pinnedChip(q),
         textColor: accent,
         background: cs.primary.withValues(alpha: 0.12),
         trailing: onClear == null

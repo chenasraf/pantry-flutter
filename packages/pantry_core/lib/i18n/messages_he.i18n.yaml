@@ -1186,8 +1186,8 @@ stock:
     revivedQuantity(String list, String row, String quantity): "שוב ב$list: $row × $quantity"
     revived(String list, String row): "שוב ב$list: $row"
     changed(String list, String row, String quantity): "$list: $row עכשיו × $quantity"
-    pinnedAt(String row, String list, String quantity): "$row ב$list נקבע ידנית ונשאר על $quantity"
-    pinned(String row, String list): "$row ב$list נקבע ידנית ונשאר כפי שהוא"
+    pinnedAt(String row, String list, String quantity): "$row ב$list מוצמד על × $quantity"
+    pinned(String row, String list): "$row ב$list מוצמד"
     recovered(String row, String list): "כבר לא נחוץ: $row ב$list"
     linked(String item, String row, String list): "$item קושר ל$row ב$list"
     unlinked(String item, String row, String list): "הקישור של $item ל$row ב$list בוטל. הוא לא יתווסף לרשימת קניות."
@@ -1205,9 +1205,9 @@ stock:
     uncheckToUndo(String restock): "$restock · ביטול הסימון יבטל"
     source(String item, String inventory): "$item ($inventory)"
     restocks(String items): "מחדש מלאי: $items"
-    setByHand(String quantity): "× $quantity · נקבע ידנית"
-    setByHandBare: נקבע ידנית
-    setByHandTooltip: נקבע ידנית. הקשה תחזיר את הקביעה למלאי.
+    pinnedChip(String quantity): "× $quantity"
+    pinnedChipBare: מוצמד
+    pinnedChipTooltip: מוצמד, המלאי לא משנה אותו. הקשה מבטלת את ההצמדה.
     noLongerNeeded: כבר לא נחוץ
 
 notesWall:

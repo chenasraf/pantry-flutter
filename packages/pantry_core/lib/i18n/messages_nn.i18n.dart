@@ -6241,16 +6241,15 @@ class RestockStockMessagesNn extends RestockStockMessages {
       """$list: $row no × $quantity""";
 
   /// ```dart
-  /// "$row på $list vart sett for hand, står att på $quantity"
+  /// "$row på $list er festa på × $quantity"
   /// ```
   String pinnedAt(String row, String list, String quantity) =>
-      """$row på $list vart sett for hand, står att på $quantity""";
+      """$row på $list er festa på × $quantity""";
 
   /// ```dart
-  /// "$row på $list vart sett for hand, står att som det er"
+  /// "$row på $list er festa"
   /// ```
-  String pinned(String row, String list) =>
-      """$row på $list vart sett for hand, står att som det er""";
+  String pinned(String row, String list) => """$row på $list er festa""";
 
   /// ```dart
   /// "Ikkje lenger nødvendig: $row på $list"
@@ -6349,20 +6348,20 @@ class RestockStockMessagesNn extends RestockStockMessages {
   String restocks(String items) => """Fyller på $items""";
 
   /// ```dart
-  /// "× $quantity · sett for hand"
+  /// "× $quantity"
   /// ```
-  String setByHand(String quantity) => """× $quantity · sett for hand""";
+  String pinnedChip(String quantity) => """× $quantity""";
 
   /// ```dart
-  /// "Sett for hand"
+  /// "Festa"
   /// ```
-  String get setByHandBare => """Sett for hand""";
+  String get pinnedChipBare => """Festa""";
 
   /// ```dart
-  /// "Sett for hand. Trykk for å la lageret setje det."
+  /// "Festa, så lageret lèt det vere. Trykk for å løysa."
   /// ```
-  String get setByHandTooltip =>
-      """Sett for hand. Trykk for å la lageret setje det.""";
+  String get pinnedChipTooltip =>
+      """Festa, så lageret lèt det vere. Trykk for å løysa.""";
 
   /// ```dart
   /// "Ikkje lenger nødvendig"
@@ -10129,9 +10128,9 @@ Passord: pantry""",
   """stock.links.pickerFailed""":
       """Klarte ikkje laste oppføringar. Sjekk tilkoplinga og prøv igjen.""",
   """stock.links.cancel""": """Avbryt""",
-  """stock.restock.setByHandBare""": """Sett for hand""",
-  """stock.restock.setByHandTooltip""":
-      """Sett for hand. Trykk for å la lageret setje det.""",
+  """stock.restock.pinnedChipBare""": """Festa""",
+  """stock.restock.pinnedChipTooltip""":
+      """Festa, så lageret lèt det vere. Trykk for å løysa.""",
   """stock.restock.noLongerNeeded""": """Ikkje lenger nødvendig""",
   """notesWall.noNotes""": """Ingen notat enno""",
   """notesWall.failedToLoad""": """Klarte ikkje laste notat""",

@@ -1320,8 +1320,8 @@ stock:
     revivedQuantity(String list, String row, String quantity): "Tilbake på $list: $row × $quantity"
     revived(String list, String row): "Tilbake på $list: $row"
     changed(String list, String row, String quantity): "$list: $row no × $quantity"
-    pinnedAt(String row, String list, String quantity): "$row på $list vart sett for hand, står att på $quantity"
-    pinned(String row, String list): "$row på $list vart sett for hand, står att som det er"
+    pinnedAt(String row, String list, String quantity): "$row på $list er festa på × $quantity"
+    pinned(String row, String list): "$row på $list er festa"
     recovered(String row, String list): "Ikkje lenger nødvendig: $row på $list"
     linked(String item, String row, String list): "Kopla $item til $row på $list"
     unlinked(String item, String row, String list): "Kopla $item frå $row på $list. Det blir ikkje lagt til på ei handleliste."
@@ -1339,9 +1339,9 @@ stock:
     uncheckToUndo(String restock): "$restock · fjern krysset for å angre"
     source(String item, String inventory): "$item ($inventory)"
     restocks(String items): "Fyller på $items"
-    setByHand(String quantity): "× $quantity · sett for hand"
-    setByHandBare: Sett for hand
-    setByHandTooltip: Sett for hand. Trykk for å la lageret setje det.
+    pinnedChip(String quantity): "× $quantity"
+    pinnedChipBare: Festa
+    pinnedChipTooltip: Festa, så lageret lèt det vere. Trykk for å løysa.
     noLongerNeeded: Ikkje lenger nødvendig
 
 notesWall:

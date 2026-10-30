@@ -6298,16 +6298,15 @@ class RestockStockMessagesDe extends RestockStockMessages {
       """$list: $row jetzt × $quantity""";
 
   /// ```dart
-  /// "$row auf $list wurde von Hand gesetzt, bleibt bei $quantity"
+  /// "$row auf $list ist bei × $quantity angeheftet"
   /// ```
   String pinnedAt(String row, String list, String quantity) =>
-      """$row auf $list wurde von Hand gesetzt, bleibt bei $quantity""";
+      """$row auf $list ist bei × $quantity angeheftet""";
 
   /// ```dart
-  /// "$row auf $list wurde von Hand gesetzt, bleibt wie es ist"
+  /// "$row auf $list ist angeheftet"
   /// ```
-  String pinned(String row, String list) =>
-      """$row auf $list wurde von Hand gesetzt, bleibt wie es ist""";
+  String pinned(String row, String list) => """$row auf $list ist angeheftet""";
 
   /// ```dart
   /// "Nicht mehr nötig: $row auf $list"
@@ -6406,20 +6405,20 @@ class RestockStockMessagesDe extends RestockStockMessages {
   String restocks(String items) => """Füllt nach: $items""";
 
   /// ```dart
-  /// "× $quantity · von Hand gesetzt"
+  /// "× $quantity"
   /// ```
-  String setByHand(String quantity) => """× $quantity · von Hand gesetzt""";
+  String pinnedChip(String quantity) => """× $quantity""";
 
   /// ```dart
-  /// "Von Hand gesetzt"
+  /// "Angeheftet"
   /// ```
-  String get setByHandBare => """Von Hand gesetzt""";
+  String get pinnedChipBare => """Angeheftet""";
 
   /// ```dart
-  /// "Von Hand gesetzt. Tippen, damit der Bestand es setzt."
+  /// "Angeheftet, der Bestand ändert es nicht. Tippen zum Lösen."
   /// ```
-  String get setByHandTooltip =>
-      """Von Hand gesetzt. Tippen, damit der Bestand es setzt.""";
+  String get pinnedChipTooltip =>
+      """Angeheftet, der Bestand ändert es nicht. Tippen zum Lösen.""";
 
   /// ```dart
   /// "Nicht mehr nötig"
@@ -10245,9 +10244,9 @@ Passwort: pantry-rocks""",
   """stock.links.pickerFailed""":
       """Checklisten-Einträge konnten nicht geladen werden. Prüfe die Verbindung und versuche es erneut.""",
   """stock.links.cancel""": """Abbrechen""",
-  """stock.restock.setByHandBare""": """Von Hand gesetzt""",
-  """stock.restock.setByHandTooltip""":
-      """Von Hand gesetzt. Tippen, damit der Bestand es setzt.""",
+  """stock.restock.pinnedChipBare""": """Angeheftet""",
+  """stock.restock.pinnedChipTooltip""":
+      """Angeheftet, der Bestand ändert es nicht. Tippen zum Lösen.""",
   """stock.restock.noLongerNeeded""": """Nicht mehr nötig""",
   """notesWall.noNotes""": """Noch keine Notizen.""",
   """notesWall.failedToLoad""": """Notizen konnten nicht geladen werden.""",

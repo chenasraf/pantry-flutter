@@ -1186,8 +1186,8 @@ stock:
     revivedQuantity(String list, String row, String quantity): "Wieder auf $list: $row × $quantity"
     revived(String list, String row): "Wieder auf $list: $row"
     changed(String list, String row, String quantity): "$list: $row jetzt × $quantity"
-    pinnedAt(String row, String list, String quantity): "$row auf $list wurde von Hand gesetzt, bleibt bei $quantity"
-    pinned(String row, String list): "$row auf $list wurde von Hand gesetzt, bleibt wie es ist"
+    pinnedAt(String row, String list, String quantity): "$row auf $list ist bei × $quantity angeheftet"
+    pinned(String row, String list): "$row auf $list ist angeheftet"
     recovered(String row, String list): "Nicht mehr nötig: $row auf $list"
     linked(String item, String row, String list): "$item mit $row auf $list verknüpft"
     unlinked(String item, String row, String list): "Verknüpfung von $item mit $row auf $list gelöst. Es kommt auf keine Einkaufsliste."
@@ -1205,9 +1205,9 @@ stock:
     uncheckToUndo(String restock): "$restock · zum Rückgängigmachen abhaken aufheben"
     source(String item, String inventory): "$item ($inventory)"
     restocks(String items): "Füllt nach: $items"
-    setByHand(String quantity): "× $quantity · von Hand gesetzt"
-    setByHandBare: Von Hand gesetzt
-    setByHandTooltip: Von Hand gesetzt. Tippen, damit der Bestand es setzt.
+    pinnedChip(String quantity): "× $quantity"
+    pinnedChipBare: Angeheftet
+    pinnedChipTooltip: Angeheftet, der Bestand ändert es nicht. Tippen zum Lösen.
     noLongerNeeded: Nicht mehr nötig
 
 notesWall:

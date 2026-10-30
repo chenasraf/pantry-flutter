@@ -6292,16 +6292,15 @@ class RestockStockMessagesFr extends RestockStockMessages {
       """$list : $row maintenant × $quantity""";
 
   /// ```dart
-  /// "$row sur $list a été fixé à la main, laissé à $quantity"
+  /// "$row sur $list est épinglé à × $quantity"
   /// ```
   String pinnedAt(String row, String list, String quantity) =>
-      """$row sur $list a été fixé à la main, laissé à $quantity""";
+      """$row sur $list est épinglé à × $quantity""";
 
   /// ```dart
-  /// "$row sur $list a été fixé à la main, laissé tel quel"
+  /// "$row sur $list est épinglé"
   /// ```
-  String pinned(String row, String list) =>
-      """$row sur $list a été fixé à la main, laissé tel quel""";
+  String pinned(String row, String list) => """$row sur $list est épinglé""";
 
   /// ```dart
   /// "Plus nécessaire : $row sur $list"
@@ -6400,20 +6399,20 @@ class RestockStockMessagesFr extends RestockStockMessages {
   String restocks(String items) => """Réapprovisionne $items""";
 
   /// ```dart
-  /// "× $quantity · fixé à la main"
+  /// "× $quantity"
   /// ```
-  String setByHand(String quantity) => """× $quantity · fixé à la main""";
+  String pinnedChip(String quantity) => """× $quantity""";
 
   /// ```dart
-  /// "Fixé à la main"
+  /// "Épinglé"
   /// ```
-  String get setByHandBare => """Fixé à la main""";
+  String get pinnedChipBare => """Épinglé""";
 
   /// ```dart
-  /// "Fixé à la main. Touchez pour laisser le stock le fixer."
+  /// "Épinglé, le stock n'y touche pas. Touchez pour désépingler."
   /// ```
-  String get setByHandTooltip =>
-      """Fixé à la main. Touchez pour laisser le stock le fixer.""";
+  String get pinnedChipTooltip =>
+      """Épinglé, le stock n'y touche pas. Touchez pour désépingler.""";
 
   /// ```dart
   /// "Plus nécessaire"
@@ -10239,9 +10238,9 @@ Mot de passe : pantry-rocks""",
   """stock.links.pickerFailed""":
       """Impossible de charger les articles. Vérifiez la connexion et réessayez.""",
   """stock.links.cancel""": """Annuler""",
-  """stock.restock.setByHandBare""": """Fixé à la main""",
-  """stock.restock.setByHandTooltip""":
-      """Fixé à la main. Touchez pour laisser le stock le fixer.""",
+  """stock.restock.pinnedChipBare""": """Épinglé""",
+  """stock.restock.pinnedChipTooltip""":
+      """Épinglé, le stock n'y touche pas. Touchez pour désépingler.""",
   """stock.restock.noLongerNeeded""": """Plus nécessaire""",
   """notesWall.noNotes""": """Aucune note pour le moment.""",
   """notesWall.failedToLoad""": """Impossible de charger les notes.""",

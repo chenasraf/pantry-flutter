@@ -1186,8 +1186,8 @@ stock:
     revivedQuantity(String list, String row, String quantity): "De nuevo en $list: $row × $quantity"
     revived(String list, String row): "De nuevo en $list: $row"
     changed(String list, String row, String quantity): "$list: $row ahora × $quantity"
-    pinnedAt(String row, String list, String quantity): "$row en $list se fijó a mano, se queda en $quantity"
-    pinned(String row, String list): "$row en $list se fijó a mano, se queda como está"
+    pinnedAt(String row, String list, String quantity): "$row en $list está fijado en × $quantity"
+    pinned(String row, String list): "$row en $list está fijado"
     recovered(String row, String list): "Ya no hace falta: $row en $list"
     linked(String item, String row, String list): "$item vinculado a $row en $list"
     unlinked(String item, String row, String list): "$item desvinculado de $row en $list. No se añadirá a ninguna lista de la compra."
@@ -1205,9 +1205,9 @@ stock:
     uncheckToUndo(String restock): "$restock · desmarca para deshacer"
     source(String item, String inventory): "$item ($inventory)"
     restocks(String items): "Repone $items"
-    setByHand(String quantity): "× $quantity · fijado a mano"
-    setByHandBare: Fijado a mano
-    setByHandTooltip: Fijado a mano. Toca para que lo fijen las existencias.
+    pinnedChip(String quantity): "× $quantity"
+    pinnedChipBare: Fijado
+    pinnedChipTooltip: Fijado, las existencias no lo cambian. Toca para soltarlo.
     noLongerNeeded: Ya no hace falta
 
 notesWall:

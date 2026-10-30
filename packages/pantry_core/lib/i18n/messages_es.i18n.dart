@@ -6288,16 +6288,15 @@ class RestockStockMessagesEs extends RestockStockMessages {
       """$list: $row ahora × $quantity""";
 
   /// ```dart
-  /// "$row en $list se fijó a mano, se queda en $quantity"
+  /// "$row en $list está fijado en × $quantity"
   /// ```
   String pinnedAt(String row, String list, String quantity) =>
-      """$row en $list se fijó a mano, se queda en $quantity""";
+      """$row en $list está fijado en × $quantity""";
 
   /// ```dart
-  /// "$row en $list se fijó a mano, se queda como está"
+  /// "$row en $list está fijado"
   /// ```
-  String pinned(String row, String list) =>
-      """$row en $list se fijó a mano, se queda como está""";
+  String pinned(String row, String list) => """$row en $list está fijado""";
 
   /// ```dart
   /// "Ya no hace falta: $row en $list"
@@ -6396,20 +6395,20 @@ class RestockStockMessagesEs extends RestockStockMessages {
   String restocks(String items) => """Repone $items""";
 
   /// ```dart
-  /// "× $quantity · fijado a mano"
+  /// "× $quantity"
   /// ```
-  String setByHand(String quantity) => """× $quantity · fijado a mano""";
+  String pinnedChip(String quantity) => """× $quantity""";
 
   /// ```dart
-  /// "Fijado a mano"
+  /// "Fijado"
   /// ```
-  String get setByHandBare => """Fijado a mano""";
+  String get pinnedChipBare => """Fijado""";
 
   /// ```dart
-  /// "Fijado a mano. Toca para que lo fijen las existencias."
+  /// "Fijado, las existencias no lo cambian. Toca para soltarlo."
   /// ```
-  String get setByHandTooltip =>
-      """Fijado a mano. Toca para que lo fijen las existencias.""";
+  String get pinnedChipTooltip =>
+      """Fijado, las existencias no lo cambian. Toca para soltarlo.""";
 
   /// ```dart
   /// "Ya no hace falta"
@@ -10226,9 +10225,9 @@ Contraseña: pantry-rocks""",
   """stock.links.pickerFailed""":
       """No se pudieron cargar los artículos. Comprueba la conexión e inténtalo de nuevo.""",
   """stock.links.cancel""": """Cancelar""",
-  """stock.restock.setByHandBare""": """Fijado a mano""",
-  """stock.restock.setByHandTooltip""":
-      """Fijado a mano. Toca para que lo fijen las existencias.""",
+  """stock.restock.pinnedChipBare""": """Fijado""",
+  """stock.restock.pinnedChipTooltip""":
+      """Fijado, las existencias no lo cambian. Toca para soltarlo.""",
   """stock.restock.noLongerNeeded""": """Ya no hace falta""",
   """notesWall.noNotes""": """Aún no hay notas.""",
   """notesWall.failedToLoad""": """No se pudieron cargar las notas.""",

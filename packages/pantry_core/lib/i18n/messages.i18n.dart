@@ -6219,16 +6219,15 @@ class RestockStockMessages {
       """$list: $row now × $quantity""";
 
   /// ```dart
-  /// "$row on $list was set by hand, left at $quantity"
+  /// "$row on $list is pinned at × $quantity"
   /// ```
   String pinnedAt(String row, String list, String quantity) =>
-      """$row on $list was set by hand, left at $quantity""";
+      """$row on $list is pinned at × $quantity""";
 
   /// ```dart
-  /// "$row on $list was set by hand, left as it is"
+  /// "$row on $list is pinned"
   /// ```
-  String pinned(String row, String list) =>
-      """$row on $list was set by hand, left as it is""";
+  String pinned(String row, String list) => """$row on $list is pinned""";
 
   /// ```dart
   /// "No longer needed: $row on $list"
@@ -6326,19 +6325,20 @@ class RestockStockMessages {
   String restocks(String items) => """Restocks $items""";
 
   /// ```dart
-  /// "× $quantity · set by hand"
+  /// "× $quantity"
   /// ```
-  String setByHand(String quantity) => """× $quantity · set by hand""";
+  String pinnedChip(String quantity) => """× $quantity""";
 
   /// ```dart
-  /// "Set by hand"
+  /// "Pinned"
   /// ```
-  String get setByHandBare => """Set by hand""";
+  String get pinnedChipBare => """Pinned""";
 
   /// ```dart
-  /// "Set by hand. Tap to let stock set it."
+  /// "Pinned, so stock leaves it. Tap to unpin."
   /// ```
-  String get setByHandTooltip => """Set by hand. Tap to let stock set it.""";
+  String get pinnedChipTooltip =>
+      """Pinned, so stock leaves it. Tap to unpin.""";
 
   /// ```dart
   /// "No longer needed"
@@ -10080,9 +10080,9 @@ Password: pantry-rocks""",
   """stock.links.pickerFailed""":
       """Could not load checklist items. Check your connection and try again.""",
   """stock.links.cancel""": """Cancel""",
-  """stock.restock.setByHandBare""": """Set by hand""",
-  """stock.restock.setByHandTooltip""":
-      """Set by hand. Tap to let stock set it.""",
+  """stock.restock.pinnedChipBare""": """Pinned""",
+  """stock.restock.pinnedChipTooltip""":
+      """Pinned, so stock leaves it. Tap to unpin.""",
   """stock.restock.noLongerNeeded""": """No longer needed""",
   """notesWall.noNotes""": """No notes yet.""",
   """notesWall.failedToLoad""": """Failed to load notes.""",

@@ -6228,16 +6228,15 @@ class RestockStockMessagesHe extends RestockStockMessages {
       """$list: $row עכשיו × $quantity""";
 
   /// ```dart
-  /// "$row ב$list נקבע ידנית ונשאר על $quantity"
+  /// "$row ב$list מוצמד על × $quantity"
   /// ```
   String pinnedAt(String row, String list, String quantity) =>
-      """$row ב$list נקבע ידנית ונשאר על $quantity""";
+      """$row ב$list מוצמד על × $quantity""";
 
   /// ```dart
-  /// "$row ב$list נקבע ידנית ונשאר כפי שהוא"
+  /// "$row ב$list מוצמד"
   /// ```
-  String pinned(String row, String list) =>
-      """$row ב$list נקבע ידנית ונשאר כפי שהוא""";
+  String pinned(String row, String list) => """$row ב$list מוצמד""";
 
   /// ```dart
   /// "כבר לא נחוץ: $row ב$list"
@@ -6334,19 +6333,20 @@ class RestockStockMessagesHe extends RestockStockMessages {
   String restocks(String items) => """מחדש מלאי: $items""";
 
   /// ```dart
-  /// "× $quantity · נקבע ידנית"
+  /// "× $quantity"
   /// ```
-  String setByHand(String quantity) => """× $quantity · נקבע ידנית""";
+  String pinnedChip(String quantity) => """× $quantity""";
 
   /// ```dart
-  /// "נקבע ידנית"
+  /// "מוצמד"
   /// ```
-  String get setByHandBare => """נקבע ידנית""";
+  String get pinnedChipBare => """מוצמד""";
 
   /// ```dart
-  /// "נקבע ידנית. הקשה תחזיר את הקביעה למלאי."
+  /// "מוצמד, המלאי לא משנה אותו. הקשה מבטלת את ההצמדה."
   /// ```
-  String get setByHandTooltip => """נקבע ידנית. הקשה תחזיר את הקביעה למלאי.""";
+  String get pinnedChipTooltip =>
+      """מוצמד, המלאי לא משנה אותו. הקשה מבטלת את ההצמדה.""";
 
   /// ```dart
   /// "כבר לא נחוץ"
@@ -10057,9 +10057,9 @@ Map<String, String> get messagesHeMap => {
   """stock.links.pickerFailed""":
       """לא ניתן היה לטעון פריטים. יש לבדוק את החיבור ולנסות שוב.""",
   """stock.links.cancel""": """ביטול""",
-  """stock.restock.setByHandBare""": """נקבע ידנית""",
-  """stock.restock.setByHandTooltip""":
-      """נקבע ידנית. הקשה תחזיר את הקביעה למלאי.""",
+  """stock.restock.pinnedChipBare""": """מוצמד""",
+  """stock.restock.pinnedChipTooltip""":
+      """מוצמד, המלאי לא משנה אותו. הקשה מבטלת את ההצמדה.""",
   """stock.restock.noLongerNeeded""": """כבר לא נחוץ""",
   """notesWall.noNotes""": """אין הערות עדיין.""",
   """notesWall.failedToLoad""": """טעינת ההערות נכשלה.""",
