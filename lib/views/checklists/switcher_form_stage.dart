@@ -257,31 +257,57 @@ class _ListFormStageState extends State<ListFormStage> {
           ),
           // The stage lives in a bottom sheet sized to its content, so the
           // fields scroll among themselves rather than pushing the save button
-          // off-screen.
-          ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * 0.5,
-            ),
-            child: SingleChildScrollView(
-              // Room above the name field for its floating label, which the
-              // scroll view would otherwise clip.
-              padding: const EdgeInsetsDirectional.only(top: 8),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TextField(
-                    controller: _nameCtrl,
-                    autofocus: true,
-                    textCapitalization: TextCapitalization.sentences,
-                    decoration: InputDecoration(
-                      labelText: m.checklists.listName,
+          // off-screen — and give way further to the keyboard, which takes its
+          // height out of the same sheet.
+          Flexible(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.5,
+              ),
+              child: SingleChildScrollView(
+                // Room above the name field for its floating label, which the
+                // scroll view would otherwise clip.
+                padding: const EdgeInsetsDirectional.only(top: 8),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    TextField(
+                      controller: _nameCtrl,
+                      autofocus: true,
+                      textCapitalization: TextCapitalization.sentences,
+                      decoration: InputDecoration(
+                        labelText: m.checklists.listName,
+                      ),
                     ),
-                  ),
-                  if (_supportsListColor) ...[
+                    if (_supportsListColor) ...[
+                      const SizedBox(height: 16),
+                      Text(
+                        m.checklists.listColor.toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.6,
+                          color: cs.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Wrap(
+                        spacing: 12,
+                        runSpacing: 12,
+                        children: [
+                          for (final hex in kListColorSwatches)
+                            SwitcherColorSwatch(
+                              color: parseHexColor(hex)!,
+                              selected: hex == _color,
+                              onTap: () => setState(() => _color = hex),
+                            ),
+                        ],
+                      ),
+                    ],
                     const SizedBox(height: 16),
                     Text(
-                      m.checklists.listColor.toUpperCase(),
+                      m.checklists.listIcon.toUpperCase(),
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
@@ -290,162 +316,140 @@ class _ListFormStageState extends State<ListFormStage> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: [
-                        for (final hex in kListColorSwatches)
-                          SwitcherColorSwatch(
-                            color: parseHexColor(hex)!,
-                            selected: hex == _color,
-                            onTap: () => setState(() => _color = hex),
-                          ),
-                      ],
-                    ),
-                  ],
-                  const SizedBox(height: 16),
-                  Text(
-                    m.checklists.listIcon.toUpperCase(),
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.6,
-                      color: cs.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  if (PlatformInfo.isDesktopHost)
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        for (final entry in checklistIconMap.entries)
-                          IconChip(
-                            icon: entry.value,
-                            selected: entry.key == _icon,
-                            color: selectedColor,
-                            onTap: () => setState(() => _icon = entry.key),
-                          ),
-                      ],
-                    )
-                  else
-                    SizedBox(
-                      height: 48,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
+                    if (PlatformInfo.isDesktopHost)
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
                         children: [
-                          for (final entry in checklistIconMap.entries) ...[
+                          for (final entry in checklistIconMap.entries)
                             IconChip(
                               icon: entry.value,
                               selected: entry.key == _icon,
                               color: selectedColor,
                               onTap: () => setState(() => _icon = entry.key),
                             ),
-                            const SizedBox(width: 8),
-                          ],
                         ],
-                      ),
-                    ),
-                  if (_supportsRecurrenceDefault) ...[
-                    const SizedBox(height: 16),
-                    Text(
-                      m.checklists.listRecurrence.label.toUpperCase(),
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.6,
-                        color: cs.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    for (final (index, mode)
-                        in ListRecurrenceMode.values.indexed) ...[
-                      if (index > 0) const SizedBox(height: 8),
-                      LifecycleRow(
-                        label: _modeLabel(mode),
-                        body: _modeHint(mode),
-                        selected: mode == _recurrenceMode,
-                        onTap: () => setState(() => _recurrenceMode = mode),
-                      ),
-                    ],
-                    if (_recurringDefault) ...[
-                      const SizedBox(height: 10),
-                      RecurrenceInline(
-                        state: _recurrence,
-                        onChanged: () => setState(() {}),
-                      ),
-                    ],
-                  ],
-                  if (_attachmentsReady) ...[
-                    const SizedBox(height: 16),
-                    if ((widget.existing?.kind ?? widget.kind) ==
-                        ListKind.template)
-                      TemplateListsField(
-                        controller: widget.controller,
-                        value: _templateLists,
-                        onChanged: (v) => setState(() => _templateLists = v),
                       )
                     else
-                      ListTemplatesField(
-                        controller: widget.controller,
-                        templateIds: _templateIds,
-                        everyListTemplateIds: _everyListTemplateIds,
-                        onChanged: (ids) => setState(() => _templateIds = ids),
-                      ),
-                  ],
-                  if (_managesItemDefaults && widget.existing != null) ...[
-                    const SizedBox(height: 16),
-                    InkWell(
-                      borderRadius: BorderRadius.circular(SurfaceRadius.card),
-                      onTap: () => showItemDefaults(
-                        context,
-                        widget.controller,
-                        widget.existing!,
-                      ),
-                      child: Ink(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
-                          14,
-                          12,
-                          10,
-                          12,
-                        ),
-                        decoration: surfaces.card(),
-                        child: Row(
+                      SizedBox(
+                        height: 48,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
                           children: [
-                            Icon(Icons.tune, color: cs.primary),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    m.checklists.itemDefaults.title,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    m.checklists.itemDefaults.intro,
-                                    style: TextStyle(
-                                      fontSize: 11.5,
-                                      color: cs.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ],
+                            for (final entry in checklistIconMap.entries) ...[
+                              IconChip(
+                                icon: entry.value,
+                                selected: entry.key == _icon,
+                                color: selectedColor,
+                                onTap: () => setState(() => _icon = entry.key),
                               ),
-                            ),
-                            Icon(
-                              Icons.chevron_right,
-                              color: cs.onSurfaceVariant,
-                            ),
+                              const SizedBox(width: 8),
+                            ],
                           ],
                         ),
                       ),
-                    ),
+                    if (_supportsRecurrenceDefault) ...[
+                      const SizedBox(height: 16),
+                      Text(
+                        m.checklists.listRecurrence.label.toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.6,
+                          color: cs.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      for (final (index, mode)
+                          in ListRecurrenceMode.values.indexed) ...[
+                        if (index > 0) const SizedBox(height: 8),
+                        LifecycleRow(
+                          label: _modeLabel(mode),
+                          body: _modeHint(mode),
+                          selected: mode == _recurrenceMode,
+                          onTap: () => setState(() => _recurrenceMode = mode),
+                        ),
+                      ],
+                      if (_recurringDefault) ...[
+                        const SizedBox(height: 10),
+                        RecurrenceInline(
+                          state: _recurrence,
+                          onChanged: () => setState(() {}),
+                        ),
+                      ],
+                    ],
+                    if (_attachmentsReady) ...[
+                      const SizedBox(height: 16),
+                      if ((widget.existing?.kind ?? widget.kind) ==
+                          ListKind.template)
+                        TemplateListsField(
+                          controller: widget.controller,
+                          value: _templateLists,
+                          onChanged: (v) => setState(() => _templateLists = v),
+                        )
+                      else
+                        ListTemplatesField(
+                          controller: widget.controller,
+                          templateIds: _templateIds,
+                          everyListTemplateIds: _everyListTemplateIds,
+                          onChanged: (ids) =>
+                              setState(() => _templateIds = ids),
+                        ),
+                    ],
+                    if (_managesItemDefaults && widget.existing != null) ...[
+                      const SizedBox(height: 16),
+                      InkWell(
+                        borderRadius: BorderRadius.circular(SurfaceRadius.card),
+                        onTap: () => showItemDefaults(
+                          context,
+                          widget.controller,
+                          widget.existing!,
+                        ),
+                        child: Ink(
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                            14,
+                            12,
+                            10,
+                            12,
+                          ),
+                          decoration: surfaces.card(),
+                          child: Row(
+                            children: [
+                              Icon(Icons.tune, color: cs.primary),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      m.checklists.itemDefaults.title,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      m.checklists.itemDefaults.intro,
+                                      style: TextStyle(
+                                        fontSize: 11.5,
+                                        color: cs.onSurfaceVariant,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Icon(
+                                Icons.chevron_right,
+                                color: cs.onSurfaceVariant,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
           ),

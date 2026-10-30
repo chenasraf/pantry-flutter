@@ -136,4 +136,42 @@ void main() {
     expect(button, findsOneWidget);
     expect(tester.getBottomLeft(button).dy, lessThanOrEqualTo(700));
   });
+
+  testWidgets('the save button stays above the keyboard', (tester) async {
+    tester.view.physicalSize = const Size(400, 700);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+    const keyboard = 330.0;
+
+    seedRecurrenceDefault(true);
+    await tester.pumpWidget(
+      wrapForTest(
+        Builder(
+          builder: (context) => MediaQuery(
+            data: MediaQuery.of(
+              context,
+            ).copyWith(viewInsets: const EdgeInsets.only(bottom: keyboard)),
+            // As the switcher sheet holds its stage.
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: ListFormStage(
+                    controller: controller,
+                    onBack: () {},
+                    onSaved: () {},
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    final button = find.text(m.checklists.createListButton);
+    expect(tester.getBottomLeft(button).dy, lessThanOrEqualTo(700 - keyboard));
+  });
 }

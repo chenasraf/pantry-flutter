@@ -110,7 +110,19 @@ class _DropdownPositioner extends StatelessWidget {
     );
     return Stack(
       children: [
-        Positioned(left: left, top: top, width: _panelWidth, child: child),
+        Positioned(
+          left: left,
+          top: top,
+          width: _panelWidth,
+          // Bounded so a tall stage scrolls within the window instead of
+          // running off its bottom edge.
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: screen.height - top - _screenPad,
+            ),
+            child: child,
+          ),
+        ),
       ],
     );
   }
