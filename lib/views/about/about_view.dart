@@ -93,10 +93,9 @@ class _AboutViewState extends State<AboutView> {
             value: 'Chen Asraf',
           ),
           _AboutTile(
-            icon: Icons.email_outlined,
-            label: a.email,
-            value: 'contact@casraf.dev',
-            onTap: () => _launch('mailto:contact@casraf.dev'),
+            icon: Icons.menu_book_outlined,
+            label: a.documentation,
+            onTap: () => _launch('https://pantry.casraf.dev/docs'),
           ),
           _AboutTile(
             icon: Icons.code,
@@ -117,7 +116,7 @@ class _AboutViewState extends State<AboutView> {
           _AboutTile(
             icon: Icons.privacy_tip_outlined,
             label: a.privacyPolicy,
-            onTap: () => _launch('https://casraf.dev/pantry-privacy-policy'),
+            onTap: () => _launch('https://pantry.casraf.dev/privacy'),
           ),
         ],
       ),

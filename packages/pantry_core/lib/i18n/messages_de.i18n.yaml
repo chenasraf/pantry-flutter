@@ -211,7 +211,7 @@ notificationsIntro:
 about:
   title: "Über"
   developer: Entwickler
-  email: E-Mail
+  documentation: Dokumentation
   repository: Quellcode
   nextcloudApp: Nextcloud-App
   privacyPolicy: "Datenschutzerklärung"

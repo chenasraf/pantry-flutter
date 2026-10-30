@@ -1182,9 +1182,9 @@ class AboutMessagesHe extends AboutMessages {
   String get developer => """מפתח""";
 
   /// ```dart
-  /// "דוא"ל"
+  /// "תיעוד"
   /// ```
-  String get email => """דוא"ל""";
+  String get documentation => """תיעוד""";
 
   /// ```dart
   /// "קוד מקור"
@@ -9220,7 +9220,7 @@ Map<String, String> get messagesHeMap => {
   """notificationsIntro.ok""": """אישור""",
   """about.title""": """אודות""",
   """about.developer""": """מפתח""",
-  """about.email""": """דוא"ל""",
+  """about.documentation""": """תיעוד""",
   """about.repository""": """קוד מקור""",
   """about.nextcloudApp""": """אפליקציית Nextcloud""",
   """about.privacyPolicy""": """מדיניות פרטיות""",

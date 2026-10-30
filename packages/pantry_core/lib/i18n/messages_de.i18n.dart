@@ -1188,9 +1188,9 @@ class AboutMessagesDe extends AboutMessages {
   String get developer => """Entwickler""";
 
   /// ```dart
-  /// "E-Mail"
+  /// "Dokumentation"
   /// ```
-  String get email => """E-Mail""";
+  String get documentation => """Dokumentation""";
 
   /// ```dart
   /// "Quellcode"
@@ -9339,7 +9339,7 @@ Passwort: pantry-rocks""",
   """notificationsIntro.ok""": """OK""",
   """about.title""": """Über""",
   """about.developer""": """Entwickler""",
-  """about.email""": """E-Mail""",
+  """about.documentation""": """Dokumentation""",
   """about.repository""": """Quellcode""",
   """about.nextcloudApp""": """Nextcloud-App""",
   """about.privacyPolicy""": """Datenschutzerklärung""",

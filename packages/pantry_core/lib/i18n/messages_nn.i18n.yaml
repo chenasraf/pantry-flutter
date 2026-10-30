@@ -281,7 +281,7 @@ notificationsIntro:
 about:
   title: Om
   developer: Utviklar
-  email: Epost
+  documentation: Dokumentasjon
   repository: Kjeldekode
   nextcloudApp: Nextcloud-app
   privacyPolicy: Personvern

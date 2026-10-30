@@ -1185,9 +1185,9 @@ class AboutMessagesNn extends AboutMessages {
   String get developer => """Utviklar""";
 
   /// ```dart
-  /// "Epost"
+  /// "Dokumentasjon"
   /// ```
-  String get email => """Epost""";
+  String get documentation => """Dokumentasjon""";
 
   /// ```dart
   /// "Kjeldekode"
@@ -9262,7 +9262,7 @@ Passord: pantry""",
   """notificationsIntro.ok""": """Ok""",
   """about.title""": """Om""",
   """about.developer""": """Utviklar""",
-  """about.email""": """Epost""",
+  """about.documentation""": """Dokumentasjon""",
   """about.repository""": """Kjeldekode""",
   """about.nextcloudApp""": """Nextcloud-app""",
   """about.privacyPolicy""": """Personvern""",

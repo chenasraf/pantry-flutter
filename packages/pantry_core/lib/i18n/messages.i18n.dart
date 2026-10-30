@@ -1182,9 +1182,9 @@ class AboutMessages {
   String get developer => """Developer""";
 
   /// ```dart
-  /// "Email"
+  /// "Documentation"
   /// ```
-  String get email => """Email""";
+  String get documentation => """Documentation""";
 
   /// ```dart
   /// "Source code"
@@ -9230,7 +9230,7 @@ Password: pantry-rocks""",
   """notificationsIntro.ok""": """OK""",
   """about.title""": """About""",
   """about.developer""": """Developer""",
-  """about.email""": """Email""",
+  """about.documentation""": """Documentation""",
   """about.repository""": """Source code""",
   """about.nextcloudApp""": """Nextcloud app""",
   """about.privacyPolicy""": """Privacy policy""",

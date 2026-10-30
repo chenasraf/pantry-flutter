@@ -211,7 +211,7 @@ notificationsIntro:
 about:
   title: אודות
   developer: מפתח
-  email: דוא"ל
+  documentation: תיעוד
   repository: קוד מקור
   nextcloudApp: אפליקציית Nextcloud
   privacyPolicy: מדיניות פרטיות
