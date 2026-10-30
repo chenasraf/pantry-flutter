@@ -357,6 +357,34 @@ class SyncManager {
     return out;
   }
 
+  /// The sort order each [entity] record in [houseId] takes from the latest
+  /// still-queued house-wide reorder, keyed by both its real id (once bound)
+  /// and its temp id. Empty when no reorder is queued.
+  ///
+  /// Read when the records are fetched, so a fetch that lands before the
+  /// queue drains cannot put back the order the user just dragged away from.
+  Map<int, int> pendingSortOrders(SyncEntity entity, int houseId) {
+    SyncOp? latest;
+    for (final raw in _queue.all()) {
+      if (raw.entity == entity &&
+          raw.op == SyncOpKind.reorder &&
+          raw.houseId == houseId) {
+        latest = raw;
+      }
+    }
+    if (latest == null) return const {};
+    final out = <int, int>{};
+    final raw = (latest.body['order'] as List? ?? const []).cast<Map>();
+    final rewritten =
+        (_remap.rewrite(latest).body['order'] as List? ?? const []).cast<Map>();
+    for (final order in [raw, rewritten]) {
+      for (final e in order) {
+        out[e['id'] as int] = e['sortOrder'] as int;
+      }
+    }
+    return out;
+  }
+
   /// Account-pref values still queued, latest per key.
   ///
   /// Read when the server's prefs are fetched, so a fetch that lands before
@@ -752,6 +780,10 @@ class SyncManager {
     }
     if (op.entity == SyncEntity.storeCategoryOrder) {
       addAll(SyncEntity.category, op.body['order']);
+    } else if (op.op == SyncOpKind.reorder) {
+      for (final entry in (op.body['order'] as List? ?? const [])) {
+        if (entry is Map) add(op.entity, entry['id']);
+      }
     }
     return refs;
   }

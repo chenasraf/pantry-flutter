@@ -7900,6 +7900,11 @@ class SyncMessagesNn extends SyncMessages {
   String get syncing => """Synkroniserer endringar…""";
 
   /// ```dart
+  /// "Alle endringar er lagra"
+  /// ```
+  String get synced => """Alle endringar er lagra""";
+
+  /// ```dart
   /// "${_plural(count, one: '1 endring ventar på synkronisering', many: '${count} endringar venter på synkronisering')}"
   /// ```
   String pendingChanges(int count) =>
@@ -10467,6 +10472,7 @@ Passord: pantry""",
   """recurrence.ordinalInline.last""": """siste""",
   """sync.offline""": """Fråkobla""",
   """sync.syncing""": """Synkroniserer endringar…""",
+  """sync.synced""": """Alle endringar er lagra""",
   """sync.syncError""": """Kunne ikkje synkronisere endringar""",
   """sync.failedOne""":
       """Kunne ikkje lagre ei endring: tenaren feila gong på gong.""",

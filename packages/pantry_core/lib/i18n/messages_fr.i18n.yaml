@@ -1511,6 +1511,7 @@ recurrence:
 sync:
   offline: Hors ligne
   syncing: "Synchronisation des modifications…"
+  synced: "Toutes les modifications sont enregistrées"
   pendingChanges(int count): "${_plural(count, one: '1 modification en attente de synchronisation', many: '${count} modifications en attente de synchronisation')}"
   syncError: "Impossible de synchroniser les modifications"
   refusedNamed(String name, int status): "Impossible d'enregistrer « ${name} » : le serveur a refusé la modification (${status})."

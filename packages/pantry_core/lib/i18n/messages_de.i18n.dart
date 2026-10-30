@@ -7972,6 +7972,11 @@ class SyncMessagesDe extends SyncMessages {
   String get syncing => """Änderungen werden synchronisiert…""";
 
   /// ```dart
+  /// "Alle Änderungen gespeichert"
+  /// ```
+  String get synced => """Alle Änderungen gespeichert""";
+
+  /// ```dart
   /// "${_plural(count, one: '1 Änderung wartet auf Synchronisierung', many: '${count} Änderungen warten auf Synchronisierung')}"
   /// ```
   String pendingChanges(int count) =>
@@ -10600,6 +10605,7 @@ Passwort: pantry-rocks""",
   """recurrence.ordinalInline.last""": """letzten""",
   """sync.offline""": """Offline""",
   """sync.syncing""": """Änderungen werden synchronisiert…""",
+  """sync.synced""": """Alle Änderungen gespeichert""",
   """sync.syncError""": """Synchronisierung fehlgeschlagen""",
   """sync.failedOne""":
       """Eine Änderung konnte nicht gespeichert werden: Der Server hat wiederholt Fehler gemeldet.""",

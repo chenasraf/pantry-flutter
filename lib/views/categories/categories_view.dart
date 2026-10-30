@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/category.dart';
@@ -13,6 +15,7 @@ import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
 import 'package:pantry/views/categories/store_category_order_view.dart';
+import 'package:pantry/widgets/sync_status.dart';
 
 class CategoriesView extends StatefulWidget {
   final int houseId;
@@ -53,10 +56,36 @@ class _CategoriesViewState extends State<CategoriesView> {
   bool _isLoading = true;
   String? _error;
 
+  StreamSubscription<SyncOpApplied>? _appliedSub;
+
   @override
   void initState() {
     super.initState();
+    _appliedSub = SyncManager.instance.onApplied.listen(_onSyncApplied);
     _load();
+  }
+
+  @override
+  void dispose() {
+    _appliedSub?.cancel();
+    super.dispose();
+  }
+
+  /// Swap a created category's temp id for its server id, keeping its place
+  /// on screen; the server's sortOrder for it is house-relative and would
+  /// shuffle it against the locally renumbered rest.
+  void _onSyncApplied(SyncOpApplied applied) {
+    final op = applied.op;
+    final realId = applied.boundRealId;
+    if (op.entity != SyncEntity.category || op.houseId != widget.houseId) {
+      return;
+    }
+    if (realId == null || op.tempEntityId == null || !mounted) return;
+    final index = _categories.indexWhere((c) => c.id == op.tempEntityId);
+    if (index == -1) return;
+    setState(() {
+      _categories[index] = _categories[index].copyWith(id: realId);
+    });
   }
 
   Future<void> _load() async {
@@ -118,11 +147,10 @@ class _CategoriesViewState extends State<CategoriesView> {
 
   Future<void> _reorder(int oldIndex, int newIndex) async {
     if (_sort != 'custom') return;
-    setState(() {
-      final item = _categories.removeAt(oldIndex);
-      _categories.insert(newIndex, item);
-    });
-    _persistOrder(_categories);
+    if (oldIndex == newIndex) return;
+    final reordered = [..._categories];
+    reordered.insert(newIndex, reordered.removeAt(oldIndex));
+    _persistOrder(reordered);
   }
 
   /// Reorder within a single scope group. Only the dragged group's slice is
@@ -146,15 +174,23 @@ class _CategoriesViewState extends State<CategoriesView> {
     for (final g in _buildGroups(_categories)) {
       flat.addAll(g.listId == group.listId ? reordered : g.categories);
     }
-    setState(() => _categories = flat);
     _persistOrder(flat);
   }
 
+  /// Renumber [ordered] in place on screen as well as on the server: anything
+  /// that re-sorts later (a create, an edit) sorts by sortOrder, so stale
+  /// values would snap the list back to the order before the drag.
   void _persistOrder(List<Category> ordered) {
-    final order = <Map<String, int>>[];
-    for (var i = 0; i < ordered.length; i++) {
-      order.add({'id': ordered[i].id, 'sortOrder': i});
-    }
+    final renumbered = [
+      for (var i = 0; i < ordered.length; i++)
+        ordered[i].copyWith(sortOrder: i),
+    ];
+    setState(() => _categories = renumbered);
+    // Other screens read categories from the cache until their next fetch.
+    CategoryService.instance.cacheCategories(widget.houseId, renumbered);
+    final order = [
+      for (final c in renumbered) {'id': c.id, 'sortOrder': c.sortOrder},
+    ];
     SyncManager.instance.enqueue(
       SyncOp(
         uuid: SyncIds.newOpUuid(),
@@ -315,6 +351,7 @@ class _CategoriesViewState extends State<CategoriesView> {
       appBar: AppBar(
         title: Text(m.categories.manageTitle),
         actions: [
+          const SyncActivityIndicator(),
           PopupMenuButton<String>(
             icon: const Icon(Icons.sort),
             tooltip: '',

@@ -1511,6 +1511,7 @@ recurrence:
 sync:
   offline: לא מקוון
   syncing: מסנכרן שינויים…
+  synced: "כל השינויים נשמרו"
   pendingChanges(int count): "${_plural(count, one: 'שינוי אחד ממתין לסנכרון', two: '2 שינויים ממתינים לסנכרון', many: '${count} שינויים ממתינים לסנכרון')}"
   syncError: לא ניתן היה לסנכרן את השינויים
   refusedNamed(String name, int status): "לא ניתן היה לשמור את „${name}”: השרת דחה את השינוי (${status})."

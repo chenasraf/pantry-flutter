@@ -1521,6 +1521,7 @@ recurrence:
 sync:
   offline: Offline
   syncing: Syncing changes…
+  synced: "All changes saved"
   pendingChanges(int count): "${_plural(count, one: '1 change waiting to sync', many: '${count} changes waiting to sync')}"
   syncError: Couldn't sync changes
   refusedNamed(String name, int status): "Couldn't save “${name}”: the server refused the change (${status})."

@@ -1,6 +1,8 @@
 import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/cache_store.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
+import 'package:pantry_core/sync/sync_op.dart';
 
 /// Sentinel for [CategoryService.updateCategory]'s `listId`: pass it (the
 /// default) to omit `listId` from the PATCH entirely, leaving the scope
@@ -44,13 +46,23 @@ class CategoryService {
     cache.setKeyedList(_prefix, '$houseId', categories, (c) => c.toJson());
   }
 
+  /// The house's categories, with a still-queued reorder laid over the
+  /// fetched sortOrders so a fetch landing before it drains can't revert it.
   Future<List<Category>> getCategories(int houseId) async {
-    final categories = await ApiClient.instance.get<List, List<Category>>(
+    final fetched = await ApiClient.instance.get<List, List<Category>>(
       '/houses/$houseId/categories',
       fromJson: (data) => data
           .map((e) => Category.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
+    final pending = SyncManager.instance.pendingSortOrders(
+      SyncEntity.category,
+      houseId,
+    );
+    final categories = [
+      for (final c in fetched)
+        pending.containsKey(c.id) ? c.copyWith(sortOrder: pending[c.id]) : c,
+    ];
     cacheCategories(houseId, categories);
     return categories;
   }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/auth_service.dart';
@@ -162,4 +164,126 @@ class SyncStatusAvatarBadge extends StatelessWidget {
     if (color == scheme.primary) return scheme.onPrimary;
     return scheme.onSecondary;
   }
+}
+
+/// App-bar action that shows changes on their way to the server: a spinner
+/// while the queue drains, a brief check once it has, and the offline or
+/// error state while it can't. Unlike [SyncStatusAvatarBadge] it surfaces
+/// every online flush, for screens whose edits give no other sign of landing
+/// (a drag-to-reorder looks the same saved or not).
+class SyncActivityIndicator extends StatefulWidget {
+  const SyncActivityIndicator({super.key});
+
+  /// How long the "saved" check stays up after the queue drains.
+  @visibleForTesting
+  static Duration doneDuration = const Duration(seconds: 2);
+
+  @override
+  State<SyncActivityIndicator> createState() => _SyncActivityIndicatorState();
+}
+
+class _SyncActivityIndicatorState extends State<SyncActivityIndicator> {
+  final _manager = SyncManager.instance;
+  bool _wasBusy = false;
+  bool _showDone = false;
+  Timer? _doneTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _wasBusy = _isBusy;
+    _manager.status.addListener(_onChanged);
+    _manager.pendingCount.addListener(_onChanged);
+  }
+
+  @override
+  void dispose() {
+    _doneTimer?.cancel();
+    _manager.status.removeListener(_onChanged);
+    _manager.pendingCount.removeListener(_onChanged);
+    super.dispose();
+  }
+
+  bool get _isBusy =>
+      _manager.pendingCount.value > 0 &&
+      _manager.status.value == SyncStatus.syncing;
+
+  /// Status and pending count notify separately, so a drain passes through a
+  /// half-updated state (idle with one pending, or syncing with none). The
+  /// busy flag is held across it and only a full drain turns it into "done".
+  void _onChanged() {
+    final status = _manager.status.value;
+    final drained =
+        _manager.pendingCount.value == 0 && status == SyncStatus.idle;
+    if (_isBusy) {
+      _wasBusy = true;
+      _doneTimer?.cancel();
+      _showDone = false;
+    } else if (_wasBusy && drained) {
+      _wasBusy = false;
+      _showDone = true;
+      _doneTimer?.cancel();
+      _doneTimer = Timer(SyncActivityIndicator.doneDuration, () {
+        if (mounted) setState(() => _showDone = false);
+      });
+    } else if (status == SyncStatus.offline || status == SyncStatus.error) {
+      _wasBusy = false;
+    }
+    if (mounted) setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final status = _manager.status.value;
+    final pending = _manager.pendingCount.value;
+
+    final Widget? content;
+    if (status == SyncStatus.error) {
+      content = IconButton(
+        key: const ValueKey('error'),
+        icon: Icon(Icons.sync_problem, color: scheme.error),
+        tooltip: '${m.sync.syncError} · ${m.sync.retry}',
+        onPressed: _manager.flushNow,
+      );
+    } else if (status == SyncStatus.offline && pending > 0) {
+      content = Tooltip(
+        key: const ValueKey('offline'),
+        message: m.sync.pendingChanges(pending),
+        child: _slot(Icon(Icons.cloud_off_outlined, color: scheme.secondary)),
+      );
+    } else if (_isBusy) {
+      content = Tooltip(
+        key: const ValueKey('busy'),
+        message: m.sync.syncing,
+        child: _slot(
+          SizedBox.square(
+            dimension: 18,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: scheme.primary,
+            ),
+          ),
+        ),
+      );
+    } else if (_showDone) {
+      content = Tooltip(
+        key: const ValueKey('done'),
+        message: m.sync.synced,
+        child: _slot(Icon(Icons.cloud_done_outlined, color: scheme.primary)),
+      );
+    } else {
+      content = null;
+    }
+
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 200),
+      child: content ?? const SizedBox.shrink(key: ValueKey('none')),
+    );
+  }
+
+  /// Sized like an [IconButton] so the actions beside it don't shift when the
+  /// state changes between a tappable and a non-tappable one.
+  Widget _slot(Widget child) =>
+      SizedBox.square(dimension: 48, child: Center(child: child));
 }

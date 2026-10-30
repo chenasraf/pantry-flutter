@@ -7876,6 +7876,11 @@ class SyncMessages {
   String get syncing => """Syncing changes…""";
 
   /// ```dart
+  /// "All changes saved"
+  /// ```
+  String get synced => """All changes saved""";
+
+  /// ```dart
   /// "${_plural(count, one: '1 change waiting to sync', many: '${count} changes waiting to sync')}"
   /// ```
   String pendingChanges(int count) =>
@@ -10420,6 +10425,7 @@ Password: pantry-rocks""",
   """recurrence.ordinalInline.last""": """last""",
   """sync.offline""": """Offline""",
   """sync.syncing""": """Syncing changes…""",
+  """sync.synced""": """All changes saved""",
   """sync.syncError""": """Couldn't sync changes""",
   """sync.failedOne""": """Couldn't save a change: the server kept failing.""",
   """sync.retry""": """Retry now""",

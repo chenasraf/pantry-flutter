@@ -7954,6 +7954,11 @@ class SyncMessagesEs extends SyncMessages {
   String get syncing => """Sincronizando cambios…""";
 
   /// ```dart
+  /// "Todos los cambios guardados"
+  /// ```
+  String get synced => """Todos los cambios guardados""";
+
+  /// ```dart
   /// "${_plural(count, one: '1 cambio esperando a sincronizar', many: '${count} cambios esperando a sincronizar')}"
   /// ```
   String pendingChanges(int count) =>
@@ -10570,6 +10575,7 @@ Contraseña: pantry-rocks""",
   """recurrence.ordinalInline.last""": """último""",
   """sync.offline""": """Sin conexión""",
   """sync.syncing""": """Sincronizando cambios…""",
+  """sync.synced""": """Todos los cambios guardados""",
   """sync.syncError""": """No se pudieron sincronizar los cambios""",
   """sync.failedOne""":
       """No se pudo guardar un cambio: el servidor siguió fallando.""",

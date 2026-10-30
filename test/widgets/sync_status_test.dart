@@ -137,4 +137,56 @@ void main() {
       expect(result!.label, contains('2'));
     });
   });
+
+  group('SyncActivityIndicator', () {
+    Finder spinner() => find.byType(CircularProgressIndicator);
+    Finder done() => find.byIcon(Icons.cloud_done_outlined);
+
+    testWidgets('spins while syncing, then shows done and clears', (
+      tester,
+    ) async {
+      setState(status: SyncStatus.idle, hasBacklog: false);
+      await tester.pumpWidget(wrap(const SyncActivityIndicator()));
+      expect(spinner(), findsNothing);
+      expect(done(), findsNothing);
+
+      setState(status: SyncStatus.syncing, pending: 1, hasBacklog: false);
+      await tester.pump();
+      expect(spinner(), findsOneWidget);
+
+      setState(status: SyncStatus.idle, hasBacklog: false);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(spinner(), findsNothing);
+      expect(done(), findsOneWidget);
+
+      await tester.pump(SyncActivityIndicator.doneDuration);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(done(), findsNothing);
+    });
+
+    testWidgets('shows nothing on an idle screen that never synced', (
+      tester,
+    ) async {
+      setState(status: SyncStatus.idle, hasBacklog: false);
+      await tester.pumpWidget(wrap(const SyncActivityIndicator()));
+      await tester.pump(const Duration(seconds: 3));
+      expect(find.byType(Icon), findsNothing);
+      expect(spinner(), findsNothing);
+    });
+
+    testWidgets('shows offline with pending changes, and errors', (
+      tester,
+    ) async {
+      setState(status: SyncStatus.offline, pending: 2, hasBacklog: true);
+      await tester.pumpWidget(wrap(const SyncActivityIndicator()));
+      expect(find.byIcon(Icons.cloud_off_outlined), findsOneWidget);
+
+      setState(status: SyncStatus.error, pending: 2, hasBacklog: true);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.byIcon(Icons.sync_problem), findsOneWidget);
+    });
+  });
 }

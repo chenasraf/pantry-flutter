@@ -7878,6 +7878,11 @@ class SyncMessagesHe extends SyncMessages {
   String get syncing => """מסנכרן שינויים…""";
 
   /// ```dart
+  /// "כל השינויים נשמרו"
+  /// ```
+  String get synced => """כל השינויים נשמרו""";
+
+  /// ```dart
   /// "${_plural(count, one: 'שינוי אחד ממתין לסנכרון', two: '2 שינויים ממתינים לסנכרון', many: '${count} שינויים ממתינים לסנכרון')}"
   /// ```
   String pendingChanges(int count) =>
@@ -10388,6 +10393,7 @@ Map<String, String> get messagesHeMap => {
   """recurrence.ordinalInline.last""": """אחרון""",
   """sync.offline""": """לא מקוון""",
   """sync.syncing""": """מסנכרן שינויים…""",
+  """sync.synced""": """כל השינויים נשמרו""",
   """sync.syncError""": """לא ניתן היה לסנכרן את השינויים""",
   """sync.failedOne""": """לא ניתן היה לשמור שינוי: השרת נכשל שוב ושוב.""",
   """sync.retry""": """נסה שוב""",

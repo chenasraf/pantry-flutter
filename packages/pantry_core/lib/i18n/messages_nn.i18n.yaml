@@ -1655,6 +1655,7 @@ recurrence:
 sync:
   offline: Fråkobla
   syncing: Synkroniserer endringar…
+  synced: "Alle endringar er lagra"
   pendingChanges(int count):
     "${_plural(count, one: '1 endring ventar på synkronisering',
     many: '${count} endringar venter på synkronisering')}"

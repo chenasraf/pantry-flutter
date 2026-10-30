@@ -7961,6 +7961,11 @@ class SyncMessagesFr extends SyncMessages {
   String get syncing => """Synchronisation des modifications…""";
 
   /// ```dart
+  /// "Toutes les modifications sont enregistrées"
+  /// ```
+  String get synced => """Toutes les modifications sont enregistrées""";
+
+  /// ```dart
   /// "${_plural(count, one: '1 modification en attente de synchronisation', many: '${count} modifications en attente de synchronisation')}"
   /// ```
   String pendingChanges(int count) =>
@@ -10588,6 +10593,7 @@ Mot de passe : pantry-rocks""",
   """recurrence.ordinalInline.last""": """dernier""",
   """sync.offline""": """Hors ligne""",
   """sync.syncing""": """Synchronisation des modifications…""",
+  """sync.synced""": """Toutes les modifications sont enregistrées""",
   """sync.syncError""": """Impossible de synchroniser les modifications""",
   """sync.failedOne""":
       """Impossible d'enregistrer une modification : le serveur a échoué à plusieurs reprises.""",

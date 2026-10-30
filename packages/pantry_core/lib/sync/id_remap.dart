@@ -95,12 +95,11 @@ class IdRemap {
     if (result.op == SyncOpKind.setItemDefaults) {
       result = _rewriteItemDefaults(result);
     }
-    if (result.entity == SyncEntity.photo) {
-      result = _rewritePhotoOrderIds(result);
-    }
     if (result.entity == SyncEntity.storeCategoryOrder) {
       result = _rewriteArrangementStore(result);
       result = _rewriteArrangementCategoryIds(result);
+    } else {
+      result = _rewriteReorderIds(result);
     }
     return result;
   }
@@ -116,11 +115,12 @@ class IdRemap {
     return real == null ? op : op.copyWith(entityId: real);
   }
 
-  /// A photo reorder names every photo in the house, any of which may still be
-  /// a temp id when the picture was taken in the same offline session — the
-  /// board is built to be used away from a connection, so a shutter and a drag
-  /// before the queue drains is ordinary use, not an edge.
-  SyncOp _rewritePhotoOrderIds(SyncOp op) {
+  /// A reorder names every record it renumbers, any of which may still be a
+  /// temp id: the screen that queued it holds the optimistic create's id, and
+  /// a create then a drag before the queue drains is ordinary use. The server
+  /// skips ids it doesn't know, so an unrewritten temp id silently drops that
+  /// record's new position.
+  SyncOp _rewriteReorderIds(SyncOp op) {
     if (op.op != SyncOpKind.reorder) return op;
     final order = (op.body['order'] as List?)?.cast<Map>();
     if (order == null) return op;
@@ -128,9 +128,9 @@ class IdRemap {
     final mapped = <Map<String, dynamic>>[];
     for (final entry in order) {
       final id = entry['id'] as int;
-      final real = id < 0 ? resolve(SyncEntity.photo, id) : null;
+      final real = id < 0 ? resolve(op.entity, id) : null;
       if (real != null) changed = true;
-      mapped.add({'id': real ?? id, 'sortOrder': entry['sortOrder'] as int});
+      mapped.add({...entry.cast<String, dynamic>(), 'id': real ?? id});
     }
     if (!changed) return op;
     final body = Map<String, dynamic>.from(op.body);

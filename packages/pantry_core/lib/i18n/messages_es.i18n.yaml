@@ -1511,6 +1511,7 @@ recurrence:
 sync:
   offline: Sin conexión
   syncing: Sincronizando cambios…
+  synced: "Todos los cambios guardados"
   pendingChanges(int count): "${_plural(count, one: '1 cambio esperando a sincronizar', many: '${count} cambios esperando a sincronizar')}"
   syncError: "No se pudieron sincronizar los cambios"
   refusedNamed(String name, int status): "No se pudo guardar «${name}»: el servidor rechazó el cambio (${status})."

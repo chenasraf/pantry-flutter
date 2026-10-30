@@ -190,6 +190,96 @@ void main() {
     });
   });
 
+  List<int> queuedOrder() {
+    final op = manager.queueForTest.all().lastWhere(
+      (op) => op.entity == SyncEntity.category && op.op == SyncOpKind.reorder,
+    );
+    return [for (final e in op.body['order'] as List) (e as Map)['id'] as int];
+  }
+
+  List<String> globalNames(WidgetTester tester) => [
+    for (final tile in tester.widgetList<ListTile>(
+      find.descendant(
+        of: find.byType(ReorderableListView).first,
+        matching: find.byType(ListTile),
+      ),
+    ))
+      ((tile.title as Text).data)!,
+  ];
+
+  testWidgets('repeated reorders each build on the last', (tester) async {
+    await withServer(() async {
+      await pumpManager(tester);
+
+      ReorderableListView globals() => tester.widget<ReorderableListView>(
+        find.byType(ReorderableListView).first,
+      );
+      globals().onReorderItem!(0, 1);
+      await tester.pump();
+      globals().onReorderItem!(0, 1);
+      await tester.pump();
+
+      expect(globalNames(tester), ['Pantry', 'Misc']);
+      expect(queuedOrder(), [1, 2, 3, 4]);
+
+      await quiesce(tester);
+    });
+  });
+
+  testWidgets('a reorder survives a refresh that lands before it syncs', (
+    tester,
+  ) async {
+    await withServer(() async {
+      await pumpManager(tester);
+
+      tester
+          .widget<ReorderableListView>(find.byType(ReorderableListView).first)
+          .onReorderItem!(0, 1);
+      await tester.pump();
+
+      await tester.drag(find.byType(ListView).first, const Offset(0, 300));
+      await tester.pumpAndSettle(const Duration(milliseconds: 100));
+
+      expect(globalNames(tester), ['Misc', 'Pantry']);
+
+      await quiesce(tester);
+    });
+  });
+
+  testWidgets('creating a category keeps a reorder made before it', (
+    tester,
+  ) async {
+    await withServer(() async {
+      await pumpManager(tester);
+
+      tester
+          .widget<ReorderableListView>(find.byType(ReorderableListView).first)
+          .onReorderItem!(0, 1);
+      await tester.pump();
+
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField).first, 'Bakery');
+      await tester.tap(find.widgetWithText(InkWell, 'Save'));
+      await tester.pumpAndSettle();
+
+      expect(globalNames(tester), ['Misc', 'Pantry', 'Bakery']);
+
+      // Dragged to the top, the new category's temp id rides the order.
+      final bakery = tester
+          .widget<ReorderableListView>(find.byType(ReorderableListView).first)
+          .onReorderItem!;
+      bakery(2, 0);
+      await tester.pump();
+      expect(globalNames(tester), ['Bakery', 'Misc', 'Pantry']);
+      final order = queuedOrder();
+      expect(order.first, isNegative);
+      expect(order.skip(1), [2, 1, 3, 4]);
+
+      await quiesce(tester);
+    });
+  });
+
   testWidgets('a new category defaults to the open list', (tester) async {
     await withServer(() async {
       await pumpManager(tester, listId: groceries);

@@ -11,6 +11,7 @@ import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/store_icons.dart';
+import 'package:pantry/widgets/sync_status.dart';
 
 /// Arrange one store's categories into the order its aisles are walked.
 ///
@@ -193,6 +194,7 @@ class _StoreCategoryOrderViewState extends State<StoreCategoryOrderView> {
       appBar: AppBar(
         title: Text(m.categories.storeOrder.title),
         actions: [
+          const SyncActivityIndicator(),
           if (PlatformInfo.isDesktop)
             IconButton(
               icon: const Icon(Icons.refresh),

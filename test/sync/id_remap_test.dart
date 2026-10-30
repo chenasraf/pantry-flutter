@@ -155,4 +155,48 @@ void main() {
       expect(identical(remap.rewrite(op), op), isTrue);
     });
   });
+
+  group('IdRemap.rewrite — reorder bodies', () {
+    SyncOp reorder(SyncEntity entity, List<int> ids) => SyncOp(
+      uuid: 'r',
+      entity: entity,
+      op: SyncOpKind.reorder,
+      houseId: 1,
+      body: {
+        'order': [
+          for (var i = 0; i < ids.length; i++) {'id': ids[i], 'sortOrder': i},
+        ],
+      },
+      createdAt: 0,
+    );
+
+    List<int> ids(SyncOp op) => [
+      for (final e in op.body['order'] as List) (e as Map)['id'] as int,
+    ];
+
+    for (final entity in [
+      SyncEntity.category,
+      SyncEntity.store,
+      SyncEntity.label,
+      SyncEntity.photo,
+    ]) {
+      test('remaps bound temp ids in a ${entity.name} reorder', () {
+        final remap = IdRemap(CacheStore('test_remap.json'));
+        remap.bind(entity, -4, 44);
+        final out = remap.rewrite(reorder(entity, [3, -4, -9]));
+        expect(ids(out), [3, 44, -9]);
+        expect(
+          [for (final e in out.body['order'] as List) (e as Map)['sortOrder']],
+          [0, 1, 2],
+        );
+      });
+    }
+
+    test('resolves against the reorder\'s own entity', () {
+      final remap = IdRemap(CacheStore('test_remap.json'));
+      remap.bind(SyncEntity.store, -4, 44);
+      final op = reorder(SyncEntity.category, [-4]);
+      expect(identical(remap.rewrite(op), op), isTrue);
+    });
+  });
 }
