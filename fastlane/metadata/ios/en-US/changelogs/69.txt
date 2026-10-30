@@ -1,0 +1,2 @@
+Bug Fixes
+- keep your category order when reordering after adding a category

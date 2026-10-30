@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.38.1](https://github.com/chenasraf/pantry-flutter/compare/v0.38.0...v0.38.1) (2026-10-30)
+
+
+### Bug Fixes
+
+* **categories:** keep your category order when reordering after adding a category ([c15aa3f](https://github.com/chenasraf/pantry-flutter/commit/c15aa3fe68a33fcd91473f64cd8e9f316f97bf11))
+
 ## [0.38.0](https://github.com/chenasraf/pantry-flutter/compare/v0.37.1...v0.38.0) (2026-10-30)
 
 
