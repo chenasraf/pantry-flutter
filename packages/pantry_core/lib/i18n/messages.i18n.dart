@@ -5141,6 +5141,16 @@ class InventoryListKindsMessages {
   /// "Inventory unarchived"
   /// ```
   String get listUnarchived => """Inventory unarchived""";
+
+  /// ```dart
+  /// "All inventories"
+  /// ```
+  String get allTitle => """All inventories""";
+
+  /// ```dart
+  /// "Items from every inventory"
+  /// ```
+  String get allSubtitle => """Items from every inventory""";
 }
 
 class TemplateListKindsMessages {
@@ -6213,6 +6223,21 @@ class LinksStockMessages {
   /// "Link to an item …"
   /// ```
   String get linkToItem => """Link to an item …""";
+
+  /// ```dart
+  /// "Add to a shopping list …"
+  /// ```
+  String get addToList => """Add to a shopping list …""";
+
+  /// ```dart
+  /// "Add it to which list?"
+  /// ```
+  String get addToListTitle => """Add it to which list?""";
+
+  /// ```dart
+  /// "Could not add it to the list"
+  /// ```
+  String get addToListFailed => """Could not add it to the list""";
 
   /// ```dart
   /// "Link to a checklist item"
@@ -7292,6 +7317,48 @@ class ShoppingMessages {
   /// "Done"
   /// ```
   String get doneEditing => """Done""";
+
+  /// ```dart
+  /// "Put away"
+  /// ```
+  String get putAwayTitle => """Put away""";
+
+  /// ```dart
+  /// "Choose where what you bought goes. Each item starts where it usually goes."
+  /// ```
+  String get putAwayHint =>
+      """Choose where what you bought goes. Each item starts where it usually goes.""";
+
+  /// ```dart
+  /// "Full"
+  /// ```
+  String get putAwayFull => """Full""";
+
+  /// ```dart
+  /// "Remove from this storage"
+  /// ```
+  String get putAwayRemove => """Remove from this storage""";
+
+  /// ```dart
+  /// "Add to a storage…"
+  /// ```
+  String get putAwayAdd => """Add to a storage…""";
+
+  /// ```dart
+  /// "Not put away"
+  /// ```
+  String get notPutAway => """Not put away""";
+
+  /// ```dart
+  /// "Unknown inventory"
+  /// ```
+  String get unknownInventory => """Unknown inventory""";
+
+  /// ```dart
+  /// "Amount of $item put away in $storage"
+  /// ```
+  String putAwayAmount(String item, String storage) =>
+      """Amount of $item put away in $storage""";
 
   /// ```dart
   /// "Reminders"
@@ -9989,6 +10056,8 @@ Password: pantry-rocks""",
   """listKinds.inventory.listMovedToTrash""": """Inventory moved to trash""",
   """listKinds.inventory.listArchived""": """Inventory archived""",
   """listKinds.inventory.listUnarchived""": """Inventory unarchived""",
+  """listKinds.inventory.allTitle""": """All inventories""",
+  """listKinds.inventory.allSubtitle""": """Items from every inventory""",
   """listKinds.template.title""": """Templates""",
   """listKinds.template.name""": """Template""",
   """listKinds.template.newList""": """New template""",
@@ -10160,6 +10229,9 @@ Password: pantry-rocks""",
   """stock.links.autoHintOff""":
       """This item is only marked here when it runs low.""",
   """stock.links.linkToItem""": """Link to an item …""",
+  """stock.links.addToList""": """Add to a shopping list …""",
+  """stock.links.addToListTitle""": """Add it to which list?""",
+  """stock.links.addToListFailed""": """Could not add it to the list""",
   """stock.links.pickerTitle""": """Link to a checklist item""",
   """stock.links.pickerField""": """Checklist item""",
   """stock.links.pickerSearch""": """Search checklist items …""",
@@ -10325,6 +10397,14 @@ Password: pantry-rocks""",
   """shopping.editTotalsTitle""": """Edit trip totals""",
   """shopping.editTotals""": """Edit totals""",
   """shopping.doneEditing""": """Done""",
+  """shopping.putAwayTitle""": """Put away""",
+  """shopping.putAwayHint""":
+      """Choose where what you bought goes. Each item starts where it usually goes.""",
+  """shopping.putAwayFull""": """Full""",
+  """shopping.putAwayRemove""": """Remove from this storage""",
+  """shopping.putAwayAdd""": """Add to a storage…""",
+  """shopping.notPutAway""": """Not put away""",
+  """shopping.unknownInventory""": """Unknown inventory""",
   """shopping.remindersTitle""": """Reminders""",
   """shopping.manageReminders""": """Manage reminders""",
   """shopping.reminderGroupStart""": """At start""",

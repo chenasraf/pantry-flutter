@@ -981,6 +981,8 @@ listKinds:
     listMovedToTrash: Inventaire déplacé vers la corbeille
     listArchived: Inventaire archivé
     listUnarchived: Inventaire désarchivé
+    allTitle: "Tous les inventaires"
+    allSubtitle: "Éléments de tous les inventaires"
   template:
     title: Modèles
     name: Modèle
@@ -1185,6 +1187,9 @@ stock:
     autoHintNoChecklist: Choisissez une liste de réapprovisionnement dans les paramètres de l’inventaire pour y trouver ou ajouter cet article.
     autoHintOff: Cet article est seulement signalé ici quand il est bas.
     linkToItem: Lier à un article …
+    addToList: "Ajouter à une liste de courses …"
+    addToListTitle: "L’ajouter à quelle liste ?"
+    addToListFailed: "Impossible de l’ajouter à la liste"
     pickerTitle: Lier à un article de liste
     pickerField: Article de liste
     pickerSearch: Rechercher des articles …
@@ -1395,6 +1400,14 @@ shopping:
   editTotalsTitle: Modifier les totaux des courses
   editTotals: Modifier les totaux
   doneEditing: "Terminé"
+  putAwayTitle: "Ranger"
+  putAwayHint: "Choisissez où vont vos achats. Chaque article part de l'endroit où il va d'habitude."
+  putAwayFull: "Plein"
+  putAwayRemove: "Retirer de ce rangement"
+  putAwayAdd: "Ajouter à un rangement…"
+  notPutAway: "Non rangé"
+  unknownInventory: "Inventaire inconnu"
+  putAwayAmount(String item, String storage): "Quantité de $item rangée dans $storage"
   remindersTitle: Rappels
   manageReminders: Gérer les rappels
   reminderGroupStart: Au début

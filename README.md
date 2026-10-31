@@ -11,10 +11,13 @@ management for your self-hosted Nextcloud, on your phone, your desktop, and your
 ## Features
 
 - **Checklists**: Shared checklists with categories, quantities, images, and recurring items.
+- **Inventories**: What is at home, per storage, with stock levels and expiry dates, in a tab of
+  their own with an **All inventories** view. Items linked to a shopping list stay one product, and
+  a **Put away** step sends a finished shopping trip to the right storages.
 - **Photo Board**: Upload and organize shared photos in folders with captions.
 - **Notes Wall**: Color-coded shared notes for household reminders.
-- **Wear OS**: A watch app with your checklists, photo board, notes, and shopping trips, plus a tile
-  for your lists and a live trip on the watch face.
+- **Wear OS**: A watch app with your checklists, inventories, photo board, notes, and shopping
+  trips, plus a tile for your lists and a live trip on the watch face.
 - **Drag-and-drop reordering** everywhere.
 - **Multi-select** for bulk actions.
 - **Offline caching** for fast loading.

@@ -101,7 +101,7 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
     int? shelfLifeDays,
   }) async {
     final list = _currentList;
-    if (list == null || list.id == kAllListsId) {
+    if (list == null || isAllListsId(list.id)) {
       throw StateError(
         list == null
             ? 'No list selected'
@@ -643,7 +643,7 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
   }
 
   Future<void> emptyTrash() async {
-    if (_currentList == null || _currentList!.id == kAllListsId) return;
+    if (_currentList == null || isAllListsId(_currentList!.id)) return;
     if (_isTrashMode) {
       _items = [];
       notifyListeners();

@@ -1117,6 +1117,8 @@ listKinds:
     listMovedToTrash: Lagerliste flytta til papirkorga
     listArchived: Lagerliste arkivert
     listUnarchived: Lagerliste henta ut av arkivet
+    allTitle: "Alle lagerlister"
+    allSubtitle: "Oppføringar frå alle lagerlister"
   template:
     title: Malar
     name: Mal
@@ -1319,6 +1321,9 @@ stock:
     autoHintNoChecklist: Vel ei sjekkliste for påfylling i innstillingane for lagerlista for å finne eller leggje til denne oppføringa der.
     autoHintOff: Denne oppføringa blir berre merkt her når det blir lite av ho.
     linkToItem: Kople til ei oppføring …
+    addToList: "Legg til i ei handleliste …"
+    addToListTitle: "Kva liste skal han i?"
+    addToListFailed: "Kunne ikkje leggje til i lista"
     pickerTitle: Kople til ei oppføring på ei sjekkliste
     pickerField: Oppføring på sjekkliste
     pickerSearch: Søk i oppføringar på sjekklister …
@@ -1536,6 +1541,14 @@ shopping:
   editTotalsTitle: Rediger summane for handelen
   editTotals: Rediger summar
   doneEditing: Ferdig
+  putAwayTitle: "Rydd på plass"
+  putAwayHint: "Vel kvar det du kjøpte skal. Kvar oppføring startar der ho vanlegvis skal."
+  putAwayFull: "Full"
+  putAwayRemove: "Fjern frå denne lagerlista"
+  putAwayAdd: "Legg til i ei lagerliste…"
+  notPutAway: "Ikkje rydda på plass"
+  unknownInventory: "Ukjend lagerliste"
+  putAwayAmount(String item, String storage): "Mengd av $item i $storage"
   remindersTitle: Påminningar
   manageReminders: Handter påminningar
   reminderGroupStart: Ved start

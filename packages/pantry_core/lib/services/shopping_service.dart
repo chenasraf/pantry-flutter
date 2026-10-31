@@ -4,6 +4,7 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/shopping_history_row.dart';
 import 'package:pantry_core/models/shopping_presence_entry.dart';
 import 'package:pantry_core/models/shopping_reminder.dart';
+import 'package:pantry_core/models/shopping_put_away.dart';
 import 'package:pantry_core/models/shopping_review.dart';
 import 'package:pantry_core/models/shopping_session.dart';
 import 'package:pantry_core/services/api_client.dart';
@@ -173,10 +174,21 @@ class ShoppingService {
 
   /// (4) Close the session (irreversible). Throws [ShoppingSessionConflict]
   /// (from a 409) carrying the already-closed session when called twice.
-  Future<ShoppingSession> close(int houseId, int sessionId) async {
+  /// [putAway] moves bought items to the inventories picked in the review;
+  /// items it leaves out keep what their tick restocked.
+  Future<ShoppingSession> close(
+    int houseId,
+    int sessionId, {
+    List<PutAwayEntry> putAway = const [],
+  }) async {
     try {
       final session = await _api.post<Map<String, dynamic>, ShoppingSession>(
         '${_base(houseId)}/sessions/$sessionId/close',
+        body: putAway.isEmpty
+            ? null
+            : {
+                'putAway': [for (final e in putAway) e.toJson()],
+              },
         fromJson: ShoppingSession.fromJson,
       );
       cacheSession(null);

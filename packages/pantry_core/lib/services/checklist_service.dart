@@ -71,6 +71,7 @@ class ChecklistService {
   static const _listsPrefix = 'lists';
   static const _itemsPrefix = 'items';
   static const _selectedListKey = 'selectedListId';
+  static const _selectedInventoryKey = 'selectedInventoryId';
 
   // Legacy single-house lists cache (before the snapshot was keyed per house):
   // a single `houseId` marker meant switching houses offline wiped the other
@@ -84,6 +85,12 @@ class ChecklistService {
 
   int? get selectedListId => cache.get<int>(_selectedListKey);
   set selectedListId(int? id) => cache.set(_selectedListKey, id);
+
+  /// The list open in the Inventories tab, kept apart from [selectedListId] —
+  /// which the widgets and the watch follow — so the two tabs each reopen on
+  /// their own list.
+  int? get selectedInventoryId => cache.get<int>(_selectedInventoryKey);
+  set selectedInventoryId(int? id) => cache.set(_selectedInventoryKey, id);
 
   /// Transient (in-memory) request to open an item's detail once its list is
   /// loaded — set by an item deep link, consumed by the checklists view.
@@ -115,7 +122,7 @@ class ChecklistService {
   void rememberKinds(Iterable<ChecklistList> lists) {
     var changed = false;
     for (final l in lists) {
-      if (l.id == kAllListsId) continue;
+      if (isAllListsId(l.id)) continue;
       if (_kindMap[l.id] != l.kind) {
         _kindMap[l.id] = l.kind;
         changed = true;
@@ -235,10 +242,17 @@ class ChecklistService {
     cache.setKeyedList(_itemsPrefix, '$listId', items, (i) => i.toJson());
   }
 
-  void invalidateItems({int? keepListId}) {
+  /// Drops every cached item list but [keepListId]'s and [keepListIds]'.
+  void invalidateItems({
+    int? keepListId,
+    Iterable<int> keepListIds = const [],
+  }) {
     cache.removeKeyed(
       _itemsPrefix,
-      keepKey: keepListId != null ? '$keepListId' : null,
+      keepKeys: {
+        if (keepListId != null) '$keepListId',
+        for (final id in keepListIds) '$id',
+      },
     );
   }
 

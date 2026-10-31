@@ -101,11 +101,7 @@ class CategoryPicker extends StatelessWidget {
 
   void _showCreateDialog(BuildContext context) {
     Navigator.of(context)
-        .push<Category>(
-          itemModalRoute(
-            CategoryFormView(houseId: houseId, defaultListId: listId),
-          ),
-        )
+        .push<Category>(itemModalRoute(CategoryFormView(houseId: houseId)))
         .then((created) {
           if (created != null) {
             onCreated(created);

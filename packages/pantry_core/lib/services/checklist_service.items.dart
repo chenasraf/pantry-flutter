@@ -9,14 +9,19 @@ extension ChecklistServiceItems on ChecklistService {
     return _fetchAllItems('${listPath(houseId, listId)}/items', sortBy: sortBy);
   }
 
-  /// Aggregate items across every (non-deleted) list in the house. Backs the
-  /// synthetic "All lists" meta view. Items carry their real `listId` so all
-  /// per-item operations resolve correctly against the underlying list.
+  /// Aggregate items across every (non-deleted) list of [kind] in the house.
+  /// Backs the synthetic "All lists" and "All inventories" meta views. Items
+  /// carry their real `listId` so all per-item operations resolve correctly
+  /// against the underlying list.
   Future<List<ListItem>> getHouseItems(
     int houseId, {
     String sortBy = 'newest',
+    ListKind kind = ListKind.checklist,
   }) async {
-    return _fetchAllItems('/houses/$houseId/items', sortBy: sortBy);
+    final path = kind.isChecklist
+        ? '/houses/$houseId/items'
+        : '${kindPath(houseId, kind)}/items';
+    return _fetchAllItems(path, sortBy: sortBy);
   }
 
   /// Page through an items endpoint until every item is retrieved. The server

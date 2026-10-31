@@ -3,9 +3,13 @@ import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/nav_section.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
+import 'package:pantry/views/checklists/switcher_widgets.dart'
+    show listKindIcon;
 
 class NavOrderView extends StatefulWidget {
   const NavOrderView({super.key});
@@ -26,12 +30,14 @@ class _NavOrderViewState extends State<NavOrderView> {
   String _label(NavSection s) => switch (s) {
     NavSection.checklists =>
       ServerFeature.listKinds ? m.nav.lists : m.nav.checklists,
+    NavSection.inventories => ListKind.inventory.strings.title,
     NavSection.photoBoard => m.nav.photoBoard,
     NavSection.notesWall => m.nav.notesWall,
   };
 
   IconData _icon(NavSection s) => switch (s) {
     NavSection.checklists => EntityIcons.checklists,
+    NavSection.inventories => listKindIcon(ListKind.inventory),
     NavSection.photoBoard => EntityIcons.photos,
     NavSection.notesWall => EntityIcons.notes,
   };

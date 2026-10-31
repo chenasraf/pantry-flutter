@@ -20,10 +20,15 @@ extension ChecklistsControllerSort on ChecklistsController {
     }
   }
 
+  /// The list id the server keeps [listId]'s sort under. Both "All" views
+  /// share the server's slot for the meta view, as on the web.
+  static int _sortPrefsId(int listId) =>
+      isAllListsId(listId) ? kAllListsId : listId;
+
   /// Queues [sort] for [listId], or for the whole house on servers that keep
   /// one sort per house.
   void _persistSortPref(int listId, String sort) {
-    final target = ServerFeature.listItemSort ? listId : null;
+    final target = ServerFeature.listItemSort ? _sortPrefsId(listId) : null;
     _sortWriteGen[target] = (_sortWriteGen[target] ?? 0) + 1;
     _sync.enqueue(
       SyncOp(
@@ -44,12 +49,13 @@ extension ChecklistsControllerSort on ChecklistsController {
   /// the list is queued or was made while the read was out — the server's
   /// answer may predate it, and the user's choice must not be reverted by it.
   Future<String?> _fetchListItemSort(int listId) async {
-    if (!ServerFeature.listItemSort || listId < 0) return null;
-    if (_sync.pendingItemSort(houseId, listId) != null) return null;
-    final gen = _sortWriteGen[listId];
+    final prefsId = _sortPrefsId(listId);
+    if (!ServerFeature.listItemSort || prefsId < 0) return null;
+    if (_sync.pendingItemSort(houseId, prefsId) != null) return null;
+    final gen = _sortWriteGen[prefsId];
     try {
-      final sort = await _checklistService.getListItemSort(houseId, listId);
-      if (_sortWriteGen[listId] != gen) return null;
+      final sort = await _checklistService.getListItemSort(houseId, prefsId);
+      if (_sortWriteGen[prefsId] != gen) return null;
       _checklistService.cacheItemSort(houseId, listId, sort);
       return sort;
     } catch (e) {
@@ -60,7 +66,7 @@ extension ChecklistsControllerSort on ChecklistsController {
     }
   }
 
-  /// The order the All-lists view is fetched in: it has no custom order of its
+  /// The order an "All" view is fetched in: it has no custom order of its
   /// own, so `custom` reads as newest.
   static String _allListsSort(String sort) =>
       sort == 'custom' ? 'newest' : sort;
@@ -73,8 +79,12 @@ extension ChecklistsControllerSort on ChecklistsController {
     final requested = ServerFeature.listItemSort
         ? _checklistService.cachedItemSort(houseId, list.id)
         : _sortBy;
-    Future<List<ListItem>> fetch(String sort) => list.id == kAllListsId
-        ? _checklistService.getHouseItems(houseId, sortBy: _allListsSort(sort))
+    Future<List<ListItem>> fetch(String sort) => isAllListsId(list.id)
+        ? _checklistService.getHouseItems(
+            houseId,
+            sortBy: _allListsSort(sort),
+            kind: list.kind,
+          )
         : _checklistService.getItems(houseId, list.id, sortBy: sort);
 
     final storedFuture = _fetchListItemSort(list.id);

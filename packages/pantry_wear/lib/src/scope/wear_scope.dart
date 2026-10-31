@@ -4,6 +4,7 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 
 /// What the watch is looking at: one `(house, list)` pair.
 ///
@@ -13,15 +14,35 @@ import 'package:pantry_core/services/prefs_service.dart';
 /// Both are device-local: nothing server-side records which house or list you
 /// were looking at.
 ///
-/// [kAllListsId] is a legal list, not a mode.
+/// [kAllListsId] and [kAllInventoriesId] are legal lists, not modes.
+///
+/// The Inventories page has a pair of its own, [inventory]: the same house,
+/// and its own list in `selectedInventoryId`, so each page reopens where it
+/// was left and the Tile and deep links keep following the lists page.
 class WearScope extends ChangeNotifier {
-  WearScope._();
+  WearScope._({this.forInventories = false});
 
   static final WearScope instance = WearScope._();
 
+  /// The Inventories page's scope.
+  static final WearScope inventory = WearScope._(forInventories: true);
+
+  /// Whether this scope picks among inventories only.
+  final bool forInventories;
+
   int? get houseId => PrefsService.instance.lastHouseId;
 
-  int? get listId => ChecklistService.instance.selectedListId;
+  int? get listId => forInventories
+      ? ChecklistService.instance.selectedInventoryId
+      : ChecklistService.instance.selectedListId;
+
+  set _listId(int? id) {
+    if (forInventories) {
+      ChecklistService.instance.selectedInventoryId = id;
+    } else {
+      ChecklistService.instance.selectedListId = id;
+    }
+  }
 
   bool get isAllLists => listId == kAllListsId;
 
@@ -56,16 +77,23 @@ class WearScope extends ChangeNotifier {
 
   /// The list to show within [lists], which are the current house's active
   /// lists. One rule for every trigger — no seed, a deleted or archived list,
-  /// a changed house: the **lowest `sortOrder`** list. The watch lands on a
-  /// real list, never on the meta view by default.
+  /// a changed house: the **lowest `sortOrder`** list. The lists page lands on
+  /// a real list, never on the meta view by default; the Inventories page
+  /// lands on "All inventories" whenever there are several to gather.
   ///
   /// Archived and trashed lists cannot appear here at all: `getLists` returns
   /// active lists only, and the watch never calls the other two endpoints.
   Future<int?> resolveList(List<ChecklistList> lists) async {
     final current = listId;
-    if (current == kAllListsId) return current;
+    final allInventories = ServerFeature.inventoryAllView;
+    if (current == kAllListsId && !forInventories) return current;
+    if (current == kAllInventoriesId && allInventories) return current;
     if (current != null && lists.any((l) => l.id == current)) return current;
     if (lists.isEmpty) return null;
+    if (forInventories && allInventories && lists.length >= 2) {
+      await selectList(kAllInventoriesId, notify: false);
+      return kAllInventoriesId;
+    }
     final lowest = lists.reduce((a, b) => b.sortOrder < a.sortOrder ? b : a);
     await selectList(lowest.id, notify: false);
     return lowest.id;
@@ -83,12 +111,16 @@ class WearScope extends ChangeNotifier {
   Future<void> selectHouse(int id, {bool notify = true}) async {
     if (houseId == id) return;
     await PrefsService.instance.setLastHouseId(id);
-    if (notify) notifyListeners();
+    // The house is the two pages' shared half: both move with it.
+    if (notify) {
+      instance.notifyListeners();
+      inventory.notifyListeners();
+    }
   }
 
   Future<void> selectList(int id, {bool notify = true}) async {
     if (listId == id) return;
-    ChecklistService.instance.selectedListId = id;
+    _listId = id;
     _pruneItemCache();
     if (notify) notifyListeners();
   }
@@ -98,14 +130,20 @@ class WearScope extends ChangeNotifier {
   /// That is a stronger guarantee than any byte ceiling, whose worst bug
   /// deletes the offline copy the watch exists to keep.
   ///
-  /// The all-lists view is the exception that proves it: its rows *are* every
+  /// The "All" views are the exception that proves it: their rows *are* every
   /// list's own cached snapshot, so they are all in scope. A session needs no
   /// exception — its items live in the shopping cache, which this never
-  /// touches.
-  void _pruneItemCache() {
-    final id = listId;
-    if (id == null || id == kAllListsId) return;
-    ChecklistService.instance.invalidateItems(keepListId: id);
+  /// touches. Both pages' lists are in scope, the Inventories page's too.
+  static void _pruneItemCache() {
+    final kept = <int>[];
+    for (final scope in [instance, inventory]) {
+      final id = scope.listId;
+      if (id == null) continue;
+      if (isAllListsId(id)) return;
+      kept.add(id);
+    }
+    if (kept.isEmpty) return;
+    ChecklistService.instance.invalidateItems(keepListIds: kept);
   }
 
   /// Arrival from a deep link or the Tile. Both levels persist, exactly as

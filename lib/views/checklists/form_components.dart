@@ -42,6 +42,10 @@ class LabeledFieldCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final caption = Text(
+      label.toUpperCase(),
+      style: fieldCardLabelStyle(cs, focused: focused),
+    );
     return AnimatedContainer(
       duration: const Duration(milliseconds: 150),
       padding: EdgeInsets.fromLTRB(
@@ -54,17 +58,17 @@ class LabeledFieldCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  label.toUpperCase(),
-                  style: fieldCardLabelStyle(cs, focused: focused),
-                ),
-              ),
-              ?trailing,
-            ],
-          ),
+          if (trailing case final control?)
+            // Side by side while both fit; a control wider than what the
+            // caption leaves (a segmented button in a long language) drops
+            // under it rather than squeezing the caption.
+            OverflowBar(
+              alignment: MainAxisAlignment.spaceBetween,
+              overflowSpacing: 6,
+              children: [caption, control],
+            )
+          else
+            caption,
           if (child != null) ...[const SizedBox(height: 4), child!],
         ],
       ),
