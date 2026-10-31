@@ -30,19 +30,11 @@ class CategoryFormView extends StatefulWidget {
   final int houseId;
 
   /// If non-null, we're editing this category instead of creating a new one.
+  /// A new category is house-wide, so checklists and inventories share one
+  /// set, until a list is picked for it.
   final Category? existing;
 
-  /// Scope to preselect when *creating* — the list currently in context (e.g.
-  /// the list an item form belongs to). `null` defaults to global. Ignored when
-  /// editing, where the scope is seeded from [existing].
-  final int? defaultListId;
-
-  const CategoryFormView({
-    super.key,
-    required this.houseId,
-    this.existing,
-    this.defaultListId,
-  });
+  const CategoryFormView({super.key, required this.houseId, this.existing});
 
   @override
   State<CategoryFormView> createState() => _CategoryFormViewState();
@@ -72,7 +64,7 @@ class _CategoryFormViewState extends State<CategoryFormView> {
     _nameController = TextEditingController(text: e?.name ?? '');
     _selectedIcon = e?.icon ?? 'tag';
     _selectedColor = e?.color ?? categoryColors.first;
-    _selectedListId = e != null ? e.listId : widget.defaultListId;
+    _selectedListId = e?.listId;
     _nameDir = detectTextDirection(e?.name);
     _nameController.addListener(() {
       final dir = detectTextDirection(_nameController.text);

@@ -5156,6 +5156,16 @@ class InventoryListKindsMessagesHe extends InventoryListKindsMessages {
   /// "רשימת המלאי הוצאה מהארכיון"
   /// ```
   String get listUnarchived => """רשימת המלאי הוצאה מהארכיון""";
+
+  /// ```dart
+  /// "כל רשימות המלאי"
+  /// ```
+  String get allTitle => """כל רשימות המלאי""";
+
+  /// ```dart
+  /// "פריטים מכל רשימות המלאי"
+  /// ```
+  String get allSubtitle => """פריטים מכל רשימות המלאי""";
 }
 
 class TemplateListKindsMessagesHe extends TemplateListKindsMessages {
@@ -6222,6 +6232,21 @@ class LinksStockMessagesHe extends LinksStockMessages {
   /// "קישור לפריט …"
   /// ```
   String get linkToItem => """קישור לפריט …""";
+
+  /// ```dart
+  /// "הוספה לרשימת קניות …"
+  /// ```
+  String get addToList => """הוספה לרשימת קניות …""";
+
+  /// ```dart
+  /// "לאיזו רשימה להוסיף?"
+  /// ```
+  String get addToListTitle => """לאיזו רשימה להוסיף?""";
+
+  /// ```dart
+  /// "לא ניתן היה להוסיף לרשימה"
+  /// ```
+  String get addToListFailed => """לא ניתן היה להוסיף לרשימה""";
 
   /// ```dart
   /// "קישור לפריט ברשימת סימון"
@@ -7295,6 +7320,48 @@ class ShoppingMessagesHe extends ShoppingMessages {
   /// "סיום"
   /// ```
   String get doneEditing => """סיום""";
+
+  /// ```dart
+  /// "סידור"
+  /// ```
+  String get putAwayTitle => """סידור""";
+
+  /// ```dart
+  /// "בחרו לאן הולך מה שקניתם. כל פריט מתחיל במקום שאליו הוא הולך בדרך כלל."
+  /// ```
+  String get putAwayHint =>
+      """בחרו לאן הולך מה שקניתם. כל פריט מתחיל במקום שאליו הוא הולך בדרך כלל.""";
+
+  /// ```dart
+  /// "מלא"
+  /// ```
+  String get putAwayFull => """מלא""";
+
+  /// ```dart
+  /// "הסרה מרשימת המלאי הזו"
+  /// ```
+  String get putAwayRemove => """הסרה מרשימת המלאי הזו""";
+
+  /// ```dart
+  /// "הוספה לרשימת מלאי…"
+  /// ```
+  String get putAwayAdd => """הוספה לרשימת מלאי…""";
+
+  /// ```dart
+  /// "לא סודר"
+  /// ```
+  String get notPutAway => """לא סודר""";
+
+  /// ```dart
+  /// "רשימת מלאי לא ידועה"
+  /// ```
+  String get unknownInventory => """רשימת מלאי לא ידועה""";
+
+  /// ```dart
+  /// "כמות של $item ב־$storage"
+  /// ```
+  String putAwayAmount(String item, String storage) =>
+      """כמות של $item ב־$storage""";
 
   /// ```dart
   /// "תזכורות"
@@ -9969,6 +10036,8 @@ Map<String, String> get messagesHeMap => {
   """listKinds.inventory.listMovedToTrash""": """רשימת המלאי הועברה לאשפה""",
   """listKinds.inventory.listArchived""": """רשימת המלאי הועברה לארכיון""",
   """listKinds.inventory.listUnarchived""": """רשימת המלאי הוצאה מהארכיון""",
+  """listKinds.inventory.allTitle""": """כל רשימות המלאי""",
+  """listKinds.inventory.allSubtitle""": """פריטים מכל רשימות המלאי""",
   """listKinds.template.title""": """תבניות""",
   """listKinds.template.name""": """תבנית""",
   """listKinds.template.newList""": """תבנית חדשה""",
@@ -10137,6 +10206,9 @@ Map<String, String> get messagesHeMap => {
       """יש לבחור רשימת סימון לחידוש מלאי בהגדרות רשימת המלאי כדי למצוא או להוסיף שם את הפריט.""",
   """stock.links.autoHintOff""": """הפריט הזה רק מסומן כאן כשהוא נמוך.""",
   """stock.links.linkToItem""": """קישור לפריט …""",
+  """stock.links.addToList""": """הוספה לרשימת קניות …""",
+  """stock.links.addToListTitle""": """לאיזו רשימה להוסיף?""",
+  """stock.links.addToListFailed""": """לא ניתן היה להוסיף לרשימה""",
   """stock.links.pickerTitle""": """קישור לפריט ברשימת סימון""",
   """stock.links.pickerField""": """פריט ברשימת סימון""",
   """stock.links.pickerSearch""": """חיפוש פריטים ברשימות סימון …""",
@@ -10296,6 +10368,14 @@ Map<String, String> get messagesHeMap => {
   """shopping.editTotalsTitle""": """עריכת סכומי הקנייה""",
   """shopping.editTotals""": """עריכת סכומים""",
   """shopping.doneEditing""": """סיום""",
+  """shopping.putAwayTitle""": """סידור""",
+  """shopping.putAwayHint""":
+      """בחרו לאן הולך מה שקניתם. כל פריט מתחיל במקום שאליו הוא הולך בדרך כלל.""",
+  """shopping.putAwayFull""": """מלא""",
+  """shopping.putAwayRemove""": """הסרה מרשימת המלאי הזו""",
+  """shopping.putAwayAdd""": """הוספה לרשימת מלאי…""",
+  """shopping.notPutAway""": """לא סודר""",
+  """shopping.unknownInventory""": """רשימת מלאי לא ידועה""",
   """shopping.remindersTitle""": """תזכורות""",
   """shopping.manageReminders""": """ניהול תזכורות""",
   """shopping.reminderGroupStart""": """בהתחלה""",

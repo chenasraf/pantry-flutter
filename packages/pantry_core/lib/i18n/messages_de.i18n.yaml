@@ -981,6 +981,8 @@ listKinds:
     listMovedToTrash: Bestandsliste in den Papierkorb verschoben
     listArchived: Bestandsliste archiviert
     listUnarchived: Bestandsliste dearchiviert
+    allTitle: "Alle Bestandslisten"
+    allSubtitle: "Einträge aus allen Bestandslisten"
   template:
     title: Vorlagen
     name: Vorlage
@@ -1185,6 +1187,9 @@ stock:
     autoHintNoChecklist: Wähle in den Bestandslisten-Einstellungen eine Nachkauf-Checkliste, um diesen Eintrag dort zu finden oder zu ergänzen.
     autoHintOff: Dieser Eintrag wird nur hier markiert, wenn er knapp wird.
     linkToItem: Mit einem Eintrag verknüpfen …
+    addToList: "Zu einer Einkaufsliste hinzufügen …"
+    addToListTitle: "Zu welcher Liste hinzufügen?"
+    addToListFailed: "Konnte nicht zur Liste hinzugefügt werden"
     pickerTitle: Mit einem Checklisten-Eintrag verknüpfen
     pickerField: Checklisten-Eintrag
     pickerSearch: Checklisten-Einträge suchen …
@@ -1395,6 +1400,14 @@ shopping:
   editTotalsTitle: Summen des Einkaufs bearbeiten
   editTotals: Summen bearbeiten
   doneEditing: Fertig
+  putAwayTitle: "Einräumen"
+  putAwayHint: "Wähle, wohin deine Einkäufe kommen. Jeder Eintrag startet dort, wo er üblicherweise hinkommt."
+  putAwayFull: "Voll"
+  putAwayRemove: "Aus dieser Bestandsliste entfernen"
+  putAwayAdd: "Zu einer Bestandsliste hinzufügen…"
+  notPutAway: "Nicht eingeräumt"
+  unknownInventory: "Unbekannte Bestandsliste"
+  putAwayAmount(String item, String storage): "Menge von $item in $storage"
   remindersTitle: Erinnerungen
   manageReminders: Erinnerungen verwalten
   reminderGroupStart: Zu Beginn

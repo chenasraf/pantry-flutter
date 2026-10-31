@@ -981,6 +981,8 @@ listKinds:
     listMovedToTrash: רשימת המלאי הועברה לאשפה
     listArchived: רשימת המלאי הועברה לארכיון
     listUnarchived: רשימת המלאי הוצאה מהארכיון
+    allTitle: "כל רשימות המלאי"
+    allSubtitle: "פריטים מכל רשימות המלאי"
   template:
     title: תבניות
     name: תבנית
@@ -1185,6 +1187,9 @@ stock:
     autoHintNoChecklist: יש לבחור רשימת סימון לחידוש מלאי בהגדרות רשימת המלאי כדי למצוא או להוסיף שם את הפריט.
     autoHintOff: הפריט הזה רק מסומן כאן כשהוא נמוך.
     linkToItem: קישור לפריט …
+    addToList: "הוספה לרשימת קניות …"
+    addToListTitle: "לאיזו רשימה להוסיף?"
+    addToListFailed: "לא ניתן היה להוסיף לרשימה"
     pickerTitle: קישור לפריט ברשימת סימון
     pickerField: פריט ברשימת סימון
     pickerSearch: חיפוש פריטים ברשימות סימון …
@@ -1395,6 +1400,14 @@ shopping:
   editTotalsTitle: עריכת סכומי הקנייה
   editTotals: עריכת סכומים
   doneEditing: סיום
+  putAwayTitle: "סידור"
+  putAwayHint: "בחרו לאן הולך מה שקניתם. כל פריט מתחיל במקום שאליו הוא הולך בדרך כלל."
+  putAwayFull: "מלא"
+  putAwayRemove: "הסרה מרשימת המלאי הזו"
+  putAwayAdd: "הוספה לרשימת מלאי…"
+  notPutAway: "לא סודר"
+  unknownInventory: "רשימת מלאי לא ידועה"
+  putAwayAmount(String item, String storage): "כמות של $item ב־$storage"
   remindersTitle: תזכורות
   manageReminders: ניהול תזכורות
   reminderGroupStart: בהתחלה

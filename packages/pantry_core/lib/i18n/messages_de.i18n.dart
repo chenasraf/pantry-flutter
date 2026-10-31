@@ -5209,6 +5209,16 @@ class InventoryListKindsMessagesDe extends InventoryListKindsMessages {
   /// "Bestandsliste dearchiviert"
   /// ```
   String get listUnarchived => """Bestandsliste dearchiviert""";
+
+  /// ```dart
+  /// "Alle Bestandslisten"
+  /// ```
+  String get allTitle => """Alle Bestandslisten""";
+
+  /// ```dart
+  /// "Einträge aus allen Bestandslisten"
+  /// ```
+  String get allSubtitle => """Einträge aus allen Bestandslisten""";
 }
 
 class TemplateListKindsMessagesDe extends TemplateListKindsMessages {
@@ -6292,6 +6302,21 @@ class LinksStockMessagesDe extends LinksStockMessages {
   /// "Mit einem Eintrag verknüpfen …"
   /// ```
   String get linkToItem => """Mit einem Eintrag verknüpfen …""";
+
+  /// ```dart
+  /// "Zu einer Einkaufsliste hinzufügen …"
+  /// ```
+  String get addToList => """Zu einer Einkaufsliste hinzufügen …""";
+
+  /// ```dart
+  /// "Zu welcher Liste hinzufügen?"
+  /// ```
+  String get addToListTitle => """Zu welcher Liste hinzufügen?""";
+
+  /// ```dart
+  /// "Konnte nicht zur Liste hinzugefügt werden"
+  /// ```
+  String get addToListFailed => """Konnte nicht zur Liste hinzugefügt werden""";
 
   /// ```dart
   /// "Mit einem Checklisten-Eintrag verknüpfen"
@@ -7379,6 +7404,48 @@ class ShoppingMessagesDe extends ShoppingMessages {
   /// "Fertig"
   /// ```
   String get doneEditing => """Fertig""";
+
+  /// ```dart
+  /// "Einräumen"
+  /// ```
+  String get putAwayTitle => """Einräumen""";
+
+  /// ```dart
+  /// "Wähle, wohin deine Einkäufe kommen. Jeder Eintrag startet dort, wo er üblicherweise hinkommt."
+  /// ```
+  String get putAwayHint =>
+      """Wähle, wohin deine Einkäufe kommen. Jeder Eintrag startet dort, wo er üblicherweise hinkommt.""";
+
+  /// ```dart
+  /// "Voll"
+  /// ```
+  String get putAwayFull => """Voll""";
+
+  /// ```dart
+  /// "Aus dieser Bestandsliste entfernen"
+  /// ```
+  String get putAwayRemove => """Aus dieser Bestandsliste entfernen""";
+
+  /// ```dart
+  /// "Zu einer Bestandsliste hinzufügen…"
+  /// ```
+  String get putAwayAdd => """Zu einer Bestandsliste hinzufügen…""";
+
+  /// ```dart
+  /// "Nicht eingeräumt"
+  /// ```
+  String get notPutAway => """Nicht eingeräumt""";
+
+  /// ```dart
+  /// "Unbekannte Bestandsliste"
+  /// ```
+  String get unknownInventory => """Unbekannte Bestandsliste""";
+
+  /// ```dart
+  /// "Menge von $item in $storage"
+  /// ```
+  String putAwayAmount(String item, String storage) =>
+      """Menge von $item in $storage""";
 
   /// ```dart
   /// "Erinnerungen"
@@ -10146,6 +10213,9 @@ Passwort: pantry-rocks""",
       """Bestandsliste in den Papierkorb verschoben""",
   """listKinds.inventory.listArchived""": """Bestandsliste archiviert""",
   """listKinds.inventory.listUnarchived""": """Bestandsliste dearchiviert""",
+  """listKinds.inventory.allTitle""": """Alle Bestandslisten""",
+  """listKinds.inventory.allSubtitle""":
+      """Einträge aus allen Bestandslisten""",
   """listKinds.template.title""": """Vorlagen""",
   """listKinds.template.name""": """Vorlage""",
   """listKinds.template.newList""": """Neue Vorlage""",
@@ -10324,6 +10394,10 @@ Passwort: pantry-rocks""",
   """stock.links.autoHintOff""":
       """Dieser Eintrag wird nur hier markiert, wenn er knapp wird.""",
   """stock.links.linkToItem""": """Mit einem Eintrag verknüpfen …""",
+  """stock.links.addToList""": """Zu einer Einkaufsliste hinzufügen …""",
+  """stock.links.addToListTitle""": """Zu welcher Liste hinzufügen?""",
+  """stock.links.addToListFailed""":
+      """Konnte nicht zur Liste hinzugefügt werden""",
   """stock.links.pickerTitle""": """Mit einem Checklisten-Eintrag verknüpfen""",
   """stock.links.pickerField""": """Checklisten-Eintrag""",
   """stock.links.pickerSearch""": """Checklisten-Einträge suchen …""",
@@ -10499,6 +10573,14 @@ Passwort: pantry-rocks""",
   """shopping.editTotalsTitle""": """Summen des Einkaufs bearbeiten""",
   """shopping.editTotals""": """Summen bearbeiten""",
   """shopping.doneEditing""": """Fertig""",
+  """shopping.putAwayTitle""": """Einräumen""",
+  """shopping.putAwayHint""":
+      """Wähle, wohin deine Einkäufe kommen. Jeder Eintrag startet dort, wo er üblicherweise hinkommt.""",
+  """shopping.putAwayFull""": """Voll""",
+  """shopping.putAwayRemove""": """Aus dieser Bestandsliste entfernen""",
+  """shopping.putAwayAdd""": """Zu einer Bestandsliste hinzufügen…""",
+  """shopping.notPutAway""": """Nicht eingeräumt""",
+  """shopping.unknownInventory""": """Unbekannte Bestandsliste""",
   """shopping.remindersTitle""": """Erinnerungen""",
   """shopping.manageReminders""": """Erinnerungen verwalten""",
   """shopping.reminderGroupStart""": """Zu Beginn""",

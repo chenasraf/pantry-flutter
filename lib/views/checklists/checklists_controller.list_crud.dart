@@ -116,7 +116,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
     String? defaultRrule,
     bool defaultRepeatFromCompletion = false,
   }) async {
-    if (list.id == kAllListsId) return;
+    if (isAllListsId(list.id)) return;
     final trimmed = name.trim();
     if (trimmed.isEmpty) return;
     final recurrence = defaultRecurrenceMode == null
@@ -189,7 +189,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
     bool repeatFromCompletion = false,
   }) async {
     final list = _currentList;
-    if (list == null || list.id == kAllListsId) return;
+    if (list == null || isAllListsId(list.id)) return;
     if (!list.recurrenceDefault.remembers) return;
 
     final Map<String, dynamic> body;
@@ -257,7 +257,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
   /// the next item starts from it, and on the server through the queue. Used
   /// both for an editor's changes and for the write-back after every add.
   void updateItemDefaults(int listId, ItemDefaultsPatch patch) {
-    if (patch.isEmpty || listId == kAllListsId) return;
+    if (patch.isEmpty || isAllListsId(listId)) return;
     final list = _lists.where((l) => l.id == listId).firstOrNull;
     if (list == null) return;
     final optimistic = list.copyWith(
@@ -292,7 +292,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
     // The All-lists view is synthetic — there's no server list to sync, so its
     // toggle lives in local prefs (keyed by id 0). Reflect it on the in-memory
     // sentinel so the card hides/shows immediately.
-    if (list.id == kAllListsId) {
+    if (isAllListsId(list.id)) {
       _currentList = list.copyWith(hideProgressHero: value, updatedAt: _now());
       await PrefsService.instance.setAllListsProgressHeroHidden(value);
       notifyListeners();

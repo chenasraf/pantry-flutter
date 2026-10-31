@@ -196,6 +196,80 @@ extension ChecklistsControllerStock on ChecklistsController {
   Future<List<StockLinkRow>> stockLinkTargets(ListItem item, String search) =>
       _checklistService.linkTargets(houseId, item.listId, search: search);
 
+  /// The checklists [item] can be added to as a new item, its inventory's
+  /// restock checklist first.
+  List<ChecklistList> stockRowListsFor(ListItem item) {
+    final restock = restockChecklistOf(item.listId);
+    final writable = [
+      for (final l in sortedListsOfKind(ListKind.checklist))
+        if (l.isWritable) l,
+    ];
+    return [
+      if (restock != null && writable.contains(restock)) restock,
+      for (final l in writable)
+        if (l.id != restock?.id) l,
+    ];
+  }
+
+  /// Adds [item] to [checklist] as a new item and links it there, for an
+  /// inventory item with nothing on a shopping list to link to. The server
+  /// then settles the new row as for any link: checked off while the stock is
+  /// fine, asking for the shortfall while it is low. Online only, since the
+  /// link needs the row's real id.
+  Future<void> addStockRowAndLink(
+    ListItem item,
+    ChecklistList checklist,
+  ) async {
+    final row = await _checklistService.createItem(
+      houseId,
+      checklist.id,
+      name: item.name,
+      categoryId: item.categoryId,
+    );
+    _checklistService.invalidateItemsFor(checklist.id);
+    linkStock(
+      item,
+      StockLinkRow(
+        itemId: row.id,
+        name: row.name,
+        quantity: row.quantity,
+        listId: checklist.id,
+        listName: checklist.name,
+        listColor: checklist.color,
+      ),
+    );
+  }
+
+  /// Whether the member closed the no-restock-checklist notice on [listId].
+  /// Kept on this device only.
+  bool isRestockNoticeHidden(int listId) =>
+      (_checklistService.cache.get<List>('restockNoticeHidden:$houseId') ??
+              const [])
+          .contains(listId);
+
+  void hideRestockNotice(int listId) {
+    final key = 'restockNoticeHidden:$houseId';
+    final hidden = {
+      ...?_checklistService.cache.get<List>(key)?.whereType<int>(),
+      listId,
+    };
+    _checklistService.cache.set(key, hidden.toList());
+    notifyListeners();
+  }
+
+  /// Inventory items needing restock that nothing will put on a shopping list:
+  /// unlinked, in an inventory without a restock checklist.
+  int get onlyFlaggedCount => _items
+      .where(
+        (i) =>
+            i.deletedAt == null &&
+            i.needsStockRestock &&
+            i.stockLink == null &&
+            _isInventoryList(i.listId) &&
+            restockChecklistOf(i.listId) == null,
+      )
+      .length;
+
   /// The checklist inventory [listId] puts what it needs on, while it has one.
   ChecklistList? restockChecklistOf(int listId) {
     final id = _lists

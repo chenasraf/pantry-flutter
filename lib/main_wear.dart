@@ -10,6 +10,7 @@ import 'package:pantry_core/services/locale_service.dart';
 import 'package:pantry_core/services/nn_localizations.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/reachability_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/theming_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_wear/pantry_wear.dart';
@@ -39,10 +40,13 @@ void main(List<String> args) async {
 
   registerNnLocaleData();
 
+  // The server version is read before the first frame like the phone reads
+  // it: everything gated on it — inventories among them — is drawn from it.
   await Future.wait([
     AuthService.instance.loadCredentials(),
     PrefsService.instance.load(),
     CertTrustService.instance.load(),
+    ServerVersionService.instance.loadCached(),
   ]);
   CertTrustService.instance.install();
   AuthService.instance.hydrateFromCache();
@@ -80,6 +84,11 @@ void main(List<String> args) async {
   // change since then applies when the read comes back.
   unawaited(WearAppearanceClient.instance.start());
   runApp(const PantryWearApp());
+  // A server upgraded since the last launch is picked up in the background;
+  // the cached version already drew the first frame.
+  if (AuthService.instance.isLoggedIn) {
+    unawaited(ServerVersionService.instance.fetch());
+  }
   // After the first frame: the mirror only ever accelerates, so nothing it
   // does belongs on the path to drawing what the watch already knows.
   unawaited(WearMirrorClient.instance.start());

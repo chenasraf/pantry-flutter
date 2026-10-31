@@ -9,6 +9,7 @@ import 'package:pantry_core/models/label.dart';
 import 'package:pantry_core/models/member.dart';
 import 'package:pantry_core/models/shopping_estimate.dart';
 import 'package:pantry_core/models/shopping_presence_entry.dart';
+import 'package:pantry_core/models/shopping_put_away.dart';
 import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/models/shopping_review.dart';
 import 'package:pantry_core/models/shopping_session.dart';
@@ -798,8 +799,9 @@ class ShoppingSessionController extends ChangeNotifier {
     }
   }
 
-  Future<ShoppingSession> close() async {
-    _session = await _service.close(houseId, sessionId);
+  /// Finishes the trip, putting what was bought away as [putAway] says.
+  Future<ShoppingSession> close({List<PutAwayEntry> putAway = const []}) async {
+    _session = await _service.close(houseId, sessionId, putAway: putAway);
     notifyListeners();
     return _session;
   }

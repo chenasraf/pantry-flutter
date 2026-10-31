@@ -1,20 +1,25 @@
-/// Identifies the three primary navigation destinations. Used both for
-/// in-app ordering (which the user can customize) and for resolving
-/// notification deep links to a tab.
+/// Identifies the primary navigation destinations. Used both for in-app
+/// ordering (which the user can customize) and for resolving notification
+/// deep links to a tab.
 enum NavSection {
   checklists,
+
+  /// The house's inventories, on servers with inventory stock.
+  inventories,
   photoBoard,
   notesWall;
 
   /// Serialized form persisted in prefs and emitted by [encodeList].
   String get id => switch (this) {
     NavSection.checklists => 'checklists',
+    NavSection.inventories => 'inventories',
     NavSection.photoBoard => 'photoBoard',
     NavSection.notesWall => 'notesWall',
   };
 
   static NavSection? fromId(String? id) => switch (id) {
     'checklists' => NavSection.checklists,
+    'inventories' => NavSection.inventories,
     'photoBoard' => NavSection.photoBoard,
     'notesWall' => NavSection.notesWall,
     _ => null,
@@ -36,6 +41,7 @@ enum NavSection {
 /// added a new section).
 const List<NavSection> kDefaultNavOrder = [
   NavSection.checklists,
+  NavSection.inventories,
   NavSection.photoBoard,
   NavSection.notesWall,
 ];

@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/services/cert_trust_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
+import 'package:pantry_core/utils/version.dart';
 import 'package:pantry_wear/src/checklists/checklists_controller.dart';
 import 'package:pantry_wear/src/shell/wear_rail.dart';
 import 'package:pantry_wear/src/shell/wear_shell.dart';
@@ -216,5 +221,100 @@ void main() {
 
     expect(find.text(m.common.sessionExpiredTitle), findsOneWidget);
     expect(find.text(m.wear.certUntrustedShort), findsNothing);
+  });
+
+  group('the Inventories page', () {
+    ChecklistList inventory(int id, String name) => ChecklistList(
+      id: id,
+      houseId: 1,
+      name: name,
+      icon: 'package',
+      kind: ListKind.inventory,
+      sortOrder: id,
+      createdAt: 0,
+      updatedAt: 0,
+    );
+
+    final fridge = inventory(30, 'Fridge');
+    final freezer = inventory(31, 'Freezer');
+
+    Future<void> pumpWith(WidgetTester tester, String version) async {
+      ServerVersionService.instance.debugSeed(
+        pantryVersion: Version.parse(version),
+        advertised: {'inventory-all-view'},
+      );
+      tester.view.physicalSize = const Size(450, 450);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      final controller = ChecklistsController.seeded(
+        houseId: 1,
+        list: testList(),
+        lists: [testList()],
+        inventories: [fridge, freezer],
+        items: [testItem(id: 1, name: 'Milk')],
+      );
+      addTearDown(controller.dispose);
+      final inventories = ChecklistsController.seeded(
+        houseId: 1,
+        section: ListKind.inventory,
+        list: fridge,
+        lists: [testList()],
+        inventories: [fridge, freezer],
+        items: [testItem(id: 2, name: 'Butter')],
+      );
+      addTearDown(inventories.dispose);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: WearShell(
+            controller: controller,
+            inventoryController: inventories,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> nextPage(WidgetTester tester) async {
+      await tester.fling(
+        find.byType(PageView).first,
+        const Offset(-300, 0),
+        1000,
+      );
+      await tester.pumpAndSettle();
+    }
+
+    tearDown(ServerVersionService.instance.debugSeed);
+
+    testWidgets('follows the lists, named by its inventory', (tester) async {
+      await pumpWith(tester, '0.38.0');
+      await nextPage(tester);
+
+      expect(find.text('Fridge'), findsWidgets);
+      expect(find.text('Butter'), findsOneWidget);
+
+      await nextPage(tester);
+      expect(find.text(m.nav.photoBoard), findsWidgets);
+    });
+
+    testWidgets('its title switches between inventories only', (tester) async {
+      await pumpWith(tester, '0.38.0');
+      await nextPage(tester);
+
+      await tester.tap(find.text('Fridge').first);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Freezer'), findsOneWidget);
+      expect(find.text(ListKind.inventory.strings.allTitle), findsOneWidget);
+      expect(find.text(m.checklists.allLists), findsNothing);
+      expect(find.text(testList().name), findsNothing);
+    });
+
+    testWidgets('is missing on servers without inventories', (tester) async {
+      await pumpWith(tester, '0.37.0');
+      await nextPage(tester);
+
+      expect(find.text(m.nav.photoBoard), findsWidgets);
+      expect(find.text('Butter'), findsNothing);
+    });
   });
 }

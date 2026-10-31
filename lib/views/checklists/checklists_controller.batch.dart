@@ -32,7 +32,7 @@ extension ChecklistsControllerBatch on ChecklistsController {
     // Per-list view: the moved items leave immediately. Meta view keeps them
     // (their listId only changes once the server confirms via _onSyncApplied),
     // unless they go to another kind, which the meta view doesn't show.
-    if (!isMetaMode || !_checklistService.kindOf(targetListId).isChecklist) {
+    if (!isMetaMode || _checklistService.kindOf(targetListId) != kind) {
       _items = reconcileRemoveIds(_items, ids.toSet());
       _cacheCurrentItems();
     }
@@ -176,9 +176,13 @@ extension ChecklistsControllerBatch on ChecklistsController {
         final targetKind = _checklistService.kindOf(
           op.body['targetListId'] as int? ?? 0,
         );
-        if (isMetaMode) {
+        if (isMetaMode && targetKind == kind && !kind.isChecklist) {
+          // Merging the checklist-shaped rows would drop their stock; reload
+          // the aggregate instead.
+          unawaited(refresh());
+        } else if (isMetaMode) {
           // Adopt the returned items (now carrying their new listId).
-          _items = targetKind.isChecklist
+          _items = targetKind == kind
               ? reconcileReplaceById(_items, result.items)
               : reconcileRemoveIds(_items, {
                   for (final i in result.items) i.id,
@@ -210,7 +214,11 @@ extension ChecklistsControllerBatch on ChecklistsController {
         final targetKind = _checklistService.kindOf(
           op.body['targetListId'] as int? ?? 0,
         );
-        if (isMetaMode && targetKind.isChecklist && result.items.isNotEmpty) {
+        if (isMetaMode && targetKind == kind && !kind.isChecklist) {
+          if (result.items.isNotEmpty) unawaited(refresh());
+        } else if (isMetaMode &&
+            targetKind == kind &&
+            result.items.isNotEmpty) {
           final existing = {for (final i in _items) i.id};
           final fresh = [
             for (final i in result.items)

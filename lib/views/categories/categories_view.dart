@@ -258,11 +258,9 @@ class _CategoriesViewState extends State<CategoriesView> {
   }
 
   Future<void> _create() async {
-    final created = await Navigator.of(context).push<Category>(
-      itemModalRoute(
-        CategoryFormView(houseId: widget.houseId, defaultListId: widget.listId),
-      ),
-    );
+    final created = await Navigator.of(
+      context,
+    ).push<Category>(itemModalRoute(CategoryFormView(houseId: widget.houseId)));
     if (created != null) {
       setState(() {
         _categories = CategoryService.sortCategories([

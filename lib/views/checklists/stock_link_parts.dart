@@ -10,9 +10,11 @@ import 'package:pantry_core/utils/stock_rules.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry_core/widgets/entity_chip.dart';
 import 'package:pantry/theme/app_theme.dart';
+import 'package:pantry/utils/app_toast.dart';
 
 import 'checklists_controller.dart';
 import 'form_components.dart';
+import 'item_picker_dialogs.dart';
 import 'restock_feedback.dart';
 
 /// What a member can do to an inventory item's link. Absent where they can't
@@ -23,6 +25,7 @@ class StockLinkActions {
     required this.onPick,
     required this.onSetAutoLink,
     required this.onLinkByHand,
+    this.onAddToList,
   });
 
   final VoidCallback onUnlink;
@@ -31,6 +34,10 @@ class StockLinkActions {
 
   /// Opens the search over every checklist item the member can link to.
   final VoidCallback onLinkByHand;
+
+  /// Adds the item to a checklist the member picks and links it there. Null
+  /// when there is no checklist to add it to.
+  final VoidCallback? onAddToList;
 }
 
 /// The link controls of [item] as the member in [controller] may use them.
@@ -40,6 +47,7 @@ StockLinkActions? stockLinkActionsFor(
   ListItem item,
 ) {
   if (!controller.canLinkStock(item)) return null;
+  final lists = controller.stockRowListsFor(item);
   return StockLinkActions(
     onUnlink: () => controller.unlinkStock(item),
     onPick: (row) => controller.linkStock(item, row),
@@ -51,6 +59,25 @@ StockLinkActions? stockLinkActionsFor(
       );
       if (row != null) controller.linkStock(item, row);
     },
+    onAddToList: lists.isEmpty
+        ? null
+        : () async {
+            final id = await pickTargetList(
+              context,
+              title: m.stock.links.addToListTitle,
+              lists: lists,
+            );
+            final checklist = lists.where((l) => l.id == id).firstOrNull;
+            if (checklist == null) return;
+            try {
+              await controller.addStockRowAndLink(item, checklist);
+            } catch (_) {
+              showAppToast(
+                message: m.stock.links.addToListFailed,
+                kind: ToastKind.error,
+              );
+            }
+          },
   );
 }
 
@@ -375,10 +402,22 @@ class _StockLinkCardState extends State<StockLinkCard> {
           style: hint,
         ),
         const SizedBox(height: 4),
-        TextButton.icon(
-          onPressed: actions?.onLinkByHand,
-          icon: const Icon(Icons.add_link, size: 18),
-          label: Text(l.linkToItem),
+        Wrap(
+          spacing: 8,
+          runSpacing: 4,
+          children: [
+            TextButton.icon(
+              onPressed: actions?.onLinkByHand,
+              icon: const Icon(Icons.add_link, size: 18),
+              label: Text(l.linkToItem),
+            ),
+            if (actions?.onAddToList case final onAddToList?)
+              TextButton.icon(
+                onPressed: onAddToList,
+                icon: const Icon(Icons.add_shopping_cart, size: 18),
+                label: Text(l.addToList),
+              ),
+          ],
         ),
       ];
     }
