@@ -52,14 +52,12 @@ class ListStage extends StatelessWidget {
         ? controller.sortedListsOfKind(kind)
         : controller.listsOfKind(kind);
     final current = controller.currentList;
-    // The synthetic "All lists" entry only earns its spot when there's more
-    // than one real list to aggregate. With zero lists the index renders the
-    // empty state; with one list, "All lists" would just duplicate that list.
-    // It aggregates checklists only.
-    final showAllLists =
-        kind.isChecklist &&
-        ServerFeature.checklistAllView &&
-        realLists.length >= 2;
+    // The synthetic "All" entry only earns its spot when there's more than one
+    // real list to aggregate. With zero lists the index renders the empty
+    // state; with one list, "All lists" would just duplicate that list.
+    // Checklists and inventories have one; templates don't.
+    final showAllLists = controller.hasAllView(kind);
+    final allListsId = allListsIdOf(kind);
     final perms = controller.permissions;
     final canEditLists = perms.canEditLists;
     final canDeleteLists = perms.canDeleteLists;
@@ -71,12 +69,13 @@ class ListStage extends StatelessWidget {
     final showMenu = ServerFeature.checklistTrash;
     final allListsTile = showAllLists
         ? AllListsTile(
-            selected: current?.id == kAllListsId,
+            kind: kind,
+            selected: current?.id == allListsId,
             onTap: () async {
               Navigator.pop(context);
-              if (current?.id != kAllListsId) {
+              if (current?.id != allListsId) {
                 await controller.selectList(
-                  allListsSentinel(controller.houseId),
+                  allListsSentinel(controller.houseId, kind: kind),
                 );
               }
             },

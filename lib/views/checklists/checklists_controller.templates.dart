@@ -95,7 +95,7 @@ extension ChecklistsControllerTemplates on ChecklistsController {
     final visible =
         !isSoftView &&
         (isMetaMode
-            ? _checklistService.kindOf(listId).isChecklist
+            ? _checklistService.kindOf(listId) == kind
             : _currentList?.id == listId);
     if (!visible) {
       _checklistService.invalidateItemsFor(listId);

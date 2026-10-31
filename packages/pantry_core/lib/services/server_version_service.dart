@@ -71,6 +71,10 @@ class ServerVersionService {
   /// Probe results, keyed by names in [_featureIntroduced].
   final Map<String, bool> _features = {};
 
+  /// The names listed under `capabilities.pantry.features`. Gates the
+  /// features the server announces by name rather than by release.
+  final Set<String> _advertised = {};
+
   /// On-disk snapshot of the last successful capabilities fetch. Rehydrated by
   /// [loadCached] before the first frame so cold offline launches gate UI on
   /// the last-known version instead of having every [isServerPantryVersion]
@@ -94,6 +98,8 @@ class ServerVersionService {
         }
       }
     }
+    final advertised = _cache.get<List>('advertised');
+    if (advertised != null) _advertised.addAll(advertised.whereType<String>());
     _themingCaps = _cache.getObject('themingCaps');
     _webPush = _cache.get<bool>('webPush') ?? false;
   }
@@ -105,6 +111,7 @@ class ServerVersionService {
       'features',
       Map<String, dynamic>.from(_features),
     );
+    _cache.set<List<String>>('advertised', _advertised.toList());
     _cache.set<Map<String, dynamic>?>('themingCaps', _themingCaps);
     _cache.set<bool>('webPush', _webPush);
   }
@@ -168,6 +175,11 @@ class ServerVersionService {
     } else if (versionField is String) {
       _pantryVersion = Version.tryParse(versionField);
     }
+
+    final features = pantryCaps['features'];
+    _advertised
+      ..clear()
+      ..addAll(features is List ? features.whereType<String>() : const []);
   }
 
   Future<void> _runMissingProbes() async {
@@ -218,6 +230,7 @@ class ServerVersionService {
     _themingCaps = null;
     _webPush = false;
     _features.clear();
+    _advertised.clear();
     unawaited(_cache.clear());
   }
 
@@ -248,15 +261,25 @@ class ServerVersionService {
     );
   }
 
+  /// Whether the server lists [feature] under `capabilities.pantry.features`.
+  /// The debug force-all-features pref answers yes to everything.
+  bool advertises(String feature) =>
+      PrefsService.instance.devForceAllFeatures ||
+      _advertised.contains(feature);
+
   @visibleForTesting
   void debugSeed({
     Version? pantryVersion,
     Map<String, bool> features = const {},
+    Set<String> advertised = const {},
   }) {
     _pantryVersion = pantryVersion;
     _features
       ..clear()
       ..addAll(features);
+    _advertised
+      ..clear()
+      ..addAll(advertised);
   }
 }
 
@@ -398,4 +421,11 @@ abstract final class ServerFeature {
   static bool get listKinds => _since('0.38.0');
   static bool get templates => _since('0.38.0');
   static bool get inventoryStock => _since('0.38.0');
+
+  // Announced by name under `capabilities.pantry.features`.
+  static bool _advertised(String feature) =>
+      ServerVersionService.instance.advertises(feature);
+
+  static bool get inventoryAllView => _advertised('inventory-all-view');
+  static bool get shoppingPutAway => _advertised('shopping-put-away');
 }

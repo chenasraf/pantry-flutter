@@ -50,7 +50,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  test('both pages are offered to upgraders only', () {
+  test('inventories reach everyone, templates upgraders only', () {
     const upgrader = OnboardingAudience(
       isNewUser: false,
       isAndroid: true,
@@ -64,9 +64,9 @@ void main() {
     final entries = kAppOnboardingPages['0.38.0']!;
 
     expect(entries, hasLength(2));
-    for (final entry in entries) {
-      expect(entry.showWhen!(upgrader), isTrue);
-      expect(entry.showWhen!(newUser), isFalse);
-    }
+    final [inventory, templates] = entries;
+    expect(inventory.showWhen, isNull);
+    expect(templates.showWhen!(upgrader), isTrue);
+    expect(templates.showWhen!(newUser), isFalse);
   });
 }

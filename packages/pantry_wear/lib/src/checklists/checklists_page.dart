@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/list_kind.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/utils/category_icons.dart';
@@ -540,6 +542,9 @@ class ChecklistsPageState extends State<ChecklistsPage>
   String _emptyMessage(ChecklistsController controller) {
     if (!AuthService.instance.isLoggedIn) return m.wear.notSignedIn;
     if (controller.hasNoScope) return m.wear.noLists;
+    if (controller.section == ListKind.inventory && controller.list == null) {
+      return ListKind.inventory.strings.emptyTitle;
+    }
     if (controller.mode != ChecklistMode.session) return m.checklists.noItems;
     return controller.done.isEmpty
         ? m.shopping.nothingToBuyHere

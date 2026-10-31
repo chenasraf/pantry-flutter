@@ -95,8 +95,9 @@ class OnboardingPageEntry {
 /// once — the whole map would otherwise play back as one sitting. The tour a new
 /// user gets is therefore whatever survives the filters, and it is held to the
 /// handful of things the app cannot teach on its own: switching lists, acting on
-/// a row, adding items, barcode scanning, shopping trips, and the watch app.
-/// Every other page carries [onboardingUpgradersOnly], so it lands as a
+/// a row, adding items, barcode scanning, shopping trips, the watch app, and
+/// what inventories are for. Every other page carries
+/// [onboardingUpgradersOnly], so it lands as a
 /// what's-changed recap for someone who already has lists to apply it to.
 ///
 /// Keys MUST be valid dotted versions parseable by [Version].
@@ -194,10 +195,9 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
     ),
   ],
   '0.38.0': [
-    OnboardingPageEntry(
-      builder: (_) => const InventoryOnboardingPage(),
-      showWhen: onboardingUpgradersOnly,
-    ),
+    // For new users too: an Inventories tab says nothing about stock running
+    // low, restocking or expiry.
+    OnboardingPageEntry(builder: (_) => const InventoryOnboardingPage()),
     OnboardingPageEntry(
       builder: (_) => const TemplatesOnboardingPage(),
       showWhen: onboardingUpgradersOnly,

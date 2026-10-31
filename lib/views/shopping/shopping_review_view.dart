@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/shopping_estimate.dart';
+import 'package:pantry_core/models/shopping_put_away.dart';
 import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/models/shopping_review.dart';
 import 'package:pantry_core/models/store.dart';
 import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
@@ -17,6 +20,7 @@ import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/shopping/delete_trip_dialog.dart';
+import 'package:pantry/views/shopping/shopping_put_away_section.dart';
 import 'package:pantry/views/shopping/shopping_reminder_block.dart';
 
 /// Which review the screen renders. [advance] shows only the store being left
@@ -57,6 +61,11 @@ class ShoppingReviewView extends StatefulWidget {
   /// first and closes once the trip is gone.
   final Future<bool> Function()? onDelete;
 
+  /// [ShoppingReviewMode.close]: handed the put-away changes as the finish is
+  /// confirmed, for the close request to carry. Only items whose storages
+  /// were changed are in it.
+  final ValueChanged<List<PutAwayEntry>>? onPutAway;
+
   const ShoppingReviewView({
     super.key,
     required this.houseId,
@@ -69,6 +78,7 @@ class ShoppingReviewView extends StatefulWidget {
     this.onManageReminders,
     this.canEditBilled = true,
     this.onDelete,
+    this.onPutAway,
   });
 
   @override
@@ -95,6 +105,27 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
   /// House's remembered currency, used to preselect the billed-total dropdown
   /// for a store that hasn't been billed yet. Seeded from cache, then refreshed.
   String _lastCurrency = defaultCurrency;
+
+  // Finishing a trip says where what was bought goes. Each item starts where
+  // its tick restocked it; only the items whose storages change are sent.
+  List<ChecklistList> _inventories = const [];
+  PutAwayDraft _putAway = {};
+
+  bool get _putAwayEnabled =>
+      widget.mode == ShoppingReviewMode.close && ServerFeature.shoppingPutAway;
+
+  /// Every item ticked on the trip, once, whichever store it was ticked at.
+  List<ListItem> get _checkedItems {
+    final seen = <int>{};
+    return [
+      for (final store in _review?.stores ?? const <ShoppingReviewStore>[])
+        for (final item in store.items)
+          if (seen.add(item.id)) item,
+    ];
+  }
+
+  bool get _showPutAway =>
+      _putAwayEnabled && _inventories.isNotEmpty && _checkedItems.isNotEmpty;
 
   @override
   void initState() {
@@ -130,12 +161,16 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
       _error = null;
     });
     try {
+      final inventories = _putAwayEnabled ? _loadInventories() : null;
       final review = widget.mode == ShoppingReviewMode.history
           ? await _service.getSummary(widget.houseId, widget.sessionId)
           : await _service.getReview(widget.houseId, widget.sessionId);
+      final inventoryLists = await inventories;
       if (!mounted) return;
       setState(() {
         _review = review;
+        if (inventoryLists != null) _inventories = inventoryLists;
+        _putAway = putAwayDraft(_checkedItems);
         _loading = false;
       });
     } catch (_) {
@@ -144,6 +179,18 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
         _loading = false;
         _error = m.shopping.loadFailed;
       });
+    }
+  }
+
+  /// The house's inventories, for the put-away section. Falls back to the
+  /// cached ones offline, and to none at all, which only hides the section.
+  Future<List<ChecklistList>> _loadInventories() async {
+    final service = ChecklistService.instance;
+    try {
+      return await service.getLists(widget.houseId, kind: ListKind.inventory);
+    } catch (_) {
+      return service.getCachedListsOfKind(widget.houseId, ListKind.inventory) ??
+          const [];
     }
   }
 
@@ -324,6 +371,15 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
                   ),
                   const SizedBox(height: 16),
                 ],
+                if (_showPutAway) ...[
+                  ShoppingPutAwaySection(
+                    items: _checkedItems,
+                    inventories: _inventories,
+                    draft: _putAway,
+                    onChanged: (draft) => setState(() => _putAway = draft),
+                  ),
+                  const SizedBox(height: 16),
+                ],
                 if (widget.mode != ShoppingReviewMode.advance)
                   _GrandTotal(review: review!),
               ],
@@ -346,9 +402,7 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: FilledButton.icon(
-                        onPressed: _loading
-                            ? null
-                            : () => Navigator.of(context).pop(true),
+                        onPressed: _loading ? null : _confirm,
                         icon: Icon(
                           widget.mode == ShoppingReviewMode.advance
                               ? Icons.arrow_forward
@@ -367,6 +421,13 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
             ),
       backgroundColor: theme.colorScheme.surface,
     );
+  }
+
+  void _confirm() {
+    if (_showPutAway) {
+      widget.onPutAway?.call(changedPutAway(_checkedItems, _putAway));
+    }
+    Navigator.of(context).pop(true);
   }
 
   String _storeName(int? storeId) {

@@ -57,7 +57,12 @@ class ChecklistsController extends ChangeNotifier {
   /// controller behaves normally before the view assigns real permissions.
   HousePermissions permissions = HousePermissions.unrestricted;
 
-  ChecklistsController({required this.houseId}) {
+  /// The one kind a section shows, for the Inventories tab; null for the
+  /// lists section, which switches between every kind.
+  final ListKind? section;
+
+  ChecklistsController({required this.houseId, this.section}) {
+    if (section != null) _kind = section!;
     _appliedSub = SyncManager.instance.onApplied.listen(_onSyncApplied);
     _skippedSub = SyncManager.instance.onSkipped.listen(_onSyncSkipped);
     _reconnectSub = SyncManager.instance.onReconnect.listen(_onReconnect);
@@ -76,8 +81,18 @@ class ChecklistsController extends ChangeNotifier {
 
   late final AppLifecycleListener _lifecycle;
 
-  /// True when the synthetic "All lists" entry is selected.
-  bool get isMetaMode => _currentList?.id == kAllListsId;
+  /// True when a synthetic "All lists" or "All inventories" entry is selected.
+  bool get isMetaMode => isAllListsId(_currentList?.id);
+
+  /// Whether [kind]'s section offers an "All" view, which needs at least two
+  /// lists to gather.
+  bool hasAllView(ListKind kind) =>
+      switch (kind) {
+        ListKind.checklist => ServerFeature.checklistAllView,
+        ListKind.inventory => ServerFeature.inventoryAllView,
+        ListKind.template => false,
+      } &&
+      listsOfKind(kind).length >= 2;
 
   /// Whether the current concrete list permits item writes. A view-only shared
   /// list is read-only; everything else is writable (and the granular house
@@ -240,9 +255,25 @@ class ChecklistsController extends ChangeNotifier {
   /// Whether the open section's items are checked off, recur and shop.
   bool get isChecklistKind => kind.isChecklist;
 
-  /// Opens [kind]'s section on its first list, or on its empty state.
+  /// The list this view reopens on: the lists section's `selectedListId`, or
+  /// the Inventories tab's own.
+  int? get _savedListId => section == ListKind.inventory
+      ? _checklistService.selectedInventoryId
+      : _checklistService.selectedListId;
+
+  set _savedListId(int? id) {
+    if (section == ListKind.inventory) {
+      _checklistService.selectedInventoryId = id;
+    } else {
+      _checklistService.selectedListId = id;
+    }
+  }
+
+  /// Opens [kind]'s section on its first list, or on its empty state. A view
+  /// pinned to one [section] stays on it.
   Future<void> selectKind(ListKind kind) async {
     if (kind == this.kind) return;
+    if (section != null && kind != section) return;
     final first = sortedListsOfKind(kind).firstOrNull;
     if (first != null) {
       await selectList(first);
@@ -250,7 +281,7 @@ class ChecklistsController extends ChangeNotifier {
     }
     _kind = kind;
     _currentList = null;
-    _checklistService.selectedListId = null;
+    _savedListId = null;
     _items = [];
     _isLoading = false;
     _isRefreshing = false;
@@ -641,15 +672,18 @@ class ChecklistsController extends ChangeNotifier {
         // wrote `selectedListId` out-of-band) over the list currently shown;
         // during normal use the two are identical since `selectList` keeps
         // `selectedListId` in sync.
-        final targetId = _checklistService.selectedListId ?? _currentList?.id;
-        if (targetId == kAllListsId && ServerFeature.checklistAllView) {
+        final targetId = _savedListId ?? _currentList?.id;
+        final allView = _allViewFor(targetId);
+        if (allView != null) {
           // Stay on the meta view — falling back to `_lists.first` would
           // flicker the per-list view in between refreshes.
-          await selectList(allListsSentinel(houseId));
+          await selectList(allView);
         } else {
           if (!ServerFeature.listKinds) _kind = ListKind.checklist;
           final target =
-              _lists.where((l) => l.id == targetId).firstOrNull ??
+              _lists
+                  .where((l) => l.id == targetId && _inSection(l))
+                  .firstOrNull ??
               sortedListsOfKind(_kind).firstOrNull ??
               // An emptied template or inventory section stays open on its
               // empty state.
@@ -704,7 +738,7 @@ class ChecklistsController extends ChangeNotifier {
     if (pendingLists == null) return;
     final currentId = _currentList?.id;
     for (final list in _lists) {
-      if (list.id == currentId || list.id < 0) continue;
+      if (list.id == currentId || list.id < 0 || !_inSection(list)) continue;
       if (pendingLists.contains(list.id)) continue;
       if (!_sync.isOnline) return;
       try {
@@ -728,38 +762,59 @@ class ChecklistsController extends ChangeNotifier {
       }
     }
 
-    // Warm the All-lists aggregate too, so it opens offline like any list. The
-    // snapshot spans every list, so only cache it when nothing is pending —
-    // otherwise it would predate an un-acked optimistic change. Skipped when
-    // the aggregate is the current view (already fetched above) or the server
-    // doesn't offer it.
-    if (currentId == kAllListsId ||
-        !ServerFeature.checklistAllView ||
-        !_sync.isOnline ||
-        pendingLists.isNotEmpty) {
-      return;
-    }
-    try {
-      final sort =
-          await _fetchListItemSort(kAllListsId) ??
-          _checklistService.cachedItemSort(houseId, kAllListsId);
-      final all = await _checklistService.getHouseItems(
-        houseId,
-        sortBy: ChecklistsControllerSort._allListsSort(sort),
-      );
-      if (_sync.pendingListIds(houseId)?.isEmpty ?? false) {
-        _checklistService.cacheItems(kAllListsId, all);
+    // Warm the "All" aggregates too, so they open offline like any list. A
+    // snapshot spans every list of its kind, so only cache it when nothing is
+    // pending — otherwise it would predate an un-acked optimistic change.
+    // Skipped for the aggregate that is the current view (already fetched
+    // above) and for one the server doesn't offer.
+    for (final kind in const [ListKind.checklist, ListKind.inventory]) {
+      final allId = allListsIdOf(kind)!;
+      if (currentId == allId || _allViewFor(allId) == null) continue;
+      if (!_sync.isOnline || pendingLists.isNotEmpty) return;
+      try {
+        final sort =
+            await _fetchListItemSort(allId) ??
+            _checklistService.cachedItemSort(houseId, allId);
+        final all = await _checklistService.getHouseItems(
+          houseId,
+          sortBy: ChecklistsControllerSort._allListsSort(sort),
+          kind: kind,
+        );
+        if (_sync.pendingListIds(houseId)?.isEmpty ?? false) {
+          _checklistService.cacheItems(allId, all);
+        }
+      } on OfflineException {
+        return;
+      } catch (e) {
+        debugPrint('[ChecklistsController] Pre-cache ($allId) failed: $e');
       }
-    } on OfflineException {
-      return;
-    } catch (e) {
-      debugPrint('[ChecklistsController] Pre-cache (all-lists) failed: $e');
     }
   }
 
+  /// The "All" sentinel [id] names, when the server offers that view and it
+  /// belongs in this section.
+  ChecklistList? _allViewFor(int? id) {
+    final view = switch (id) {
+      kAllListsId when ServerFeature.checklistAllView => allListsSentinel(
+        houseId,
+      ),
+      kAllInventoriesId when ServerFeature.inventoryAllView => allListsSentinel(
+        houseId,
+        kind: ListKind.inventory,
+      ),
+      _ => null,
+    };
+    return view != null && _inSection(view) ? view : null;
+  }
+
+  /// Whether [list] may be opened here: anything in the lists section, only
+  /// its own kind in a pinned one.
+  bool _inSection(ChecklistList list) =>
+      section == null || list.kind == section;
+
   void _restoreFromCache() {
     final cache = _checklistService.cache;
-    final shownListId = _currentList?.id ?? _checklistService.selectedListId;
+    final shownListId = _currentList?.id ?? _savedListId;
     // Fall back to the legacy global key for installs that cached prefs
     // before they were scoped per-house. First scoped write overwrites it.
     _sortBy = shownListId != null
@@ -821,29 +876,33 @@ class ChecklistsController extends ChangeNotifier {
     if (cachedLists != null && _lists.isEmpty) {
       _lists = _applyLocalListPrefs(cachedLists);
       if (_lists.isNotEmpty) {
-        final savedId = _checklistService.selectedListId;
-        if (savedId == kAllListsId && ServerFeature.checklistAllView) {
-          _currentList = allListsSentinel(houseId);
-          _sortBy = _checklistService.cachedItemSort(houseId, kAllListsId);
-          // The aggregate has its own cache slot (kAllListsId), so the
-          // All-lists view restores offline just like a concrete list.
-          _items = _checklistService.getCachedItems(kAllListsId) ?? const [];
+        final savedId = _savedListId;
+        final allView = _allViewFor(savedId);
+        if (allView != null) {
+          _currentList = allView;
+          _sortBy = _checklistService.cachedItemSort(houseId, allView.id);
+          // Each aggregate has its own cache slot (its sentinel id), so an
+          // "All" view restores offline just like a concrete list.
+          _items = _checklistService.getCachedItems(allView.id) ?? const [];
           _isLoading = false;
           notifyListeners();
         } else {
-          _currentList =
-              (savedId != null
-                  ? _lists.cast<ChecklistList?>().firstWhere(
-                      (l) => l!.id == savedId,
-                      orElse: () => null,
-                    )
-                  : null) ??
-              _lists.first;
-          _sortBy = _checklistService.cachedItemSort(houseId, _currentList!.id);
-          _items =
-              _checklistService.getCachedItems(_currentList!.id) ?? const [];
-          _isLoading = false;
-          notifyListeners();
+          final shown =
+              _lists
+                  .where((l) => l.id == savedId && _inSection(l))
+                  .firstOrNull ??
+              (section == null
+                  ? _lists.first
+                  : sortedListsOfKind(section!).firstOrNull);
+          // A pinned section with none of its lists yet opens on its empty
+          // state.
+          if (shown != null) {
+            _currentList = shown;
+            _sortBy = _checklistService.cachedItemSort(houseId, shown.id);
+            _items = _checklistService.getCachedItems(shown.id) ?? const [];
+            _isLoading = false;
+            notifyListeners();
+          }
         }
       }
     }
@@ -866,7 +925,7 @@ class ChecklistsController extends ChangeNotifier {
     }
     _currentList = list;
     _kind = list.kind;
-    _checklistService.selectedListId = list.id;
+    _savedListId = list.id;
     if (ServerFeature.listItemSort) {
       _sortBy = _checklistService.cachedItemSort(houseId, list.id);
     }
@@ -877,7 +936,7 @@ class ChecklistsController extends ChangeNotifier {
       _isRefreshing = false;
       notifyListeners();
       // Meta view has no trash/archive of its own — exit the soft view silently.
-      if (list.id == kAllListsId) {
+      if (isAllListsId(list.id)) {
         _isTrashMode = false;
         _isArchiveMode = false;
         _isLoading = false;
@@ -891,21 +950,22 @@ class ChecklistsController extends ChangeNotifier {
       }
     }
 
-    if (list.id == kAllListsId) {
-      // The aggregate is cached under the sentinel id so the All-lists view
-      // opens with data while offline instead of an infinite spinner or an
-      // empty state. Show it first, then refresh in place.
-      final cachedAll = _checklistService.getCachedItems(kAllListsId);
+    if (isAllListsId(list.id)) {
+      // The aggregate is cached under the sentinel id so the "All" view opens
+      // with data while offline instead of an infinite spinner or an empty
+      // state. Show it first, then refresh in place.
+      final cachedAll = _checklistService.getCachedItems(list.id);
       if (cachedAll != null) {
         _items = cachedAll;
         _error = null;
         _isLoading = false;
         _isRefreshing = refreshInPlace;
         notifyListeners();
-      } else if (_items.isEmpty) {
-        // On the first entry we have no prior items; subsequent refreshes keep
-        // the previous list visible so the user sees an in-place swap rather
+      } else if (_items.isEmpty || previousListId != list.id) {
+        // On the first entry we have no items of this view; subsequent
+        // refreshes keep them visible so the user sees an in-place swap rather
         // than an empty-state flash.
+        _items = [];
         _isLoading = true;
         _isRefreshing = false;
         notifyListeners();
@@ -915,7 +975,7 @@ class ChecklistsController extends ChangeNotifier {
       }
       try {
         final fresh = await _fetchItemsInListSort(list);
-        if (_currentList?.id == kAllListsId && !isSoftView) {
+        if (_currentList?.id == list.id && !isSoftView) {
           _items = _overlayPending(fresh);
           _error = null;
           _cacheVisibleItems();
@@ -925,7 +985,7 @@ class ChecklistsController extends ChangeNotifier {
         }
       } catch (e) {
         debugPrint('[ChecklistsController] Failed to load house items: $e');
-        if (_currentList?.id == kAllListsId) {
+        if (_currentList?.id == list.id) {
           if (_items.isEmpty) _error = m.checklists.failedToLoadItems;
           _isLoading = false;
           _isRefreshing = false;
@@ -1158,7 +1218,7 @@ class ChecklistsController extends ChangeNotifier {
   Future<void> refreshSoftView() async {
     if (!isSoftView) return;
     final list = _currentList;
-    if (list == null || list.id == kAllListsId) return;
+    if (list == null || isAllListsId(list.id)) return;
     if (_isArchiveMode) {
       await _loadArchiveItems(list);
     } else {
@@ -1167,12 +1227,12 @@ class ChecklistsController extends ChangeNotifier {
   }
 
   /// Persist the current `_items` snapshot to the cache slot backing the
-  /// active view: the concrete list's slot, or the shared All-lists aggregate
-  /// slot ([kAllListsId]) in meta mode. Routing every item-cache write through
-  /// here keeps the All-lists view — and optimistic edits made from it —
-  /// available offline alongside the per-list caches.
+  /// active view: the concrete list's slot, or the aggregate slot (the
+  /// sentinel id) in meta mode. Routing every item-cache write through here
+  /// keeps the "All" views — and optimistic edits made from them — available
+  /// offline alongside the per-list caches.
   void _cacheVisibleItems([int? listId]) {
-    final key = isMetaMode ? kAllListsId : (listId ?? _currentList?.id);
+    final key = isMetaMode ? _currentList!.id : (listId ?? _currentList?.id);
     if (key == null) return;
     _checklistService.cacheItems(key, List.of(_items));
     _recountNeedsRestock();
@@ -1229,8 +1289,8 @@ class ChecklistsController extends ChangeNotifier {
             _checklistService.rebindItemSort(houseId, tempId, entity.id);
             // The next load reopens the persisted selection; left on the
             // temp id, it would find no such list and fall back to the first.
-            if (_checklistService.selectedListId == tempId) {
-              _checklistService.selectedListId = entity.id;
+            if (_savedListId == tempId) {
+              _savedListId = entity.id;
             }
             final i = _lists.indexWhere((l) => l.id == tempId);
             if (i != -1) {

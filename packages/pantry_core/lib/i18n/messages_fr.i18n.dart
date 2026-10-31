@@ -5205,6 +5205,16 @@ class InventoryListKindsMessagesFr extends InventoryListKindsMessages {
   /// "Inventaire désarchivé"
   /// ```
   String get listUnarchived => """Inventaire désarchivé""";
+
+  /// ```dart
+  /// "Tous les inventaires"
+  /// ```
+  String get allTitle => """Tous les inventaires""";
+
+  /// ```dart
+  /// "Éléments de tous les inventaires"
+  /// ```
+  String get allSubtitle => """Éléments de tous les inventaires""";
 }
 
 class TemplateListKindsMessagesFr extends TemplateListKindsMessages {
@@ -6286,6 +6296,21 @@ class LinksStockMessagesFr extends LinksStockMessages {
   /// "Lier à un article …"
   /// ```
   String get linkToItem => """Lier à un article …""";
+
+  /// ```dart
+  /// "Ajouter à une liste de courses …"
+  /// ```
+  String get addToList => """Ajouter à une liste de courses …""";
+
+  /// ```dart
+  /// "L’ajouter à quelle liste ?"
+  /// ```
+  String get addToListTitle => """L’ajouter à quelle liste ?""";
+
+  /// ```dart
+  /// "Impossible de l’ajouter à la liste"
+  /// ```
+  String get addToListFailed => """Impossible de l’ajouter à la liste""";
 
   /// ```dart
   /// "Lier à un article de liste"
@@ -7372,6 +7397,48 @@ class ShoppingMessagesFr extends ShoppingMessages {
   /// "Terminé"
   /// ```
   String get doneEditing => """Terminé""";
+
+  /// ```dart
+  /// "Ranger"
+  /// ```
+  String get putAwayTitle => """Ranger""";
+
+  /// ```dart
+  /// "Choisissez où vont vos achats. Chaque article part de l'endroit où il va d'habitude."
+  /// ```
+  String get putAwayHint =>
+      """Choisissez où vont vos achats. Chaque article part de l'endroit où il va d'habitude.""";
+
+  /// ```dart
+  /// "Plein"
+  /// ```
+  String get putAwayFull => """Plein""";
+
+  /// ```dart
+  /// "Retirer de ce rangement"
+  /// ```
+  String get putAwayRemove => """Retirer de ce rangement""";
+
+  /// ```dart
+  /// "Ajouter à un rangement…"
+  /// ```
+  String get putAwayAdd => """Ajouter à un rangement…""";
+
+  /// ```dart
+  /// "Non rangé"
+  /// ```
+  String get notPutAway => """Non rangé""";
+
+  /// ```dart
+  /// "Inventaire inconnu"
+  /// ```
+  String get unknownInventory => """Inventaire inconnu""";
+
+  /// ```dart
+  /// "Quantité de $item rangée dans $storage"
+  /// ```
+  String putAwayAmount(String item, String storage) =>
+      """Quantité de $item rangée dans $storage""";
 
   /// ```dart
   /// "Rappels"
@@ -10139,6 +10206,8 @@ Mot de passe : pantry-rocks""",
       """Inventaire déplacé vers la corbeille""",
   """listKinds.inventory.listArchived""": """Inventaire archivé""",
   """listKinds.inventory.listUnarchived""": """Inventaire désarchivé""",
+  """listKinds.inventory.allTitle""": """Tous les inventaires""",
+  """listKinds.inventory.allSubtitle""": """Éléments de tous les inventaires""",
   """listKinds.template.title""": """Modèles""",
   """listKinds.template.name""": """Modèle""",
   """listKinds.template.newList""": """Nouveau modèle""",
@@ -10318,6 +10387,9 @@ Mot de passe : pantry-rocks""",
   """stock.links.autoHintOff""":
       """Cet article est seulement signalé ici quand il est bas.""",
   """stock.links.linkToItem""": """Lier à un article …""",
+  """stock.links.addToList""": """Ajouter à une liste de courses …""",
+  """stock.links.addToListTitle""": """L’ajouter à quelle liste ?""",
+  """stock.links.addToListFailed""": """Impossible de l’ajouter à la liste""",
   """stock.links.pickerTitle""": """Lier à un article de liste""",
   """stock.links.pickerField""": """Article de liste""",
   """stock.links.pickerSearch""": """Rechercher des articles …""",
@@ -10489,6 +10561,14 @@ Mot de passe : pantry-rocks""",
   """shopping.editTotalsTitle""": """Modifier les totaux des courses""",
   """shopping.editTotals""": """Modifier les totaux""",
   """shopping.doneEditing""": """Terminé""",
+  """shopping.putAwayTitle""": """Ranger""",
+  """shopping.putAwayHint""":
+      """Choisissez où vont vos achats. Chaque article part de l'endroit où il va d'habitude.""",
+  """shopping.putAwayFull""": """Plein""",
+  """shopping.putAwayRemove""": """Retirer de ce rangement""",
+  """shopping.putAwayAdd""": """Ajouter à un rangement…""",
+  """shopping.notPutAway""": """Non rangé""",
+  """shopping.unknownInventory""": """Inventaire inconnu""",
   """shopping.remindersTitle""": """Rappels""",
   """shopping.manageReminders""": """Gérer les rappels""",
   """shopping.reminderGroupStart""": """Au début""",

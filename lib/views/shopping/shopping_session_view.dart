@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/shopping_put_away.dart';
 import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/models/shopping_session.dart';
 import 'package:pantry_core/services/checklist_service.dart';
@@ -237,6 +238,7 @@ class _SessionBodyState extends State<_SessionBody> {
         ? ShoppingReminderMoment.onStoreAdvance
         : ShoppingReminderMoment.onClose;
 
+    var putAway = const <PutAwayEntry>[];
     final confirmed = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (_) => ShoppingReviewView(
@@ -248,6 +250,7 @@ class _SessionBodyState extends State<_SessionBody> {
           stores: controller.stores,
           reminders: controller.remindersFor(moment),
           onManageReminders: _openReminders,
+          onPutAway: (entries) => putAway = entries,
         ),
       ),
     );
@@ -264,7 +267,7 @@ class _SessionBodyState extends State<_SessionBody> {
       if (isAdvance) {
         await controller.advance(nextStoreId);
       } else {
-        await controller.close();
+        await controller.close(putAway: putAway);
         if (mounted) Navigator.of(context).pop();
         return;
       }

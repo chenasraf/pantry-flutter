@@ -981,6 +981,8 @@ listKinds:
     listMovedToTrash: Inventario movido a la papelera
     listArchived: Inventario archivado
     listUnarchived: Inventario desarchivado
+    allTitle: "Todos los inventarios"
+    allSubtitle: "Elementos de todos los inventarios"
   template:
     title: Plantillas
     name: Plantilla
@@ -1185,6 +1187,9 @@ stock:
     autoHintNoChecklist: Elige una lista de reposición en los ajustes del inventario para buscar o añadir este artículo allí.
     autoHintOff: Este artículo solo se marca aquí cuando baja.
     linkToItem: Vincular a un artículo …
+    addToList: "Añadir a una lista de la compra …"
+    addToListTitle: "¿A qué lista añadirlo?"
+    addToListFailed: "No se pudo añadir a la lista"
     pickerTitle: Vincular a un artículo de una lista
     pickerField: Artículo de la lista
     pickerSearch: Buscar artículos de listas …
@@ -1395,6 +1400,14 @@ shopping:
   editTotalsTitle: Editar los totales de la compra
   editTotals: Editar totales
   doneEditing: Listo
+  putAwayTitle: "Guardar"
+  putAwayHint: "Elige dónde va lo que compraste. Cada elemento empieza donde suele ir."
+  putAwayFull: "Lleno"
+  putAwayRemove: "Quitar de este inventario"
+  putAwayAdd: "Añadir a un inventario…"
+  notPutAway: "Sin guardar"
+  unknownInventory: "Inventario desconocido"
+  putAwayAmount(String item, String storage): "Cantidad de $item guardada en $storage"
   remindersTitle: Recordatorios
   manageReminders: Gestionar recordatorios
   reminderGroupStart: Al empezar

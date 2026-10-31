@@ -60,6 +60,10 @@ class ChecklistsView extends StatefulWidget {
   /// checklists destination.
   final ValueNotifier<HomeNavListsSpec?>? navListsHolder;
 
+  /// Pins the view to one kind of list, for the Inventories tab. Null shows
+  /// every kind, switched between in the list switcher.
+  final ListKind? section;
+
   const ChecklistsView({
     super.key,
     required this.houseId,
@@ -69,6 +73,7 @@ class ChecklistsView extends StatefulWidget {
     this.navActionHolder,
     this.edgeClaimHolder,
     this.navListsHolder,
+    this.section,
   });
 
   @override
@@ -77,7 +82,10 @@ class ChecklistsView extends StatefulWidget {
 
 class _ChecklistsViewState extends State<ChecklistsView>
     with WidgetsBindingObserver {
-  late final _controller = ChecklistsController(houseId: widget.houseId);
+  late final _controller = ChecklistsController(
+    houseId: widget.houseId,
+    section: widget.section,
+  );
 
   /// Polls the server on the user-configured checklist interval (default 30s)
   /// so the list stays current without a pull-to-refresh. Paused while
@@ -237,18 +245,18 @@ class _BodyState extends State<_Body> {
   }
 
   /// The lists the rail draws, in the order the switcher shows them and with
-  /// the same "All lists" entry at their head.
+  /// the same "All lists" and "All inventories" entries at the head of their
+  /// kind.
   HomeNavListsSpec _buildNavListsSpec(ChecklistsController controller) {
     final realLists = ServerFeature.checklistSort
         ? controller.sortedLists
         : controller.lists;
-    final showAllLists =
-        ServerFeature.checklistAllView &&
-        controller.listsOfKind(ListKind.checklist).length >= 2;
     return HomeNavListsSpec(
       lists: [
-        if (showAllLists) allListsSentinel(controller.houseId),
-        ...realLists.where((l) => l.id != kAllListsId),
+        for (final kind in const [ListKind.checklist, ListKind.inventory])
+          if (controller.hasAllView(kind))
+            allListsSentinel(controller.houseId, kind: kind),
+        ...realLists.where((l) => !isAllListsId(l.id)),
       ],
       currentListId: controller.currentList?.id,
       onSelect: (list) {
@@ -305,10 +313,16 @@ class _BodyState extends State<_Body> {
 
           final list = controller.currentList;
           final isMeta = controller.isMetaMode;
-          // The per-list filter only exists in the All-lists view. Outside it,
-          // an empty set means it never narrows anything.
+          // The per-list filter only exists in the "All" views, where it
+          // narrows by the lists of the view's kind. Outside them, an empty
+          // set means it never narrows anything.
+          final kindListIds = {
+            for (final l in controller.listsOfKind(controller.kind)) l.id,
+          };
           final selectedListIds = isMeta
-              ? PrefsService.instance.checklistListFilter
+              ? PrefsService.instance.checklistListFilter.intersection(
+                  kindListIds,
+                )
               : const <int>{};
           final filteredItems = body.applyFilters(
             controller.items,
@@ -436,7 +450,10 @@ class _BodyState extends State<_Body> {
                     .where((i) => i.deletedAt == null && i.needsStockRestock)
                     .length
               : 0;
+          // Deep links land on the lists section, so a pinned one leaves
+          // them to it.
           if (showStockFilter &&
+              controller.section == null &&
               ChecklistService.instance.pendingNeedsRestockFilter &&
               !controller.isLoading) {
             ChecklistService.instance.pendingNeedsRestockFilter = false;
@@ -453,7 +470,7 @@ class _BodyState extends State<_Body> {
           // ones with no items in the current view — unlike categories, an
           // empty list is still a meaningful thing to focus on.
           final filterLists = isMeta
-              ? controller.sortedListsOfKind(ListKind.checklist)
+              ? controller.sortedListsOfKind(controller.kind)
               : const <ChecklistList>[];
 
           // Start / resume shopping, offered to the floating nav's trailing
@@ -522,9 +539,10 @@ class _BodyState extends State<_Body> {
                   builder: (context) {
                     final meta = controller.isMetaMode;
                     // In meta mode, drop the synthetic from the picker —
-                    // it's not a real target.
+                    // it's not a real target — and offer the lists of the
+                    // view's kind.
                     final realLists = meta
-                        ? controller.listsOfKind(ListKind.checklist)
+                        ? controller.listsOfKind(list.kind)
                         : null;
                     // Heal an orphaned selection (target list was
                     // deleted since last add) by clearing it silently.
@@ -580,12 +598,12 @@ class _BodyState extends State<_Body> {
                       listId: meta ? null : list.id,
                       recurrenceEnabled: list.kind.hasRecurrence,
                       stockKind:
-                          !meta &&
-                              !list.kind.isChecklist &&
-                              ServerFeature.inventoryStock
+                          !list.kind.isChecklist && ServerFeature.inventoryStock
                           ? list.kind
                           : null,
-                      expiryLeadDays: controller.expiryLeadDaysFor(list.id),
+                      expiryLeadDays: controller.expiryLeadDaysFor(
+                        (meta ? body.composeTargetListId : null) ?? list.id,
+                      ),
                       recurrenceDefault: meta
                           ? ListRecurrenceDefault.neutral
                           : list.recurrenceDefault,
@@ -682,12 +700,7 @@ class _BodyState extends State<_Body> {
                       onActiveChanged: body.setComposeActive,
                       onRequestCreateCategory:
                           controller.permissions.canEditLists
-                          ? () => body.createCategory(
-                              context,
-                              defaultListId: meta
-                                  ? body.composeTargetListId
-                                  : list.id,
-                            )
+                          ? () => body.createCategory(context)
                           : null,
                       onRequestCreateStore:
                           ServerFeature.stores &&
@@ -841,7 +854,9 @@ class _BodyState extends State<_Body> {
                             if (!next.remove(id)) next.add(id);
                             prefs.setChecklistListFilter(next);
                           },
-                          onClearLists: () => prefs.setChecklistListFilter({}),
+                          onClearLists: () => prefs.setChecklistListFilter(
+                            prefs.checklistListFilter.difference(kindListIds),
+                          ),
                           showStoreFilter: showStoreFilter,
                           stores: filterStores,
                           selectedStoreIds: body.selectedStoreIds,
@@ -882,11 +897,17 @@ class _BodyState extends State<_Body> {
                         ChecklistsArchiveBanner(
                           onExit: () => controller.setArchiveMode(false),
                         ),
-                      if (showStockFilter &&
+                      // Only items nothing will put on a shopping list: a
+                      // linked one already goes back on its list, as does one
+                      // in an inventory with a restock checklist.
+                      if (list != null &&
+                          showStockFilter &&
                           !controller.isSoftView &&
-                          controller.currentList?.restockChecklistId == null &&
-                          stockNeedsRestockCount > 0)
-                        const NoRestockChecklistNotice(),
+                          controller.onlyFlaggedCount > 0 &&
+                          !controller.isRestockNoticeHidden(list.id))
+                        NoRestockChecklistNotice(
+                          onClose: () => controller.hideRestockNotice(list.id),
+                        ),
                       Expanded(
                         // While a fresh list (no cached items yet) is loading,
                         // show a spinner rather than the empty state — the list

@@ -541,6 +541,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   String _sectionTitle(NavSection s) => switch (s) {
     NavSection.checklists =>
       ServerFeature.listKinds ? m.nav.lists : m.nav.checklists,
+    NavSection.inventories => ListKind.inventory.strings.title,
     NavSection.photoBoard => m.nav.photoBoard,
     NavSection.notesWall => m.nav.notesWall,
   };
@@ -550,11 +551,13 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   String _sectionNavLabel(NavSection s) => switch (s) {
     NavSection.checklists =>
       ServerFeature.listKinds ? m.nav.list : m.nav.checklist,
+    NavSection.inventories => ListKind.inventory.strings.name,
     _ => _sectionTitle(s),
   };
 
   IconData _sectionIcon(NavSection s) => switch (s) {
     NavSection.checklists => EntityIcons.checklists,
+    NavSection.inventories => listKindIcon(ListKind.inventory),
     NavSection.photoBoard => EntityIcons.photos,
     NavSection.notesWall => EntityIcons.notes,
   };
@@ -597,7 +600,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   ) => NavRailNested(
     icon: checklistIcon(list.icon),
     color: parseHexColor(list.color),
-    label: list.id == kAllListsId ? m.checklists.allLists : list.name,
+    label: isAllListsId(list.id) ? list.kind.strings.allTitle : list.name,
     selected: active && spec.currentListId == list.id,
     counter: list.kind == ListKind.inventory ? list.needsRestock ?? 0 : 0,
     counterLabel: m.stock.needsRestockCount(list.needsRestock ?? 0),
@@ -609,6 +612,8 @@ class _HomeViewBodyState extends State<_HomeViewBody>
 
   bool _sectionVisible(NavSection s, HousePermissions perms) => switch (s) {
     NavSection.checklists => perms.canViewLists,
+    NavSection.inventories =>
+      perms.canViewLists && ServerFeature.inventoryStock,
     NavSection.photoBoard => perms.canViewPhotos,
     NavSection.notesWall => perms.canViewNotes,
   };
@@ -831,6 +836,18 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         navActionHolder: _tabActions[NavSection.checklists]!,
         edgeClaimHolder: _tabEdgeClaim[NavSection.checklists]!,
         navListsHolder: _navLists,
+      ),
+      // The rail's nested lists stay with the lists section, which reaches
+      // every kind.
+      NavSection.inventories => ChecklistsView(
+        key: ValueKey('inventories-$houseId'),
+        houseId: houseId,
+        section: ListKind.inventory,
+        refreshHolder: _tabRefreshers[NavSection.inventories]!,
+        appBarSpecHolder: _tabAppBarSpecs[NavSection.inventories]!,
+        scrollController: _tabScrollers[NavSection.inventories]!,
+        navActionHolder: _tabActions[NavSection.inventories]!,
+        edgeClaimHolder: _tabEdgeClaim[NavSection.inventories]!,
       ),
       NavSection.photoBoard => PhotoBoardView(
         key: ValueKey('photos-$houseId'),

@@ -28,7 +28,7 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
       );
     }
 
-    final isMeta = list?.id == kAllListsId;
+    final isMeta = isAllListsId(list?.id);
     // Meta uses the theme accent, not list.color (which is null on the
     // sentinel) — gives it a distinct neutral feel from any specific list.
     final tint = isMeta

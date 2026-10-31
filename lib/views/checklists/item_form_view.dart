@@ -110,7 +110,7 @@ class _ItemFormViewState extends State<ItemFormView> {
     final item = widget.item;
     if (item != null) return item.listId;
     final current = widget.controller.currentList;
-    if (current == null || current.id == kAllListsId) return null;
+    if (current == null || isAllListsId(current.id)) return null;
     return current.id;
   }
 
@@ -119,21 +119,19 @@ class _ItemFormViewState extends State<ItemFormView> {
   ItemDefaults? get _itemDefaults {
     if (_isEditing) return null;
     final current = widget.controller.currentList;
-    if (current == null || current.id == kAllListsId) return null;
+    if (current == null || isAllListsId(current.id)) return null;
     return current.activeItemDefaults;
   }
 
   /// Inventory items don't recur, so their form has no recurrence section.
-  bool get _hasRecurrence {
-    final listId = _effectiveListId;
-    return listId == null ||
-        ChecklistService.instance.kindOf(listId).hasRecurrence;
-  }
+  bool get _hasRecurrence => _kind.hasRecurrence;
 
+  /// The kind of the list in context, or of the "All" view the item is added
+  /// from.
   ListKind get _kind {
     final listId = _effectiveListId;
     return listId == null
-        ? ListKind.checklist
+        ? widget.controller.kind
         : ChecklistService.instance.kindOf(listId);
   }
 
@@ -730,12 +728,7 @@ class _ItemFormViewState extends State<ItemFormView> {
 
   Future<void> _openCreateCategory() async {
     final created = await Navigator.of(context).push<models.Category>(
-      itemModalRoute(
-        CategoryFormView(
-          houseId: widget.controller.houseId,
-          defaultListId: _effectiveListId,
-        ),
-      ),
+      itemModalRoute(CategoryFormView(houseId: widget.controller.houseId)),
     );
     if (created == null || !mounted) return;
     widget.controller.categories[created.id] = created;

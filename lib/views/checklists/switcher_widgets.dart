@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
@@ -98,14 +97,21 @@ class ListKindPicker extends StatelessWidget {
   }
 }
 
-/// The synthetic "All lists" entry rendered at the top of the switcher. It's
-/// not draggable, not editable, has no overflow menu, and doesn't show an
-/// item count (the count would require fetching across every list).
+/// The synthetic "All lists" (or "All inventories") entry rendered at the top
+/// of the switcher. It's not draggable, not editable, has no overflow menu, and
+/// doesn't show an item count (the count would require fetching across every
+/// list).
 class AllListsTile extends StatelessWidget {
+  final ListKind kind;
   final bool selected;
   final VoidCallback onTap;
 
-  const AllListsTile({super.key, required this.selected, required this.onTap});
+  const AllListsTile({
+    super.key,
+    this.kind = ListKind.checklist,
+    required this.selected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +142,7 @@ class AllListsTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    m.checklists.allLists,
+                    kind.strings.allTitle,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
@@ -145,7 +151,7 @@ class AllListsTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    m.checklists.allListsSubtitle,
+                    kind.strings.allSubtitle,
                     style: TextStyle(
                       fontSize: 12.5,
                       fontWeight: FontWeight.w500,

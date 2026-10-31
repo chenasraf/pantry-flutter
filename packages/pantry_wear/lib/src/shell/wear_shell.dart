@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
@@ -36,16 +38,21 @@ const _chrome = Color(0xFFB6B6BE);
 
 /// The watch's shell: a rail over a pager of full-height pages.
 ///
-/// Browsing is checklists · photos · notes · account. A live session replaces
-/// the first three with progression · checklist · done · skipped and opens on
-/// the checklist rather than on progression, so the page you need while
-/// walking an aisle is the one already under your thumb.
+/// Browsing is checklists · inventories · photos · notes · account, the
+/// inventories on servers with inventory stock. A live session replaces the
+/// first four with progression · checklist · done · skipped and opens on the
+/// checklist rather than on progression, so the page you need while walking an
+/// aisle is the one already under your thumb.
 class WearShell extends StatefulWidget {
   /// Supplied only by tests, which pump the real tree against a controller
   /// holding a fixed answer. The shell starts the one it makes itself.
   final ChecklistsController? controller;
 
-  const WearShell({super.key, this.controller});
+  /// The Inventories page's, likewise. A shell given a [controller] and none
+  /// of these draws no Inventories page.
+  final ChecklistsController? inventoryController;
+
+  const WearShell({super.key, this.controller, this.inventoryController});
 
   @override
   State<WearShell> createState() => _WearShellState();
@@ -55,6 +62,16 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
   late final ChecklistsController _controller;
   final _geometry = ValueNotifier(const FocusGeometry());
   final _pageKey = GlobalKey<ChecklistsPageState>();
+
+  /// The Inventories page's own controller, scoped to inventories, and what
+  /// its page draws from. Null where the shell draws no such page.
+  ChecklistsController? _inventories;
+  final _inventoryGeometry = ValueNotifier(const FocusGeometry());
+  final _inventoryPageKey = GlobalKey<ChecklistsPageState>();
+
+  /// Whether the app is in front, which the Inventories page polls only while
+  /// it is, like the lists page.
+  var _resumed = true;
 
   late PageController _pager;
   var _page = 0;
@@ -122,6 +139,19 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
     WearDeepLink.instance.addListener(_onDeepLink);
     WearAmbient.instance.addListener(_onAmbient);
     if (widget.controller == null) unawaited(_controller.start());
+    _inventories =
+        widget.inventoryController ??
+        (widget.controller == null
+            ? ChecklistsController(section: ListKind.inventory)
+            : null);
+    _inventories?.addListener(_onInventoryData);
+    // Started for a first read, so its page has something to show the first
+    // time it is swiped to; it polls only while that page is in front.
+    if (widget.inventoryController == null) unawaited(_inventories?.start());
+  }
+
+  void _onInventoryData() {
+    if (mounted) setState(() {});
   }
 
   /// `isCurrent` is carried on an inherited widget, so reading it here is also
@@ -146,7 +176,10 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
     _controller.removeListener(_onData);
     // Only the one this shell made: an injected controller outlives it.
     if (widget.controller == null) _controller.dispose();
+    _inventories?.removeListener(_onInventoryData);
+    if (widget.inventoryController == null) _inventories?.dispose();
     _geometry.dispose();
+    _inventoryGeometry.dispose();
     _pager.dispose();
     super.dispose();
   }
@@ -159,15 +192,27 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
     final resumed = state == AppLifecycleState.resumed;
     // A paused process may be killed before an undo window drains, so an
     // open stock row is written now and skips the window.
-    if (!resumed) _pageKey.currentState?.closeStock(window: false);
+    if (!resumed) {
+      _pageKey.currentState?.closeStock(window: false);
+      _inventoryPageKey.currentState?.closeStock(window: false);
+    }
     _controller.setActive(resumed);
+    _resumed = resumed;
+    _syncInventoryActive();
   }
+
+  /// The Inventories page polls while it is the page in front of a woken app,
+  /// and is otherwise as quiet as a page the wearer is not looking at should
+  /// be.
+  void _syncInventoryActive() =>
+      _inventories?.setActive(_resumed && _page == _inventoryIndex);
 
   /// Lowering the wrist dims the screen without pausing the app, and is as
   /// much the wearer walking away from an open row as leaving the app is.
   void _onAmbient() {
     if (WearAmbient.instance.isAmbient) {
       _pageKey.currentState?.closeStock(window: false);
+      _inventoryPageKey.currentState?.closeStock(window: false);
     }
   }
 
@@ -292,15 +337,27 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
 
   int get _checklistIndex => _mode == ChecklistMode.session ? 1 : 0;
 
+  /// Whether the browse pages include the Inventories page: on servers with
+  /// inventory stock, with a controller to draw it.
+  bool get _hasInventoryPage =>
+      _mode == ChecklistMode.browse &&
+      _inventories != null &&
+      ServerFeature.inventoryStock;
+
+  /// Right after the lists, or -1 where there is no Inventories page.
+  int get _inventoryIndex => _hasInventoryPage ? 1 : -1;
+
   /// Last of either page set — a page, not a route, so following the rail's
   /// degraded signpost is a pager move rather than a push.
-  int get _accountIndex => _mode == ChecklistMode.session ? 4 : 3;
+  int get _accountIndex =>
+      _mode == ChecklistMode.session || _hasInventoryPage ? 4 : 3;
 
   /// Resolve → swap → lock out. The undo windows resolve first so nothing is
   /// left half-committed against a page set that is about to be replaced.
   Future<void> _setMode(ChecklistMode next) async {
     if (next == _mode) return;
     _pageKey.currentState?.resolvePending(commit: true);
+    _inventoryPageKey.currentState?.resolvePending(commit: true);
     final landing = next == ChecklistMode.session ? 1 : 0;
     _lockTimer?.cancel();
     final previous = _pager;
@@ -330,42 +387,56 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
 
   // -- Pages -----------------------------------------------------------------
 
-  List<Widget> get _pages => _mode == ChecklistMode.browse
-      ? [
-          _checklists(),
-          PhotosPage(active: _isActive(1), rotary: _steersList(1)),
-          NotesPage(
-            active: _isActive(2),
-            rotary: _steersList(2),
-            onNotice: _showNotice,
-          ),
-          AccountPage(rotary: _steersList(3)),
-        ]
-      : [
-          ProgressionPage(
-            controller: _controller,
-            active: _isActive(0),
-            rotary: _steersList(0),
-          ),
-          _checklists(),
-          TripCollectionPage(
-            controller: _controller,
-            items: _controller.done,
-            empty: m.wear.nothingToCheckOff,
-            markedIcon: Icons.check_circle,
-            onTap: _controller.uncheckItem,
-            rotary: _steersList(2),
-          ),
-          TripCollectionPage(
-            controller: _controller,
-            items: _controller.removed,
-            empty: m.wear.nothingRemoved,
-            markedIcon: Icons.remove_shopping_cart,
-            onTap: _controller.unskipItem,
-            rotary: _steersList(3),
-          ),
-          AccountPage(rotary: _steersList(4)),
-        ];
+  List<Widget> get _pages {
+    if (_mode == ChecklistMode.browse) {
+      final photos = _hasInventoryPage ? 2 : 1;
+      return [
+        _checklists(),
+        if (_hasInventoryPage) _inventoryPage(),
+        PhotosPage(active: _isActive(photos), rotary: _steersList(photos)),
+        NotesPage(
+          active: _isActive(photos + 1),
+          rotary: _steersList(photos + 1),
+          onNotice: _showNotice,
+        ),
+        AccountPage(rotary: _steersList(photos + 2)),
+      ];
+    }
+    return _sessionPages;
+  }
+
+  List<Widget> get _sessionPages => [
+    ProgressionPage(
+      controller: _controller,
+      active: _isActive(0),
+      rotary: _steersList(0),
+    ),
+    _checklists(),
+    TripCollectionPage(
+      controller: _controller,
+      items: _controller.done,
+      empty: m.wear.nothingToCheckOff,
+      markedIcon: Icons.check_circle,
+      onTap: _controller.uncheckItem,
+      rotary: _steersList(2),
+    ),
+    TripCollectionPage(
+      controller: _controller,
+      items: _controller.removed,
+      empty: m.wear.nothingRemoved,
+      markedIcon: Icons.remove_shopping_cart,
+      onTap: _controller.unskipItem,
+      rotary: _steersList(3),
+    ),
+    AccountPage(rotary: _steersList(4)),
+  ];
+
+  Widget _inventoryPage() => ChecklistsPage(
+    key: _inventoryPageKey,
+    controller: _inventories!,
+    geometry: _inventoryGeometry,
+    rotary: _steersList(_inventoryIndex),
+  );
 
   bool _isActive(int index) => _page == index && !_routeOpen;
 
@@ -385,6 +456,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
   List<RailTitle> get _titles => _mode == ChecklistMode.browse
       ? [
           _listTitle,
+          if (_hasInventoryPage) _inventoryTitle,
           (label: m.nav.photoBoard, icon: EntityIcons.photos, color: _chrome),
           (label: m.nav.notesWall, icon: EntityIcons.notes, color: _chrome),
           (label: m.wear.account, icon: Icons.person, color: _chrome),
@@ -441,7 +513,27 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
     }
     return (
       label: list.name,
-      icon: list.id == kAllListsId ? allListsIcon : checklistIcon(list.icon),
+      icon: isAllListsId(list.id) ? allListsIcon : checklistIcon(list.icon),
+      color: parseHexColor(list.color) ?? _chrome,
+    );
+  }
+
+  /// The Inventories page names the inventory it shows, or the kind while
+  /// there is none.
+  RailTitle get _inventoryTitle {
+    final list = _inventories?.list;
+    if (list == null) {
+      return (
+        label: m.listKinds.inventory.title,
+        icon: EntityIcons.inventories,
+        color: _chrome,
+      );
+    }
+    return (
+      label: list.name,
+      icon: isAllListsId(list.id)
+          ? EntityIcons.inventories
+          : checklistIcon(list.icon),
       color: parseHexColor(list.color) ?? _chrome,
     );
   }
@@ -455,6 +547,11 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
   /// read them and still short enough that the rail is not left standing over
   /// the list.
   void _tapRail() {
+    // The Inventories page has one thing to offer: another inventory.
+    if (_page == _inventoryIndex) {
+      unawaited(_openInventorySwitcher());
+      return;
+    }
     if (_mode == ChecklistMode.session || _page != _checklistIndex) return;
     _railTimer?.cancel();
     setState(() => _railExpanded = !_railExpanded);
@@ -482,6 +579,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
   /// nothing left to offer when they come back.
   Future<T?> _push<T>(Widget page) async {
     _pageKey.currentState?.closeStock();
+    _inventoryPageKey.currentState?.closeStock();
     _railTimer?.cancel();
     setState(() {
       _railExpanded = false;
@@ -497,6 +595,15 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
       lists: _controller.lists,
       inventories: _controller.inventories,
       selectedId: _controller.list?.id,
+    ),
+  );
+
+  Future<void> _openInventorySwitcher() => _push<void>(
+    ListSwitcherPage(
+      lists: const [],
+      inventories: _inventories?.inventories ?? const [],
+      selectedId: _inventories?.list?.id,
+      inventoriesOnly: true,
     ),
   );
 
@@ -587,10 +694,14 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
                           if (p != _checklistIndex) {
                             _pageKey.currentState?.closeStock();
                           }
+                          if (p != _inventoryIndex) {
+                            _inventoryPageKey.currentState?.closeStock();
+                          }
                           setState(() {
                             _page = p;
                             _railExpanded = false;
                           });
+                          _syncInventoryActive();
                         },
                         children: _pages,
                       ),
@@ -602,10 +713,14 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
                       start: 0,
                       end: 0,
                       child: ValueListenableBuilder(
-                        valueListenable: _geometry,
+                        valueListenable: _page == _inventoryIndex
+                            ? _inventoryGeometry
+                            : _geometry,
                         builder: (context, geometry, _) => WearRail(
                           title: title,
-                          group: _page == _checklistIndex
+                          group:
+                              _page == _checklistIndex ||
+                                  _page == _inventoryIndex
                               ? geometry.stickyGroup
                               : null,
                           groupIcon: geometry.stickyIcon,

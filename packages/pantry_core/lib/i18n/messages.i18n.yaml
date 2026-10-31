@@ -981,6 +981,8 @@ listKinds:
     listMovedToTrash: Inventory moved to trash
     listArchived: Inventory archived
     listUnarchived: Inventory unarchived
+    allTitle: "All inventories"
+    allSubtitle: "Items from every inventory"
   template:
     title: Templates
     name: Template
@@ -1185,6 +1187,9 @@ stock:
     autoHintNoChecklist: Pick a restock checklist in the inventory settings to find or add this item there.
     autoHintOff: This item is only marked here when it runs low.
     linkToItem: Link to an item …
+    addToList: "Add to a shopping list …"
+    addToListTitle: "Add it to which list?"
+    addToListFailed: "Could not add it to the list"
     pickerTitle: Link to a checklist item
     pickerField: Checklist item
     pickerSearch: Search checklist items …
@@ -1402,6 +1407,14 @@ shopping:
   editTotalsTitle: Edit trip totals
   editTotals: Edit totals
   doneEditing: Done
+  putAwayTitle: "Put away"
+  putAwayHint: "Choose where what you bought goes. Each item starts where it usually goes."
+  putAwayFull: "Full"
+  putAwayRemove: "Remove from this storage"
+  putAwayAdd: "Add to a storage…"
+  notPutAway: "Not put away"
+  unknownInventory: "Unknown inventory"
+  putAwayAmount(String item, String storage): "Amount of $item put away in $storage"
   # Reminders
   remindersTitle: Reminders
   manageReminders: Manage reminders

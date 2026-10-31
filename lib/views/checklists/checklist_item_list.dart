@@ -717,7 +717,7 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
         ? item.listId
         : controller.currentList?.id;
     final others = controller.lists
-        .where((l) => l.id != excludeId && l.id != kAllListsId)
+        .where((l) => l.id != excludeId && !isAllListsId(l.id))
         .toList();
     if (others.isEmpty) return;
     final targetId = await pickTargetList(
@@ -752,7 +752,7 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
         ? item.listId
         : controller.currentList?.id;
     final others = controller.lists
-        .where((l) => l.id != excludeId && l.id != kAllListsId)
+        .where((l) => l.id != excludeId && !isAllListsId(l.id))
         .toList();
     if (others.isEmpty) return;
     final targetId = await pickTargetList(
@@ -839,6 +839,8 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
   void _maybeOpenPendingItem() {
     final id = ChecklistService.instance.pendingOpenItemId;
     if (id == null || !mounted || widget.controller.isLoading) return;
+    // Deep links land on the lists section; a pinned one leaves them to it.
+    if (widget.controller.section != null) return;
     ChecklistService.instance.pendingOpenItemId = null;
     for (final item in [...widget.activeItems, ...widget.doneItems]) {
       if (item.id == id) {

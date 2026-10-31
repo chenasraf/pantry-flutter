@@ -98,8 +98,11 @@ class ChecklistsArchiveBanner extends StatelessWidget {
 }
 
 /// Above an inventory with items needing restock but nowhere to put them.
+/// [onClose] hides it for good on this inventory.
 class NoRestockChecklistNotice extends StatelessWidget {
-  const NoRestockChecklistNotice({super.key});
+  const NoRestockChecklistNotice({super.key, this.onClose});
+
+  final VoidCallback? onClose;
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +110,12 @@ class NoRestockChecklistNotice extends StatelessWidget {
     return Container(
       width: double.infinity,
       color: AppSurfaces.of(context).raised,
-      padding: const EdgeInsetsDirectional.fromSTEB(16, 10, 16, 10),
+      padding: EdgeInsetsDirectional.fromSTEB(
+        16,
+        10,
+        onClose == null ? 16 : 4,
+        10,
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -119,6 +127,14 @@ class NoRestockChecklistNotice extends StatelessWidget {
               style: TextStyle(color: cs.onSurfaceVariant),
             ),
           ),
+          if (onClose != null)
+            IconButton(
+              icon: const Icon(Icons.close, size: 18),
+              tooltip: m.common.dismiss,
+              visualDensity: VisualDensity.compact,
+              color: cs.onSurfaceVariant,
+              onPressed: onClose,
+            ),
         ],
       ),
     );
