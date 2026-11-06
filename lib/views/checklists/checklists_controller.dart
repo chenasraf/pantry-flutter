@@ -27,6 +27,7 @@ import 'package:pantry_core/services/pending_upload_store.dart';
 import 'package:pantry_core/services/store_service.dart';
 import 'package:pantry_core/services/house_service.dart';
 import 'package:pantry/services/image_cache_service.dart';
+import 'package:pantry/services/list_link_service.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
@@ -58,8 +59,29 @@ class ChecklistsController extends ChangeNotifier {
   HousePermissions permissions = HousePermissions.unrestricted;
 
   /// The one kind a section shows, for the Inventories tab; null for the
-  /// lists section, which switches between every kind.
+  /// lists section, which switches between every kind but [excludedKinds].
   final ListKind? section;
+
+  /// Kinds the lists section leaves out because they have a tab of their own.
+  /// Assigned by the view; a kind whose tab is hidden comes back here so its
+  /// lists stay reachable.
+  Set<ListKind> _excludedKinds = const {};
+  Set<ListKind> get excludedKinds => _excludedKinds;
+  set excludedKinds(Set<ListKind> kinds) {
+    if (setEquals(kinds, _excludedKinds)) return;
+    _excludedKinds = kinds;
+    if (!shownKinds.contains(kind)) {
+      unawaited(selectKind(ListKind.checklist));
+    } else {
+      notifyListeners();
+    }
+  }
+
+  /// The kinds this view opens, in switcher order.
+  List<ListKind> get shownKinds => [
+    for (final k in ListKind.values)
+      if (section == null ? !_excludedKinds.contains(k) : k == section) k,
+  ];
 
   ChecklistsController({required this.houseId, this.section}) {
     if (section != null) _kind = section!;
@@ -273,7 +295,7 @@ class ChecklistsController extends ChangeNotifier {
   /// pinned to one [section] stays on it.
   Future<void> selectKind(ListKind kind) async {
     if (kind == this.kind) return;
-    if (section != null && kind != section) return;
+    if (!shownKinds.contains(kind)) return;
     final first = sortedListsOfKind(kind).firstOrNull;
     if (first != null) {
       await selectList(first);
@@ -679,7 +701,9 @@ class ChecklistsController extends ChangeNotifier {
           // flicker the per-list view in between refreshes.
           await selectList(allView);
         } else {
-          if (!ServerFeature.listKinds) _kind = ListKind.checklist;
+          if (!ServerFeature.listKinds || !shownKinds.contains(_kind)) {
+            _kind = ListKind.checklist;
+          }
           final target =
               _lists
                   .where((l) => l.id == targetId && _inSection(l))
@@ -687,7 +711,7 @@ class ChecklistsController extends ChangeNotifier {
               sortedListsOfKind(_kind).firstOrNull ??
               // An emptied template or inventory section stays open on its
               // empty state.
-              (_kind.isChecklist ? _lists.first : null);
+              (_kind.isChecklist ? _lists.where(_inSection).firstOrNull : null);
           if (target != null) {
             await selectList(target);
           } else {
@@ -807,10 +831,8 @@ class ChecklistsController extends ChangeNotifier {
     return view != null && _inSection(view) ? view : null;
   }
 
-  /// Whether [list] may be opened here: anything in the lists section, only
-  /// its own kind in a pinned one.
-  bool _inSection(ChecklistList list) =>
-      section == null || list.kind == section;
+  /// Whether [list] may be opened here: one of [shownKinds].
+  bool _inSection(ChecklistList list) => shownKinds.contains(list.kind);
 
   void _restoreFromCache() {
     final cache = _checklistService.cache;
@@ -892,7 +914,7 @@ class ChecklistsController extends ChangeNotifier {
                   .where((l) => l.id == savedId && _inSection(l))
                   .firstOrNull ??
               (section == null
-                  ? _lists.first
+                  ? _lists.where(_inSection).firstOrNull
                   : sortedListsOfKind(section!).firstOrNull);
           // A pinned section with none of its lists yet opens on its empty
           // state.
@@ -917,6 +939,16 @@ class ChecklistsController extends ChangeNotifier {
     ChecklistList list, {
     bool refreshInPlace = false,
   }) async {
+    // A list of a kind with its own tab (a copy made as an inventory) opens
+    // there; the home view routes the link by the list's kind.
+    if (!_inSection(list)) {
+      _checklistService.rememberKinds([list]);
+      ListLinkService.instance.pending.value = ListLink(
+        listId: list.id,
+        houseId: houseId,
+      );
+      return;
+    }
     final previousListId = _currentList?.id;
     if (previousListId != list.id) {
       _sendAllStagedStock();

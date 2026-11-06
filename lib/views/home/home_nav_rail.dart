@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 
 import 'package:pantry_core/models/checklist.dart';
@@ -6,22 +7,27 @@ import 'package:pantry_core/utils/color.dart';
 
 import 'home_floating_nav.dart' show NavDestination;
 
-/// The checklists the checklists section hands the side rail, so the rail can
-/// draw one entry per list beneath its own destination and switch between them.
+/// The lists a list tab hands the side rail, so the rail can draw one entry per
+/// list beneath that tab's destination and switch between them.
 class HomeNavListsSpec {
-  /// Every list, grouped by kind in navigation order.
+  /// Every list the tab opens, grouped by kind in navigation order.
   final List<ChecklistList> lists;
   final int? currentListId;
   final void Function(ChecklistList list) onSelect;
 
-  /// Opens a kind's section. Set when the server has list kinds, which the
-  /// rail then heads with their names.
+  /// The kinds the tab opens, each headed by its name when [onSelectKind] is
+  /// set.
+  final List<ListKind> kinds;
+
+  /// Opens a kind's section. Set when the server has list kinds and the tab
+  /// opens more than one, which the rail then heads with their names.
   final void Function(ListKind kind)? onSelectKind;
 
   const HomeNavListsSpec({
     required this.lists,
     required this.currentListId,
     required this.onSelect,
+    this.kinds = ListKind.values,
     this.onSelectKind,
   });
 
@@ -32,6 +38,7 @@ class HomeNavListsSpec {
   bool operator ==(Object other) =>
       other is HomeNavListsSpec &&
       other.currentListId == currentListId &&
+      listEquals(other.kinds, kinds) &&
       (other.onSelectKind == null) == (onSelectKind == null) &&
       other.lists.length == lists.length &&
       Iterable<int>.generate(lists.length).every(
@@ -46,6 +53,7 @@ class HomeNavListsSpec {
   @override
   int get hashCode => Object.hash(
     currentListId,
+    Object.hashAll(kinds),
     Object.hashAll([
       for (final l in lists)
         Object.hash(l.id, l.name, l.icon, l.color, l.needsRestock),
@@ -91,8 +99,8 @@ class NavRailNested {
        counterLabel = null;
 }
 
-/// Vertical navigation rail for the wide layout: the sections, with [nested]
-/// entries drawn under the destination at [nestedIndex].
+/// Vertical navigation rail for the wide layout: the sections, each with the
+/// [nested] entries keyed by its index drawn under it.
 ///
 /// [extended] lays destinations out as rows with their label beside the icon;
 /// otherwise the rail is a narrow column of icons over their labels.
@@ -101,8 +109,7 @@ class HomeNavRail extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onDestinationSelected;
   final List<NavDestination> destinations;
-  final int? nestedIndex;
-  final List<NavRailNested> nested;
+  final Map<int, List<NavRailNested>> nested;
   final Widget? leading;
 
   const HomeNavRail({
@@ -111,8 +118,7 @@ class HomeNavRail extends StatelessWidget {
     required this.selectedIndex,
     required this.onDestinationSelected,
     required this.destinations,
-    this.nestedIndex,
-    this.nested = const [],
+    this.nested = const {},
     this.leading,
   });
 
@@ -139,9 +145,8 @@ class HomeNavRail extends StatelessWidget {
                   extended: extended,
                   onTap: () => onDestinationSelected(i),
                 ),
-                if (i == nestedIndex)
-                  for (final entry in nested)
-                    _RailNestedEntry(entry: entry, extended: extended),
+                for (final entry in nested[i] ?? const <NavRailNested>[])
+                  _RailNestedEntry(entry: entry, extended: extended),
               ],
               const SizedBox(height: 12),
             ],

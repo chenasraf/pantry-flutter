@@ -128,9 +128,12 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   // up on the way past.
   final ValueNotifier<({int from, int to})?> _navJump = ValueNotifier(null);
 
-  // The checklists tab's lists, which the rail nests under its checklists
-  // destination so every list is one click away from any section.
-  final ValueNotifier<HomeNavListsSpec?> _navLists = ValueNotifier(null);
+  // Each list tab's lists, which the rail nests under that tab's destination
+  // so every list is one click away from any section.
+  final Map<NavSection, ValueNotifier<HomeNavListsSpec?>> _navLists = {
+    NavSection.checklists: ValueNotifier(null),
+    NavSection.inventories: ValueNotifier(null),
+  };
 
   @override
   void initState() {
@@ -203,7 +206,9 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     }
     _navFootprint.dispose();
     _navJump.dispose();
-    _navLists.dispose();
+    for (final n in _navLists.values) {
+      n.dispose();
+    }
     for (final n in _tabAppBarSpecs.values) {
       n.dispose();
     }
@@ -420,23 +425,34 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   }
 
   /// Switch to [houseId] (when given and not already current), pre-select
-  /// [listId], and jump to the checklists tab. Shared sink for widget taps,
-  /// `pantry://` URL deep links, launcher quick actions and pinned shortcuts.
-  /// When [itemId] is given, the checklists view opens that item once loaded.
+  /// [listId], and jump to the tab that holds it: the Inventories tab for an
+  /// inventory while that tab is shown, the lists tab otherwise. Shared sink
+  /// for widget taps, `pantry://` URL deep links, launcher quick actions,
+  /// pinned shortcuts and lists opened from the other tab. When [itemId] is
+  /// given, the view opens that item once loaded.
   void _openList({
     required int listId,
     int? houseId,
     int? itemId,
     bool needsRestock = false,
   }) {
+    final service = ChecklistService.instance;
+    final toInventories =
+        service.kindOf(listId) == ListKind.inventory &&
+        _navOrder.contains(NavSection.inventories);
     _openSection(
-      NavSection.checklists,
+      toInventories ? NavSection.inventories : NavSection.checklists,
       houseId: houseId,
       request: () {
         // Pre-select the list so ChecklistsController picks it up on load.
-        ChecklistService.instance.selectedListId = listId;
-        ChecklistService.instance.pendingOpenItemId = itemId;
-        ChecklistService.instance.pendingNeedsRestockFilter = needsRestock;
+        if (toInventories) {
+          service.selectedInventoryId = listId;
+        } else {
+          service.selectedListId = listId;
+        }
+        service.pendingOpenItemId = itemId;
+        service.pendingNeedsRestockFilter = needsRestock;
+        service.pendingLinkSection = toInventories ? ListKind.inventory : null;
       },
     );
   }
@@ -572,32 +588,31 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     NavSection.notesWall => EntityIcons.notes,
   };
 
-  /// The checklists the rail draws under its checklists destination. Picking
-  /// one brings the checklists section forward with that list open, so the rail
+  /// The lists the rail draws under a list tab's destination at [index].
+  /// Picking one brings that tab forward with the list open, so the rail
   /// reaches a list from any section rather than only from the one it belongs
-  /// to. [active] marks the open list, which only reads as selected while the
-  /// checklists section is the one on screen.
+  /// to. [active] marks the open list, which only reads as selected while that
+  /// tab is the one on screen.
   List<NavRailNested> _railLists(
     HomeNavListsSpec? spec, {
-    required int checklistsIndex,
+    required int index,
     required bool active,
   }) {
-    if (spec == null || checklistsIndex < 0) return const [];
+    if (spec == null || index < 0) return const [];
     final onSelectKind = spec.onSelectKind;
     return [
-      for (final kind in ListKind.values) ...[
+      for (final kind in spec.kinds) ...[
         if (onSelectKind != null)
           NavRailNested.header(
             icon: listKindIcon(kind),
             label: kind.strings.title,
             onTap: () {
               onSelectKind(kind);
-              _goToTab(checklistsIndex);
+              _goToTab(index);
             },
           ),
         for (final list in spec.lists)
-          if (list.kind == kind)
-            _nestedList(spec, list, checklistsIndex, active),
+          if (list.kind == kind) _nestedList(spec, list, index, active),
       ],
     ];
   }
@@ -605,7 +620,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   NavRailNested _nestedList(
     HomeNavListsSpec spec,
     ChecklistList list,
-    int checklistsIndex,
+    int index,
     bool active,
   ) => NavRailNested(
     icon: checklistIcon(list.icon),
@@ -616,7 +631,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     counterLabel: m.stock.needsRestockCount(list.needsRestock ?? 0),
     onTap: () {
       spec.onSelect(list);
-      _goToTab(checklistsIndex);
+      _goToTab(index);
     },
   );
 
@@ -696,8 +711,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
           // The active section populates its slot with the leading / title /
           // actions it wants the shared AppBar to carry.
           final currentSection = order[tabIndex];
-          final isChecklistsTab = currentSection == NavSection.checklists;
-          final checklistsIndex = order.indexOf(NavSection.checklists);
+          final isListTab = _navLists.containsKey(currentSection);
 
           final appBar = PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
@@ -734,9 +748,9 @@ class _HomeViewBodyState extends State<_HomeViewBody>
                 child: Row(
                   children: [
                     if (showNav) ...[
-                      ValueListenableBuilder<HomeNavListsSpec?>(
-                        valueListenable: _navLists,
-                        builder: (context, navLists, _) => HomeNavRail(
+                      ListenableBuilder(
+                        listenable: Listenable.merge(_navLists.values),
+                        builder: (context, _) => HomeNavRail(
                           extended: extendedRail,
                           selectedIndex: tabIndex,
                           onDestinationSelected: _goToTab,
@@ -744,12 +758,17 @@ class _HomeViewBodyState extends State<_HomeViewBody>
                             for (final s in order)
                               (icon: _sectionIcon(s), label: _sectionTitle(s)),
                           ],
-                          nestedIndex: checklistsIndex,
-                          nested: _railLists(
-                            navLists,
-                            checklistsIndex: checklistsIndex,
-                            active: isChecklistsTab,
-                          ),
+                          nested: {
+                            for (final MapEntry(key: section, value: lists)
+                                in _navLists.entries)
+                              if (order.indexOf(section) case final index
+                                  when index >= 0)
+                                index: _railLists(
+                                  lists.value,
+                                  index: index,
+                                  active: currentSection == section,
+                                ),
+                          },
                         ),
                       ),
                       const VerticalDivider(width: 1, thickness: 1),
@@ -766,7 +785,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
                               wide: true,
                               child: Padding(
                                 padding: EdgeInsetsDirectional.only(
-                                  start: isChecklistsTab ? 0 : 16,
+                                  start: isListTab ? 0 : 16,
                                 ),
                                 child: body,
                               ),
@@ -842,10 +861,12 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         scrollController: _tabScrollers[NavSection.checklists]!,
         navActionHolder: _tabActions[NavSection.checklists]!,
         edgeClaimHolder: _tabEdgeClaim[NavSection.checklists]!,
-        navListsHolder: _navLists,
+        navListsHolder: _navLists[NavSection.checklists]!,
+        // Inventories open in their own tab while it is shown.
+        excludedKinds: order.contains(NavSection.inventories)
+            ? const {ListKind.inventory}
+            : const {},
       ),
-      // The rail's nested lists stay with the lists section, which reaches
-      // every kind.
       NavSection.inventories => ChecklistsView(
         key: ValueKey('inventories-$houseId'),
         houseId: houseId,
@@ -855,6 +876,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         scrollController: _tabScrollers[NavSection.inventories]!,
         navActionHolder: _tabActions[NavSection.inventories]!,
         edgeClaimHolder: _tabEdgeClaim[NavSection.inventories]!,
+        navListsHolder: _navLists[NavSection.inventories]!,
       ),
       NavSection.photoBoard => PhotoBoardView(
         key: ValueKey('photos-$houseId'),

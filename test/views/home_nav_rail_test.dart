@@ -32,8 +32,7 @@ void main() {
   Widget harness({
     bool extended = false,
     int index = 0,
-    int? nestedIndex = 0,
-    List<NavRailNested>? nested,
+    Map<int, List<NavRailNested>>? nested,
     ValueChanged<int>? onDestinationSelected,
   }) => wrapForTest(
     HomeNavRail(
@@ -41,8 +40,7 @@ void main() {
       selectedIndex: index,
       onDestinationSelected: onDestinationSelected ?? (_) {},
       destinations: destinations,
-      nestedIndex: nestedIndex,
-      nested: nested ?? lists(),
+      nested: nested ?? {0: lists()},
     ),
   );
 
@@ -120,7 +118,7 @@ void main() {
   testWidgets('tapping a list reports it', (tester) async {
     var taps = 0;
     await tester.pumpWidget(
-      harness(extended: true, nested: lists(onTap: () => taps++)),
+      harness(extended: true, nested: {0: lists(onTap: () => taps++)}),
     );
     await tester.pumpAndSettle();
 
@@ -132,12 +130,38 @@ void main() {
   testWidgets('without a nested destination the rail is just sections', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      harness(extended: true, nestedIndex: -1, nested: const []),
-    );
+    await tester.pumpWidget(harness(extended: true, nested: const {}));
     await tester.pumpAndSettle();
 
     expect(find.text('Checklists'), findsOneWidget);
     expect(find.text('Groceries'), findsNothing);
+  });
+
+  testWidgets('each destination draws its own nested entries', (tester) async {
+    await tester.pumpWidget(
+      harness(
+        extended: true,
+        nested: {
+          0: lists(),
+          1: [
+            NavRailNested(
+              icon: Icons.kitchen,
+              color: null,
+              label: 'Fridge',
+              selected: false,
+              onTap: () {},
+            ),
+          ],
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      centerY(tester, 'Hardware'),
+      lessThan(centerY(tester, 'Photo Board')),
+    );
+    expect(centerY(tester, 'Photo Board'), lessThan(centerY(tester, 'Fridge')));
+    expect(centerY(tester, 'Fridge'), lessThan(centerY(tester, 'Notes Wall')));
   });
 }

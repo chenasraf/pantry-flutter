@@ -839,8 +839,10 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
   void _maybeOpenPendingItem() {
     final id = ChecklistService.instance.pendingOpenItemId;
     if (id == null || !mounted || widget.controller.isLoading) return;
-    // Deep links land on the lists section; a pinned one leaves them to it.
-    if (widget.controller.section != null) return;
+    if (widget.controller.section !=
+        ChecklistService.instance.pendingLinkSection) {
+      return;
+    }
     ChecklistService.instance.pendingOpenItemId = null;
     for (final item in [...widget.activeItems, ...widget.doneItems]) {
       if (item.id == id) {

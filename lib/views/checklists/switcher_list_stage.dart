@@ -122,7 +122,11 @@ class ListStage extends StatelessWidget {
         if (hasKinds && onKindChanged != null)
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
-            child: ListKindPicker(selected: kind, onChanged: onKindChanged!),
+            child: ListKindPicker(
+              selected: kind,
+              onChanged: onKindChanged!,
+              kinds: controller.shownKinds,
+            ),
           ),
         if (hasKinds && realLists.isEmpty)
           Padding(

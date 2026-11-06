@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show setEquals;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -56,13 +57,16 @@ class ChecklistsView extends StatefulWidget {
   /// focused one.
   final ValueNotifier<NavEdgeClaim>? edgeClaimHolder;
 
-  /// Slot the side rail reads this house's lists from, to nest them under its
-  /// checklists destination.
+  /// Slot the side rail reads this view's lists from, to nest them under its
+  /// destination.
   final ValueNotifier<HomeNavListsSpec?>? navListsHolder;
 
   /// Pins the view to one kind of list, for the Inventories tab. Null shows
-  /// every kind, switched between in the list switcher.
+  /// every kind but [excludedKinds], switched between in the list switcher.
   final ListKind? section;
+
+  /// Kinds a lists view leaves to a tab of their own.
+  final Set<ListKind> excludedKinds;
 
   const ChecklistsView({
     super.key,
@@ -74,6 +78,7 @@ class ChecklistsView extends StatefulWidget {
     this.edgeClaimHolder,
     this.navListsHolder,
     this.section,
+    this.excludedKinds = const {},
   });
 
   @override
@@ -85,7 +90,7 @@ class _ChecklistsViewState extends State<ChecklistsView>
   late final _controller = ChecklistsController(
     houseId: widget.houseId,
     section: widget.section,
-  );
+  )..excludedKinds = widget.excludedKinds;
 
   /// Polls the server on the user-configured checklist interval (default 30s)
   /// so the list stays current without a pull-to-refresh. Paused while
@@ -159,6 +164,18 @@ class _ChecklistsViewState extends State<ChecklistsView>
         _stopBackgroundRefreshTimer();
       case AppLifecycleState.inactive:
         break;
+    }
+  }
+
+  @override
+  void didUpdateWidget(ChecklistsView old) {
+    super.didUpdateWidget(old);
+    // Leaving a now-excluded kind switches lists, which notifies; that waits
+    // for the frame being built to finish.
+    if (!setEquals(widget.excludedKinds, old.excludedKinds)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _controller.excludedKinds = widget.excludedKinds;
+      });
     }
   }
 
@@ -246,24 +263,30 @@ class _BodyState extends State<_Body> {
 
   /// The lists the rail draws, in the order the switcher shows them and with
   /// the same "All lists" and "All inventories" entries at the head of their
-  /// kind.
+  /// kind — only the kinds this view opens.
   HomeNavListsSpec _buildNavListsSpec(ChecklistsController controller) {
     final realLists = ServerFeature.checklistSort
         ? controller.sortedLists
         : controller.lists;
+    final kinds = controller.shownKinds;
     return HomeNavListsSpec(
       lists: [
         for (final kind in const [ListKind.checklist, ListKind.inventory])
-          if (controller.hasAllView(kind))
+          if (kinds.contains(kind) && controller.hasAllView(kind))
             allListsSentinel(controller.houseId, kind: kind),
-        ...realLists.where((l) => !isAllListsId(l.id)),
+        ...realLists.where(
+          (l) => !isAllListsId(l.id) && kinds.contains(l.kind),
+        ),
       ],
       currentListId: controller.currentList?.id,
       onSelect: (list) {
         if (controller.currentList?.id == list.id) return;
         controller.selectList(list);
       },
-      onSelectKind: ServerFeature.listKinds ? controller.selectKind : null,
+      kinds: kinds,
+      onSelectKind: ServerFeature.listKinds && kinds.length > 1
+          ? controller.selectKind
+          : null,
     );
   }
 
@@ -450,10 +473,9 @@ class _BodyState extends State<_Body> {
                     .where((i) => i.deletedAt == null && i.needsStockRestock)
                     .length
               : 0;
-          // Deep links land on the lists section, so a pinned one leaves
-          // them to it.
           if (showStockFilter &&
-              controller.section == null &&
+              controller.section ==
+                  ChecklistService.instance.pendingLinkSection &&
               ChecklistService.instance.pendingNeedsRestockFilter &&
               !controller.isLoading) {
             ChecklistService.instance.pendingNeedsRestockFilter = false;

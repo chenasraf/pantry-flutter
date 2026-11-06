@@ -100,6 +100,11 @@ class ChecklistService {
   /// filter — set by a stock summary notification.
   bool pendingNeedsRestockFilter = false;
 
+  /// Which view the pending requests above are for: the Inventories tab's
+  /// [ListKind.inventory], or null for the lists section. Both views are alive
+  /// at once, and only the one the link opened may consume them.
+  ListKind? pendingLinkSection;
+
   // -- List kinds --
 
   static const _kindsKey = 'listKinds';

@@ -11,6 +11,7 @@ import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/utils/list_kind_strings.dart';
 import 'package:pantry_core/utils/version.dart';
+import 'package:pantry/services/list_link_service.dart';
 import 'package:pantry/views/checklists/checklist_switcher_sheet.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 import 'package:pantry/views/checklists/switcher_list_stage.dart';
@@ -318,6 +319,84 @@ void main() {
           findsNothing,
           reason: 'the switcher offers no other kind',
         );
+
+        await quiesce(tester);
+      });
+    });
+  });
+
+  group('the lists tab beside an Inventories tab', () {
+    Future<ChecklistsController> loadedLists(WidgetTester tester) async {
+      final controller = ChecklistsController(houseId: 1)
+        ..excludedKinds = const {ListKind.inventory};
+      addTearDown(controller.dispose);
+      await controller.load();
+      await tester.pump();
+      return controller;
+    }
+
+    tearDown(() => ListLinkService.instance.pending.value = null);
+
+    testWidgets('offers no inventories in its switcher', (tester) async {
+      await withServer(() async {
+        final controller = await loadedLists(tester);
+
+        await tester.pumpWidget(
+          wrapForTest(
+            SheetHost(controller: controller, itemCountForList: (_) async => 0),
+          ),
+        );
+        await tester.pump();
+        expect(find.text(ListKind.template.strings.title), findsOneWidget);
+        expect(find.text(ListKind.inventory.strings.title), findsNothing);
+        expect(find.text('Fridge'), findsNothing);
+
+        await quiesce(tester);
+      });
+    });
+
+    testWidgets('does not reopen on an inventory', (tester) async {
+      await withServer(() async {
+        ChecklistService.instance.selectedListId = fridge;
+        final controller = await loadedLists(tester);
+
+        expect(controller.currentList!.kind, ListKind.checklist);
+
+        await quiesce(tester);
+      });
+    });
+
+    testWidgets('hands an inventory to its tab', (tester) async {
+      await withServer(() async {
+        final controller = await loadedLists(tester);
+        final shown = controller.currentList;
+
+        await controller.selectList(
+          controller.listsOfKind(ListKind.inventory).first,
+        );
+
+        expect(controller.currentList, shown);
+        expect(ListLinkService.instance.pending.value?.listId, fridge);
+        expect(ChecklistService.instance.kindOf(fridge), ListKind.inventory);
+
+        await quiesce(tester);
+      });
+    });
+
+    testWidgets('leaves an inventory once the tab appears', (tester) async {
+      await withServer(() async {
+        final controller = ChecklistsController(houseId: 1);
+        addTearDown(controller.dispose);
+        await controller.load();
+        await controller.selectList(
+          controller.listsOfKind(ListKind.inventory).first,
+        );
+        expect(controller.kind, ListKind.inventory);
+
+        controller.excludedKinds = const {ListKind.inventory};
+        await tester.pump();
+
+        expect(controller.currentList!.kind, ListKind.checklist);
 
         await quiesce(tester);
       });

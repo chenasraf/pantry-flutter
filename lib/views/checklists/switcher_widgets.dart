@@ -64,15 +64,17 @@ IconData listKindIcon(ListKind kind) => switch (kind) {
   ListKind.template => EntityIcons.templates,
 };
 
-/// Picks which kind's lists the switcher shows.
+/// Picks which kind's lists the switcher shows, among [kinds].
 class ListKindPicker extends StatelessWidget {
   final ListKind selected;
   final ValueChanged<ListKind> onChanged;
+  final List<ListKind> kinds;
 
   const ListKindPicker({
     super.key,
     required this.selected,
     required this.onChanged,
+    this.kinds = ListKind.values,
   });
 
   @override
@@ -80,7 +82,7 @@ class ListKindPicker extends StatelessWidget {
     return SegmentedButton<ListKind>(
       showSelectedIcon: false,
       segments: [
-        for (final kind in ListKind.values)
+        for (final kind in kinds)
           ButtonSegment(
             value: kind,
             icon: Icon(listKindIcon(kind), size: 18),

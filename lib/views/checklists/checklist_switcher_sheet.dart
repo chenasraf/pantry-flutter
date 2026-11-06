@@ -153,8 +153,8 @@ class _SheetHostState extends State<SheetHost> {
       builder: (_, _) => ListStage(
         controller: widget.controller,
         kind: _kind,
-        // A view pinned to one kind (the Inventories tab) offers no other.
-        onKindChanged: widget.controller.section == null
+        // A view opening one kind (the Inventories tab) offers no other.
+        onKindChanged: widget.controller.shownKinds.length > 1
             ? (kind) => setState(() => _kind = kind)
             : null,
         itemCountForList: widget.itemCountForList,
