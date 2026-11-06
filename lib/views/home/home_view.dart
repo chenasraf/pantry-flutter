@@ -91,7 +91,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   int _tabIndex = 0;
   // Order seen at the last pass, so a reorder in settings can remap _tabIndex
   // to follow the active section to its new position instead of snapping.
-  late List<NavSection> _lastOrder = PrefsService.instance.enabledNavOrder;
+  late List<NavSection> _lastOrder = _navOrder;
   final _pageController = PageController();
   final _notificationsController = NotificationsController();
   // Per-section refresh holders. Keyed by NavSection so that reordering
@@ -267,12 +267,22 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     );
   }
 
-  List<NavSection> get _navOrder => PrefsService.instance.enabledNavOrder;
+  /// The sections on screen, which tab indices count positions in: the enabled
+  /// ones the current house and server can show.
+  List<NavSection> get _navOrder => _shownOrder(
+    context.read<HomeController>().currentHouse?.effectivePermissions ??
+        HousePermissions.unrestricted,
+  );
+
+  List<NavSection> _shownOrder(HousePermissions permissions) => [
+    for (final s in PrefsService.instance.enabledNavOrder)
+      if (_sectionVisible(s, permissions)) s,
+  ];
 
   /// Keep the active section pinned when the user reorders or hides nav items
   /// in settings: find where the active section moved to and follow it.
   void _onPrefsChanged() {
-    final newOrder = PrefsService.instance.enabledNavOrder;
+    final newOrder = _navOrder;
     if (_listEqual(_lastOrder, newOrder)) return;
     final activeIndex = _tabIndex.clamp(0, _lastOrder.length - 1);
     final activeSection = _lastOrder[activeIndex];
@@ -626,12 +636,9 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     final permissions =
         controller.currentHouse?.effectivePermissions ??
         HousePermissions.unrestricted;
-    // Drop sections the current house can't view. The same filtered list feeds
-    // both the nav destinations and the page bodies so indices stay aligned.
-    final order = [
-      for (final s in _navOrder)
-        if (_sectionVisible(s, permissions)) s,
-    ];
+    // The same filtered list feeds the nav destinations, the page bodies and
+    // every index lookup, so indices stay aligned.
+    final order = _shownOrder(permissions);
     final destinations = [
       for (final s in order)
         (icon: _sectionIcon(s), label: _sectionNavLabel(s)),
