@@ -269,14 +269,13 @@ enum Tray {
 
 class ItemComposeBarState extends State<ItemComposeBar> {
   late final ItemDraft _draft = ItemDraft()
-    ..stock = widget.stockKind == null
-        ? null
-        : StockDraft.forItem(
-            null,
-            template: widget.stockKind == ListKind.template,
-          )
+    ..stock = _stockDraftFor(widget.stockKind)
     ..start(_startValues)
     ..price = PricesDraft.empty(widget.lastCurrency);
+  static StockDraft? _stockDraftFor(ListKind? kind) => kind == null
+      ? null
+      : StockDraft.forItem(null, template: kind == ListKind.template);
+
   final _nameCtrl = TextEditingController();
   final _qtyCtrl = TextEditingController();
   final _focusNode = FocusNode();
@@ -372,6 +371,19 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     if (targetChanged) {
       _customFieldsEdited = false;
       _draft.customFields = const [];
+    }
+    // The bar keeps its state across list switches, and the server version
+    // that gates stock can resolve after it mounts, so the list kind can change
+    // under it.
+    final stockKindChanged = oldWidget.stockKind != widget.stockKind;
+    if (stockKindChanged) {
+      _draft.stock = _stockDraftFor(widget.stockKind)
+        ?..applyStart(_startValues);
+      if (_openTray == Tray.quantity ||
+          _openTray == Tray.stock ||
+          _openTray == Tray.expiry) {
+        _openTray = null;
+      }
     }
     final defaults = widget.itemDefaults;
     if (defaults != null) {
