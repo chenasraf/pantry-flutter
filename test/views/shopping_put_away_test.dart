@@ -123,11 +123,9 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
   }
 
-  void seed({bool advertised = true}) =>
-      ServerVersionService.instance.debugSeed(
-        pantryVersion: Version.parse('0.38.0'),
-        advertised: {if (advertised) 'shopping-put-away'},
-      );
+  void seed({bool supported = true}) => ServerVersionService.instance.debugSeed(
+    pantryVersion: Version.parse(supported ? '0.39.0' : '0.38.0'),
+  );
 
   /// Opens the close review over a trip screen, and records what the confirm
   /// hands back.
@@ -253,7 +251,7 @@ void main() {
   });
 
   testWidgets('servers without put-away get no section', (tester) async {
-    seed(advertised: false);
+    seed(supported: false);
     await withServer(() async {
       final handed = await pumpReview(tester);
 

@@ -99,11 +99,9 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
   }
 
-  void seed({bool advertised = true}) =>
-      ServerVersionService.instance.debugSeed(
-        pantryVersion: Version.parse('0.38.0'),
-        advertised: {if (advertised) 'inventory-all-view'},
-      );
+  void seed({bool supported = true}) => ServerVersionService.instance.debugSeed(
+    pantryVersion: Version.parse(supported ? '0.39.0' : '0.38.0'),
+  );
 
   setUp(() async {
     requests = [];
@@ -239,7 +237,7 @@ void main() {
   testWidgets('is missing from servers that do not announce it', (
     tester,
   ) async {
-    seed(advertised: false);
+    seed(supported: false);
     await withServer(() async {
       ChecklistService.instance.selectedListId = kAllInventoriesId;
       final controller = await loaded(tester);

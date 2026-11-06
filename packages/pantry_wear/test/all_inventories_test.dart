@@ -59,11 +59,9 @@ void main() {
     updatedAt: 0,
   ).withLocalStock(leadDays: defaultExpiryLeadDays);
 
-  void seed({bool advertised = true}) =>
-      ServerVersionService.instance.debugSeed(
-        pantryVersion: Version.parse('0.38.0'),
-        advertised: {if (advertised) 'inventory-all-view'},
-      );
+  void seed({bool supported = true}) => ServerVersionService.instance.debugSeed(
+    pantryVersion: Version.parse(supported ? '0.39.0' : '0.38.0'),
+  );
 
   const secureStorage = MethodChannel(
     'plugins.it_nomads.com/flutter_secure_storage',
@@ -136,7 +134,7 @@ void main() {
     testWidgets('is missing from servers that do not announce it', (
       tester,
     ) async {
-      seed(advertised: false);
+      seed(supported: false);
       await show(tester, [fridge, freezer]);
       await revealRow(tester, 'Freezer');
       expect(find.text(title), findsNothing);
@@ -186,7 +184,7 @@ void main() {
     });
 
     test('falls back to a list on servers that do not announce it', () async {
-      seed(advertised: false);
+      seed(supported: false);
       final controller = await started();
 
       expect(controller.list!.id, isNot(kAllInventoriesId));
@@ -217,8 +215,7 @@ void main() {
           'version': {'string': '35.0.2'},
           'capabilities': {
             'pantry': {
-              'version': {'string': '0.38.0'},
-              'features': ['inventory-all-view'],
+              'version': {'string': '0.39.0'},
             },
           },
         });

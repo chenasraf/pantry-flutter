@@ -241,7 +241,6 @@ void main() {
     Future<void> pumpWith(WidgetTester tester, String version) async {
       ServerVersionService.instance.debugSeed(
         pantryVersion: Version.parse(version),
-        advertised: {'inventory-all-view'},
       );
       tester.view.physicalSize = const Size(450, 450);
       tester.view.devicePixelRatio = 1;
@@ -286,7 +285,7 @@ void main() {
     tearDown(ServerVersionService.instance.debugSeed);
 
     testWidgets('follows the lists, named by its inventory', (tester) async {
-      await pumpWith(tester, '0.38.0');
+      await pumpWith(tester, '0.39.0');
       await nextPage(tester);
 
       expect(find.text('Fridge'), findsWidgets);
@@ -297,7 +296,7 @@ void main() {
     });
 
     testWidgets('its title switches between inventories only', (tester) async {
-      await pumpWith(tester, '0.38.0');
+      await pumpWith(tester, '0.39.0');
       await nextPage(tester);
 
       await tester.tap(find.text('Fridge').first);
