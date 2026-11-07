@@ -243,17 +243,10 @@ extension ChecklistsControllerStock on ChecklistsController {
   /// Whether the member closed the no-restock-checklist notice on [listId].
   /// Kept on this device only.
   bool isRestockNoticeHidden(int listId) =>
-      (_checklistService.cache.get<List>('restockNoticeHidden:$houseId') ??
-              const [])
-          .contains(listId);
+      PrefsService.instance.isRestockNoticeHidden(listId);
 
-  void hideRestockNotice(int listId) {
-    final key = 'restockNoticeHidden:$houseId';
-    final hidden = {
-      ...?_checklistService.cache.get<List>(key)?.whereType<int>(),
-      listId,
-    };
-    _checklistService.cache.set(key, hidden.toList());
+  Future<void> hideRestockNotice(int listId) async {
+    await PrefsService.instance.hideRestockNotice(listId);
     notifyListeners();
   }
 

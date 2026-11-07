@@ -9,6 +9,7 @@ import 'package:http/testing.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/utils/version.dart';
@@ -118,7 +119,6 @@ void main() {
     );
     ChecklistService.instance.cacheListsOfEveryKind(1, const []);
     ChecklistService.instance.selectedListId = null;
-    ChecklistService.instance.cache.set('restockNoticeHidden:1', null);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(storageChannel, (call) async {
           final args = (call.arguments as Map?) ?? const {};
@@ -131,6 +131,7 @@ void main() {
           if (call.method == 'readAll') return credentials;
           return null;
         });
+    await PrefsService.instance.clear();
     await AuthService.instance.loadCredentials();
     unawaited(manager.reset());
   });
@@ -226,9 +227,14 @@ void main() {
         final controller = await opened(tester);
         expect(controller.isRestockNoticeHidden(shelf), isFalse);
 
-        controller.hideRestockNotice(shelf);
+        await controller.hideRestockNotice(shelf);
 
         expect(controller.isRestockNoticeHidden(shelf), isTrue);
+        expect(
+          PrefsService.instance.isRestockNoticeHidden(shelf),
+          isTrue,
+          reason: 'kept with the device prefs',
+        );
         await quiesce(tester);
       });
     });
