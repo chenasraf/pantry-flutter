@@ -728,7 +728,12 @@ class _ItemFormViewState extends State<ItemFormView> {
 
   Future<void> _openCreateCategory() async {
     final created = await Navigator.of(context).push<models.Category>(
-      itemModalRoute(CategoryFormView(houseId: widget.controller.houseId)),
+      itemModalRoute(
+        CategoryFormView(
+          houseId: widget.controller.houseId,
+          defaultListId: _effectiveListId,
+        ),
+      ),
     );
     if (created == null || !mounted) return;
     widget.controller.categories[created.id] = created;

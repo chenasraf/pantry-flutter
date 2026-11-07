@@ -280,9 +280,7 @@ void main() {
     });
   });
 
-  testWidgets('a new category is house-wide, even opened from a list', (
-    tester,
-  ) async {
+  testWidgets('a new category defaults to the open list', (tester) async {
     await withServer(() async {
       await pumpManager(tester, listId: groceries);
 
@@ -290,11 +288,10 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));
 
-      expect(find.byType(CategoryFormView), findsOneWidget);
-      final scope = tester.widget<DropdownButtonFormField<int?>>(
-        find.byType(DropdownButtonFormField<int?>),
+      final form = tester.widget<CategoryFormView>(
+        find.byType(CategoryFormView),
       );
-      expect(scope.initialValue, isNull);
+      expect(form.defaultListId, groceries);
 
       await quiesce(tester);
     });

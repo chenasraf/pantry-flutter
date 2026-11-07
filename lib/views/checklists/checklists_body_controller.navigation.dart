@@ -133,9 +133,14 @@ extension ChecklistsBodyNavigation on ChecklistsBodyController {
   /// tray. On success, refreshes the controller's category list (so the new
   /// option shows up in the tray) and returns the new Category so compose bar
   /// can auto-select it on the draft.
-  Future<models.Category?> createCategory(BuildContext context) async {
+  Future<models.Category?> createCategory(
+    BuildContext context, {
+    int? defaultListId,
+  }) async {
     final created = await Navigator.of(context).push<models.Category>(
-      itemModalRoute(CategoryFormView(houseId: domain.houseId)),
+      itemModalRoute(
+        CategoryFormView(houseId: domain.houseId, defaultListId: defaultListId),
+      ),
     );
     if (created != null) {
       await domain.onCategoriesChanged();

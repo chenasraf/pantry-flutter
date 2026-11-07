@@ -722,7 +722,12 @@ class _BodyState extends State<_Body> {
                       onActiveChanged: body.setComposeActive,
                       onRequestCreateCategory:
                           controller.permissions.canEditLists
-                          ? () => body.createCategory(context)
+                          ? () => body.createCategory(
+                              context,
+                              defaultListId: meta
+                                  ? body.composeTargetListId
+                                  : list.id,
+                            )
                           : null,
                       onRequestCreateStore:
                           ServerFeature.stores &&
