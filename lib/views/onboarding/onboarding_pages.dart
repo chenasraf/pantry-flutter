@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/version.dart';
 import 'pages/add_items_page.dart';
@@ -43,10 +44,14 @@ class OnboardingAudience {
   /// universal — used to swap gesture explanations for click ones.
   final bool isDesktop;
 
+  /// `true` when the server has inventory stock, and so the Inventories tab.
+  final bool hasInventories;
+
   const OnboardingAudience({
     required this.isNewUser,
     required this.isAndroid,
     required this.isDesktop,
+    this.hasInventories = false,
   });
 }
 
@@ -69,6 +74,12 @@ bool onboardingDesktopOnly(OnboardingAudience a) => a.isDesktop;
 /// Shows the page only on non-desktop (mobile + web) — for touch-gesture
 /// explanations (swipe, long-press).
 bool onboardingMobileOnly(OnboardingAudience a) => !a.isDesktop;
+
+/// Shows the page to upgraders, and to new users whose server has the
+/// Inventories tab. An upgrader on an older server still learns what updating
+/// the server brings; a new user is not toured through a tab they lack.
+bool onboardingInventoriesTour(OnboardingAudience a) =>
+    !a.isNewUser || a.hasInventories;
 
 /// Shows the page only when every one of [conditions] holds — how a page narrows
 /// by platform and by audience at the same time.
@@ -95,10 +106,10 @@ class OnboardingPageEntry {
 /// once — the whole map would otherwise play back as one sitting. The tour a new
 /// user gets is therefore whatever survives the filters, and it is held to the
 /// handful of things the app cannot teach on its own: switching lists, acting on
-/// a row, adding items, barcode scanning, shopping trips, the watch app, and
-/// what inventories are for. Every other page carries
-/// [onboardingUpgradersOnly], so it lands as a
-/// what's-changed recap for someone who already has lists to apply it to.
+/// a row, adding items, barcode scanning, shopping trips, the watch app, and,
+/// on servers with the Inventories tab, what inventories are for. Every other
+/// page carries [onboardingUpgradersOnly], so it lands as a what's-changed
+/// recap for someone who already has lists to apply it to.
 ///
 /// Keys MUST be valid dotted versions parseable by [Version].
 final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
@@ -197,7 +208,10 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
   '0.38.0': [
     // For new users too: an Inventories tab says nothing about stock running
     // low, restocking or expiry.
-    OnboardingPageEntry(builder: (_) => const InventoryOnboardingPage()),
+    OnboardingPageEntry(
+      builder: (_) => const InventoryOnboardingPage(),
+      showWhen: onboardingInventoriesTour,
+    ),
     OnboardingPageEntry(
       builder: (_) => const TemplatesOnboardingPage(),
       showWhen: onboardingUpgradersOnly,
@@ -273,6 +287,7 @@ OnboardingAudience onboardingAudienceFor(String? lastSeen) =>
       isNewUser: lastSeen == null,
       isAndroid: PlatformInfo.isAndroidPhone,
       isDesktop: PlatformInfo.isDesktop,
+      hasInventories: ServerFeature.inventoryStock,
     );
 
 /// Feature-page entries to show for a user whose last-seen version is

@@ -19,16 +19,19 @@ const _androidPhone = OnboardingAudience(
   isNewUser: true,
   isAndroid: true,
   isDesktop: false,
+  hasInventories: true,
 );
 const _iphone = OnboardingAudience(
   isNewUser: true,
   isAndroid: false,
   isDesktop: false,
+  hasInventories: true,
 );
 const _desktop = OnboardingAudience(
   isNewUser: true,
   isAndroid: false,
   isDesktop: true,
+  hasInventories: true,
 );
 
 /// The page types a new user walks through on [audience]'s platform.
@@ -87,6 +90,24 @@ void main() {
       ShoppingModeOnboardingPage,
       InventoryOnboardingPage,
     ]);
+  });
+
+  testWidgets('a new user on a server without inventories skips them', (
+    tester,
+  ) async {
+    final context = await _aContext(tester);
+
+    expect(
+      _tour(
+        context,
+        const OnboardingAudience(
+          isNewUser: true,
+          isAndroid: false,
+          isDesktop: false,
+        ),
+      ),
+      isNot(contains(InventoryOnboardingPage)),
+    );
   });
 
   test('every page still reaches an upgrader on some platform', () {
