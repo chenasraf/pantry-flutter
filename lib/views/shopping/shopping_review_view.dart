@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/shopping_estimate.dart';
 import 'package:pantry_core/models/shopping_put_away.dart';
@@ -9,6 +10,7 @@ import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/models/shopping_review.dart';
 import 'package:pantry_core/models/store.dart';
 import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/house_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/sync/sync_ids.dart';
@@ -111,8 +113,20 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
   List<ChecklistList> _inventories = const [];
   PutAwayDraft _putAway = {};
 
+  // The server refuses a put-away from a member who may not check items.
   bool get _putAwayEnabled =>
-      widget.mode == ShoppingReviewMode.close && ServerFeature.shoppingPutAway;
+      widget.mode == ShoppingReviewMode.close &&
+      ServerFeature.shoppingPutAway &&
+      _canCheckItems;
+
+  bool get _canCheckItems =>
+      HouseService.instance
+          .getCached()
+          ?.where((h) => h.id == widget.houseId)
+          .firstOrNull
+          ?.effectivePermissions
+          .canCheckItems ??
+      true;
 
   /// Every item ticked on the trip, once, whichever store it was ticked at.
   List<ListItem> get _checkedItems {

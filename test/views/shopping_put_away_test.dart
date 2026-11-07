@@ -7,8 +7,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/shopping_put_away.dart';
 import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/house_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
@@ -260,6 +262,34 @@ void main() {
         requests.map((r) => r.url.path),
         isNot(contains(endsWith('/inventories'))),
       );
+      await finish(tester);
+      expect(handed, isEmpty);
+
+      await quiesce(tester);
+    });
+  });
+
+  testWidgets('a member who may not check items gets no section', (
+    tester,
+  ) async {
+    final houses = HouseService.instance.cache;
+    houses.setList('houses', [
+      const House(
+        id: 1,
+        name: 'Home',
+        ownerUid: 'casraf',
+        role: 'viewer',
+        permissions: HousePermissions(canCheckItems: false),
+        createdAt: 0,
+        updatedAt: 0,
+      ),
+    ], (h) => h.toJson());
+    addTearDown(() => houses.removeKey('houses'));
+
+    await withServer(() async {
+      final handed = await pumpReview(tester);
+
+      expect(find.text(m.shopping.putAwayTitle), findsNothing);
       await finish(tester);
       expect(handed, isEmpty);
 
