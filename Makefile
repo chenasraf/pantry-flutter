@@ -11,6 +11,12 @@ SHELL := bash
 # run, gitignored, and written without the escape codes that make it readable
 # on a terminal.
 RELEASE_LOG := release.log
+
+# The dart bundled with flutter. A standalone Dart SDK earlier on PATH (e.g.
+# Homebrew's) cannot resolve the packages' `sdk: flutter` dependencies.
+FLUTTER_BIN := $(dir $(shell command -v flutter))
+DART := $(if $(FLUTTER_BIN),$(FLUTTER_BIN)dart,dart)
+
 strip_ansi = perl -pe 's/\e\[[0-9;]*[a-zA-Z]//g'
 
 # Run a sub-make target with every stdout/stderr line prefixed by [<label>], so
@@ -166,12 +172,12 @@ build-clean:
 # i18n
 .PHONY: i18n
 i18n:
-	dart run tool/fix_i18n_escapes.dart
-	cd packages/pantry_core && dart run build_runner build --delete-conflicting-outputs
+	$(DART) run tool/fix_i18n_escapes.dart
+	cd packages/pantry_core && $(DART) run build_runner build --delete-conflicting-outputs
 
 .PHONY: i18n-watch
 i18n-watch:
-	cd packages/pantry_core && dart run build_runner watch --delete-conflicting-outputs
+	cd packages/pantry_core && $(DART) run build_runner watch --delete-conflicting-outputs
 
 .PHONY: i18n-from-nextcloud
 i18n-from-nextcloud:
@@ -181,7 +187,7 @@ endif
 ifndef TARGET
 	$(error TARGET is required. Usage: make i18n-from-nextcloud NC_JSON=~/path/nextcloud-pantry/l10n/nn_NO.json TARGET=packages/pantry_core/lib/i18n/messages_nn.i18n.yaml)
 endif
-	dart run tool/i18n_generate_from_nextcloud.dart $(NC_JSON) $(TARGET)
+	$(DART) run tool/i18n_generate_from_nextcloud.dart $(NC_JSON) $(TARGET)
 
 # Development
 # `run` stays flavorless so it still works for iOS, macOS, Linux and Windows.
@@ -196,7 +202,7 @@ android-run:
 	flutter run --flavor phone
 .PHONY: format
 format:
-	dart format .
+	$(DART) format .
 	pnpm exec prettier --write "**/*.{yml,yaml}"
 
 .PHONY: analyze
@@ -205,7 +211,7 @@ analyze:
 
 .PHONY: check
 check:
-	dart format --output=none --set-exit-if-changed .
+	$(DART) format --output=none --set-exit-if-changed .
 	flutter analyze --no-fatal-infos
 
 # Testing
@@ -715,7 +721,7 @@ endif
 
 .PHONY: widget-icons
 widget-icons:
-	dart run tool/generate_widget_icons.dart
+	$(DART) run tool/generate_widget_icons.dart
 
 .PHONY: icons
 icons:
@@ -724,11 +730,11 @@ icons:
 	rsvg-convert -w 1024 -h 1024 assets/logo_icon_square.svg > assets/icon/icon_ios.png
 	rsvg-convert -w 1024 -h 1024 assets/logo_icon_foreground.svg > assets/icon/icon_foreground.png
 	rsvg-convert -w 1024 -h 1024 assets/logo_icon_macos.svg > assets/icon/icon_macos.png
-	dart run flutter_launcher_icons
+	$(DART) run flutter_launcher_icons
 	rsvg-convert -w 512 -h 512 assets/logo_icon_squircle.svg > fastlane/metadata/android/en-US/images/icon.png
 
 .PHONY: splash
 splash:
 	mkdir -p assets/icon
 	rsvg-convert -h 1152 --page-width 1920 --page-height 1920 --top 384 --left 384 assets/logo_icon.svg > assets/icon/splash.png
-	dart run flutter_native_splash:create
+	$(DART) run flutter_native_splash:create
