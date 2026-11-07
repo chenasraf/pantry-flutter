@@ -1404,7 +1404,7 @@ shopping:
   putAwayHint: "Elige dónde va lo que compraste. Cada elemento empieza donde suele ir."
   putAwayFull: "Lleno"
   putAwayRemove: "Quitar de este inventario"
-  putAwayAdd: "Añadir a un inventario…"
+  putAwayAdd: "Añadir a un inventario …"
   notPutAway: "Sin guardar"
   unknownInventory: "Inventario desconocido"
   putAwayAmount(String item, String storage): "Cantidad de $item guardada en $storage"

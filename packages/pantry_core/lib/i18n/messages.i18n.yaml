@@ -1411,7 +1411,7 @@ shopping:
   putAwayHint: "Choose where what you bought goes. Each item starts where it usually goes."
   putAwayFull: "Full"
   putAwayRemove: "Remove from this storage"
-  putAwayAdd: "Add to a storage…"
+  putAwayAdd: "Add to a storage …"
   notPutAway: "Not put away"
   unknownInventory: "Unknown inventory"
   putAwayAmount(String item, String storage): "Amount of $item put away in $storage"

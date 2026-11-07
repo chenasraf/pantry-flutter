@@ -7322,15 +7322,15 @@ class ShoppingMessagesHe extends ShoppingMessages {
   String get doneEditing => """סיום""";
 
   /// ```dart
-  /// "סידור"
+  /// "אחסון"
   /// ```
-  String get putAwayTitle => """סידור""";
+  String get putAwayTitle => """אחסון""";
 
   /// ```dart
-  /// "בחרו לאן הולך מה שקניתם. כל פריט מתחיל במקום שאליו הוא הולך בדרך כלל."
+  /// "יש לבחור לאן מוכנס מה שנקנה. כל פריט מתחיל במקום שבו הוא מאוחסן בדרך כלל."
   /// ```
   String get putAwayHint =>
-      """בחרו לאן הולך מה שקניתם. כל פריט מתחיל במקום שאליו הוא הולך בדרך כלל.""";
+      """יש לבחור לאן מוכנס מה שנקנה. כל פריט מתחיל במקום שבו הוא מאוחסן בדרך כלל.""";
 
   /// ```dart
   /// "מלא"
@@ -7343,14 +7343,14 @@ class ShoppingMessagesHe extends ShoppingMessages {
   String get putAwayRemove => """הסרה מרשימת המלאי הזו""";
 
   /// ```dart
-  /// "הוספה לרשימת מלאי…"
+  /// "הוספה לרשימת מלאי …"
   /// ```
-  String get putAwayAdd => """הוספה לרשימת מלאי…""";
+  String get putAwayAdd => """הוספה לרשימת מלאי …""";
 
   /// ```dart
-  /// "לא סודר"
+  /// "לא אוחסן"
   /// ```
-  String get notPutAway => """לא סודר""";
+  String get notPutAway => """לא אוחסן""";
 
   /// ```dart
   /// "רשימת מלאי לא ידועה"
@@ -7358,10 +7358,10 @@ class ShoppingMessagesHe extends ShoppingMessages {
   String get unknownInventory => """רשימת מלאי לא ידועה""";
 
   /// ```dart
-  /// "כמות של $item ב־$storage"
+  /// "הכמות של $item שאוחסנה ב־$storage"
   /// ```
   String putAwayAmount(String item, String storage) =>
-      """כמות של $item ב־$storage""";
+      """הכמות של $item שאוחסנה ב־$storage""";
 
   /// ```dart
   /// "תזכורות"
@@ -10368,13 +10368,13 @@ Map<String, String> get messagesHeMap => {
   """shopping.editTotalsTitle""": """עריכת סכומי הקנייה""",
   """shopping.editTotals""": """עריכת סכומים""",
   """shopping.doneEditing""": """סיום""",
-  """shopping.putAwayTitle""": """סידור""",
+  """shopping.putAwayTitle""": """אחסון""",
   """shopping.putAwayHint""":
-      """בחרו לאן הולך מה שקניתם. כל פריט מתחיל במקום שאליו הוא הולך בדרך כלל.""",
+      """יש לבחור לאן מוכנס מה שנקנה. כל פריט מתחיל במקום שבו הוא מאוחסן בדרך כלל.""",
   """shopping.putAwayFull""": """מלא""",
   """shopping.putAwayRemove""": """הסרה מרשימת המלאי הזו""",
-  """shopping.putAwayAdd""": """הוספה לרשימת מלאי…""",
-  """shopping.notPutAway""": """לא סודר""",
+  """shopping.putAwayAdd""": """הוספה לרשימת מלאי …""",
+  """shopping.notPutAway""": """לא אוחסן""",
   """shopping.unknownInventory""": """רשימת מלאי לא ידועה""",
   """shopping.remindersTitle""": """תזכורות""",
   """shopping.manageReminders""": """ניהול תזכורות""",

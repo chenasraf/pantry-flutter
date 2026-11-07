@@ -7427,9 +7427,9 @@ class ShoppingMessagesDe extends ShoppingMessages {
   String get putAwayRemove => """Aus dieser Bestandsliste entfernen""";
 
   /// ```dart
-  /// "Zu einer Bestandsliste hinzufügen…"
+  /// "Zu einer Bestandsliste hinzufügen …"
   /// ```
-  String get putAwayAdd => """Zu einer Bestandsliste hinzufügen…""";
+  String get putAwayAdd => """Zu einer Bestandsliste hinzufügen …""";
 
   /// ```dart
   /// "Nicht eingeräumt"
@@ -10578,7 +10578,7 @@ Passwort: pantry-rocks""",
       """Wähle, wohin deine Einkäufe kommen. Jeder Eintrag startet dort, wo er üblicherweise hinkommt.""",
   """shopping.putAwayFull""": """Voll""",
   """shopping.putAwayRemove""": """Aus dieser Bestandsliste entfernen""",
-  """shopping.putAwayAdd""": """Zu einer Bestandsliste hinzufügen…""",
+  """shopping.putAwayAdd""": """Zu einer Bestandsliste hinzufügen …""",
   """shopping.notPutAway""": """Nicht eingeräumt""",
   """shopping.unknownInventory""": """Unbekannte Bestandsliste""",
   """shopping.remindersTitle""": """Erinnerungen""",

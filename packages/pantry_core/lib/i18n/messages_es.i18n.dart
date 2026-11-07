@@ -7415,9 +7415,9 @@ class ShoppingMessagesEs extends ShoppingMessages {
   String get putAwayRemove => """Quitar de este inventario""";
 
   /// ```dart
-  /// "Añadir a un inventario…"
+  /// "Añadir a un inventario …"
   /// ```
-  String get putAwayAdd => """Añadir a un inventario…""";
+  String get putAwayAdd => """Añadir a un inventario …""";
 
   /// ```dart
   /// "Sin guardar"
@@ -10550,7 +10550,7 @@ Contraseña: pantry-rocks""",
       """Elige dónde va lo que compraste. Cada elemento empieza donde suele ir.""",
   """shopping.putAwayFull""": """Lleno""",
   """shopping.putAwayRemove""": """Quitar de este inventario""",
-  """shopping.putAwayAdd""": """Añadir a un inventario…""",
+  """shopping.putAwayAdd""": """Añadir a un inventario …""",
   """shopping.notPutAway""": """Sin guardar""",
   """shopping.unknownInventory""": """Inventario desconocido""",
   """shopping.remindersTitle""": """Recordatorios""",

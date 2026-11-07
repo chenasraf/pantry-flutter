@@ -6252,9 +6252,9 @@ class LinksStockMessagesNn extends LinksStockMessages {
   String get addToList => """Legg til i ei handleliste …""";
 
   /// ```dart
-  /// "Kva liste skal han i?"
+  /// "Kva liste skal ho i?"
   /// ```
-  String get addToListTitle => """Kva liste skal han i?""";
+  String get addToListTitle => """Kva liste skal ho i?""";
 
   /// ```dart
   /// "Kunne ikkje leggje til i lista"
@@ -7346,10 +7346,10 @@ class ShoppingMessagesNn extends ShoppingMessages {
   String get putAwayTitle => """Rydd på plass""";
 
   /// ```dart
-  /// "Vel kvar det du kjøpte skal. Kvar oppføring startar der ho vanlegvis skal."
+  /// "Vel kvar det du kjøpte skal setjast. Kvar oppføring startar der ho vanlegvis står."
   /// ```
   String get putAwayHint =>
-      """Vel kvar det du kjøpte skal. Kvar oppføring startar der ho vanlegvis skal.""";
+      """Vel kvar det du kjøpte skal setjast. Kvar oppføring startar der ho vanlegvis står.""";
 
   /// ```dart
   /// "Full"
@@ -7362,9 +7362,9 @@ class ShoppingMessagesNn extends ShoppingMessages {
   String get putAwayRemove => """Fjern frå denne lagerlista""";
 
   /// ```dart
-  /// "Legg til i ei lagerliste…"
+  /// "Legg til i ei lagerliste …"
   /// ```
-  String get putAwayAdd => """Legg til i ei lagerliste…""";
+  String get putAwayAdd => """Legg til i ei lagerliste …""";
 
   /// ```dart
   /// "Ikkje rydda på plass"
@@ -10278,7 +10278,7 @@ Passord: pantry""",
       """Denne oppføringa blir berre merkt her når det blir lite av ho.""",
   """stock.links.linkToItem""": """Kople til ei oppføring …""",
   """stock.links.addToList""": """Legg til i ei handleliste …""",
-  """stock.links.addToListTitle""": """Kva liste skal han i?""",
+  """stock.links.addToListTitle""": """Kva liste skal ho i?""",
   """stock.links.addToListFailed""": """Kunne ikkje leggje til i lista""",
   """stock.links.pickerTitle""": """Kople til ei oppføring på ei sjekkliste""",
   """stock.links.pickerField""": """Oppføring på sjekkliste""",
@@ -10445,10 +10445,10 @@ Passord: pantry""",
   """shopping.doneEditing""": """Ferdig""",
   """shopping.putAwayTitle""": """Rydd på plass""",
   """shopping.putAwayHint""":
-      """Vel kvar det du kjøpte skal. Kvar oppføring startar der ho vanlegvis skal.""",
+      """Vel kvar det du kjøpte skal setjast. Kvar oppføring startar der ho vanlegvis står.""",
   """shopping.putAwayFull""": """Full""",
   """shopping.putAwayRemove""": """Fjern frå denne lagerlista""",
-  """shopping.putAwayAdd""": """Legg til i ei lagerliste…""",
+  """shopping.putAwayAdd""": """Legg til i ei lagerliste …""",
   """shopping.notPutAway""": """Ikkje rydda på plass""",
   """shopping.unknownInventory""": """Ukjend lagerliste""",
   """shopping.remindersTitle""": """Påminningar""",

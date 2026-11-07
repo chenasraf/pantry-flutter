@@ -7420,9 +7420,9 @@ class ShoppingMessagesFr extends ShoppingMessages {
   String get putAwayRemove => """Retirer de ce rangement""";
 
   /// ```dart
-  /// "Ajouter à un rangement…"
+  /// "Ajouter à un rangement …"
   /// ```
-  String get putAwayAdd => """Ajouter à un rangement…""";
+  String get putAwayAdd => """Ajouter à un rangement …""";
 
   /// ```dart
   /// "Non rangé"
@@ -10566,7 +10566,7 @@ Mot de passe : pantry-rocks""",
       """Choisissez où vont vos achats. Chaque article part de l'endroit où il va d'habitude.""",
   """shopping.putAwayFull""": """Plein""",
   """shopping.putAwayRemove""": """Retirer de ce rangement""",
-  """shopping.putAwayAdd""": """Ajouter à un rangement…""",
+  """shopping.putAwayAdd""": """Ajouter à un rangement …""",
   """shopping.notPutAway""": """Non rangé""",
   """shopping.unknownInventory""": """Inventaire inconnu""",
   """shopping.remindersTitle""": """Rappels""",

@@ -1400,14 +1400,14 @@ shopping:
   editTotalsTitle: עריכת סכומי הקנייה
   editTotals: עריכת סכומים
   doneEditing: סיום
-  putAwayTitle: "סידור"
-  putAwayHint: "בחרו לאן הולך מה שקניתם. כל פריט מתחיל במקום שאליו הוא הולך בדרך כלל."
+  putAwayTitle: "אחסון"
+  putAwayHint: "יש לבחור לאן מוכנס מה שנקנה. כל פריט מתחיל במקום שבו הוא מאוחסן בדרך כלל."
   putAwayFull: "מלא"
   putAwayRemove: "הסרה מרשימת המלאי הזו"
-  putAwayAdd: "הוספה לרשימת מלאי…"
-  notPutAway: "לא סודר"
+  putAwayAdd: "הוספה לרשימת מלאי …"
+  notPutAway: "לא אוחסן"
   unknownInventory: "רשימת מלאי לא ידועה"
-  putAwayAmount(String item, String storage): "כמות של $item ב־$storage"
+  putAwayAmount(String item, String storage): "הכמות של $item שאוחסנה ב־$storage"
   remindersTitle: תזכורות
   manageReminders: ניהול תזכורות
   reminderGroupStart: בהתחלה

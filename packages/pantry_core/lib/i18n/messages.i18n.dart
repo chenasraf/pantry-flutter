@@ -7340,9 +7340,9 @@ class ShoppingMessages {
   String get putAwayRemove => """Remove from this storage""";
 
   /// ```dart
-  /// "Add to a storage…"
+  /// "Add to a storage …"
   /// ```
-  String get putAwayAdd => """Add to a storage…""";
+  String get putAwayAdd => """Add to a storage …""";
 
   /// ```dart
   /// "Not put away"
@@ -10402,7 +10402,7 @@ Password: pantry-rocks""",
       """Choose where what you bought goes. Each item starts where it usually goes.""",
   """shopping.putAwayFull""": """Full""",
   """shopping.putAwayRemove""": """Remove from this storage""",
-  """shopping.putAwayAdd""": """Add to a storage…""",
+  """shopping.putAwayAdd""": """Add to a storage …""",
   """shopping.notPutAway""": """Not put away""",
   """shopping.unknownInventory""": """Unknown inventory""",
   """shopping.remindersTitle""": """Reminders""",
