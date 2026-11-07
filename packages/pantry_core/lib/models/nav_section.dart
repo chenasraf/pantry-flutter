@@ -47,18 +47,25 @@ const List<NavSection> kDefaultNavOrder = [
 ];
 
 /// Parse a comma-separated list of section ids into a complete ordered list.
-/// Unknown ids are dropped, missing sections are appended in their default
-/// order so the result always contains every [NavSection] exactly once.
+/// Unknown ids are dropped, so the result always contains every [NavSection]
+/// exactly once.
+///
+/// A section missing from [raw] goes right after the one it follows by
+/// default, so a section a build adds lands beside its neighbour rather than
+/// at the end of an order the user arranged.
 List<NavSection> decodeNavOrder(String? raw) {
   if (raw == null || raw.isEmpty) return List.of(kDefaultNavOrder);
-  final seen = <NavSection>{};
   final order = <NavSection>[];
   for (final part in raw.split(',')) {
     final s = NavSection.fromId(part.trim());
-    if (s != null && seen.add(s)) order.add(s);
+    if (s != null && !order.contains(s)) order.add(s);
   }
-  for (final s in kDefaultNavOrder) {
-    if (seen.add(s)) order.add(s);
+  for (var i = 0; i < kDefaultNavOrder.length; i++) {
+    final s = kDefaultNavOrder[i];
+    if (order.contains(s)) continue;
+    // Every default section before this one is in the order by now.
+    final at = i == 0 ? 0 : order.indexOf(kDefaultNavOrder[i - 1]) + 1;
+    order.insert(at, s);
   }
   return order;
 }
