@@ -208,17 +208,9 @@ class CacheStore {
     setList('$prefix:$key', items, toJson);
   }
 
-  void removeKeyed(
-    String prefix, {
-    String? keepKey,
-    Set<String> keepKeys = const {},
-  }) {
-    final kept = {
-      if (keepKey != null) '$prefix:$keepKey',
-      for (final key in keepKeys) '$prefix:$key',
-    };
+  void removeKeyed(String prefix, {String? keepKey}) {
     final keysToRemove = _data.keys
-        .where((k) => k.startsWith('$prefix:') && !kept.contains(k))
+        .where((k) => k.startsWith('$prefix:') && k != '$prefix:$keepKey')
         .toList();
     for (final k in keysToRemove) {
       _data.remove(k);

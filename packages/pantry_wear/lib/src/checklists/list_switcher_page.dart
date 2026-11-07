@@ -16,57 +16,47 @@ import '../widgets/wear_choice_page.dart';
 /// needs-restock count and, from two on, headed by "All inventories";
 /// templates are left to the phone.
 ///
-/// The Inventories page opens it with [inventoriesOnly], picking into its own
-/// scope.
-///
 /// Archived and trashed lists cannot appear: `getLists` returns active lists
 /// only, and the watch never calls the other two endpoints.
 class ListSwitcherPage extends StatelessWidget {
   final List<ChecklistList> lists;
   final List<ChecklistList> inventories;
   final int? selectedId;
-  final bool inventoriesOnly;
 
   const ListSwitcherPage({
     super.key,
     required this.lists,
     this.inventories = const [],
     required this.selectedId,
-    this.inventoriesOnly = false,
   });
 
   @override
   Widget build(BuildContext context) {
     // Headed only when there is a second kind to tell the first from.
-    final grouped = inventories.isNotEmpty && !inventoriesOnly;
+    final grouped = inventories.isNotEmpty;
     final checklistSection = grouped ? m.listKinds.checklist.title : null;
     final inventorySection = grouped ? m.listKinds.inventory.title : null;
     final allInventories =
         ServerFeature.inventoryAllView && inventories.length >= 2;
-    final scope = inventoriesOnly ? WearScope.inventory : WearScope.instance;
     return WearChoicePage<int>(
       selected: selectedId,
-      empty: inventoriesOnly
-          ? ListKind.inventory.strings.emptyTitle
-          : m.wear.noLists,
-      onSelected: scope.selectList,
+      empty: m.wear.noLists,
+      onSelected: WearScope.instance.selectList,
       choices: [
-        if (!inventoriesOnly)
+        WearChoice(
+          value: kAllListsId,
+          label: m.checklists.allLists,
+          icon: allListsIcon,
+          section: checklistSection,
+        ),
+        for (final list in lists)
           WearChoice(
-            value: kAllListsId,
-            label: m.checklists.allLists,
-            icon: allListsIcon,
+            value: list.id,
+            label: list.name,
+            icon: checklistIcon(list.icon),
+            tint: parseHexColor(list.color) ?? Colors.white70,
             section: checklistSection,
           ),
-        if (!inventoriesOnly)
-          for (final list in lists)
-            WearChoice(
-              value: list.id,
-              label: list.name,
-              icon: checklistIcon(list.icon),
-              tint: parseHexColor(list.color) ?? Colors.white70,
-              section: checklistSection,
-            ),
         if (allInventories)
           WearChoice(
             value: kAllInventoriesId,

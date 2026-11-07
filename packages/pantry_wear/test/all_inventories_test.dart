@@ -234,31 +234,22 @@ void main() {
     expect(ServerFeature.inventoryAllView, isTrue);
   });
 
-  group('the Inventories page scope', () {
-    setUp(() {
-      ChecklistService.instance.selectedListId = 4;
-      ChecklistService.instance.selectedInventoryId = null;
-    });
+  group('the scope', () {
+    setUp(() => ChecklistService.instance.selectedListId = kAllInventoriesId);
 
-    test('opens on "All inventories" when there are several', () async {
-      final id = await WearScope.inventory.resolveList([fridge, freezer]);
-
-      expect(id, kAllInventoriesId);
-      expect(ChecklistService.instance.selectedInventoryId, kAllInventoriesId);
+    test('keeps "All inventories" as a list', () async {
       expect(
-        ChecklistService.instance.selectedListId,
-        4,
-        reason: 'the lists page keeps its own list',
+        await WearScope.instance.resolveList([testList(), fridge]),
+        kAllInventoriesId,
       );
     });
 
-    test('opens on the one inventory there is', () async {
-      expect(await WearScope.inventory.resolveList([fridge]), fridge.id);
-    });
-
-    test('never lands on "All lists"', () async {
-      ChecklistService.instance.selectedInventoryId = kAllListsId;
-      expect(await WearScope.inventory.resolveList([fridge]), fridge.id);
+    test('leaves it on servers that do not announce it', () async {
+      seed(supported: false);
+      expect(
+        await WearScope.instance.resolveList([testList(), fridge]),
+        isNot(kAllInventoriesId),
+      );
     });
   });
 }

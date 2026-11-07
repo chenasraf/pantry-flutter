@@ -247,17 +247,10 @@ class ChecklistService {
     cache.setKeyedList(_itemsPrefix, '$listId', items, (i) => i.toJson());
   }
 
-  /// Drops every cached item list but [keepListId]'s and [keepListIds]'.
-  void invalidateItems({
-    int? keepListId,
-    Iterable<int> keepListIds = const [],
-  }) {
+  void invalidateItems({int? keepListId}) {
     cache.removeKeyed(
       _itemsPrefix,
-      keepKeys: {
-        if (keepListId != null) '$keepListId',
-        for (final id in keepListIds) '$id',
-      },
+      keepKey: keepListId != null ? '$keepListId' : null,
     );
   }
 

@@ -53,16 +53,7 @@ enum ChecklistGrouping { category, store }
 /// queue and the same executor the phone uses — so an in-store check survives
 /// a dead link.
 class ChecklistsController extends ChangeNotifier {
-  /// [section] pins the controller to one kind, for the Inventories page: it
-  /// keeps its own list in [WearScope.inventory], never walks a trip, and
-  /// starts paused, polling only once its page is in front.
-  ChecklistsController({this.section}) : _seededUserId = null {
-    if (section != null) _active = false;
-  }
-
-  /// The one kind of list this controller browses, or null for the lists
-  /// page, which offers checklists and inventories and walks trips.
-  final ListKind? section;
+  ChecklistsController() : _seededUserId = null;
 
   /// A controller holding a fixed answer, for pumping the real widget tree
   /// without a server. Nothing here polls or subscribes: [start] is what does
@@ -86,7 +77,6 @@ class ChecklistsController extends ChangeNotifier {
     String? currentUserId,
     String itemSort = 'custom',
     List<int> storeCategoryOrder = const [],
-    this.section,
   }) : _seededUserId = currentUserId {
     _itemSort = itemSort;
     _houseId = houseId;
@@ -119,9 +109,7 @@ class ChecklistsController extends ChangeNotifier {
   final _checklists = ChecklistService.instance;
   final _shopping = ShoppingService.instance;
   final _sync = SyncManager.instance;
-  late final WearScope _scope = section == ListKind.inventory
-      ? WearScope.inventory
-      : WearScope.instance;
+  final _scope = WearScope.instance;
   final _mirror = WearMirrorClient.instance;
   final _chip = WearOngoingActivityService.instance;
 
@@ -532,12 +520,11 @@ class ChecklistsController extends ChangeNotifier {
     // every writer records the trip before this runs. A watch's process dies
     // constantly, and a trip only discoverable online would put the wearer
     // back in browse mode standing in the middle of a shop.
-    // The Inventories page never walks one; the lists page does.
-    _session = section == null ? _shopping.getCachedSession() : null;
+    _session = _shopping.getCachedSession();
     final session = _session;
     // A trip read back from the cache is still a mirrored scope, and the phone
     // cannot push what it has not been told the watch is showing.
-    if (section == null) _mirror.setSession(session?.id);
+    _mirror.setSession(session?.id);
     _adoptCachedStoreCategoryOrder(session?.activeStoreId);
     if (session == null) {
       final listId = await _scope.resolveList(_browsable) ?? _scope.listId;
@@ -618,11 +605,8 @@ class ChecklistsController extends ChangeNotifier {
     return null;
   }
 
-  /// Every list the switcher offers, checklists first; only the inventories
-  /// on the Inventories page.
-  List<ChecklistList> get _browsable => section == ListKind.inventory
-      ? _inventories
-      : [..._lists, ..._inventories];
+  /// Every list the switcher offers, checklists first.
+  List<ChecklistList> get _browsable => [..._lists, ..._inventories];
 
   /// The "All" views have no cache key of their own: each is the union of its
   /// lists' snapshots, which is exactly what a fetch writes back.
@@ -679,7 +663,7 @@ class ChecklistsController extends ChangeNotifier {
       await ServerVersionService.instance.fetch();
     }
     await _refreshHouses();
-    if (section == null) await _refreshSession();
+    await _refreshSession();
     // A trip the poll or the mirror has just found is a trip that became live
     // without anyone opening a page, which is one of the three moments the chip
     // is posted.
@@ -687,7 +671,7 @@ class ChecklistsController extends ChangeNotifier {
     if (_session != null) {
       await _refreshSessionItems();
     } else {
-      if (section == null) await _refreshJoinable();
+      await _refreshJoinable();
       await _refreshBrowse();
     }
     _loading = false;
@@ -727,8 +711,7 @@ class ChecklistsController extends ChangeNotifier {
   /// removed.
   void _publishTile() {
     final house = _houseId;
-    // The Tile follows the lists page.
-    if (house == null || section != null) return;
+    if (house == null) return;
     unawaited(
       WearTileService.instance.publish(
         houseId: house,
