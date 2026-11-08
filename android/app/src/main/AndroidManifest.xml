@@ -77,6 +77,10 @@
                 <data android:scheme="pantry" android:host="watch-setup" />
             </intent-filter>
         </activity>
+        
+        <meta-data
+            android:name="io.flutter.embedding.android.EnableImpeller"
+            android:value="false" />
 
         <!-- Widget: list selector shown when a widget is added (android:configure)
              and when its header cog is tapped. Its own Flutter engine renders
