@@ -7979,6 +7979,24 @@ class SyncMessagesHe extends SyncMessages {
       """לא ניתן היה לשמור ${count} שינויים: השרת דחה אותם (${status}).""";
 
   /// ```dart
+  /// "לא ניתן היה לשמור את „${name}”. השרת השיב: ${reason}"
+  /// ```
+  String refusedNamedSaying(String name, String reason) =>
+      """לא ניתן היה לשמור את „${name}”. השרת השיב: ${reason}""";
+
+  /// ```dart
+  /// "לא ניתן היה לשמור שינוי. השרת השיב: ${reason}"
+  /// ```
+  String refusedOneSaying(String reason) =>
+      """לא ניתן היה לשמור שינוי. השרת השיב: ${reason}""";
+
+  /// ```dart
+  /// "לא ניתן היה לשמור ${count} שינויים. השרת השיב: ${reason}"
+  /// ```
+  String refusedManySaying(int count, String reason) =>
+      """לא ניתן היה לשמור ${count} שינויים. השרת השיב: ${reason}""";
+
+  /// ```dart
   /// "לא ניתן היה לשמור את „${name}”: השרת נכשל שוב ושוב."
   /// ```
   String failedNamed(String name) =>

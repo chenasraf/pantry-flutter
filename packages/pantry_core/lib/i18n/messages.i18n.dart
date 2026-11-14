@@ -7977,6 +7977,24 @@ class SyncMessages {
       """Couldn't save ${count} changes: the server refused them (${status}).""";
 
   /// ```dart
+  /// "Couldn't save “${name}”. The server said: ${reason}"
+  /// ```
+  String refusedNamedSaying(String name, String reason) =>
+      """Couldn't save “${name}”. The server said: ${reason}""";
+
+  /// ```dart
+  /// "Couldn't save a change. The server said: ${reason}"
+  /// ```
+  String refusedOneSaying(String reason) =>
+      """Couldn't save a change. The server said: ${reason}""";
+
+  /// ```dart
+  /// "Couldn't save ${count} changes. The server said: ${reason}"
+  /// ```
+  String refusedManySaying(int count, String reason) =>
+      """Couldn't save ${count} changes. The server said: ${reason}""";
+
+  /// ```dart
   /// "Couldn't save “${name}”: the server kept failing."
   /// ```
   String failedNamed(String name) =>

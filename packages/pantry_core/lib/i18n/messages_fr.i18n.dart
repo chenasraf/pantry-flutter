@@ -8062,6 +8062,24 @@ class SyncMessagesFr extends SyncMessages {
       """Impossible d'enregistrer ${count} modifications : le serveur les a refusées (${status}).""";
 
   /// ```dart
+  /// "Impossible d'enregistrer « ${name} ». Le serveur a répondu : ${reason}"
+  /// ```
+  String refusedNamedSaying(String name, String reason) =>
+      """Impossible d'enregistrer « ${name} ». Le serveur a répondu : ${reason}""";
+
+  /// ```dart
+  /// "Impossible d'enregistrer une modification. Le serveur a répondu : ${reason}"
+  /// ```
+  String refusedOneSaying(String reason) =>
+      """Impossible d'enregistrer une modification. Le serveur a répondu : ${reason}""";
+
+  /// ```dart
+  /// "Impossible d'enregistrer ${count} modifications. Le serveur a répondu : ${reason}"
+  /// ```
+  String refusedManySaying(int count, String reason) =>
+      """Impossible d'enregistrer ${count} modifications. Le serveur a répondu : ${reason}""";
+
+  /// ```dart
   /// "Impossible d'enregistrer « ${name} » : le serveur a échoué à plusieurs reprises."
   /// ```
   String failedNamed(String name) =>

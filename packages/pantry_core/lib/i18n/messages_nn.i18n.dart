@@ -8001,6 +8001,24 @@ class SyncMessagesNn extends SyncMessages {
       """Kunne ikkje lagre ${count} endringar: tenaren avviste dei (${status}).""";
 
   /// ```dart
+  /// "Kunne ikkje lagre «${name}». Tenaren svarte: ${reason}"
+  /// ```
+  String refusedNamedSaying(String name, String reason) =>
+      """Kunne ikkje lagre «${name}». Tenaren svarte: ${reason}""";
+
+  /// ```dart
+  /// "Kunne ikkje lagre ei endring. Tenaren svarte: ${reason}"
+  /// ```
+  String refusedOneSaying(String reason) =>
+      """Kunne ikkje lagre ei endring. Tenaren svarte: ${reason}""";
+
+  /// ```dart
+  /// "Kunne ikkje lagre ${count} endringar. Tenaren svarte: ${reason}"
+  /// ```
+  String refusedManySaying(int count, String reason) =>
+      """Kunne ikkje lagre ${count} endringar. Tenaren svarte: ${reason}""";
+
+  /// ```dart
   /// "Kunne ikkje lagre «${name}»: tenaren feila gong på gong."
   /// ```
   String failedNamed(String name) =>

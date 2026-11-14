@@ -11,9 +11,18 @@ class SyncDropReport {
   /// of retries without one.
   final int? statusCode;
 
+  /// What the server said about every op here, when it said anything readable.
+  /// The status alone tells the user nothing they can act on — a 400 is as
+  /// likely to be a name already taken as a malformed request.
+  final String? serverMessage;
+
   final List<SyncOp> ops;
 
-  const SyncDropReport({required this.statusCode, required this.ops});
+  const SyncDropReport({
+    required this.statusCode,
+    required this.ops,
+    this.serverMessage,
+  });
 
   /// The name the user gave the one thing they lost, when there is exactly one
   /// and its op carries a name — an op body holds what was typed, so this is
@@ -33,6 +42,12 @@ class SyncDropReport {
   String get message {
     final name = this.name;
     final count = ops.length;
+    final reason = serverMessage;
+    if (refused && reason != null) {
+      if (name != null) return m.sync.refusedNamedSaying(name, reason);
+      if (count == 1) return m.sync.refusedOneSaying(reason);
+      return m.sync.refusedManySaying(count, reason);
+    }
     if (refused) {
       final status = statusCode!;
       if (name != null) return m.sync.refusedNamed(name, status);
@@ -50,7 +65,7 @@ class SyncDropReport {
 /// Drops arrive in bursts: a proxy that blocks writes refuses every op in the
 /// queue, one after another, and a toast per op would bury the screen. Drops
 /// are held until [quiet] passes without another, then reported once per
-/// status — so a whole blocked queue reads as one message.
+/// status and server message — so a whole blocked queue reads as one message.
 class SyncDropNotices {
   SyncDropNotices(this._manager, {this.quiet = const Duration(seconds: 2)});
 
@@ -89,13 +104,17 @@ class SyncDropNotices {
 
   void _flush() {
     _timer = null;
-    final byStatus = <int?, List<SyncOp>>{};
+    final byCause = <(int?, String?), List<SyncOp>>{};
     for (final event in _pending) {
-      byStatus.putIfAbsent(event.statusCode, () => []).add(event.op);
+      byCause
+          .putIfAbsent((event.statusCode, event.serverMessage), () => [])
+          .add(event.op);
     }
     _pending.clear();
-    for (final MapEntry(key: status, value: ops) in byStatus.entries) {
-      _reports.add(SyncDropReport(statusCode: status, ops: ops));
+    for (final MapEntry(key: (status, said), value: ops) in byCause.entries) {
+      _reports.add(
+        SyncDropReport(statusCode: status, serverMessage: said, ops: ops),
+      );
     }
   }
 

@@ -8073,6 +8073,24 @@ class SyncMessagesDe extends SyncMessages {
       """${count} Änderungen konnten nicht gespeichert werden: Der Server hat sie abgelehnt (${status}).""";
 
   /// ```dart
+  /// "„${name}“ konnte nicht gespeichert werden. Der Server meldet: ${reason}"
+  /// ```
+  String refusedNamedSaying(String name, String reason) =>
+      """„${name}“ konnte nicht gespeichert werden. Der Server meldet: ${reason}""";
+
+  /// ```dart
+  /// "Eine Änderung konnte nicht gespeichert werden. Der Server meldet: ${reason}"
+  /// ```
+  String refusedOneSaying(String reason) =>
+      """Eine Änderung konnte nicht gespeichert werden. Der Server meldet: ${reason}""";
+
+  /// ```dart
+  /// "${count} Änderungen konnten nicht gespeichert werden. Der Server meldet: ${reason}"
+  /// ```
+  String refusedManySaying(int count, String reason) =>
+      """${count} Änderungen konnten nicht gespeichert werden. Der Server meldet: ${reason}""";
+
+  /// ```dart
   /// "„${name}“ konnte nicht gespeichert werden: Der Server hat wiederholt Fehler gemeldet."
   /// ```
   String failedNamed(String name) =>

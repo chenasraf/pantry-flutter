@@ -8055,6 +8055,24 @@ class SyncMessagesEs extends SyncMessages {
       """No se pudieron guardar ${count} cambios: el servidor los rechazó (${status}).""";
 
   /// ```dart
+  /// "No se pudo guardar «${name}». El servidor respondió: ${reason}"
+  /// ```
+  String refusedNamedSaying(String name, String reason) =>
+      """No se pudo guardar «${name}». El servidor respondió: ${reason}""";
+
+  /// ```dart
+  /// "No se pudo guardar un cambio. El servidor respondió: ${reason}"
+  /// ```
+  String refusedOneSaying(String reason) =>
+      """No se pudo guardar un cambio. El servidor respondió: ${reason}""";
+
+  /// ```dart
+  /// "No se pudieron guardar ${count} cambios. El servidor respondió: ${reason}"
+  /// ```
+  String refusedManySaying(int count, String reason) =>
+      """No se pudieron guardar ${count} cambios. El servidor respondió: ${reason}""";
+
+  /// ```dart
   /// "No se pudo guardar «${name}»: el servidor siguió fallando."
   /// ```
   String failedNamed(String name) =>

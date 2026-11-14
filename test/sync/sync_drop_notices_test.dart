@@ -130,6 +130,37 @@ void main() {
     expect(event.serverMessage, 'CSRF check failed');
   });
 
+  test('the notice says what the server said', () async {
+    manager.queueForTest.enqueue(update('a', 42, 'Toilet'));
+
+    await drainAgainst(
+      400,
+      '{"ocs":{"meta":{"message":"A category with this name already exists"},'
+      '"data":[]}}',
+    );
+    await settle();
+
+    expect(
+      reports.single.serverMessage,
+      'A category with this name already exists',
+    );
+    expect(reports.single.message, contains('Toilet'));
+    expect(
+      reports.single.message,
+      contains('A category with this name already exists'),
+    );
+  });
+
+  test('refusals with different reasons are reported apart', () async {
+    manager.queueForTest.enqueue(update('a', 42));
+    await drainAgainst(400, '{"ocs":{"meta":{"message":"Name taken"}}}');
+    manager.queueForTest.enqueue(update('b', 43));
+    await drainAgainst(400, '{"ocs":{"meta":{"message":"Name empty"}}}');
+    await settle();
+
+    expect(reports.map((r) => r.serverMessage), ['Name taken', 'Name empty']);
+  });
+
   test('retry puts the dropped changes back with a fresh budget', () async {
     manager.queueForTest.enqueue(
       update('a', 42).copyWith(attemptCount: 3, lastError: 'earlier'),
