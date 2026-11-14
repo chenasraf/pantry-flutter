@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_quill/quill_delta.dart';
@@ -62,6 +64,7 @@ class MarkdownEditor extends StatefulWidget {
 
 class _MarkdownEditorState extends State<MarkdownEditor> {
   late QuillController _controller;
+  StreamSubscription<DocChange>? _docChanges;
   late final ScrollController _scrollController = ScrollController();
   late final FocusNode _focusNode = widget.focusNode ?? FocusNode();
 
@@ -105,7 +108,60 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
     _lastEmitted = documentToMarkdown(controller.document);
     _dir = detectTextDirection(controller.document.toPlainText());
     controller.addListener(_onRichChanged);
+    _docChanges = controller.document.changes.listen(_onDocChange);
     return controller;
+  }
+
+  void _disposeController() {
+    _docChanges?.cancel();
+    _controller.removeListener(_onRichChanged);
+    _controller.dispose();
+  }
+
+  /// Clears the block style (checkbox, bullet, quote, …) of a first line that a
+  /// deletion has just emptied.
+  ///
+  /// Backspace on an empty styled line is what normally clears its style, but
+  /// on the document's first line the caret sits at offset 0, and Flutter's iOS
+  /// text input drops a soft-keyboard backspace there without telling the
+  /// editor. Some Android keyboards do the same. With nothing left to delete,
+  /// the checkbox would otherwise be stuck.
+  void _onDocChange(DocChange change) {
+    if (change.source != ChangeSource.local) return;
+    if (!_deletesFromFirstLine(change)) return;
+    final query = _controller.document.queryChild(0);
+    final line = query.node;
+    if (line is! Line || line.length != 1) return;
+    final blockAttrs = line.style.values
+        .where((a) => a.scope == AttributeScope.block)
+        .toList();
+    for (final attr in blockAttrs) {
+      _controller.formatText(0, 0, Attribute.clone(attr, null));
+    }
+  }
+
+  /// Whether [change] deletes text that sat on the document's first line.
+  static bool _deletesFromFirstLine(DocChange change) {
+    var firstLineEnd = 0;
+    for (final op in change.before.operations) {
+      final data = op.data;
+      if (data is! String) {
+        firstLineEnd += op.length ?? 1;
+        continue;
+      }
+      final newline = data.indexOf('\n');
+      if (newline != -1) {
+        firstLineEnd += newline;
+        break;
+      }
+      firstLineEnd += data.length;
+    }
+    var offset = 0;
+    for (final op in change.change.operations) {
+      if (op.isDelete) return offset <= firstLineEnd;
+      if (op.isRetain) offset += op.length!;
+    }
+    return false;
   }
 
   void _emit(String markdown) {
@@ -149,8 +205,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
   /// Source → rich: reparse the (possibly hand-edited) markdown into a fresh
   /// document.
   void _enterRichMode() {
-    _controller.removeListener(_onRichChanged);
-    _controller.dispose();
+    _disposeController();
     _controller = _makeController(_sourceController.text);
     _focusNode.requestFocus();
   }
@@ -177,8 +232,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
     if (widget.initialValue != oldWidget.initialValue &&
         widget.initialValue != _lastEmitted &&
         normalizeMarkdown(widget.initialValue) != _lastEmitted) {
-      _controller.removeListener(_onRichChanged);
-      _controller.dispose();
+      _disposeController();
       _controller = _makeController(widget.initialValue);
       if (_sourceMode) _sourceController.text = _lastEmitted;
     }
@@ -195,8 +249,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
 
   @override
   void dispose() {
-    _controller.removeListener(_onRichChanged);
-    _controller.dispose();
+    _disposeController();
     _sourceController.dispose();
     _sourceFocus.dispose();
     _scrollController.dispose();

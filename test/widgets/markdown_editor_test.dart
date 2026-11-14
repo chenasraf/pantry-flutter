@@ -721,6 +721,71 @@ void main() {
     expect(controller().document.toPlainText(), 'hello\n\nworld\n');
   });
 
+  group('erasing a checklist line', () {
+    Future<QuillController> pumpEditor(
+      WidgetTester tester,
+      String markdown,
+    ) async {
+      await tester.pumpWidget(wrapped(MarkdownEditor(initialValue: markdown)));
+      await tester.pumpAndSettle();
+      return tester.widget<QuillEditor>(find.byType(QuillEditor)).controller;
+    }
+
+    Map<String, Attribute> lineAttrs(QuillController controller, int offset) =>
+        (controller.document.queryChild(offset).node! as Line).style.attributes;
+
+    testWidgets('emptying the first item drops its checkbox', (tester) async {
+      final controller = await pumpEditor(tester, '- [ ] milk\n- [ ] eggs');
+
+      controller.replaceText(
+        0,
+        4,
+        '',
+        const TextSelection.collapsed(offset: 0),
+      );
+      await tester.pumpAndSettle();
+
+      expect(controller.document.toPlainText(), '\neggs\n');
+      expect(lineAttrs(controller, 0), isNot(contains(Attribute.list.key)));
+      expect(lineAttrs(controller, 1)[Attribute.list.key], Attribute.unchecked);
+    });
+
+    testWidgets('emptying a later item keeps its checkbox', (tester) async {
+      final controller = await pumpEditor(tester, '- [ ] milk\n- [ ] eggs');
+
+      controller.replaceText(
+        5,
+        4,
+        '',
+        const TextSelection.collapsed(offset: 5),
+      );
+      await tester.pumpAndSettle();
+
+      expect(lineAttrs(controller, 5)[Attribute.list.key], Attribute.unchecked);
+    });
+
+    testWidgets('deleting further down leaves an empty first item alone', (
+      tester,
+    ) async {
+      final controller = await pumpEditor(tester, 'abc');
+      controller
+        ..replaceText(0, 0, '\n', const TextSelection.collapsed(offset: 0))
+        ..formatText(0, 0, Attribute.unchecked);
+      await tester.pumpAndSettle();
+
+      controller.replaceText(
+        3,
+        1,
+        '',
+        const TextSelection.collapsed(offset: 3),
+      );
+      await tester.pumpAndSettle();
+
+      expect(controller.document.toPlainText(), '\nab\n');
+      expect(lineAttrs(controller, 0)[Attribute.list.key], Attribute.unchecked);
+    });
+  });
+
   group('removing a link', () {
     /// Long-press the text, then pick "Remove" from flutter_quill's link menu.
     Future<void> removeLinkAt(WidgetTester tester, Offset anchor) async {
