@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pantry_core/models/category.dart';
+import 'package:pantry_core/services/category_service.dart';
 import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
 
@@ -59,5 +61,69 @@ void main() {
 
     // Two check icons: the selected color swatch and the docked save button.
     expect(find.byIcon(Icons.check), findsNWidgets(2));
+  });
+
+  group('a name already taken', () {
+    Category category(int id, String name) => Category(
+      id: id,
+      houseId: 1,
+      name: name,
+      icon: 'tag',
+      color: '#ef4444',
+      sortOrder: id,
+      createdAt: 0,
+      updatedAt: 0,
+    );
+
+    final toilet = category(1, 'Toilet');
+
+    setUp(
+      () => CategoryService.instance.cacheCategories(1, [
+        toilet,
+        category(2, 'Dairy'),
+      ]),
+    );
+    tearDown(() => CategoryService.instance.cacheCategories(1, const []));
+
+    Future<void> typeName(WidgetTester tester, String name) async {
+      await tester.enterText(find.byType(TextField), name);
+      await tester.pump();
+    }
+
+    testWidgets('is flagged and cannot be saved', (tester) async {
+      await tester.pumpWidget(wrapped(const CategoryFormView(houseId: 1)));
+      await typeName(tester, ' Toilet ');
+
+      expect(find.text('A category with this name already exists'), findsOne);
+      await tester.tap(find.widgetWithText(InkWell, 'Save'));
+      await tester.pump();
+      expect(find.widgetWithText(InkWell, 'Save'), findsOneWidget);
+    });
+
+    testWidgets('differently cased is left for the server to judge', (
+      tester,
+    ) async {
+      await tester.pumpWidget(wrapped(const CategoryFormView(houseId: 1)));
+      await typeName(tester, 'dairy');
+
+      expect(
+        find.text('A category with this name already exists'),
+        findsNothing,
+      );
+    });
+
+    testWidgets('editing a category keeps its own name', (tester) async {
+      await tester.pumpWidget(
+        wrapped(CategoryFormView(houseId: 1, existing: toilet)),
+      );
+      await tester.pump();
+      expect(
+        find.text('A category with this name already exists'),
+        findsNothing,
+      );
+
+      await typeName(tester, 'Dairy');
+      expect(find.text('A category with this name already exists'), findsOne);
+    });
   });
 }

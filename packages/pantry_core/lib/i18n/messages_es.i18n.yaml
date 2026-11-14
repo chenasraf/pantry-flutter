@@ -415,6 +415,7 @@ categories:
   deleteConfirmBody: "Los artículos en esta categoría quedarán sin categoría. Esta acción no se puede deshacer."
   list: Lista
   globalList: Todas las listas (global)
+  nameTaken: "Ya existe una categoría con este nombre"
   sort:
     nameAZ: "Nombre A–Z"
     nameZA: "Nombre Z–A"

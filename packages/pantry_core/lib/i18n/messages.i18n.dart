@@ -2249,6 +2249,11 @@ class CategoriesMessages {
   /// "All lists (global)"
   /// ```
   String get globalList => """All lists (global)""";
+
+  /// ```dart
+  /// "A category with this name already exists"
+  /// ```
+  String get nameTaken => """A category with this name already exists""";
   SortCategoriesMessages get sort => SortCategoriesMessages(this);
   StoreOrderCategoriesMessages get storeOrder =>
       StoreOrderCategoriesMessages(this);
@@ -9545,6 +9550,7 @@ Password: pantry-rocks""",
       """Items currently in this category will be uncategorized. This cannot be undone.""",
   """categories.list""": """List""",
   """categories.globalList""": """All lists (global)""",
+  """categories.nameTaken""": """A category with this name already exists""",
   """categories.sort.nameAZ""": """Name A–Z""",
   """categories.sort.nameZA""": """Name Z–A""",
   """categories.sort.custom""": """Custom""",

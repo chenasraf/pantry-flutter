@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/services/category_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/category_icons.dart';
@@ -62,6 +63,11 @@ class _CategoryFormViewState extends State<CategoryFormView> {
   /// `category-lists` feature is available.
   List<ChecklistList> _lists = [];
 
+  /// The house's categories, to catch a name the server would refuse before
+  /// it reaches the sync queue — a refusal there only surfaces after the form
+  /// has closed and the optimistic category has vanished.
+  List<Category> _categories = [];
+
   bool get _isEditing => widget.existing != null;
   bool get _scopingEnabled => ServerFeature.categoryLists;
 
@@ -79,6 +85,39 @@ class _CategoryFormViewState extends State<CategoryFormView> {
       if (dir != _nameDir) setState(() => _nameDir = dir);
     });
     if (_scopingEnabled) _loadLists();
+    _loadCategories();
+  }
+
+  Future<void> _loadCategories() async {
+    final service = CategoryService.instance;
+    final cached = service.getCached(widget.houseId);
+    if (cached != null) _categories = cached;
+    try {
+      final fetched = await service.getCategories(widget.houseId);
+      if (mounted) setState(() => _categories = fetched);
+    } catch (_) {
+      // Offline or transient — check against the cache alone.
+    }
+  }
+
+  /// Whether the server would refuse the current name as taken: an exact
+  /// match on the trimmed name within the same scope. Exact rather than
+  /// case-insensitive because the server's comparison follows the database's
+  /// collation, and blocking a name it would accept is worse than letting a
+  /// refusal through.
+  bool get _nameTaken {
+    final name = _nameController.text.trim();
+    if (name.isEmpty) return false;
+    final existing = widget.existing;
+    final listId = _scopingEnabled ? _selectedListId : existing?.listId;
+    if (existing != null &&
+        existing.name == name &&
+        existing.listId == listId) {
+      return false;
+    }
+    return _categories.any(
+      (c) => c.id != existing?.id && c.name == name && c.listId == listId,
+    );
   }
 
   Future<void> _loadLists() async {
@@ -104,7 +143,7 @@ class _CategoryFormViewState extends State<CategoryFormView> {
 
   Future<void> _save() async {
     final name = _nameController.text.trim();
-    if (name.isEmpty) return;
+    if (name.isEmpty || _nameTaken) return;
 
     setState(() => _saving = true);
     final sync = SyncManager.instance;
@@ -256,7 +295,10 @@ class _CategoryFormViewState extends State<CategoryFormView> {
                   textCapitalization: TextCapitalization.sentences,
                   textDirection: _nameDir,
                   onChanged: (_) => setState(() {}),
-                  decoration: InputDecoration(labelText: f.categoryName),
+                  decoration: InputDecoration(
+                    labelText: f.categoryName,
+                    errorText: _nameTaken ? m.categories.nameTaken : null,
+                  ),
                 ),
                 if (_scopingEnabled) ...[
                   const SizedBox(height: 16),
@@ -326,7 +368,7 @@ class _CategoryFormViewState extends State<CategoryFormView> {
           ),
           DockedSaveBar(
             onCancel: _saving ? null : () => Navigator.of(context).maybePop(),
-            onSave: _saving ? null : _save,
+            onSave: _saving || _nameTaken ? null : _save,
             saving: _saving,
             label: m.common.save,
           ),

@@ -2257,6 +2257,11 @@ class CategoriesMessagesHe extends CategoriesMessages {
   /// "כל הרשימות (גלובלי)"
   /// ```
   String get globalList => """כל הרשימות (גלובלי)""";
+
+  /// ```dart
+  /// "כבר קיימת קטגוריה בשם הזה"
+  /// ```
+  String get nameTaken => """כבר קיימת קטגוריה בשם הזה""";
   SortCategoriesMessagesHe get sort => SortCategoriesMessagesHe(this);
   StoreOrderCategoriesMessagesHe get storeOrder =>
       StoreOrderCategoriesMessagesHe(this);
@@ -9533,6 +9538,7 @@ Map<String, String> get messagesHeMap => {
       """פריטים בקטגוריה זו יהפכו ללא קטגוריה. לא ניתן לבטל פעולה זו.""",
   """categories.list""": """רשימה""",
   """categories.globalList""": """כל הרשימות (גלובלי)""",
+  """categories.nameTaken""": """כבר קיימת קטגוריה בשם הזה""",
   """categories.sort.nameAZ""": """שם א'–ת'""",
   """categories.sort.nameZA""": """שם ת'–א'""",
   """categories.sort.custom""": """מותאם אישית""",

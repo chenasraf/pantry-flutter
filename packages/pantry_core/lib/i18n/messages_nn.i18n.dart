@@ -2244,6 +2244,11 @@ class CategoriesMessagesNn extends CategoriesMessages {
   /// "Alle lister (global)"
   /// ```
   String get globalList => """Alle lister (global)""";
+
+  /// ```dart
+  /// "Det finst alt ein kategori med dette namnet"
+  /// ```
+  String get nameTaken => """Det finst alt ein kategori med dette namnet""";
   SortCategoriesMessagesNn get sort => SortCategoriesMessagesNn(this);
   StoreOrderCategoriesMessagesNn get storeOrder =>
       StoreOrderCategoriesMessagesNn(this);
@@ -9570,6 +9575,7 @@ Passord: pantry""",
       """Oppføringar i denne kategorien vil verta ukategoriserte. Dette kan ikkje angrast.""",
   """categories.list""": """Liste""",
   """categories.globalList""": """Alle lister (global)""",
+  """categories.nameTaken""": """Det finst alt ein kategori med dette namnet""",
   """categories.sort.nameAZ""": """Namn A-Z""",
   """categories.sort.nameZA""": """Namn Z-A""",
   """categories.sort.custom""": """Sjølvvald""",

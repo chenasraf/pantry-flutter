@@ -2274,6 +2274,11 @@ class CategoriesMessagesEs extends CategoriesMessages {
   /// "Todas las listas (global)"
   /// ```
   String get globalList => """Todas las listas (global)""";
+
+  /// ```dart
+  /// "Ya existe una categoría con este nombre"
+  /// ```
+  String get nameTaken => """Ya existe una categoría con este nombre""";
   SortCategoriesMessagesEs get sort => SortCategoriesMessagesEs(this);
   StoreOrderCategoriesMessagesEs get storeOrder =>
       StoreOrderCategoriesMessagesEs(this);
@@ -9646,6 +9651,7 @@ Contraseña: pantry-rocks""",
       """Los artículos en esta categoría quedarán sin categoría. Esta acción no se puede deshacer.""",
   """categories.list""": """Lista""",
   """categories.globalList""": """Todas las listas (global)""",
+  """categories.nameTaken""": """Ya existe una categoría con este nombre""",
   """categories.sort.nameAZ""": """Nombre A–Z""",
   """categories.sort.nameZA""": """Nombre Z–A""",
   """categories.sort.custom""": """Personalizado""",

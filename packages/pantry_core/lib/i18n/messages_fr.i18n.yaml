@@ -415,6 +415,7 @@ categories:
   deleteConfirmBody: "Les articles de cette catégorie seront non catégorisés. Cette action est irréversible."
   list: Liste
   globalList: Toutes les listes (global)
+  nameTaken: "Une catégorie portant ce nom existe déjà"
   sort:
     nameAZ: "Nom A–Z"
     nameZA: "Nom Z–A"

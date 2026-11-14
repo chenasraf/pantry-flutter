@@ -415,6 +415,7 @@ categories:
   deleteConfirmBody: "פריטים בקטגוריה זו יהפכו ללא קטגוריה. לא ניתן לבטל פעולה זו."
   list: רשימה
   globalList: כל הרשימות (גלובלי)
+  nameTaken: "כבר קיימת קטגוריה בשם הזה"
   sort:
     nameAZ: "שם א'–ת'"
     nameZA: "שם ת'–א'"

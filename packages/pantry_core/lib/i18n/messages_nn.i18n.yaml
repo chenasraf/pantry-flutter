@@ -506,6 +506,7 @@ categories:
     kan ikkje angrast."
   list: Liste
   globalList: Alle lister (global)
+  nameTaken: "Det finst alt ein kategori med dette namnet"
   sort:
     nameAZ: "Namn A-Z"
     nameZA: "Namn Z-A"

@@ -415,6 +415,7 @@ categories:
   deleteConfirmBody: "Items currently in this category will be uncategorized. This cannot be undone."
   list: List
   globalList: All lists (global)
+  nameTaken: "A category with this name already exists"
   sort:
     nameAZ: "Name A–Z"
     nameZA: "Name Z–A"

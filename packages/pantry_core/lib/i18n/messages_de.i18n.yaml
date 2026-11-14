@@ -415,6 +415,7 @@ categories:
   deleteConfirmBody: "Einträge in dieser Kategorie werden unkategorisiert. Dies kann nicht rückgängig gemacht werden."
   list: Liste
   globalList: Alle Listen (global)
+  nameTaken: "Eine Kategorie mit diesem Namen gibt es bereits"
   sort:
     nameAZ: "Name A–Z"
     nameZA: "Name Z–A"

@@ -2273,6 +2273,11 @@ class CategoriesMessagesDe extends CategoriesMessages {
   /// "Alle Listen (global)"
   /// ```
   String get globalList => """Alle Listen (global)""";
+
+  /// ```dart
+  /// "Eine Kategorie mit diesem Namen gibt es bereits"
+  /// ```
+  String get nameTaken => """Eine Kategorie mit diesem Namen gibt es bereits""";
   SortCategoriesMessagesDe get sort => SortCategoriesMessagesDe(this);
   StoreOrderCategoriesMessagesDe get storeOrder =>
       StoreOrderCategoriesMessagesDe(this);
@@ -9660,6 +9665,8 @@ Passwort: pantry-rocks""",
       """Einträge in dieser Kategorie werden unkategorisiert. Dies kann nicht rückgängig gemacht werden.""",
   """categories.list""": """Liste""",
   """categories.globalList""": """Alle Listen (global)""",
+  """categories.nameTaken""":
+      """Eine Kategorie mit diesem Namen gibt es bereits""",
   """categories.sort.nameAZ""": """Name A–Z""",
   """categories.sort.nameZA""": """Name Z–A""",
   """categories.sort.custom""": """Benutzerdefiniert""",
