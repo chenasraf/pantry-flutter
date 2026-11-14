@@ -142,6 +142,29 @@ List<TaskLine> taskLines(String content) {
   return out;
 }
 
+/// The ordinals of [content]'s task lines in the order a markdown renderer
+/// finishes building their list items, which is the order it asks for their
+/// checkboxes: an item completes only after the items nested in it, so a
+/// parent comes after its sub-items. Position N holds the ordinal of the Nth
+/// checkbox built.
+List<int> taskLinesInBuildOrder(String content) {
+  final out = <int>[];
+  final open = <({int ordinal, int indent})>[];
+  var ordinal = 0;
+  for (final line in content.split(RegExp(r'\r?\n'))) {
+    if (!_taskLineRe.hasMatch(line)) continue;
+    final indent = _leadingWhitespaceRe.firstMatch(line)!.end;
+    while (open.isNotEmpty && open.last.indent >= indent) {
+      out.add(open.removeLast().ordinal);
+    }
+    open.add((ordinal: ordinal++, indent: indent));
+  }
+  while (open.isNotEmpty) {
+    out.add(open.removeLast().ordinal);
+  }
+  return out;
+}
+
 /// Which task line a write recorded against [ordinal], on a line then reading
 /// [text], should land on in the [content] as it stands now — or null when no
 /// line can be named without guessing.

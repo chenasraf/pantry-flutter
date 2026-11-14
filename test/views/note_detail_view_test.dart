@@ -62,6 +62,75 @@ void main() {
     expect(find.byIcon(Icons.check_box), findsOneWidget);
   });
 
+  group('tapping a checklist row', () {
+    testWidgets('anywhere on its text ticks it', (tester) async {
+      final controller = _CapturingNotesController();
+      final note = makeNote(content: '- [ ] Milk\n- [ ] Bread');
+
+      await tester.pumpWidget(_wrap(note, controller));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Bread'));
+      await tester.pumpAndSettle();
+
+      expect(controller.lastTick, (ordinal: 1, text: 'Bread', checked: true));
+    });
+
+    testWidgets('a sub-item row ticks the sub-item, not its parent', (
+      tester,
+    ) async {
+      final controller = _CapturingNotesController();
+      final note = makeNote(content: '- [ ] Bake\n  - [ ] Flour');
+
+      await tester.pumpWidget(_wrap(note, controller));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Flour'));
+      await tester.pumpAndSettle();
+
+      expect(controller.lastTick, (ordinal: 1, text: 'Flour', checked: true));
+    });
+
+    testWidgets('a sub-item checkbox ticks the sub-item', (tester) async {
+      final controller = _CapturingNotesController();
+      final note = makeNote(content: '- [ ] Bake\n  - [ ] Flour');
+
+      await tester.pumpWidget(_wrap(note, controller));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byIcon(Icons.check_box_outline_blank).last);
+      await tester.pumpAndSettle();
+
+      expect(controller.lastTick, (ordinal: 1, text: 'Flour', checked: true));
+    });
+
+    testWidgets('prose outside the checklist ticks nothing', (tester) async {
+      final controller = _CapturingNotesController();
+      final note = makeNote(content: 'Shopping run\n\n- [ ] Milk');
+
+      await tester.pumpWidget(_wrap(note, controller));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Shopping run'));
+      await tester.pumpAndSettle();
+
+      expect(controller.lastTick, isNull);
+    });
+
+    testWidgets('a long press to select ticks nothing', (tester) async {
+      final controller = _CapturingNotesController();
+      final note = makeNote(content: '- [ ] Milk');
+
+      await tester.pumpWidget(_wrap(note, controller));
+      await tester.pumpAndSettle();
+
+      await tester.longPress(find.text('Milk'));
+      await tester.pumpAndSettle();
+
+      expect(controller.lastTick, isNull);
+    });
+  });
+
   group('with checked items moved to the bottom', () {
     const secureStorage = MethodChannel(
       'plugins.it_nomads.com/flutter_secure_storage',

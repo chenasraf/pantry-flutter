@@ -244,6 +244,28 @@ void main() {
     });
   });
 
+  group('taskLinesInBuildOrder', () {
+    test('a flat list builds in document order', () {
+      expect(taskLinesInBuildOrder('- [ ] a\n- [ ] b\n- [x] c'), [0, 1, 2]);
+    });
+
+    test('a parent builds after its sub-items', () {
+      expect(
+        taskLinesInBuildOrder(
+          '- [ ] a\n  - [ ] a1\n    - [ ] a1x\n  - [ ] a2\n- [ ] b',
+        ),
+        [2, 1, 3, 0, 4],
+      );
+    });
+
+    test('lines that are not task lines are not counted', () {
+      expect(taskLinesInBuildOrder('# Title\n- plain\n  - [ ] x\n- [ ] y'), [
+        0,
+        1,
+      ]);
+    });
+  });
+
   group('sinkTaskLine', () {
     test('a checked line moves just below the last unchecked one', () {
       expect(
