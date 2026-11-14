@@ -26,34 +26,37 @@ void main() {
   /// A server that answers the review fetch and nothing else: up long enough to
   /// open the screen, gone by the time a total is typed. A write that fails
   /// this way is retryable, so the op stays queued rather than being dropped.
-  http.Client serverWith({double? billedTotal, String? billedCurrency}) =>
-      MockClient((request) async {
-        if (request.method != 'GET') {
-          throw http.ClientException('offline', request.url);
-        }
-        return http.Response(
-          jsonEncode({
-            'ocs': {
-              'data': {
-                'stores': [
-                  {
-                    'storeId': null,
-                    'items': [],
-                    'estimate': [],
-                    'noPriceCount': 0,
-                    'billedTotal': billedTotal,
-                    'billedCurrency': billedCurrency,
-                  },
-                ],
-                'grandTotal': [],
-                'uncheckedCount': 0,
+  http.Client serverWith({
+    double? billedTotal,
+    String? billedCurrency,
+    List<Map<String, Object>> estimate = const [],
+  }) => MockClient((request) async {
+    if (request.method != 'GET') {
+      throw http.ClientException('offline', request.url);
+    }
+    return http.Response(
+      jsonEncode({
+        'ocs': {
+          'data': {
+            'stores': [
+              {
+                'storeId': null,
+                'items': [],
+                'estimate': estimate,
+                'noPriceCount': 0,
+                'billedTotal': billedTotal,
+                'billedCurrency': billedCurrency,
               },
-            },
-          }),
-          200,
-          headers: {'content-type': 'application/json'},
-        );
-      });
+            ],
+            'grandTotal': [],
+            'uncheckedCount': 0,
+          },
+        },
+      }),
+      200,
+      headers: {'content-type': 'application/json'},
+    );
+  });
 
   /// Runs [body] with [client] serving every request the app makes — the review
   /// fetch, and any drain the queue attempts while the test runs.
@@ -150,6 +153,31 @@ void main() {
 
       await quiesce(tester);
     });
+  });
+
+  testWidgets('the estimate shows in the empty field before it is focused', (
+    tester,
+  ) async {
+    await withServer(
+      serverWith(
+        estimate: [
+          {'currency': 'EUR', 'min': 12.5, 'max': 12.5},
+        ],
+      ),
+      () async {
+        await pumpReview(tester);
+        expect(fieldText(tester), isEmpty);
+        expect(find.text('12.5'), findsOneWidget);
+
+        final field = tester.widget<TextField>(find.byType(TextField));
+        expect(
+          field.decoration!.floatingLabelBehavior,
+          FloatingLabelBehavior.always,
+        );
+
+        await quiesce(tester);
+      },
+    );
   });
 
   testWidgets('an emptied field queues a write that clears it', (tester) async {

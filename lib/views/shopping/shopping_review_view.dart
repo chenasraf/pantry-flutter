@@ -610,6 +610,11 @@ class _StoreSectionState extends State<_StoreSection> {
                         isDense: true,
                         labelText: m.shopping.actualPaid,
                         hintText: _estimateHint,
+                        // A resting label hides the hint until focus; keep the
+                        // estimate visible so it reads as the suggested figure.
+                        floatingLabelBehavior: _estimateHint.isEmpty
+                            ? null
+                            : FloatingLabelBehavior.always,
                       ),
                       onTapOutside: (_) => _persist(),
                       onEditingComplete: _persist,
