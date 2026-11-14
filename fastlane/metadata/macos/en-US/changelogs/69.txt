@@ -1,0 +1,10 @@
+Features
+- warn when a category with the same name already exists
+- add all-inventories view and shopping put away ([#203](https://github.com/chenasraf/pantry-flutter/issues/203))
+- option to move checked checklist items to the bottom of a note
+- tap anywhere on a checklist item to check it
+Bug Fixes
+- auto-refresh no longer re-downloads every list each time
+- name unnamed Open Food Facts products from lang name, category or brand
+
+… see full notes on GitHub.
