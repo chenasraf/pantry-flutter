@@ -133,7 +133,7 @@ class _ChecklistsViewState extends State<ChecklistsView>
       if (_controller.isSoftView) {
         _controller.refreshSoftView();
       } else {
-        _controller.refresh();
+        _controller.poll();
       }
     });
   }
@@ -156,7 +156,7 @@ class _ChecklistsViewState extends State<ChecklistsView>
       case AppLifecycleState.resumed:
         // Skip the resume refresh when auto-refresh is off — "off" means no
         // automatic server calls, only manual pull-to-refresh.
-        if (_refreshInterval != null) _controller.refresh();
+        if (_refreshInterval != null) _controller.poll();
         _startBackgroundRefreshTimer();
       case AppLifecycleState.hidden:
       case AppLifecycleState.paused:

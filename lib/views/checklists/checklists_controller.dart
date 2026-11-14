@@ -586,7 +586,9 @@ class ChecklistsController extends ChangeNotifier {
         : list.copyWith(hideProgressHero: hidden);
   }
 
-  Future<void> load() async {
+  /// [rewarm] false leaves the other lists' offline copies alone unless the
+  /// last warm-up is [_warmInterval] old or never finished.
+  Future<void> load({bool rewarm = true}) async {
     _error = null;
 
     _restoreFromCache();
@@ -731,12 +733,7 @@ class ChecklistsController extends ChangeNotifier {
       // infinite spinner. Fire-and-forget; never blocks the UI. Once every
       // list's items are cached, sweep their images (plus any cached photos)
       // into the offline image store.
-      unawaited(
-        _precacheListItems().then((_) {
-          if (_disposed || _backgrounded) return;
-          unawaited(ImageCacheService.instance.sweepHouse(houseId));
-        }),
-      );
+      if (rewarm || _warmDue) unawaited(_warmOtherLists());
     } catch (e) {
       debugPrint('[ChecklistsController] Failed to load: $e');
       if (_lists.isEmpty) {
@@ -747,6 +744,34 @@ class ChecklistsController extends ChangeNotifier {
     }
   }
 
+  /// When the warm-up of the other lists last ran to completion.
+  DateTime? _warmedAt;
+  bool _warming = false;
+
+  /// How long a completed warm-up stands before a [poll] repeats it. Every
+  /// list costs two requests and the server can't say which lists changed, so
+  /// re-warming on every poll tick would re-download the whole house each
+  /// time while only the list on screen is being looked at.
+  static const _warmInterval = Duration(minutes: 10);
+
+  bool get _warmDue {
+    final at = _warmedAt;
+    return at == null || DateTime.now().difference(at) >= _warmInterval;
+  }
+
+  Future<void> _warmOtherLists() async {
+    if (_warming) return;
+    _warming = true;
+    try {
+      if (!await _precacheListItems()) return;
+      _warmedAt = DateTime.now();
+      if (_disposed || _backgrounded) return;
+      unawaited(ImageCacheService.instance.sweepHouse(houseId));
+    } finally {
+      _warming = false;
+    }
+  }
+
   /// Best-effort fetch + cache of items for every list the user isn't
   /// currently viewing, so they're available offline. Skips
   /// optimistic (temp-id) lists and any list with a pending op — caching a
@@ -754,18 +779,21 @@ class ChecklistsController extends ChangeNotifier {
   /// per-list fetch failure is skipped (a transient error on one list must not
   /// starve the rest), but going offline stops the pass immediately since every
   /// remaining fetch would just wait out the request timeout. So does leaving
-  /// the foreground: the next resume refreshes and starts a fresh pass.
-  Future<void> _precacheListItems() async {
-    if (!_sync.isOnline || _backgrounded) return;
+  /// the foreground.
+  ///
+  /// False when the pass was cut short that way, so it isn't counted as a
+  /// completed warm-up.
+  Future<bool> _precacheListItems() async {
+    if (!_sync.isOnline || _backgrounded) return false;
     // `null` means a house-scoped batch op is queued whose affected lists we
     // can't resolve — stay conservative and skip the warm-up entirely.
     final pendingLists = _sync.pendingListIds(houseId);
-    if (pendingLists == null) return;
+    if (pendingLists == null) return false;
     final currentId = _currentList?.id;
     for (final list in _lists) {
       if (list.id == currentId || list.id < 0 || !_inSection(list)) continue;
       if (pendingLists.contains(list.id)) continue;
-      if (!_sync.isOnline || _backgrounded) return;
+      if (!_sync.isOnline || _backgrounded) return false;
       try {
         final sort =
             await _fetchListItemSort(list.id) ??
@@ -781,7 +809,7 @@ class ChecklistsController extends ChangeNotifier {
         _checklistService.cacheItems(list.id, items);
       } on OfflineException {
         // Lost connectivity mid-pass — the rest would only time out.
-        return;
+        return false;
       } catch (e) {
         debugPrint('[ChecklistsController] Pre-cache failed (${list.id}): $e');
       }
@@ -795,7 +823,8 @@ class ChecklistsController extends ChangeNotifier {
     for (final kind in const [ListKind.checklist, ListKind.inventory]) {
       final allId = allListsIdOf(kind)!;
       if (currentId == allId || _allViewFor(allId) == null) continue;
-      if (!_sync.isOnline || _backgrounded || pendingLists.isNotEmpty) return;
+      if (!_sync.isOnline || _backgrounded) return false;
+      if (pendingLists.isNotEmpty) return true;
       try {
         final sort =
             await _fetchListItemSort(allId) ??
@@ -809,11 +838,12 @@ class ChecklistsController extends ChangeNotifier {
           _checklistService.cacheItems(allId, all);
         }
       } on OfflineException {
-        return;
+        return false;
       } catch (e) {
         debugPrint('[ChecklistsController] Pre-cache ($allId) failed: $e');
       }
     }
+    return true;
   }
 
   /// Android aborts a backgrounded app's sockets ("Software caused connection
@@ -1251,6 +1281,14 @@ class ChecklistsController extends ChangeNotifier {
     // before it finished, left those lists showing nothing.
     _resetTemplateSuggestions();
     await load();
+  }
+
+  /// [refresh] for what nobody asked for — the auto-refresh tick and coming
+  /// back to the app — which keeps what's on screen current without
+  /// re-downloading every other list each time.
+  Future<void> poll() async {
+    _resetTemplateSuggestions();
+    await load(rewarm: false);
   }
 
   /// Silently re-fetches the current soft view's items in place. Unlike

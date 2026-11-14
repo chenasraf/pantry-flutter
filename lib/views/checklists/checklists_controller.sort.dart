@@ -16,7 +16,7 @@ extension ChecklistsControllerSort on ChecklistsController {
       // re-warm below refreshes them in the new order while online.
       if (!isMetaMode) _checklistService.invalidateItemsFor(_currentList!.id);
       await selectList(_currentList!, refreshInPlace: true);
-      unawaited(_precacheListItems());
+      unawaited(_warmOtherLists());
     }
   }
 

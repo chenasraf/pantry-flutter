@@ -114,4 +114,38 @@ void main() {
     expect(fetchedItemsOf(groceries), isTrue);
     expect(fetchedItemsOf(hardware), isFalse);
   });
+
+  group('after a completed warm-up', () {
+    Future<void> warmThen(
+      WidgetTester tester,
+      Future<void> Function(ChecklistsController) next,
+    ) async {
+      await http.runWithClient(() async {
+        final controller = ChecklistsController(houseId: 1);
+        addTearDown(controller.dispose);
+        await controller.load();
+        await tester.pump(const Duration(seconds: 1));
+        expect(fetchedItemsOf(hardware), isTrue);
+        requests.clear();
+        await next(controller);
+        await tester.pump(const Duration(seconds: 1));
+        unawaited(manager.reset());
+        await tester.pump(const Duration(seconds: 1));
+      }, server);
+    }
+
+    testWidgets('a poll refreshes only the list on screen', (tester) async {
+      await warmThen(tester, (c) => c.poll());
+      expect(fetchedItemsOf(groceries), isTrue);
+      expect(fetchedItemsOf(hardware), isFalse);
+    });
+
+    testWidgets('a refresh the user asked for re-warms every list', (
+      tester,
+    ) async {
+      await warmThen(tester, (c) => c.refresh());
+      expect(fetchedItemsOf(groceries), isTrue);
+      expect(fetchedItemsOf(hardware), isTrue);
+    });
+  });
 }
