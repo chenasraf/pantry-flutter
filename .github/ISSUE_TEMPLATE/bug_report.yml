@@ -65,6 +65,7 @@ body:
         (e.g. a different barcode scanner and no AVIF image support), so this helps us reproduce the issue.
       options:
         - Google Play
+        - App Store (iOS/iPadOS)
         - F-Droid
         - Direct APK (GitHub release)
         - Desktop (macOS / Windows / Linux)

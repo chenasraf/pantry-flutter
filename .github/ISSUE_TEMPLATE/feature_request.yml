@@ -60,6 +60,7 @@ body:
         (e.g. a different barcode scanner and no AVIF image support), which can affect platform-specific requests.
       options:
         - Google Play
+        - App Store (iOS/iPadOS)
         - F-Droid
         - Direct APK (GitHub release)
         - Desktop (macOS / Windows / Linux)
