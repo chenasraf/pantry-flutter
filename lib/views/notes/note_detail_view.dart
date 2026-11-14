@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/note.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/utils/markdown_list.dart';
 import 'package:pantry/views/checklists/import_to_list.dart';
 import 'package:pantry_core/utils/text_direction.dart';
@@ -49,6 +51,7 @@ class _NoteDetailViewState extends State<NoteDetailView> {
       ordinal: ordinal,
       text: line.text,
       checked: !line.checked,
+      sink: context.read<PrefsService>().notesCheckedToBottom,
     );
     if (!mounted) return;
     setState(() => _note = updated);

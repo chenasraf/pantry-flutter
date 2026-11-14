@@ -1284,6 +1284,11 @@ class SettingsMessagesEs extends SettingsMessages {
   String get interfaceAddingSection => """Añadir elementos""";
 
   /// ```dart
+  /// "Notas"
+  /// ```
+  String get interfaceNotesSection => """Notas""";
+
+  /// ```dart
   /// "Escaneo de códigos de barras"
   /// ```
   String get interfaceBarcodeSection => """Escaneo de códigos de barras""";
@@ -1410,6 +1415,18 @@ class SettingsMessagesEs extends SettingsMessages {
   /// ```
   String get truncateItemNamesBody =>
       """Mantén cada nombre de artículo en una sola línea, terminando con puntos suspensivos. Si se desactiva, los nombres largos se ajustan en varias líneas.""";
+
+  /// ```dart
+  /// "Mover los elementos marcados al final"
+  /// ```
+  String get notesCheckedToBottom =>
+      """Mover los elementos marcados al final""";
+
+  /// ```dart
+  /// "Al marcar un elemento de la lista de una nota, se mueve debajo de los no marcados. Al desmarcarlo, vuelve a subir."
+  /// ```
+  String get notesCheckedToBottomBody =>
+      """Al marcar un elemento de la lista de una nota, se mueve debajo de los no marcados. Al desmarcarlo, vuelve a subir.""";
 
   /// ```dart
   /// "Descripción en los artículos"
@@ -9438,6 +9455,7 @@ Contraseña: pantry-rocks""",
   """settings.interfaceListsSection""": """Listas""",
   """settings.interfaceItemActionsSection""": """Acciones de elementos""",
   """settings.interfaceAddingSection""": """Añadir elementos""",
+  """settings.interfaceNotesSection""": """Notas""",
   """settings.interfaceBarcodeSection""": """Escaneo de códigos de barras""",
   """settings.defaultItemTapAction""": """Acción al tocar un elemento""",
   """settings.defaultItemTapActionBody""":
@@ -9489,6 +9507,10 @@ Contraseña: pantry-rocks""",
   """settings.truncateItemNames""": """Truncar nombres de artículos largos""",
   """settings.truncateItemNamesBody""":
       """Mantén cada nombre de artículo en una sola línea, terminando con puntos suspensivos. Si se desactiva, los nombres largos se ajustan en varias líneas.""",
+  """settings.notesCheckedToBottom""":
+      """Mover los elementos marcados al final""",
+  """settings.notesCheckedToBottomBody""":
+      """Al marcar un elemento de la lista de una nota, se mueve debajo de los no marcados. Al desmarcarlo, vuelve a subir.""",
   """settings.itemDescription""": """Descripción en los artículos""",
   """settings.itemDescriptionBody""":
       """Dónde se muestra la descripción de un artículo en su fila. Una descripción demasiado larga termina con puntos suspensivos en ambos casos.""",

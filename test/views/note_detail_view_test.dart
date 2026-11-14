@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/note.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/utils/markdown_list.dart';
 import 'package:pantry/views/notes/note_detail_view.dart';
 
@@ -12,6 +14,7 @@ import '../helpers/test_models.dart';
 /// Captures [setTaskLine] calls without touching services or the sync queue.
 class _CapturingNotesController extends FakeNotesController {
   ({int ordinal, String text, bool checked})? lastTick;
+  bool? lastSink;
 
   @override
   Future<Note> setTaskLine(
@@ -19,8 +22,10 @@ class _CapturingNotesController extends FakeNotesController {
     required int ordinal,
     required String text,
     required bool checked,
+    bool sink = false,
   }) async {
     lastTick = (ordinal: ordinal, text: text, checked: checked);
+    lastSink = sink;
     final content = note.content;
     if (content == null) return note;
     return note.copyWith(content: setChecklistItem(content, ordinal, checked));
@@ -55,6 +60,38 @@ void main() {
 
     expect(controller.lastTick, (ordinal: 1, text: 'Bread', checked: true));
     expect(find.byIcon(Icons.check_box), findsOneWidget);
+  });
+
+  group('with checked items moved to the bottom', () {
+    const secureStorage = MethodChannel(
+      'plugins.it_nomads.com/flutter_secure_storage',
+    );
+
+    setUp(() async {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(secureStorage, (_) async => null);
+      await PrefsService.instance.setNotesCheckedToBottom(true);
+    });
+
+    tearDown(() async {
+      await PrefsService.instance.setNotesCheckedToBottom(false);
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(secureStorage, null);
+    });
+
+    testWidgets('a tap asks for the line to move', (tester) async {
+      final controller = _CapturingNotesController();
+      final note = makeNote(content: '- [ ] Milk\n- [ ] Bread');
+
+      await tester.pumpWidget(_wrap(note, controller));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byIcon(Icons.check_box_outline_blank).first);
+      await tester.pumpAndSettle();
+
+      expect(controller.lastTick, (ordinal: 0, text: 'Milk', checked: true));
+      expect(controller.lastSink, isTrue);
+    });
   });
 
   testWidgets('read-only note renders non-interactive checkboxes', (

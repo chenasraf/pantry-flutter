@@ -14,7 +14,8 @@ enum SyncEntity {
   /// document: it ticks a single markdown task line, carrying
   /// `{ordinal, text, checked}` — the line, what it read, and the state it
   /// must end in. Absolute rather than a flip, so an op landing after someone
-  /// else set the same state converges instead of undoing them.
+  /// else set the same state converges instead of undoing them. An optional
+  /// `sink: true` also moves the line past its siblings of the other state.
   note,
   customField,
 

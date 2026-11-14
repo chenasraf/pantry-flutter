@@ -159,6 +159,16 @@ extension PrefsServiceChecklistSetters on PrefsService {
     notifyListeners();
   }
 
+  Future<void> setNotesCheckedToBottom(bool value) async {
+    if (_notesCheckedToBottom == value) return;
+    _notesCheckedToBottom = value;
+    await _storage.write(
+      key: PrefsService._notesCheckedToBottomKey,
+      value: value.toString(),
+    );
+    notifyListeners();
+  }
+
   Future<void> setItemDescriptionDisplay(String value) async {
     if (!PrefsService._validItemDescriptionDisplays.contains(value)) return;
     if (_itemDescriptionDisplay == value) return;

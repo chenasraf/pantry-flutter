@@ -1280,6 +1280,11 @@ class SettingsMessagesNn extends SettingsMessages {
   /// ```
   String get interfaceAddingSection => """Leggja til oppføringar""";
 
+  /// ```dart
+  /// "Notat"
+  /// ```
+  String get interfaceNotesSection => """Notat""";
+
   String get interfaceBarcodeSection => """null""";
 
   /// ```dart
@@ -1403,6 +1408,17 @@ class SettingsMessagesNn extends SettingsMessages {
   /// ```
   String get truncateItemNamesBody =>
       """Hald kvart oppføringsnamn på ei enkelt linje, som sluttar med ellipse. Når slått av, bryt lange namn over fleire linjer.""";
+
+  /// ```dart
+  /// "Flytt avkryssa punkt nedst"
+  /// ```
+  String get notesCheckedToBottom => """Flytt avkryssa punkt nedst""";
+
+  /// ```dart
+  /// "Når du kryssar av eit punkt i ei sjekkliste i eit notat, blir det flytt under dei som ikkje er kryssa av. Fjernar du krysset, flyttar det seg opp att."
+  /// ```
+  String get notesCheckedToBottomBody =>
+      """Når du kryssar av eit punkt i ei sjekkliste i eit notat, blir det flytt under dei som ikkje er kryssa av. Fjernar du krysset, flyttar det seg opp att.""";
 
   /// ```dart
   /// "Skildring på oppføringar"
@@ -9376,6 +9392,7 @@ Passord: pantry""",
   """settings.interfaceListsSection""": """Lister""",
   """settings.interfaceItemActionsSection""": """Handlingar på oppføringar""",
   """settings.interfaceAddingSection""": """Leggja til oppføringar""",
+  """settings.interfaceNotesSection""": """Notat""",
   """settings.defaultItemTapAction""": """Standardhandling for rad""",
   """settings.defaultItemTapActionBody""":
       """Kva som skjer når du trykkar på ei rad.""",
@@ -9426,6 +9443,9 @@ Passord: pantry""",
   """settings.truncateItemNames""": """Forkort lange oppføringsnamn""",
   """settings.truncateItemNamesBody""":
       """Hald kvart oppføringsnamn på ei enkelt linje, som sluttar med ellipse. Når slått av, bryt lange namn over fleire linjer.""",
+  """settings.notesCheckedToBottom""": """Flytt avkryssa punkt nedst""",
+  """settings.notesCheckedToBottomBody""":
+      """Når du kryssar av eit punkt i ei sjekkliste i eit notat, blir det flytt under dei som ikkje er kryssa av. Fjernar du krysset, flyttar det seg opp att.""",
   """settings.itemDescription""": """Skildring på oppføringar""",
   """settings.itemDescriptionBody""":
       """Kvar skildringa til ei oppføring blir vist i linja hennar. Ei skildring som er for lang, sluttar med ellipse i begge tilfelle.""",

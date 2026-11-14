@@ -1284,6 +1284,11 @@ class SettingsMessagesDe extends SettingsMessages {
   String get interfaceAddingSection => """Einträge hinzufügen""";
 
   /// ```dart
+  /// "Notizen"
+  /// ```
+  String get interfaceNotesSection => """Notizen""";
+
+  /// ```dart
   /// "Barcode-Scan"
   /// ```
   String get interfaceBarcodeSection => """Barcode-Scan""";
@@ -1410,6 +1415,18 @@ class SettingsMessagesDe extends SettingsMessages {
   /// ```
   String get truncateItemNamesBody =>
       """Jeden Eintragsnamen einzeilig halten und mit Auslassungspunkten kürzen. Wenn aus, werden lange Namen auf mehrere Zeilen umgebrochen.""";
+
+  /// ```dart
+  /// "Erledigte Einträge nach unten verschieben"
+  /// ```
+  String get notesCheckedToBottom =>
+      """Erledigte Einträge nach unten verschieben""";
+
+  /// ```dart
+  /// "Wenn du einen Checklisteneintrag in einer Notiz abhakst, wird er unter die offenen Einträge verschoben. Beim Zurücksetzen wandert er wieder nach oben."
+  /// ```
+  String get notesCheckedToBottomBody =>
+      """Wenn du einen Checklisteneintrag in einer Notiz abhakst, wird er unter die offenen Einträge verschoben. Beim Zurücksetzen wandert er wieder nach oben.""";
 
   /// ```dart
   /// "Beschreibung bei Einträgen"
@@ -9453,6 +9470,7 @@ Passwort: pantry-rocks""",
   """settings.interfaceListsSection""": """Listen""",
   """settings.interfaceItemActionsSection""": """Eintragsaktionen""",
   """settings.interfaceAddingSection""": """Einträge hinzufügen""",
+  """settings.interfaceNotesSection""": """Notizen""",
   """settings.interfaceBarcodeSection""": """Barcode-Scan""",
   """settings.defaultItemTapAction""": """Standardaktion beim Tippen""",
   """settings.defaultItemTapActionBody""":
@@ -9504,6 +9522,10 @@ Passwort: pantry-rocks""",
   """settings.truncateItemNames""": """Lange Eintragsnamen kürzen""",
   """settings.truncateItemNamesBody""":
       """Jeden Eintragsnamen einzeilig halten und mit Auslassungspunkten kürzen. Wenn aus, werden lange Namen auf mehrere Zeilen umgebrochen.""",
+  """settings.notesCheckedToBottom""":
+      """Erledigte Einträge nach unten verschieben""",
+  """settings.notesCheckedToBottomBody""":
+      """Wenn du einen Checklisteneintrag in einer Notiz abhakst, wird er unter die offenen Einträge verschoben. Beim Zurücksetzen wandert er wieder nach oben.""",
   """settings.itemDescription""": """Beschreibung bei Einträgen""",
   """settings.itemDescriptionBody""":
       """Wo die Beschreibung eines Eintrags in seiner Zeile erscheint. Eine zu lange Beschreibung endet in beiden Fällen mit Auslassungspunkten.""",

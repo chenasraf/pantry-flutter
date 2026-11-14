@@ -48,6 +48,7 @@ class PrefsService extends ChangeNotifier {
   static const _listMenuStyleKey = 'list_menu_style';
   static const _validListMenuStyles = {'grid', 'list'};
   static const _truncateItemNamesKey = 'truncate_item_names';
+  static const _notesCheckedToBottomKey = 'notes_checked_to_bottom';
   static const _itemDescriptionDisplayKey = 'item_description_display';
   static const _validItemDescriptionDisplays = {'off', 'line', 'chip'};
   static const _checklistListFilterKey = 'checklist_list_filter';
@@ -225,6 +226,12 @@ class PrefsService extends ChangeNotifier {
   /// each item name is kept to a single line and truncated with an ellipsis.
   bool _truncateItemNames = false;
   bool get truncateItemNames => _truncateItemNames;
+
+  /// When true, checking a task-list item in a note moves its line below the
+  /// unchecked ones, and unchecking moves it back above the checked ones. The
+  /// move is written into the note, so every client sees the same order.
+  bool _notesCheckedToBottom = false;
+  bool get notesCheckedToBottom => _notesCheckedToBottom;
 
   /// How much of an item's description its row shows: "off" (default) marks an
   /// item that has one with a note icon alone; "line" opens it on its own line
@@ -532,6 +539,11 @@ class PrefsService extends ChangeNotifier {
       _truncateItemNames = truncateItemNames == 'true';
     }
 
+    final notesCheckedToBottom = all[_notesCheckedToBottomKey];
+    if (notesCheckedToBottom != null) {
+      _notesCheckedToBottom = notesCheckedToBottom == 'true';
+    }
+
     final descriptionDisplay = all[_itemDescriptionDisplayKey];
     if (descriptionDisplay != null &&
         _validItemDescriptionDisplays.contains(descriptionDisplay)) {
@@ -732,6 +744,7 @@ class PrefsService extends ChangeNotifier {
     _startShoppingFabEnabled = true;
     _listMenuStyle = 'grid';
     _truncateItemNames = false;
+    _notesCheckedToBottom = false;
     _itemDescriptionDisplay = 'off';
     _checklistListFilter = {};
     _hiddenItemChips = {};
@@ -784,6 +797,7 @@ class PrefsService extends ChangeNotifier {
       _startShoppingFabEnabledKey,
       _listMenuStyleKey,
       _truncateItemNamesKey,
+      _notesCheckedToBottomKey,
       _itemDescriptionDisplayKey,
       _checklistListFilterKey,
       _hiddenItemChipsKey,

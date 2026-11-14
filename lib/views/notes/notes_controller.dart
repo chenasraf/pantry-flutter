@@ -251,7 +251,9 @@ class NotesController extends ChangeNotifier {
     return updated;
   }
 
-  /// Tick the task line at [ordinal] — reading [text] — to [checked].
+  /// Tick the task line at [ordinal] — reading [text] — to [checked], and with
+  /// [sink], move it to the edge of its state among its siblings (see
+  /// [sinkTaskLine]).
   ///
   /// Queued as the change rather than the rewritten body. A whole-document
   /// write is one the server cannot arbitrate: held behind an offline spell it
@@ -262,11 +264,13 @@ class NotesController extends ChangeNotifier {
     required int ordinal,
     required String text,
     required bool checked,
+    bool sink = false,
   }) async {
     final content = note.content;
     if (content == null) return note;
-    final body = setChecklistItem(content, ordinal, checked);
+    var body = setChecklistItem(content, ordinal, checked);
     if (body == content) return note;
+    if (sink) body = sinkTaskLine(body, ordinal);
     final updated = note.copyWith(content: body, updatedAt: _now());
     final index = _notes.indexWhere((n) => n.id == note.id);
     if (index != -1) {
@@ -283,7 +287,12 @@ class NotesController extends ChangeNotifier {
         houseId: houseId,
         entityId: isTemp ? null : note.id,
         tempEntityId: isTemp ? note.id : null,
-        body: {'ordinal': ordinal, 'text': text, 'checked': checked},
+        body: {
+          'ordinal': ordinal,
+          'text': text,
+          'checked': checked,
+          if (sink) 'sink': true,
+        },
         createdAt: _now(),
       ),
     );

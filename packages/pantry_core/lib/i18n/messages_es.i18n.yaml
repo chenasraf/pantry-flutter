@@ -231,6 +231,7 @@ settings:
   interfaceListsSection: Listas
   interfaceItemActionsSection: Acciones de elementos
   interfaceAddingSection: Añadir elementos
+  interfaceNotesSection: Notas
   interfaceBarcodeSection: "Escaneo de códigos de barras"
   defaultItemTapAction: Acción al tocar un elemento
   defaultItemTapActionBody: "Qué ocurre al tocar la fila de un elemento."
@@ -276,6 +277,8 @@ settings:
     list: Lista
   truncateItemNames: Truncar nombres de artículos largos
   truncateItemNamesBody: Mantén cada nombre de artículo en una sola línea, terminando con puntos suspensivos. Si se desactiva, los nombres largos se ajustan en varias líneas.
+  notesCheckedToBottom: Mover los elementos marcados al final
+  notesCheckedToBottomBody: "Al marcar un elemento de la lista de una nota, se mueve debajo de los no marcados. Al desmarcarlo, vuelve a subir."
   itemDescription: Descripción en los artículos
   itemDescriptionBody: Dónde se muestra la descripción de un artículo en su fila. Una descripción demasiado larga termina con puntos suspensivos en ambos casos.
   itemDescriptionNames:

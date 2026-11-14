@@ -130,6 +130,33 @@ void main() {
     expect(controller.notes.single.content, ticked);
   });
 
+  test('a tick that moves its line lands moved, once', () async {
+    final controller = controllerFor(1);
+    manager.queueForTest.enqueue(
+      SyncOp(
+        uuid: 'sink-tick',
+        entity: SyncEntity.note,
+        op: SyncOpKind.toggle,
+        houseId: 1,
+        entityId: 9,
+        body: {
+          'ordinal': 0,
+          'text': 'Wood glue',
+          'checked': true,
+          'sink': true,
+        },
+        createdAt: 0,
+      ),
+    );
+    const moved = '- [ ] Sandpaper\n- [x] Wood glue\n';
+
+    await http.runWithClient(controller.load, () => serverWith(unticked));
+    expect(controller.notes.single.content, moved);
+
+    await http.runWithClient(controller.load, () => serverWith(moved));
+    expect(controller.notes.single.content, moved);
+  });
+
   test('an empty queue hands the snapshot through untouched', () async {
     final controller = controllerFor(1);
 

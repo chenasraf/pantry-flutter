@@ -318,6 +318,17 @@ class InterfaceSettingsView extends StatelessWidget {
         ),
     ];
 
+    final notes = <Widget>[
+      SwitchListTile(
+        secondary: const Icon(Icons.checklist),
+        title: Text(m.settings.notesCheckedToBottom),
+        subtitle: Text(m.settings.notesCheckedToBottomBody),
+        value: prefs.notesCheckedToBottom,
+        onChanged: (value) =>
+            context.read<PrefsService>().setNotesCheckedToBottom(value),
+      ),
+    ];
+
     final barcode = <Widget>[
       if (ServerFeature.prefBarcodeFill) ...[
         SwitchListTile(
@@ -357,6 +368,7 @@ class InterfaceSettingsView extends StatelessWidget {
           ..._section(m.settings.interfaceListsSection, lists),
           ..._section(m.settings.interfaceItemActionsSection, itemActions),
           ..._section(m.settings.interfaceAddingSection, adding),
+          ..._section(m.settings.interfaceNotesSection, notes),
           ..._section(m.settings.interfaceBarcodeSection, barcode),
         ],
       ),

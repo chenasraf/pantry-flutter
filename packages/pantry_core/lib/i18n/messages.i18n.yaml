@@ -231,6 +231,7 @@ settings:
   interfaceListsSection: Lists
   interfaceItemActionsSection: Item actions
   interfaceAddingSection: Adding items
+  interfaceNotesSection: Notes
   interfaceBarcodeSection: Barcode scanning
   defaultItemTapAction: Default item tap action
   defaultItemTapActionBody: "What happens when you tap an item row."
@@ -276,6 +277,8 @@ settings:
     list: List
   truncateItemNames: Truncate long item names
   truncateItemNamesBody: Keep each item name on a single line, ending with an ellipsis. When off, long names wrap onto multiple lines.
+  notesCheckedToBottom: Move checked items to the bottom
+  notesCheckedToBottomBody: "When you check an item in a note's checklist, move it below the unchecked items. Unchecking moves it back up."
   itemDescription: Description on items
   itemDescriptionBody: Where an item's description is shown on its row. A description too long to fit ends with an ellipsis either way.
   itemDescriptionNames:

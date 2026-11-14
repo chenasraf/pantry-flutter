@@ -878,9 +878,13 @@ class SyncExecutor {
     }
     final content = note?.content;
     if (note == null || content == null) return SyncResult.empty;
-    final target = resolveTaskLine(content, ordinal: ordinal, text: text);
-    if (target == null) return SyncResult(note);
-    final updated = setChecklistItem(content, target, checked);
+    final updated = applyTaskLineWrite(
+      content,
+      ordinal: ordinal,
+      text: text,
+      checked: checked,
+      sink: body['sink'] == true,
+    );
     if (updated == content) return SyncResult(note);
     return SyncResult(await svc.updateNote(houseId, id, content: updated));
   }

@@ -243,4 +243,56 @@ void main() {
       expect(resolveTaskLine(text, ordinal: 1, text: 'Butter'), isNull);
     });
   });
+
+  group('sinkTaskLine', () {
+    test('a checked line moves just below the last unchecked one', () {
+      expect(
+        sinkTaskLine('- [x] Milk\n- [ ] Bread\n- [ ] Eggs\n- [x] Butter', 0),
+        '- [ ] Bread\n- [ ] Eggs\n- [x] Milk\n- [x] Butter',
+      );
+    });
+
+    test('an unchecked line moves just above the first checked one', () {
+      expect(
+        sinkTaskLine('- [ ] Bread\n- [x] Milk\n- [ ] Eggs', 2),
+        '- [ ] Bread\n- [ ] Eggs\n- [x] Milk',
+      );
+    });
+
+    test('a line already on its side stays put', () {
+      const content = '- [ ] Bread\n- [x] Milk\n- [x] Eggs';
+      expect(sinkTaskLine(content, 1), content);
+      expect(sinkTaskLine(content, 0), content);
+    });
+
+    test('a line moves with its sub-items', () {
+      expect(
+        sinkTaskLine('- [x] Bake\n  - [ ] Flour\n  text\n- [ ] Clean', 0),
+        '- [ ] Clean\n- [x] Bake\n  - [ ] Flour\n  text',
+      );
+    });
+
+    test('a sub-item moves among its own siblings only', () {
+      expect(
+        sinkTaskLine(
+          '- [ ] Bake\n  - [x] Flour\n  - [ ] Sugar\n- [ ] Clean',
+          1,
+        ),
+        '- [ ] Bake\n  - [ ] Sugar\n  - [x] Flour\n- [ ] Clean',
+      );
+    });
+
+    test('blank lines, prose and plain items bound the run', () {
+      const content =
+          '- [x] Milk\n- [ ] Bread\n\n- [ ] Glue\nHardware\n- [ ] Nails\n- Note\n- [ ] Tape';
+      expect(
+        sinkTaskLine(content, 0),
+        '- [ ] Bread\n- [x] Milk\n\n- [ ] Glue\nHardware\n- [ ] Nails\n- Note\n- [ ] Tape',
+      );
+    });
+
+    test('an ordinal past the last task line is ignored', () {
+      expect(sinkTaskLine('- [x] Milk', 3), '- [x] Milk');
+    });
+  });
 }

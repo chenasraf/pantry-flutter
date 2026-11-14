@@ -196,6 +196,92 @@ String setChecklistItem(String content, int ordinal, bool checked) {
   return content;
 }
 
+/// [content] with a recorded task-line write landed on it: the line
+/// [resolveTaskLine] names is set to [checked] and, with [sink], moved by
+/// [sinkTaskLine]. A line that already holds [checked] is left where it is, so
+/// a write replayed over a body that has caught up with it changes nothing.
+String applyTaskLineWrite(
+  String content, {
+  required int ordinal,
+  required String text,
+  required bool checked,
+  bool sink = false,
+}) {
+  final target = resolveTaskLine(content, ordinal: ordinal, text: text);
+  if (target == null) return content;
+  final updated = setChecklistItem(content, target, checked);
+  if (!sink || updated == content) return updated;
+  return sinkTaskLine(updated, target);
+}
+
+final _leadingWhitespaceRe = RegExp(r'^\s*');
+
+/// [content] with the task line at [ordinal] moved among its siblings to the
+/// edge of its own state: a checked line to just below the last unchecked one,
+/// an unchecked line to just above the first checked one. A line already on
+/// its side of that boundary stays put, so lines that were left out of order
+/// are not reshuffled around it.
+///
+/// Siblings are the task lines at the same indent in one unbroken run; a blank
+/// line, a shallower line, or a non-task line at that indent ends the run. A
+/// line moves together with its more deeply indented lines (sub-items,
+/// continuations).
+String sinkTaskLine(String content, int ordinal) {
+  final lines = content.split(RegExp(r'\r?\n'));
+  int indentOf(String line) => _leadingWhitespaceRe.firstMatch(line)!.end;
+
+  int? at;
+  var seen = 0;
+  for (var i = 0; i < lines.length && at == null; i++) {
+    if (_taskLineRe.hasMatch(lines[i]) && seen++ == ordinal) at = i;
+  }
+  if (at == null) return content;
+  final indent = indentOf(lines[at]);
+
+  bool isSibling(int i) =>
+      _taskLineRe.hasMatch(lines[i]) && indentOf(lines[i]) == indent;
+  bool isChild(int i) =>
+      lines[i].trim().isNotEmpty && indentOf(lines[i]) > indent;
+
+  var runStart = at;
+  for (var i = at - 1; i >= 0; i--) {
+    if (isChild(i)) continue;
+    if (!isSibling(i)) break;
+    runStart = i;
+  }
+
+  final entries = <({int start, int end, bool checked})>[];
+  var i = runStart;
+  while (i < lines.length && isSibling(i)) {
+    final start = i;
+    final checked = _taskLineRe.firstMatch(lines[i])!.group(2)! != ' ';
+    i++;
+    while (i < lines.length && isChild(i)) {
+      i++;
+    }
+    entries.add((start: start, end: i, checked: checked));
+  }
+
+  final target = entries.indexWhere((e) => e.start == at);
+  final moving = entries[target];
+  final int insertAt;
+  if (moving.checked) {
+    final lastUnchecked = entries.lastIndexWhere((e) => !e.checked);
+    if (lastUnchecked < target) return content;
+    insertAt = lastUnchecked + 1;
+  } else {
+    final firstChecked = entries.indexWhere((e) => e.checked);
+    if (firstChecked == -1 || firstChecked > target) return content;
+    insertAt = firstChecked;
+  }
+
+  final order = [...entries]..removeAt(target);
+  order.insert(insertAt > target ? insertAt - 1 : insertAt, moving);
+  final run = [for (final e in order) ...lines.sublist(e.start, e.end)];
+  lines.replaceRange(runStart, i, run);
+  return lines.join('\n');
+}
+
 /// Flip the `[ ]` / `[x]` state of the checkbox at position [ordinal] (0-based,
 /// counting only task-list lines in document order) within a Markdown document.
 ///

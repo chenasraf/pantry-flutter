@@ -1277,6 +1277,11 @@ class SettingsMessagesHe extends SettingsMessages {
   String get interfaceAddingSection => """הוספת פריטים""";
 
   /// ```dart
+  /// "פתקים"
+  /// ```
+  String get interfaceNotesSection => """פתקים""";
+
+  /// ```dart
   /// "סריקת ברקוד"
   /// ```
   String get interfaceBarcodeSection => """סריקת ברקוד""";
@@ -1400,6 +1405,17 @@ class SettingsMessagesHe extends SettingsMessages {
   /// ```
   String get truncateItemNamesBody =>
       """שמירת כל שם פריט בשורה אחת, המסתיימת בשלוש נקודות. כשמכובה, שמות ארוכים נשברים לכמה שורות.""";
+
+  /// ```dart
+  /// "העברת פריטים מסומנים לתחתית"
+  /// ```
+  String get notesCheckedToBottom => """העברת פריטים מסומנים לתחתית""";
+
+  /// ```dart
+  /// "כשמסמנים פריט ברשימת סימון בפתק, הוא עובר אל מתחת לפריטים שלא סומנו. ביטול הסימון מחזיר אותו למעלה."
+  /// ```
+  String get notesCheckedToBottomBody =>
+      """כשמסמנים פריט ברשימת סימון בפתק, הוא עובר אל מתחת לפריטים שלא סומנו. ביטול הסימון מחזיר אותו למעלה.""";
 
   /// ```dart
   /// "תיאור על פריטים"
@@ -9333,6 +9349,7 @@ Map<String, String> get messagesHeMap => {
   """settings.interfaceListsSection""": """רשימות""",
   """settings.interfaceItemActionsSection""": """פעולות על פריטים""",
   """settings.interfaceAddingSection""": """הוספת פריטים""",
+  """settings.interfaceNotesSection""": """פתקים""",
   """settings.interfaceBarcodeSection""": """סריקת ברקוד""",
   """settings.defaultItemTapAction""": """פעולת ברירת מחדל בלחיצה""",
   """settings.defaultItemTapActionBody""":
@@ -9383,6 +9400,9 @@ Map<String, String> get messagesHeMap => {
   """settings.truncateItemNames""": """קיצור שמות פריטים ארוכים""",
   """settings.truncateItemNamesBody""":
       """שמירת כל שם פריט בשורה אחת, המסתיימת בשלוש נקודות. כשמכובה, שמות ארוכים נשברים לכמה שורות.""",
+  """settings.notesCheckedToBottom""": """העברת פריטים מסומנים לתחתית""",
+  """settings.notesCheckedToBottomBody""":
+      """כשמסמנים פריט ברשימת סימון בפתק, הוא עובר אל מתחת לפריטים שלא סומנו. ביטול הסימון מחזיר אותו למעלה.""",
   """settings.itemDescription""": """תיאור על פריטים""",
   """settings.itemDescriptionBody""":
       """היכן מוצג התיאור של פריט בשורה שלו. תיאור ארוך מדי מסתיים בשלוש נקודות בשני המקרים.""",

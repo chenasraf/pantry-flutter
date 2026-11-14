@@ -533,9 +533,13 @@ class SyncManager {
       final text = op.body['text'] as String?;
       final checked = op.body['checked'] as bool?;
       if (ordinal == null || text == null || checked == null) continue;
-      final target = resolveTaskLine(out, ordinal: ordinal, text: text);
-      if (target == null) continue;
-      out = setChecklistItem(out, target, checked);
+      out = applyTaskLineWrite(
+        out,
+        ordinal: ordinal,
+        text: text,
+        checked: checked,
+        sink: op.body['sink'] == true,
+      );
     }
     return out;
   }

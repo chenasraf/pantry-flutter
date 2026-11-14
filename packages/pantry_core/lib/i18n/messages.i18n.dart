@@ -1277,6 +1277,11 @@ class SettingsMessages {
   String get interfaceAddingSection => """Adding items""";
 
   /// ```dart
+  /// "Notes"
+  /// ```
+  String get interfaceNotesSection => """Notes""";
+
+  /// ```dart
   /// "Barcode scanning"
   /// ```
   String get interfaceBarcodeSection => """Barcode scanning""";
@@ -1402,6 +1407,17 @@ class SettingsMessages {
   /// ```
   String get truncateItemNamesBody =>
       """Keep each item name on a single line, ending with an ellipsis. When off, long names wrap onto multiple lines.""";
+
+  /// ```dart
+  /// "Move checked items to the bottom"
+  /// ```
+  String get notesCheckedToBottom => """Move checked items to the bottom""";
+
+  /// ```dart
+  /// "When you check an item in a note's checklist, move it below the unchecked items. Unchecking moves it back up."
+  /// ```
+  String get notesCheckedToBottomBody =>
+      """When you check an item in a note's checklist, move it below the unchecked items. Unchecking moves it back up.""";
 
   /// ```dart
   /// "Description on items"
@@ -9343,6 +9359,7 @@ Password: pantry-rocks""",
   """settings.interfaceListsSection""": """Lists""",
   """settings.interfaceItemActionsSection""": """Item actions""",
   """settings.interfaceAddingSection""": """Adding items""",
+  """settings.interfaceNotesSection""": """Notes""",
   """settings.interfaceBarcodeSection""": """Barcode scanning""",
   """settings.defaultItemTapAction""": """Default item tap action""",
   """settings.defaultItemTapActionBody""":
@@ -9394,6 +9411,9 @@ Password: pantry-rocks""",
   """settings.truncateItemNames""": """Truncate long item names""",
   """settings.truncateItemNamesBody""":
       """Keep each item name on a single line, ending with an ellipsis. When off, long names wrap onto multiple lines.""",
+  """settings.notesCheckedToBottom""": """Move checked items to the bottom""",
+  """settings.notesCheckedToBottomBody""":
+      """When you check an item in a note's checklist, move it below the unchecked items. Unchecking moves it back up.""",
   """settings.itemDescription""": """Description on items""",
   """settings.itemDescriptionBody""":
       """Where an item's description is shown on its row. A description too long to fit ends with an ellipsis either way.""",

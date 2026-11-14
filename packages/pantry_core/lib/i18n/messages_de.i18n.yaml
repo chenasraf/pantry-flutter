@@ -231,6 +231,7 @@ settings:
   interfaceListsSection: Listen
   interfaceItemActionsSection: Eintragsaktionen
   interfaceAddingSection: Einträge hinzufügen
+  interfaceNotesSection: Notizen
   interfaceBarcodeSection: "Barcode-Scan"
   defaultItemTapAction: Standardaktion beim Tippen
   defaultItemTapActionBody: "Was passiert, wenn du eine Eintragszeile antippst."
@@ -276,6 +277,8 @@ settings:
     list: Liste
   truncateItemNames: Lange Eintragsnamen kürzen
   truncateItemNamesBody: Jeden Eintragsnamen einzeilig halten und mit Auslassungspunkten kürzen. Wenn aus, werden lange Namen auf mehrere Zeilen umgebrochen.
+  notesCheckedToBottom: Erledigte Einträge nach unten verschieben
+  notesCheckedToBottomBody: "Wenn du einen Checklisteneintrag in einer Notiz abhakst, wird er unter die offenen Einträge verschoben. Beim Zurücksetzen wandert er wieder nach oben."
   itemDescription: Beschreibung bei Einträgen
   itemDescriptionBody: Wo die Beschreibung eines Eintrags in seiner Zeile erscheint. Eine zu lange Beschreibung endet in beiden Fällen mit Auslassungspunkten.
   itemDescriptionNames:
