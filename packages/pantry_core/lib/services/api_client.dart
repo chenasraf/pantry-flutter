@@ -426,6 +426,46 @@ class ApiClient {
     return _handleResponse<D, T>(response, fromJson);
   }
 
+  /// Every row of a paged collection, fetched [pageSize] at a time.
+  ///
+  /// A list endpoint answers with one page — the server's own default size
+  /// when the request names none — so a single GET silently loses whatever
+  /// lies past it. [idOf] dedupes rows that shift across a page boundary while
+  /// the pass runs.
+  Future<List<T>> getAll<T>(
+    String path, {
+    Map<String, String>? query,
+    required T Function(Map<String, dynamic> json) fromJson,
+    required Object Function(T row) idOf,
+    int pageSize = 500,
+  }) async {
+    final all = <T>[];
+    final seen = <Object>{};
+    var offset = 0;
+    while (true) {
+      final page = await get<List, List<T>>(
+        path,
+        query: {...?query, 'limit': '$pageSize', 'offset': '$offset'},
+        fromJson: (data) =>
+            data.map((e) => fromJson(e as Map<String, dynamic>)).toList(),
+      );
+      var added = 0;
+      for (final row in page) {
+        if (seen.add(idOf(row))) {
+          all.add(row);
+          added++;
+        }
+      }
+      // A short page is the last page. `added == 0` guards against a server
+      // that ignores `offset` and returns the same page every request — left
+      // unchecked that loops forever, appending until the app runs out of
+      // memory.
+      if (page.length < pageSize || added == 0) break;
+      offset += pageSize;
+    }
+    return all;
+  }
+
   /// A GET the server may answer with "unchanged" instead of a body, given the
   /// [etag] it handed out for the copy the caller already holds. Callers that
   /// keep the previous result — and can say what to do when it is still good —

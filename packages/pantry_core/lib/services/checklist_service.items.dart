@@ -24,45 +24,13 @@ extension ChecklistServiceItems on ChecklistService {
     return _fetchAllItems(path, sortBy: sortBy);
   }
 
-  /// Page through an items endpoint until every item is retrieved. The server
-  /// caps the number of items returned per request, so a single call silently
-  /// drops the trailing items of long lists — when sorted by category that
-  /// looks like the last categories disappearing entirely.
-  Future<List<ListItem>> _fetchAllItems(
-    String path, {
-    required String sortBy,
-  }) async {
-    const pageSize = 500;
-    final all = <ListItem>[];
-    final seenIds = <int>{};
-    var offset = 0;
-    while (true) {
-      final page = await ApiClient.instance.get<List, List<ListItem>>(
-        path,
-        query: {
-          'sortBy': sortBy,
-          'limit': pageSize.toString(),
-          'offset': offset.toString(),
-        },
-        fromJson: (data) => data
-            .map((e) => ListItem.fromJson(e as Map<String, dynamic>))
-            .toList(),
-      );
-      var added = 0;
-      for (final item in page) {
-        if (seenIds.add(item.id)) {
-          all.add(item);
-          added++;
-        }
-      }
-      // A short page is the last page. `added == 0` guards against a server
-      // that ignores `offset` and returns the same page every request — left
-      // unchecked that loops forever, appending until the app runs out of
-      // memory.
-      if (page.length < pageSize || added == 0) break;
-      offset += pageSize;
-    }
-    return all;
+  Future<List<ListItem>> _fetchAllItems(String path, {required String sortBy}) {
+    return ApiClient.instance.getAll(
+      path,
+      query: {'sortBy': sortBy},
+      fromJson: ListItem.fromJson,
+      idOf: (item) => item.id,
+    );
   }
 
   Future<ListItem> moveItem(
@@ -261,18 +229,11 @@ extension ChecklistServiceItems on ChecklistService {
     );
   }
 
-  Future<List<ListItem>> getDeletedItems(
-    int houseId,
-    int listId, {
-    int limit = 200,
-    int offset = 0,
-  }) async {
-    return ApiClient.instance.get<List, List<ListItem>>(
+  Future<List<ListItem>> getDeletedItems(int houseId, int listId) {
+    return ApiClient.instance.getAll(
       '${listPath(houseId, listId)}/items/trash',
-      query: {'limit': limit.toString(), 'offset': offset.toString()},
-      fromJson: (data) => data
-          .map((e) => ListItem.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      fromJson: ListItem.fromJson,
+      idOf: (item) => item.id,
     );
   }
 
@@ -297,18 +258,11 @@ extension ChecklistServiceItems on ChecklistService {
     await ApiClient.instance.delete('${listPath(houseId, listId)}/items/trash');
   }
 
-  Future<List<ListItem>> getArchivedItems(
-    int houseId,
-    int listId, {
-    int limit = 200,
-    int offset = 0,
-  }) async {
-    return ApiClient.instance.get<List, List<ListItem>>(
+  Future<List<ListItem>> getArchivedItems(int houseId, int listId) {
+    return ApiClient.instance.getAll(
       '${listPath(houseId, listId)}/items/archive',
-      query: {'limit': limit.toString(), 'offset': offset.toString()},
-      fromJson: (data) => data
-          .map((e) => ListItem.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      fromJson: ListItem.fromJson,
+      idOf: (item) => item.id,
     );
   }
 

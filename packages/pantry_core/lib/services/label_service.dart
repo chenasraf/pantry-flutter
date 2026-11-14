@@ -23,10 +23,10 @@ class LabelService {
   }
 
   Future<List<Label>> getLabels(int houseId) async {
-    final labels = await ApiClient.instance.get<List, List<Label>>(
+    final labels = await ApiClient.instance.getAll(
       '/houses/$houseId/labels',
-      fromJson: (data) =>
-          data.map((e) => Label.fromJson(e as Map<String, dynamic>)).toList(),
+      fromJson: Label.fromJson,
+      idOf: (l) => l.id,
     );
     cacheLabels(houseId, labels);
     return labels;

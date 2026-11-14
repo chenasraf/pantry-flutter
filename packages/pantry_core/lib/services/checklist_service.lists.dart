@@ -6,11 +6,10 @@ extension ChecklistServiceLists on ChecklistService {
     ListKind kind = ListKind.checklist,
   }) async {
     return _rememberAll(
-      await ApiClient.instance.get<List, List<ChecklistList>>(
+      await ApiClient.instance.getAll(
         kindPath(houseId, kind),
-        fromJson: (data) => data
-            .map((e) => ChecklistList.fromJson(e as Map<String, dynamic>))
-            .toList(),
+        fromJson: ChecklistList.fromJson,
+        idOf: (list) => list.id,
       ),
     );
   }
@@ -79,16 +78,12 @@ extension ChecklistServiceLists on ChecklistService {
   Future<List<ChecklistList>> getDeletedLists(
     int houseId, {
     ListKind kind = ListKind.checklist,
-    int limit = 200,
-    int offset = 0,
   }) async {
     return _rememberAll(
-      await ApiClient.instance.get<List, List<ChecklistList>>(
+      await ApiClient.instance.getAll(
         '${kindPath(houseId, kind)}/trash',
-        query: {'limit': limit.toString(), 'offset': offset.toString()},
-        fromJson: (data) => data
-            .map((e) => ChecklistList.fromJson(e as Map<String, dynamic>))
-            .toList(),
+        fromJson: ChecklistList.fromJson,
+        idOf: (list) => list.id,
       ),
     );
   }
@@ -114,16 +109,12 @@ extension ChecklistServiceLists on ChecklistService {
   Future<List<ChecklistList>> getArchivedLists(
     int houseId, {
     ListKind kind = ListKind.checklist,
-    int limit = 200,
-    int offset = 0,
   }) async {
     return _rememberAll(
-      await ApiClient.instance.get<List, List<ChecklistList>>(
+      await ApiClient.instance.getAll(
         '${kindPath(houseId, kind)}/archive',
-        query: {'limit': limit.toString(), 'offset': offset.toString()},
-        fromJson: (data) => data
-            .map((e) => ChecklistList.fromJson(e as Map<String, dynamic>))
-            .toList(),
+        fromJson: ChecklistList.fromJson,
+        idOf: (list) => list.id,
       ),
     );
   }

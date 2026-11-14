@@ -37,17 +37,12 @@ class NoteService {
 
   // -- API --
 
-  Future<List<Note>> getNotes(
-    int houseId, {
-    String sortBy = 'custom',
-    int limit = 100,
-    int offset = 0,
-  }) async {
-    return ApiClient.instance.get<List, List<Note>>(
+  Future<List<Note>> getNotes(int houseId, {String sortBy = 'custom'}) {
+    return ApiClient.instance.getAll(
       '/houses/$houseId/notes',
-      query: {'sortBy': sortBy, 'limit': '$limit', 'offset': '$offset'},
-      fromJson: (data) =>
-          data.map((e) => Note.fromJson(e as Map<String, dynamic>)).toList(),
+      query: {'sortBy': sortBy},
+      fromJson: Note.fromJson,
+      idOf: (n) => n.id,
     );
   }
 
@@ -88,16 +83,11 @@ class NoteService {
     await ApiClient.instance.delete('/houses/$houseId/notes/$noteId');
   }
 
-  Future<List<Note>> getDeletedNotes(
-    int houseId, {
-    int limit = 200,
-    int offset = 0,
-  }) async {
-    return ApiClient.instance.get<List, List<Note>>(
+  Future<List<Note>> getDeletedNotes(int houseId) {
+    return ApiClient.instance.getAll(
       '/houses/$houseId/notes/trash',
-      query: {'limit': '$limit', 'offset': '$offset'},
-      fromJson: (data) =>
-          data.map((e) => Note.fromJson(e as Map<String, dynamic>)).toList(),
+      fromJson: Note.fromJson,
+      idOf: (n) => n.id,
     );
   }
 

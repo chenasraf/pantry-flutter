@@ -56,17 +56,12 @@ class PhotoService {
 
   // -- Photos --
 
-  Future<List<Photo>> getPhotos(
-    int houseId, {
-    String sortBy = 'custom',
-    int limit = 200,
-    int offset = 0,
-  }) async {
-    return ApiClient.instance.get<List, List<Photo>>(
+  Future<List<Photo>> getPhotos(int houseId, {String sortBy = 'custom'}) {
+    return ApiClient.instance.getAll(
       '/houses/$houseId/photos',
-      query: {'sortBy': sortBy, 'limit': '$limit', 'offset': '$offset'},
-      fromJson: (data) =>
-          data.map((e) => Photo.fromJson(e as Map<String, dynamic>)).toList(),
+      query: {'sortBy': sortBy},
+      fromJson: Photo.fromJson,
+      idOf: (p) => p.id,
     );
   }
 
@@ -115,16 +110,11 @@ class PhotoService {
     await ApiClient.instance.delete('/houses/$houseId/photos/$photoId');
   }
 
-  Future<List<Photo>> getDeletedPhotos(
-    int houseId, {
-    int limit = 200,
-    int offset = 0,
-  }) async {
-    return ApiClient.instance.get<List, List<Photo>>(
+  Future<List<Photo>> getDeletedPhotos(int houseId) {
+    return ApiClient.instance.getAll(
       '/houses/$houseId/photos/trash',
-      query: {'limit': '$limit', 'offset': '$offset'},
-      fromJson: (data) =>
-          data.map((e) => Photo.fromJson(e as Map<String, dynamic>)).toList(),
+      fromJson: Photo.fromJson,
+      idOf: (p) => p.id,
     );
   }
 
@@ -173,12 +163,11 @@ class PhotoService {
     int houseId, {
     String sortBy = 'custom',
   }) async {
-    return ApiClient.instance.get<List, List<PhotoFolder>>(
+    return ApiClient.instance.getAll(
       '/houses/$houseId/photos/folders',
       query: {'sortBy': sortBy},
-      fromJson: (data) => data
-          .map((e) => PhotoFolder.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      fromJson: PhotoFolder.fromJson,
+      idOf: (f) => f.id,
     );
   }
 

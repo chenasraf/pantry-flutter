@@ -49,11 +49,10 @@ class CategoryService {
   /// The house's categories, with a still-queued reorder laid over the
   /// fetched sortOrders so a fetch landing before it drains can't revert it.
   Future<List<Category>> getCategories(int houseId) async {
-    final fetched = await ApiClient.instance.get<List, List<Category>>(
+    final fetched = await ApiClient.instance.getAll(
       '/houses/$houseId/categories',
-      fromJson: (data) => data
-          .map((e) => Category.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      fromJson: Category.fromJson,
+      idOf: (c) => c.id,
     );
     final pending = SyncManager.instance.pendingSortOrders(
       SyncEntity.category,

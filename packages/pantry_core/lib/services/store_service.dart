@@ -18,10 +18,10 @@ class StoreService {
   }
 
   Future<List<Store>> getStores(int houseId) async {
-    final stores = await ApiClient.instance.get<List, List<Store>>(
+    final stores = await ApiClient.instance.getAll(
       '/houses/$houseId/stores',
-      fromJson: (data) =>
-          data.map((e) => Store.fromJson(e as Map<String, dynamic>)).toList(),
+      fromJson: Store.fromJson,
+      idOf: (s) => s.id,
     );
     cacheStores(houseId, stores);
     return stores;

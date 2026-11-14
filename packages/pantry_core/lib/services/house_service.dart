@@ -22,20 +22,20 @@ class HouseService {
   }
 
   Future<List<Member>> getMembers(int houseId) async {
-    final members = await ApiClient.instance.get<List, List<Member>>(
+    final members = await ApiClient.instance.getAll(
       '/houses/$houseId/members',
-      fromJson: (data) =>
-          data.map((e) => Member.fromJson(e as Map<String, dynamic>)).toList(),
+      fromJson: Member.fromJson,
+      idOf: (m) => m.id,
     );
     cacheMembers(houseId, members);
     return members;
   }
 
   Future<List<House>> getHouses() async {
-    final houses = await ApiClient.instance.get<List, List<House>>(
+    final houses = await ApiClient.instance.getAll(
       '/houses',
-      fromJson: (data) =>
-          data.map((e) => House.fromJson(e as Map<String, dynamic>)).toList(),
+      fromJson: House.fromJson,
+      idOf: (h) => h.id,
     );
     cache.setList(_housesKey, houses, (h) => h.toJson());
     return houses;
