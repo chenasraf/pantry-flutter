@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart'
-    show AppLifecycleListener, AppLifecycleState;
+    show AppLifecycleListener, AppLifecycleState, WidgetsBinding;
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/category.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
@@ -733,7 +733,7 @@ class ChecklistsController extends ChangeNotifier {
       // into the offline image store.
       unawaited(
         _precacheListItems().then((_) {
-          if (_disposed) return;
+          if (_disposed || _backgrounded) return;
           unawaited(ImageCacheService.instance.sweepHouse(houseId));
         }),
       );
@@ -753,9 +753,10 @@ class ChecklistsController extends ChangeNotifier {
   /// server snapshot there would clobber the un-acked optimistic change. A
   /// per-list fetch failure is skipped (a transient error on one list must not
   /// starve the rest), but going offline stops the pass immediately since every
-  /// remaining fetch would just wait out the request timeout.
+  /// remaining fetch would just wait out the request timeout. So does leaving
+  /// the foreground: the next resume refreshes and starts a fresh pass.
   Future<void> _precacheListItems() async {
-    if (!_sync.isOnline) return;
+    if (!_sync.isOnline || _backgrounded) return;
     // `null` means a house-scoped batch op is queued whose affected lists we
     // can't resolve — stay conservative and skip the warm-up entirely.
     final pendingLists = _sync.pendingListIds(houseId);
@@ -764,7 +765,7 @@ class ChecklistsController extends ChangeNotifier {
     for (final list in _lists) {
       if (list.id == currentId || list.id < 0 || !_inSection(list)) continue;
       if (pendingLists.contains(list.id)) continue;
-      if (!_sync.isOnline) return;
+      if (!_sync.isOnline || _backgrounded) return;
       try {
         final sort =
             await _fetchListItemSort(list.id) ??
@@ -794,7 +795,7 @@ class ChecklistsController extends ChangeNotifier {
     for (final kind in const [ListKind.checklist, ListKind.inventory]) {
       final allId = allListsIdOf(kind)!;
       if (currentId == allId || _allViewFor(allId) == null) continue;
-      if (!_sync.isOnline || pendingLists.isNotEmpty) return;
+      if (!_sync.isOnline || _backgrounded || pendingLists.isNotEmpty) return;
       try {
         final sort =
             await _fetchListItemSort(allId) ??
@@ -814,6 +815,16 @@ class ChecklistsController extends ChangeNotifier {
       }
     }
   }
+
+  /// Android aborts a backgrounded app's sockets ("Software caused connection
+  /// abort"), so a warm-up still running then fails mid-request and flips the
+  /// whole app offline until the next request lands.
+  bool get _backgrounded => switch (WidgetsBinding.instance.lifecycleState) {
+    AppLifecycleState.hidden ||
+    AppLifecycleState.paused ||
+    AppLifecycleState.detached => true,
+    _ => false,
+  };
 
   /// The "All" sentinel [id] names, when the server offers that view and it
   /// belongs in this section.
