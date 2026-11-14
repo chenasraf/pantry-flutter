@@ -119,27 +119,52 @@ class BarcodeService {
       if (json['status'] != 1) return null;
       final product = json['product'] as Map<String, dynamic>?;
       if (product == null) return null;
-
-      final name = _firstNonEmpty([
-        product['product_name'],
-        product['generic_name'],
-        product['abbreviated_product_name'],
-      ]);
-      if (name == null) return null;
-
-      return BarcodeResult(
-        ean: ean,
-        name: name,
-        provider: 'openfoodfacts',
-        brand: _firstCsv(product['brands']),
-        category: _firstCsv(product['categories']),
-        imageUrl: _firstNonEmpty([product['image_url']]),
-      );
+      return resultFromOffProduct(ean, product);
     } catch (_) {
       // Network error, timeout, malformed JSON — treat as "unknown" so the
       // UI falls back to the raw EAN rather than erroring.
       return null;
     }
+  }
+
+  /// Map an Open Food Facts `product` object to a [BarcodeResult]. Mirrors the
+  /// server's and web app's `pickName`, so all clients name a product alike.
+  ///
+  /// OFF has products whose name fields are all blank, or set only under a
+  /// language-suffixed key — those fall back to the first category, then the
+  /// first brand, rather than reading as "not found". Null only when there is
+  /// nothing at all to call the product.
+  static BarcodeResult? resultFromOffProduct(
+    String ean,
+    Map<String, dynamic> product,
+  ) {
+    final brand = _firstCsv(product['brands']);
+    final category = _firstCsv(product['categories']);
+    final name = _pickName(product) ?? category ?? brand;
+    if (name == null) return null;
+
+    return BarcodeResult(
+      ean: ean,
+      name: name,
+      provider: 'openfoodfacts',
+      brand: brand,
+      category: category,
+      imageUrl: _firstNonEmpty([product['image_url']]),
+    );
+  }
+
+  static String? _pickName(Map<String, dynamic> product) {
+    final lang = product['lang'];
+    final suffixes = [
+      '',
+      if (lang is String && lang.trim().isNotEmpty) '_${lang.trim()}',
+      '_en',
+    ];
+    return _firstNonEmpty([
+      for (final s in suffixes) product['product_name$s'],
+      for (final s in suffixes) product['generic_name$s'],
+      product['abbreviated_product_name'],
+    ]);
   }
 
   /// Download the product image bytes for a resolved result, best-effort.
