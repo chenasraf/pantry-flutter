@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.39.0](https://github.com/chenasraf/pantry-flutter/compare/v0.38.0...v0.39.0) (2026-11-14)
+
+
+### Features
+
+* **categories:** warn when a category with the same name already exists ([22ce27b](https://github.com/chenasraf/pantry-flutter/commit/22ce27b3b90bd3fdf01cffce0e81e370f0909240))
+* **inventory:** add all-inventories view and shopping put away ([#203](https://github.com/chenasraf/pantry-flutter/issues/203)) ([2a801b8](https://github.com/chenasraf/pantry-flutter/commit/2a801b81c0c356d23351cbb850908a4244fa1641))
+* **notes:** option to move checked checklist items to the bottom of a note ([8f2c1d8](https://github.com/chenasraf/pantry-flutter/commit/8f2c1d80c28ae6739ab126d4f417746b981355d8))
+* **notes:** tap anywhere on a checklist item to check it ([e29d6b3](https://github.com/chenasraf/pantry-flutter/commit/e29d6b34d8ad9a674419ceb521b097a8c415e050))
+
+
+### Bug Fixes
+
+* auto-refresh no longer re-downloads every list each time ([6d64c45](https://github.com/chenasraf/pantry-flutter/commit/6d64c45fa4b7ee9809e82a058f033f77c060c183))
+* **barcode:** name unnamed Open Food Facts products from lang name, category or brand ([73b55fc](https://github.com/chenasraf/pantry-flutter/commit/73b55fc80ba9bdf2a861c638e3fef9474f6bbd64))
+* **categories:** keep your category order when reordering after adding a category ([c15aa3f](https://github.com/chenasraf/pantry-flutter/commit/c15aa3fe68a33fcd91473f64cd8e9f316f97bf11))
+* **lists:** set both on hand and target when adding to an inventory ([0dc1d10](https://github.com/chenasraf/pantry-flutter/commit/0dc1d10f97ddd0bacc870b764c6f181f46f38efa))
+* **notes:** erasing the first checklist item now removes its checkbox ([8df5341](https://github.com/chenasraf/pantry-flutter/commit/8df53410fe29bbca6462da8f97718fd1712edc03))
+* say why the server refused a change instead of only its error code ([967786b](https://github.com/chenasraf/pantry-flutter/commit/967786b9cc271104fcaeab5c42f5a8a6ba3bf6f9))
+* show all categories, labels, stores and other lists in large households ([025852d](https://github.com/chenasraf/pantry-flutter/commit/025852d28b0a41af86f891c99c2992ffae9d3b19))
+* stop spurious connection errors when leaving the app mid-refresh ([c7e6d3a](https://github.com/chenasraf/pantry-flutter/commit/c7e6d3a12d674968ced3f3bcb6b0a44d75742a14))
+
 ## [0.38.0](https://github.com/chenasraf/pantry-flutter/compare/v0.37.1...v0.38.0) (2026-10-30)
 
 
