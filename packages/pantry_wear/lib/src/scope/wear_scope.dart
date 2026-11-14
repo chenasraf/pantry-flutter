@@ -4,6 +4,7 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 
 /// What the watch is looking at: one `(house, list)` pair.
 ///
@@ -13,7 +14,7 @@ import 'package:pantry_core/services/prefs_service.dart';
 /// Both are device-local: nothing server-side records which house or list you
 /// were looking at.
 ///
-/// [kAllListsId] is a legal list, not a mode.
+/// [kAllListsId] and [kAllInventoriesId] are legal lists, not modes.
 class WearScope extends ChangeNotifier {
   WearScope._();
 
@@ -57,13 +58,16 @@ class WearScope extends ChangeNotifier {
   /// The list to show within [lists], which are the current house's active
   /// lists. One rule for every trigger — no seed, a deleted or archived list,
   /// a changed house: the **lowest `sortOrder`** list. The watch lands on a
-  /// real list, never on the meta view by default.
+  /// real list, never on a meta view by default.
   ///
   /// Archived and trashed lists cannot appear here at all: `getLists` returns
   /// active lists only, and the watch never calls the other two endpoints.
   Future<int?> resolveList(List<ChecklistList> lists) async {
     final current = listId;
     if (current == kAllListsId) return current;
+    if (current == kAllInventoriesId && ServerFeature.inventoryAllView) {
+      return current;
+    }
     if (current != null && lists.any((l) => l.id == current)) return current;
     if (lists.isEmpty) return null;
     final lowest = lists.reduce((a, b) => b.sortOrder < a.sortOrder ? b : a);
@@ -98,13 +102,13 @@ class WearScope extends ChangeNotifier {
   /// That is a stronger guarantee than any byte ceiling, whose worst bug
   /// deletes the offline copy the watch exists to keep.
   ///
-  /// The all-lists view is the exception that proves it: its rows *are* every
+  /// The "All" views are the exception that proves it: their rows *are* every
   /// list's own cached snapshot, so they are all in scope. A session needs no
   /// exception — its items live in the shopping cache, which this never
   /// touches.
   void _pruneItemCache() {
     final id = listId;
-    if (id == null || id == kAllListsId) return;
+    if (id == null || isAllListsId(id)) return;
     ChecklistService.instance.invalidateItems(keepListId: id);
   }
 

@@ -56,6 +56,8 @@ class PrefsService extends ChangeNotifier {
   static const _allListsProgressHeroHiddenKey =
       'all_lists_progress_hero_hidden';
   static const _progressHeroHiddenListIdsKey = 'progress_hero_hidden_list_ids';
+  static const _restockNoticeHiddenListIdsKey =
+      'restock_notice_hidden_list_ids';
   static const _lastSeenOnboardingVersionKey = 'last_seen_onboarding_version';
   static const _navOrderKey = 'nav_order';
   static const _navDisabledKey = 'nav_disabled';
@@ -266,6 +268,11 @@ class PrefsService extends ChangeNotifier {
   Set<int> get progressHeroHiddenListIds => _progressHeroHiddenListIds;
   bool isListProgressHeroHidden(int id) =>
       _progressHeroHiddenListIds.contains(id);
+
+  /// IDs of inventories whose no-restock-checklist notice the user closed.
+  Set<int> _restockNoticeHiddenListIds = {};
+  bool isRestockNoticeHidden(int id) =>
+      _restockNoticeHiddenListIds.contains(id);
 
   /// The app version of the most recent onboarding the user finished or
   /// skipped. `null` means the user has never seen any onboarding (treat as
@@ -567,6 +574,15 @@ class PrefsService extends ChangeNotifier {
           .toSet();
     }
 
+    final hiddenRestockIds = all[_restockNoticeHiddenListIdsKey];
+    if (hiddenRestockIds != null && hiddenRestockIds.isNotEmpty) {
+      _restockNoticeHiddenListIds = hiddenRestockIds
+          .split(',')
+          .map(int.tryParse)
+          .whereType<int>()
+          .toSet();
+    }
+
     _lastSeenOnboardingVersion = all[_lastSeenOnboardingVersionKey];
 
     _navOrder = decodeNavOrder(all[_navOrderKey]);
@@ -722,6 +738,7 @@ class PrefsService extends ChangeNotifier {
     _checklistDoneCollapsed = true;
     _allListsProgressHeroHidden = false;
     _progressHeroHiddenListIds = {};
+    _restockNoticeHiddenListIds = {};
     _lastSeenOnboardingVersion = null;
     _navOrder = List.of(kDefaultNavOrder);
     _navDisabled = {};
@@ -773,6 +790,7 @@ class PrefsService extends ChangeNotifier {
       _checklistDoneCollapsedKey,
       _allListsProgressHeroHiddenKey,
       _progressHeroHiddenListIdsKey,
+      _restockNoticeHiddenListIdsKey,
       _lastSeenOnboardingVersionKey,
       _navOrderKey,
       _navDisabledKey,

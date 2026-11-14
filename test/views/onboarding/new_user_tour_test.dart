@@ -4,6 +4,7 @@ import 'package:pantry/views/onboarding/onboarding_pages.dart';
 import 'package:pantry/views/onboarding/pages/add_items_page.dart';
 import 'package:pantry/views/onboarding/pages/barcode_scan_page.dart';
 import 'package:pantry/views/onboarding/pages/checklist_selector_page.dart';
+import 'package:pantry/views/onboarding/pages/inventory_page.dart';
 import 'package:pantry/views/onboarding/pages/quick_actions_page.dart';
 import 'package:pantry/views/onboarding/pages/shopping_mode_page.dart';
 import 'package:pantry/views/onboarding/pages/swipe_actions_page.dart';
@@ -18,16 +19,19 @@ const _androidPhone = OnboardingAudience(
   isNewUser: true,
   isAndroid: true,
   isDesktop: false,
+  hasInventories: true,
 );
 const _iphone = OnboardingAudience(
   isNewUser: true,
   isAndroid: false,
   isDesktop: false,
+  hasInventories: true,
 );
 const _desktop = OnboardingAudience(
   isNewUser: true,
   isAndroid: false,
   isDesktop: true,
+  hasInventories: true,
 );
 
 /// The page types a new user walks through on [audience]'s platform.
@@ -55,6 +59,7 @@ void main() {
       // Guaranteed for new users: nothing in the app hints that a watch app
       // exists until you look for it.
       WatchOnboardingPage,
+      InventoryOnboardingPage,
     ]);
   });
 
@@ -69,6 +74,7 @@ void main() {
       AddItemsOnboardingPage,
       BarcodeScanOnboardingPage,
       ShoppingModeOnboardingPage,
+      InventoryOnboardingPage,
     ]);
   });
 
@@ -82,7 +88,26 @@ void main() {
       QuickActionsOnboardingPage,
       AddItemsOnboardingPage,
       ShoppingModeOnboardingPage,
+      InventoryOnboardingPage,
     ]);
+  });
+
+  testWidgets('a new user on a server without inventories skips them', (
+    tester,
+  ) async {
+    final context = await _aContext(tester);
+
+    expect(
+      _tour(
+        context,
+        const OnboardingAudience(
+          isNewUser: true,
+          isAndroid: false,
+          isDesktop: false,
+        ),
+      ),
+      isNot(contains(InventoryOnboardingPage)),
+    );
   });
 
   test('every page still reaches an upgrader on some platform', () {

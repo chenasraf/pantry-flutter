@@ -1,20 +1,25 @@
-/// Identifies the three primary navigation destinations. Used both for
-/// in-app ordering (which the user can customize) and for resolving
-/// notification deep links to a tab.
+/// Identifies the primary navigation destinations. Used both for in-app
+/// ordering (which the user can customize) and for resolving notification
+/// deep links to a tab.
 enum NavSection {
   checklists,
+
+  /// The house's inventories, on servers with inventory stock.
+  inventories,
   photoBoard,
   notesWall;
 
   /// Serialized form persisted in prefs and emitted by [encodeList].
   String get id => switch (this) {
     NavSection.checklists => 'checklists',
+    NavSection.inventories => 'inventories',
     NavSection.photoBoard => 'photoBoard',
     NavSection.notesWall => 'notesWall',
   };
 
   static NavSection? fromId(String? id) => switch (id) {
     'checklists' => NavSection.checklists,
+    'inventories' => NavSection.inventories,
     'photoBoard' => NavSection.photoBoard,
     'notesWall' => NavSection.notesWall,
     _ => null,
@@ -36,23 +41,31 @@ enum NavSection {
 /// added a new section).
 const List<NavSection> kDefaultNavOrder = [
   NavSection.checklists,
+  NavSection.inventories,
   NavSection.photoBoard,
   NavSection.notesWall,
 ];
 
 /// Parse a comma-separated list of section ids into a complete ordered list.
-/// Unknown ids are dropped, missing sections are appended in their default
-/// order so the result always contains every [NavSection] exactly once.
+/// Unknown ids are dropped, so the result always contains every [NavSection]
+/// exactly once.
+///
+/// A section missing from [raw] goes right after the one it follows by
+/// default, so a section a build adds lands beside its neighbour rather than
+/// at the end of an order the user arranged.
 List<NavSection> decodeNavOrder(String? raw) {
   if (raw == null || raw.isEmpty) return List.of(kDefaultNavOrder);
-  final seen = <NavSection>{};
   final order = <NavSection>[];
   for (final part in raw.split(',')) {
     final s = NavSection.fromId(part.trim());
-    if (s != null && seen.add(s)) order.add(s);
+    if (s != null && !order.contains(s)) order.add(s);
   }
-  for (final s in kDefaultNavOrder) {
-    if (seen.add(s)) order.add(s);
+  for (var i = 0; i < kDefaultNavOrder.length; i++) {
+    final s = kDefaultNavOrder[i];
+    if (order.contains(s)) continue;
+    // Every default section before this one is in the order by now.
+    final at = i == 0 ? 0 : order.indexOf(kDefaultNavOrder[i - 1]) + 1;
+    order.insert(at, s);
   }
   return order;
 }

@@ -13,6 +13,23 @@ export 'package:pantry_core/models/stock_links.dart';
 /// negative. `0` is unused by both, which keeps the sentinel disjoint.
 const int kAllListsId = 0;
 
+/// Sentinel id of the synthetic "All inventories" meta view, the inventory
+/// counterpart of [kAllListsId]. Temp ids count down from -1, so the far end
+/// of the range stays out of their way.
+const int kAllInventoriesId = -0x80000000;
+
+/// Whether [id] names one of the synthetic "All" meta views rather than a
+/// list.
+bool isAllListsId(int? id) => id == kAllListsId || id == kAllInventoriesId;
+
+/// The sentinel id of [kind]'s "All" meta view, or null for a kind without
+/// one.
+int? allListsIdOf(ListKind kind) => switch (kind) {
+  ListKind.checklist => kAllListsId,
+  ListKind.inventory => kAllInventoriesId,
+  ListKind.template => null,
+};
+
 class ChecklistList {
   final int id;
   final int houseId;

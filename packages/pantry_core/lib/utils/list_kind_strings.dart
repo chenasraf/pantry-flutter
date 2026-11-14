@@ -141,6 +141,16 @@ class ListKindStrings {
     m.listKinds.inventory.listUnarchived,
     m.listKinds.template.listUnarchived,
   );
+
+  /// The meta view gathering every list of the kind. Templates have none, so
+  /// they keep the checklist wording.
+  String get allTitle => kind == ListKind.inventory
+      ? m.listKinds.inventory.allTitle
+      : m.checklists.allLists;
+
+  String get allSubtitle => kind == ListKind.inventory
+      ? m.listKinds.inventory.allSubtitle
+      : m.checklists.allListsSubtitle;
 }
 
 extension ListKindL10n on ListKind {

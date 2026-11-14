@@ -235,4 +235,13 @@ extension PrefsServiceChecklistSetters on PrefsService {
     );
     notifyListeners();
   }
+
+  Future<void> hideRestockNotice(int id) async {
+    if (!_restockNoticeHiddenListIds.add(id)) return;
+    await _storage.write(
+      key: PrefsService._restockNoticeHiddenListIdsKey,
+      value: _restockNoticeHiddenListIds.join(','),
+    );
+    notifyListeners();
+  }
 }

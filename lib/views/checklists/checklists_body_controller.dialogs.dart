@@ -229,7 +229,7 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
   /// Opens the Markdown export dialog for the current concrete list.
   Future<void> openExport(BuildContext context) async {
     final list = domain.currentList;
-    if (list == null || list.id == kAllListsId) return;
+    if (list == null || isAllListsId(list.id)) return;
     final items = domain.items.where((i) => i.deletedAt == null).toList();
     await showDialog<void>(
       context: context,
@@ -248,7 +248,7 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
   Future<void> openImport(BuildContext context) async {
     final prefs = PrefsService.instance;
     final list = domain.currentList;
-    if (list == null || list.id == kAllListsId) return;
+    if (list == null || isAllListsId(list.id)) return;
     final targetListId = list.id;
     // Close the dialog (it pops itself with the result) before processing so
     // any "ask" reuse prompts render over the list, not stacked on the dialog.
@@ -258,8 +258,7 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
         categories: domain.categoriesForList(targetListId),
         reusePref: prefs.reuseExistingItems,
         reuseFeatureAvailable: ServerFeature.reuseExistingItems,
-        onRequestCreateCategory: () =>
-            createCategory(context, defaultListId: targetListId),
+        onRequestCreateCategory: () => createCategory(context),
       ),
     );
     if (result == null || !context.mounted) return;

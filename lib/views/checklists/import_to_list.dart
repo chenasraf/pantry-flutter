@@ -45,7 +45,7 @@ Future<void> showImportToListDialog(
     if (!context.mounted) return;
 
     final lists = controller.sortedLists
-        .where((l) => l.id != kAllListsId && l.isWritable)
+        .where((l) => !isAllListsId(l.id) && l.isWritable)
         .toList();
     if (lists.isEmpty) {
       showAppToast(message: m.notesWall.importNoLists, kind: ToastKind.error);

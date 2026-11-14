@@ -26,6 +26,7 @@ import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 import 'package:pantry_core/utils/currencies.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
 import 'package:pantry_core/utils/stock_display.dart';
 import 'package:pantry_core/utils/stock_rules.dart';
 
@@ -322,10 +323,10 @@ class ChecklistsController extends ChangeNotifier {
 
   /// True when every row on screen is on the list the rail already names, so a
   /// chip naming it would repeat the header — the same rule that drops the
-  /// chip naming the current grouping. The all-lists view spans several, and a
+  /// chip naming the current grouping. The "All" views span several, and a
   /// trip spans several while the rail names the shop instead.
   bool get railNamesList =>
-      _session == null && _list != null && _list!.id != kAllListsId;
+      _session == null && _list != null && !isAllListsId(_list!.id);
 
   bool _loading = true;
   bool get isLoading => _loading;
@@ -583,11 +584,15 @@ class ChecklistsController extends ChangeNotifier {
 
   ChecklistList? _listFor(int? id, int house) {
     if (id == null) return null;
-    if (id == kAllListsId) {
+    if (isAllListsId(id)) {
+      final kind = id == kAllInventoriesId
+          ? ListKind.inventory
+          : ListKind.checklist;
       return ChecklistList(
-        id: kAllListsId,
+        id: id,
         houseId: house,
-        name: m.checklists.allLists,
+        name: kind.strings.allTitle,
+        kind: kind,
         icon: 'all-lists',
         sortOrder: -1 << 30,
         createdAt: 0,
@@ -603,14 +608,15 @@ class ChecklistsController extends ChangeNotifier {
   /// Every list the switcher offers, checklists first.
   List<ChecklistList> get _browsable => [..._lists, ..._inventories];
 
-  /// The all-lists view has no cache key of its own: it is the union of the
-  /// per-list snapshots, which is exactly what a fetch writes back.
+  /// The "All" views have no cache key of their own: each is the union of its
+  /// lists' snapshots, which is exactly what a fetch writes back.
   List<ListItem> _cachedItems(int? listId) {
     if (listId == null) return const [];
-    if (listId != kAllListsId) {
+    if (!isAllListsId(listId)) {
       return _checklists.getCachedItems(listId) ?? const [];
     }
-    return [for (final l in _lists) ...?_checklists.getCachedItems(l.id)];
+    final lists = listId == kAllInventoriesId ? _inventories : _lists;
+    return [for (final l in lists) ...?_checklists.getCachedItems(l.id)];
   }
 
   /// One pass over everything the page shows. Nothing here throws: a failed
@@ -651,6 +657,11 @@ class ChecklistsController extends ChangeNotifier {
   var _cacheAgain = false;
 
   Future<void> _refresh() async {
+    // Inventories, sorts, trips and the rest are gated on the server's version,
+    // which a watch signed in since its last launch has never read.
+    if (ServerVersionService.instance.pantryVersion == null) {
+      await ServerVersionService.instance.fetch();
+    }
     await _refreshHouses();
     await _refreshSession();
     // A trip the poll or the mirror has just found is a trip that became live
@@ -907,11 +918,16 @@ class ChecklistsController extends ChangeNotifier {
       // readily as a watch's it is the only place a check made by a previous
       // launch still exists.
       final held = _cachedItems(listId);
-      final fetched = listId == kAllListsId
-          ? await _checklists.getHouseItems(house)
+      final fetched = isAllListsId(listId)
+          ? await _checklists.getHouseItems(
+              house,
+              kind: listId == kAllInventoriesId
+                  ? ListKind.inventory
+                  : ListKind.checklist,
+            )
           : await _checklists.getItems(house, listId);
       final overlaid = _withPendingWrites(fetched, held, house);
-      if (listId == kAllListsId) {
+      if (isAllListsId(listId)) {
         _cacheByList(overlaid);
       } else {
         _checklists.cacheItems(listId, overlaid);
@@ -941,12 +957,16 @@ class ChecklistsController extends ChangeNotifier {
   }
 
   /// The list's own sort, on servers that keep one per list. A failed read
-  /// keeps the cached answer, which falls back to the house's sort.
+  /// keeps the cached answer, which falls back to the house's sort. Both "All"
+  /// views read the server's one meta-view slot, as the phone does.
   Future<void> _refreshListSort(int house, int listId) async {
     _itemSort = _checklists.cachedItemSort(house, listId);
     if (!ServerFeature.listItemSort) return;
     try {
-      final sort = await _checklists.getListItemSort(house, listId);
+      final sort = await _checklists.getListItemSort(
+        house,
+        isAllListsId(listId) ? kAllListsId : listId,
+      );
       _checklists.cacheItemSort(house, listId, sort);
       if (_list?.id == listId) _itemSort = sort;
     } catch (_) {}
@@ -1501,20 +1521,35 @@ class ChecklistsController extends ChangeNotifier {
     return defaultExpiryLeadDays;
   }
 
-  /// Keeps the switcher's counter in step with the rows on screen, which only
-  /// the inventory being browsed holds in full.
+  /// Keeps the switcher's counters in step with the rows on screen, which only
+  /// the inventory being browsed holds in full — or, on "All inventories",
+  /// every inventory.
   void _recountNeedsRestock() {
     final list = _list;
     if (list == null || list.kind != ListKind.inventory) return;
-    final count = _items
-        .where((i) => i.listId == list.id && i.needsStockRestock)
-        .length;
-    if (count == list.needsRestock) return;
-    final recounted = list.copyWith(needsRestock: count);
-    _list = recounted;
-    _inventories = [
-      for (final l in _inventories) l.id == list.id ? recounted : l,
-    ];
+    final all = list.id == kAllInventoriesId;
+    final counts = <int, int>{};
+    for (final i in _items) {
+      if (i.needsStockRestock) {
+        counts.update(i.listId, (n) => n + 1, ifAbsent: () => 1);
+      }
+    }
+    var changed = false;
+    final recounted = <ChecklistList>[];
+    for (final l in _inventories) {
+      final count = counts[l.id] ?? 0;
+      if ((all || l.id == list.id) && count != l.needsRestock) {
+        recounted.add(l.copyWith(needsRestock: count));
+        changed = true;
+      } else {
+        recounted.add(l);
+      }
+    }
+    if (!changed) return;
+    _inventories = recounted;
+    if (!all) {
+      _list = recounted.where((l) => l.id == list.id).firstOrNull ?? list;
+    }
     final house = _houseId;
     if (house != null) {
       _checklists.cacheListsOfKind(house, ListKind.inventory, _inventories);

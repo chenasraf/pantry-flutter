@@ -71,6 +71,7 @@ class ChecklistService {
   static const _listsPrefix = 'lists';
   static const _itemsPrefix = 'items';
   static const _selectedListKey = 'selectedListId';
+  static const _selectedInventoryKey = 'selectedInventoryId';
 
   // Legacy single-house lists cache (before the snapshot was keyed per house):
   // a single `houseId` marker meant switching houses offline wiped the other
@@ -85,6 +86,12 @@ class ChecklistService {
   int? get selectedListId => cache.get<int>(_selectedListKey);
   set selectedListId(int? id) => cache.set(_selectedListKey, id);
 
+  /// The list open in the Inventories tab, kept apart from [selectedListId] —
+  /// which the widgets and the watch follow — so the two tabs each reopen on
+  /// their own list.
+  int? get selectedInventoryId => cache.get<int>(_selectedInventoryKey);
+  set selectedInventoryId(int? id) => cache.set(_selectedInventoryKey, id);
+
   /// Transient (in-memory) request to open an item's detail once its list is
   /// loaded — set by an item deep link, consumed by the checklists view.
   int? pendingOpenItemId;
@@ -92,6 +99,11 @@ class ChecklistService {
   /// Transient request to open the next inventory shown on its Needs restock
   /// filter — set by a stock summary notification.
   bool pendingNeedsRestockFilter = false;
+
+  /// Which view the pending requests above are for: the Inventories tab's
+  /// [ListKind.inventory], or null for the lists section. Both views are alive
+  /// at once, and only the one the link opened may consume them.
+  ListKind? pendingLinkSection;
 
   // -- List kinds --
 
@@ -115,7 +127,7 @@ class ChecklistService {
   void rememberKinds(Iterable<ChecklistList> lists) {
     var changed = false;
     for (final l in lists) {
-      if (l.id == kAllListsId) continue;
+      if (isAllListsId(l.id)) continue;
       if (_kindMap[l.id] != l.kind) {
         _kindMap[l.id] = l.kind;
         changed = true;

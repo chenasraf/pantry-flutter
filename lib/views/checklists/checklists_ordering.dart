@@ -1,15 +1,22 @@
-import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
 
-export 'package:pantry_core/models/checklist.dart' show kAllListsId;
+export 'package:pantry_core/models/checklist.dart'
+    show kAllListsId, kAllInventoriesId, isAllListsId;
 
-/// Builds the synthetic "All lists" entry. Never persisted, never reordered;
-/// the switcher surfaces it manually at position 0.
-ChecklistList allListsSentinel(int houseId) => ChecklistList(
-  id: kAllListsId,
+/// Builds the synthetic "All lists" entry, or "All inventories" for
+/// [ListKind.inventory]. Never persisted, never reordered; the switcher
+/// surfaces it manually at position 0.
+ChecklistList allListsSentinel(
+  int houseId, {
+  ListKind kind = ListKind.checklist,
+}) => ChecklistList(
+  id: allListsIdOf(kind) ?? kAllListsId,
   houseId: houseId,
-  name: m.checklists.allLists,
+  name: kind.strings.allTitle,
+  kind: kind == ListKind.inventory ? kind : ListKind.checklist,
   icon: 'all-lists',
   sortOrder: -1 << 30,
   createdAt: 0,

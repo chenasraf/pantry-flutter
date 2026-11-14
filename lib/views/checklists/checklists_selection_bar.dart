@@ -174,7 +174,7 @@ class SelectionActionBar extends StatelessWidget {
   List<ChecklistList> _targetLists() {
     final currentId = controller.isMetaMode ? null : controller.currentList?.id;
     return controller.lists
-        .where((l) => l.id != kAllListsId && l.id != currentId)
+        .where((l) => !isAllListsId(l.id) && l.id != currentId)
         .toList();
   }
 

@@ -441,7 +441,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
     }
     return (
       label: list.name,
-      icon: list.id == kAllListsId ? allListsIcon : checklistIcon(list.icon),
+      icon: isAllListsId(list.id) ? allListsIcon : checklistIcon(list.icon),
       color: parseHexColor(list.color) ?? _chrome,
     );
   }

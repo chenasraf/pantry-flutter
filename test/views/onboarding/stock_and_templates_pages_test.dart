@@ -50,23 +50,34 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  test('both pages are offered to upgraders only', () {
-    const upgrader = OnboardingAudience(
-      isNewUser: false,
-      isAndroid: true,
-      isDesktop: false,
-    );
-    const newUser = OnboardingAudience(
-      isNewUser: true,
-      isAndroid: true,
-      isDesktop: false,
-    );
-    final entries = kAppOnboardingPages['0.38.0']!;
+  test(
+    'inventories reach new users with the tab, templates upgraders only',
+    () {
+      const upgrader = OnboardingAudience(
+        isNewUser: false,
+        isAndroid: true,
+        isDesktop: false,
+      );
+      const newUser = OnboardingAudience(
+        isNewUser: true,
+        isAndroid: true,
+        isDesktop: false,
+      );
+      const newUserWithInventories = OnboardingAudience(
+        isNewUser: true,
+        isAndroid: true,
+        isDesktop: false,
+        hasInventories: true,
+      );
+      final entries = kAppOnboardingPages['0.38.0']!;
 
-    expect(entries, hasLength(2));
-    for (final entry in entries) {
-      expect(entry.showWhen!(upgrader), isTrue);
-      expect(entry.showWhen!(newUser), isFalse);
-    }
-  });
+      expect(entries, hasLength(2));
+      final [inventory, templates] = entries;
+      expect(inventory.showWhen!(upgrader), isTrue);
+      expect(inventory.showWhen!(newUserWithInventories), isTrue);
+      expect(inventory.showWhen!(newUser), isFalse);
+      expect(templates.showWhen!(upgrader), isTrue);
+      expect(templates.showWhen!(newUser), isFalse);
+    },
+  );
 }
