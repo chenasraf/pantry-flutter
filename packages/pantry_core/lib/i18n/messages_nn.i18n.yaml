@@ -1544,6 +1544,7 @@ shopping:
   grandTotal: Totalsum
   itemsWithoutPrice(int count): "${_plural(count, one: '1 vare utan pris', many: '$count varer utan pris')}"
   itemsStillUnchecked(int count): "${_plural(count, one: '1 vare enno ikkje kryssa av', many: '$count varer enno ikkje kryssa av')}"
+  finishChecksOff: Når du avsluttar handleturen, blir desse varene kryssa av på listene sine.
   anyStore: Kva som helst butikk
   editTotalsTitle: Rediger summane for handelen
   editTotals: Rediger summar

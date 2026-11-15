@@ -395,7 +395,12 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
                   const SizedBox(height: 16),
                 ],
                 if (widget.mode != ShoppingReviewMode.advance)
-                  _GrandTotal(review: review!),
+                  _GrandTotal(
+                    review: review!,
+                    finishing:
+                        widget.mode == ShoppingReviewMode.close &&
+                        ServerFeature.shoppingDeferredChecks,
+                  ),
               ],
             ),
       // A finished trip has no transition to confirm, amended or not: each
@@ -725,7 +730,11 @@ class _ReviewItemRow extends StatelessWidget {
 class _GrandTotal extends StatelessWidget {
   final ShoppingReview review;
 
-  const _GrandTotal({required this.review});
+  /// Says that finishing is what checks the items off, where trip checks wait
+  /// for it.
+  final bool finishing;
+
+  const _GrandTotal({required this.review, this.finishing = false});
 
   @override
   Widget build(BuildContext context) {
@@ -751,6 +760,16 @@ class _GrandTotal extends StatelessWidget {
             padding: const EdgeInsets.only(top: 4),
             child: Text(
               m.shopping.itemsStillUnchecked(review.uncheckedCount),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+        if (finishing)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              m.shopping.finishChecksOff,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),

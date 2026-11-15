@@ -7411,6 +7411,12 @@ class ShoppingMessagesEs extends ShoppingMessages {
       """${_plural(count, one: '1 artículo sin marcar', many: '$count artículos sin marcar')}""";
 
   /// ```dart
+  /// "Al terminar la compra, estos artículos se marcan en sus listas."
+  /// ```
+  String get finishChecksOff =>
+      """Al terminar la compra, estos artículos se marcan en sus listas.""";
+
+  /// ```dart
   /// "Cualquier tienda"
   /// ```
   String get anyStore => """Cualquier tienda""";
@@ -10605,6 +10611,8 @@ Contraseña: pantry-rocks""",
   """shopping.advanceTitle""": """Siguiente tienda""",
   """shopping.actualPaid""": """Pagado real""",
   """shopping.grandTotal""": """Total""",
+  """shopping.finishChecksOff""":
+      """Al terminar la compra, estos artículos se marcan en sus listas.""",
   """shopping.anyStore""": """Cualquier tienda""",
   """shopping.editTotalsTitle""": """Editar los totales de la compra""",
   """shopping.editTotals""": """Editar totales""",

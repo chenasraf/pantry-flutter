@@ -134,13 +134,17 @@ class ShoppingSessionController extends ChangeNotifier {
   /// Items unchecked locally but still reported as checked by the server (see
   /// [_uncheckedPending]) are filtered out so the drawer reacts instantly.
   ///
-  /// A linked item whose tick fell short of what several inventories needed
-  /// comes straight back unchecked; it belongs on the buy list, not here.
+  /// Where a trip check ticks the item at once, a linked item whose tick fell
+  /// short of what several inventories needed comes straight back unchecked;
+  /// it belongs on the buy list, not here. Where checks wait for the trip to
+  /// finish, every logged item is still open, and all of them are in the cart.
   List<ListItem> get doneItems => [
     for (final s in _review?.stores ?? const <ShoppingReviewStore>[])
       for (final i in s.items)
         if (!_uncheckedPending.contains(i.id) &&
-            (i.done || !ServerFeature.inventoryStock))
+            (i.done ||
+                !ServerFeature.inventoryStock ||
+                ServerFeature.shoppingDeferredChecks))
           i,
   ];
 
@@ -207,6 +211,12 @@ class ShoppingSessionController extends ChangeNotifier {
   /// This shopper's checks and unchecks whose answers may still bring stock
   /// feedback, by the item checked.
   final _stockFeedback = RestockFeedbackTracker<int>();
+
+  /// Whether a trip check restocks when it lands. Where checks wait for the
+  /// trip to finish, nothing is restocked until then, so there is nothing to
+  /// report.
+  bool get _checksRestock =>
+      ServerFeature.inventoryStock && !ServerFeature.shoppingDeferredChecks;
 
   StreamSubscription<SyncOpApplied>? _appliedSub;
   StreamSubscription<SyncOpSkipped>? _skippedSub;
@@ -690,7 +700,7 @@ class ShoppingSessionController extends ChangeNotifier {
     _items = _items.where((i) => i.id != item.id).toList();
     notifyListeners();
     final opUuid = SyncIds.newOpUuid();
-    if (ServerFeature.inventoryStock) _stockFeedback.track(opUuid, item.id);
+    if (_checksRestock) _stockFeedback.track(opUuid, item.id);
     SyncManager.instance.enqueue(
       SyncOp(
         uuid: opUuid,
@@ -717,7 +727,7 @@ class ShoppingSessionController extends ChangeNotifier {
     }
     notifyListeners();
     final opUuid = SyncIds.newOpUuid();
-    if (ServerFeature.inventoryStock) _stockFeedback.track(opUuid, item.id);
+    if (_checksRestock) _stockFeedback.track(opUuid, item.id);
     SyncManager.instance.enqueue(
       SyncOp(
         uuid: opUuid,

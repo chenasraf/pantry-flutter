@@ -7357,6 +7357,12 @@ class ShoppingMessagesNn extends ShoppingMessages {
       """${_plural(count, one: '1 vare enno ikkje kryssa av', many: '$count varer enno ikkje kryssa av')}""";
 
   /// ```dart
+  /// "Når du avsluttar handleturen, blir desse varene kryssa av på listene sine."
+  /// ```
+  String get finishChecksOff =>
+      """Når du avsluttar handleturen, blir desse varene kryssa av på listene sine.""";
+
+  /// ```dart
   /// "Kva som helst butikk"
   /// ```
   String get anyStore => """Kva som helst butikk""";
@@ -10502,6 +10508,8 @@ Passord: pantry""",
   """shopping.advanceTitle""": """Neste butikk""",
   """shopping.actualPaid""": """Faktisk betalt""",
   """shopping.grandTotal""": """Totalsum""",
+  """shopping.finishChecksOff""":
+      """Når du avsluttar handleturen, blir desse varene kryssa av på listene sine.""",
   """shopping.anyStore""": """Kva som helst butikk""",
   """shopping.editTotalsTitle""": """Rediger summane for handelen""",
   """shopping.editTotals""": """Rediger summar""",

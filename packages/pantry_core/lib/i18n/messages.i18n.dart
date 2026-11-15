@@ -7335,6 +7335,12 @@ class ShoppingMessages {
       """${_plural(count, one: '1 item still unchecked', many: '$count items still unchecked')}""";
 
   /// ```dart
+  /// "Finishing the trip checks these items off on their lists."
+  /// ```
+  String get finishChecksOff =>
+      """Finishing the trip checks these items off on their lists.""";
+
+  /// ```dart
   /// "Any store"
   /// ```
   String get anyStore => """Any store""";
@@ -10455,6 +10461,8 @@ Password: pantry-rocks""",
   """shopping.advanceTitle""": """Next store""",
   """shopping.actualPaid""": """Actual paid""",
   """shopping.grandTotal""": """Grand total""",
+  """shopping.finishChecksOff""":
+      """Finishing the trip checks these items off on their lists.""",
   """shopping.anyStore""": """Any store""",
   """shopping.editTotalsTitle""": """Edit trip totals""",
   """shopping.editTotals""": """Edit totals""",

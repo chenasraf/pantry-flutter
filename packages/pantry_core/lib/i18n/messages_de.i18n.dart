@@ -7424,6 +7424,12 @@ class ShoppingMessagesDe extends ShoppingMessages {
       """${_plural(count, one: '1 Artikel noch nicht abgehakt', many: '$count Artikel noch nicht abgehakt')}""";
 
   /// ```dart
+  /// "Wenn du den Einkauf beendest, werden diese Artikel auf ihren Listen abgehakt."
+  /// ```
+  String get finishChecksOff =>
+      """Wenn du den Einkauf beendest, werden diese Artikel auf ihren Listen abgehakt.""";
+
+  /// ```dart
   /// "Beliebiges Geschäft"
   /// ```
   String get anyStore => """Beliebiges Geschäft""";
@@ -10636,6 +10642,8 @@ Passwort: pantry-rocks""",
   """shopping.advanceTitle""": """Nächstes Geschäft""",
   """shopping.actualPaid""": """Tatsächlich bezahlt""",
   """shopping.grandTotal""": """Gesamtsumme""",
+  """shopping.finishChecksOff""":
+      """Wenn du den Einkauf beendest, werden diese Artikel auf ihren Listen abgehakt.""",
   """shopping.anyStore""": """Beliebiges Geschäft""",
   """shopping.editTotalsTitle""": """Summen des Einkaufs bearbeiten""",
   """shopping.editTotals""": """Summen bearbeiten""",

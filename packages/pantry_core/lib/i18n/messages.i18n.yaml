@@ -1409,6 +1409,7 @@ shopping:
   grandTotal: Grand total
   itemsWithoutPrice(int count): "${_plural(count, one: '1 item without a price', many: '$count items without a price')}"
   itemsStillUnchecked(int count): "${_plural(count, one: '1 item still unchecked', many: '$count items still unchecked')}"
+  finishChecksOff: Finishing the trip checks these items off on their lists.
   anyStore: Any store
   # Amending a past trip
   editTotalsTitle: Edit trip totals

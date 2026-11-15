@@ -1403,6 +1403,7 @@ shopping:
   grandTotal: Gesamtsumme
   itemsWithoutPrice(int count): "${_plural(count, one: '1 Artikel ohne Preis', many: '$count Artikel ohne Preis')}"
   itemsStillUnchecked(int count): "${_plural(count, one: '1 Artikel noch nicht abgehakt', many: '$count Artikel noch nicht abgehakt')}"
+  finishChecksOff: Wenn du den Einkauf beendest, werden diese Artikel auf ihren Listen abgehakt.
   anyStore: Beliebiges Geschäft
   editTotalsTitle: Summen des Einkaufs bearbeiten
   editTotals: Summen bearbeiten

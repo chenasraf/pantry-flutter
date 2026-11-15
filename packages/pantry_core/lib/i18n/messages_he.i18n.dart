@@ -7338,6 +7338,12 @@ class ShoppingMessagesHe extends ShoppingMessages {
       """${_plural(count, one: 'פריט אחד עדיין לא סומן', many: '$count פריטים עדיין לא סומנו')}""";
 
   /// ```dart
+  /// "סיום הקנייה מסמן את הפריטים האלה ברשימות שלהם."
+  /// ```
+  String get finishChecksOff =>
+      """סיום הקנייה מסמן את הפריטים האלה ברשימות שלהם.""";
+
+  /// ```dart
   /// "כל חנות"
   /// ```
   String get anyStore => """כל חנות""";
@@ -10426,6 +10432,8 @@ Map<String, String> get messagesHeMap => {
   """shopping.advanceTitle""": """החנות הבאה""",
   """shopping.actualPaid""": """שולם בפועל""",
   """shopping.grandTotal""": """סך הכול""",
+  """shopping.finishChecksOff""":
+      """סיום הקנייה מסמן את הפריטים האלה ברשימות שלהם.""",
   """shopping.anyStore""": """כל חנות""",
   """shopping.editTotalsTitle""": """עריכת סכומי הקנייה""",
   """shopping.editTotals""": """עריכת סכומים""",

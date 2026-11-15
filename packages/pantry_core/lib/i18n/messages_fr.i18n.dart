@@ -7416,6 +7416,12 @@ class ShoppingMessagesFr extends ShoppingMessages {
       """${_plural(count, one: '1 article non coché', many: '$count articles non cochés')}""";
 
   /// ```dart
+  /// "Terminer les courses coche ces articles sur leurs listes."
+  /// ```
+  String get finishChecksOff =>
+      """Terminer les courses coche ces articles sur leurs listes.""";
+
+  /// ```dart
   /// "N'importe quel magasin"
   /// ```
   String get anyStore => """N'importe quel magasin""";
@@ -10622,6 +10628,8 @@ Mot de passe : pantry-rocks""",
   """shopping.advanceTitle""": """Magasin suivant""",
   """shopping.actualPaid""": """Payé réel""",
   """shopping.grandTotal""": """Total général""",
+  """shopping.finishChecksOff""":
+      """Terminer les courses coche ces articles sur leurs listes.""",
   """shopping.anyStore""": """N'importe quel magasin""",
   """shopping.editTotalsTitle""": """Modifier les totaux des courses""",
   """shopping.editTotals""": """Modifier les totaux""",
