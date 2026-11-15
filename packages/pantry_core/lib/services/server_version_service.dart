@@ -401,4 +401,5 @@ abstract final class ServerFeature {
 
   static bool get inventoryAllView => _since('0.39.0');
   static bool get shoppingPutAway => _since('0.39.0');
+  static bool get absoluteItemToggle => _since('0.39.0');
 }

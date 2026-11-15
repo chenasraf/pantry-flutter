@@ -337,8 +337,14 @@ class SyncQueue {
     // A note's toggle addresses a task line rather than the record, so two ops
     // on one note are only the same write when they name the same line — and
     // because each carries a target state rather than a flip, the last of them
-    // says everything the earlier ones did. Every other entity flips, so an
-    // even number of ops is a no-op.
+    // says everything the earlier ones did.
+    //
+    // A checklist item's toggle names its target in `done`, but servers that
+    // only flip send it as a flip, so the group collapses the same way for
+    // both: when the last op lands where the first did, the item moves once
+    // and the last op alone carries it; otherwise it ends where it started and
+    // nothing is sent. A toggle without `done` flips, so an even number of
+    // those is a no-op.
     final byRecord = <String, List<SyncOp>>{};
     for (final op in ops) {
       if (op.op != SyncOpKind.toggle) continue;
@@ -350,9 +356,16 @@ class SyncQueue {
     final dropped = <String>{};
     for (final group in byRecord.values) {
       if (group.length < 2) continue;
-      final keep = group.first.entity == SyncEntity.note
-          ? group.last
-          : (group.length.isOdd ? group.last : null);
+      final SyncOp? keep;
+      if (group.first.entity == SyncEntity.note) {
+        keep = group.last;
+      } else if (group.every((o) => o.body['done'] is bool)) {
+        keep = group.last.body['done'] == group.first.body['done']
+            ? group.last
+            : null;
+      } else {
+        keep = group.length.isOdd ? group.last : null;
+      }
       for (final op in group) {
         if (op != keep) dropped.add(op.uuid);
       }

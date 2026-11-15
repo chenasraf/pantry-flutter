@@ -686,6 +686,7 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
         parentId: item.listId,
         entityId: item.id < 0 ? null : item.id,
         tempEntityId: item.id < 0 ? item.id : null,
+        body: {'done': !item.done},
         createdAt: _now(),
       ),
     );

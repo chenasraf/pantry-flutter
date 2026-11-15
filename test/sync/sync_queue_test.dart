@@ -205,6 +205,42 @@ void main() {
       expect(q.isEmpty, isTrue);
     });
 
+    SyncOp itemToggle(String uuid, bool done) => _op(
+      uuid: uuid,
+      entity: SyncEntity.checklistItem,
+      op: SyncOpKind.toggle,
+      entityId: 10,
+      body: {'done': done},
+    );
+
+    test('item toggles ending where they started collapse to nothing', () {
+      final q = _newQueue()
+        ..enqueue(itemToggle('t0', true))
+        ..enqueue(itemToggle('t1', false));
+      q.merge();
+      expect(q.isEmpty, isTrue);
+    });
+
+    test('item toggles that move the item keep the latest', () {
+      final q = _newQueue()
+        ..enqueue(itemToggle('t0', true))
+        ..enqueue(itemToggle('t1', false))
+        ..enqueue(itemToggle('t2', true));
+      q.merge();
+      expect(q.length, 1);
+      expect(q.peek()!.uuid, 't2');
+      expect(q.peek()!.body['done'], isTrue);
+    });
+
+    test('repeated item toggles to one state keep the latest', () {
+      final q = _newQueue()
+        ..enqueue(itemToggle('t0', true))
+        ..enqueue(itemToggle('t1', true));
+      q.merge();
+      expect(q.length, 1);
+      expect(q.peek()!.uuid, 't1');
+    });
+
     test('note ticks on one line keep the latest, never cancel', () {
       final q = _newQueue();
       for (var i = 0; i < 2; i++) {

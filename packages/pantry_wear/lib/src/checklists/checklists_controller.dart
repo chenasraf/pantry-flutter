@@ -1300,6 +1300,7 @@ class ChecklistsController extends ChangeNotifier {
         parentId: item.listId,
         entityId: item.id < 0 ? null : item.id,
         tempEntityId: item.id < 0 ? item.id : null,
+        body: {'done': done},
         createdAt: DateTime.now().millisecondsSinceEpoch,
       ),
     );

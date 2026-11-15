@@ -280,9 +280,17 @@ extension ChecklistServiceItems on ChecklistService {
     );
   }
 
-  Future<ListItem> toggleItem(int houseId, int listId, int itemId) async {
+  /// Flips the item's done state, or with [done] sets it to that state and
+  /// leaves an item already there untouched.
+  Future<ListItem> toggleItem(
+    int houseId,
+    int listId,
+    int itemId, {
+    bool? done,
+  }) async {
     return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
       '${listPath(houseId, listId)}/items/$itemId/toggle',
+      body: done == null ? null : {'done': done},
       fromJson: (data) => ListItem.fromJson(data),
     );
   }

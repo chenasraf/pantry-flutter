@@ -17,6 +17,7 @@ import 'package:pantry_core/services/label_service.dart';
 import 'package:pantry_core/services/note_service.dart';
 import 'package:pantry_core/services/pending_upload_store.dart';
 import 'package:pantry_core/services/photo_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/services/store_service.dart';
 import 'package:pantry_core/sync/sync_op.dart';
@@ -374,7 +375,16 @@ class SyncExecutor {
         return SyncResult.empty;
       case SyncOpKind.toggle:
         if (listId == null || id == null) return SyncResult.empty;
-        final item = await svc.toggleItem(houseId, listId, id);
+        // A toggle held over a timeout may already have landed, so a replayed
+        // flip would undo it. Servers that take the target state make the
+        // replay a no-op; older ones only flip.
+        final done = op.body['done'] as bool?;
+        final item = await svc.toggleItem(
+          houseId,
+          listId,
+          id,
+          done: ServerFeature.absoluteItemToggle ? done : null,
+        );
         return SyncResult(item);
       case SyncOpKind.restore:
         if (listId == null || id == null) return SyncResult.empty;

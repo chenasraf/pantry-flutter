@@ -78,6 +78,7 @@ Future<void> _toggle(Uri uri) async {
       parentId: listId,
       entityId: itemId < 0 ? null : itemId,
       tempEntityId: itemId < 0 ? itemId : null,
+      body: {'done': !item.done},
       createdAt: DateTime.now().millisecondsSinceEpoch,
     ),
   );
