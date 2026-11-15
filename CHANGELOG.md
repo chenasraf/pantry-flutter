@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.39.0](https://github.com/chenasraf/pantry-flutter/compare/v0.38.0...v0.39.0) (2026-11-15)
+
+
+### Features
+
+* **categories:** warn when a category with the same name already exists ([22ce27b](https://github.com/chenasraf/pantry-flutter/commit/22ce27b3b90bd3fdf01cffce0e81e370f0909240))
+* **inventory:** add all-inventories view and shopping put away ([#203](https://github.com/chenasraf/pantry-flutter/issues/203)) ([2a801b8](https://github.com/chenasraf/pantry-flutter/commit/2a801b81c0c356d23351cbb850908a4244fa1641))
+* **notes:** option to move checked checklist items to the bottom of a note ([8f2c1d8](https://github.com/chenasraf/pantry-flutter/commit/8f2c1d80c28ae6739ab126d4f417746b981355d8))
+* **notes:** tap anywhere on a checklist item to check it ([e29d6b3](https://github.com/chenasraf/pantry-flutter/commit/e29d6b34d8ad9a674419ceb521b097a8c415e050))
+* **shopping:** add an option to keep the screen on while shopping ([a600e2e](https://github.com/chenasraf/pantry-flutter/commit/a600e2e5a0cdbe050f1765d65d6d189d563c1caa)), closes [#205](https://github.com/chenasraf/pantry-flutter/issues/205)
+* **shopping:** allow cancelling a shopping trip without changing any lists ([bf359e7](https://github.com/chenasraf/pantry-flutter/commit/bf359e7526ffefbb23d262a1e815fc76287c1253))
+* **shopping:** items checked on a trip are checked off when you finish it ([0130516](https://github.com/chenasraf/pantry-flutter/commit/01305162d00c33e4a34695d713f20ce68109d794))
+* **shopping:** step the amount bought on trip items ([4ca0c13](https://github.com/chenasraf/pantry-flutter/commit/4ca0c1391ff86b8b229fe89ad6cc2b7088331b99))
+
+
+### Bug Fixes
+
+* auto-refresh no longer re-downloads every list each time ([6d64c45](https://github.com/chenasraf/pantry-flutter/commit/6d64c45fa4b7ee9809e82a058f033f77c060c183))
+* **barcode:** name unnamed Open Food Facts products from lang name, category or brand ([73b55fc](https://github.com/chenasraf/pantry-flutter/commit/73b55fc80ba9bdf2a861c638e3fef9474f6bbd64))
+* **categories:** keep your category order when reordering after adding a category ([c15aa3f](https://github.com/chenasraf/pantry-flutter/commit/c15aa3fe68a33fcd91473f64cd8e9f316f97bf11))
+* **checklists:** reconnecting no longer reopens items already checked off ([84569ef](https://github.com/chenasraf/pantry-flutter/commit/84569ef049bf03f51b46ae411ae5f268a40c890b)), closes [#209](https://github.com/chenasraf/pantry-flutter/issues/209)
+* **lists:** set both on hand and target when adding to an inventory ([0dc1d10](https://github.com/chenasraf/pantry-flutter/commit/0dc1d10f97ddd0bacc870b764c6f181f46f38efa))
+* **notes:** erasing the first checklist item now removes its checkbox ([8df5341](https://github.com/chenasraf/pantry-flutter/commit/8df53410fe29bbca6462da8f97718fd1712edc03))
+* say why the server refused a change instead of only its error code ([967786b](https://github.com/chenasraf/pantry-flutter/commit/967786b9cc271104fcaeab5c42f5a8a6ba3bf6f9))
+* **shopping:** show the estimated total in the amount paid field ([b2d9dba](https://github.com/chenasraf/pantry-flutter/commit/b2d9dba47b3dc279685815dca2aa484dca47f36f))
+* show all categories, labels, stores and other lists in large households ([025852d](https://github.com/chenasraf/pantry-flutter/commit/025852d28b0a41af86f891c99c2992ffae9d3b19))
+* stop spurious connection errors when leaving the app mid-refresh ([c7e6d3a](https://github.com/chenasraf/pantry-flutter/commit/c7e6d3a12d674968ced3f3bcb6b0a44d75742a14))
+
 ## [0.38.0](https://github.com/chenasraf/pantry-flutter/compare/v0.37.1...v0.38.0) (2026-10-30)
 
 
