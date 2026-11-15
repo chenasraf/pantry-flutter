@@ -10,6 +10,7 @@ import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 import 'package:pantry_core/utils/field_type_icons.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/theme/app_theme.dart';
@@ -93,13 +94,22 @@ class _CustomFieldsViewState extends State<CustomFieldsView> {
     });
     // Show cached fields immediately so the screen is usable offline.
     final cached = CustomFieldService.instance.getCached(widget.houseId);
-    if (cached != null && mounted) {
-      setState(() => _fields = CustomFieldService.sortFields(cached));
+    // Fields can be scoped to a list of any kind.
+    final cachedLists = ChecklistService.instance.getCachedListsOfEveryKind(
+      widget.houseId,
+    );
+    if (mounted && (cached != null || cachedLists != null)) {
+      setState(() {
+        if (cached != null) _fields = CustomFieldService.sortFields(cached);
+        if (cachedLists != null) {
+          _lists = ChecklistService.sortLists(cachedLists, 'custom');
+        }
+      });
     }
     try {
       final results = await Future.wait([
         CustomFieldService.instance.getFields(widget.houseId),
-        ChecklistService.instance.getLists(widget.houseId),
+        ChecklistService.instance.getListsOfEveryKind(widget.houseId),
       ]);
       if (!mounted) return;
       setState(() {
@@ -152,7 +162,11 @@ class _CustomFieldsViewState extends State<CustomFieldsView> {
       final fields = byList.remove(list.id);
       if (fields != null && fields.isNotEmpty) {
         groups.add(
-          FieldGroup(listId: list.id, title: list.name, fields: fields),
+          FieldGroup(
+            listId: list.id,
+            title: scopedListName(list, _lists),
+            fields: fields,
+          ),
         );
       }
     }

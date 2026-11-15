@@ -9,6 +9,7 @@ import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 import 'package:pantry_core/utils/label_icons.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/widgets/create_label_dialog.dart';
 
@@ -54,8 +55,18 @@ class _LabelsViewState extends State<LabelsView> {
       );
       final labelsFuture = LabelService.instance.getLabels(widget.houseId);
       // Lists back the per-scope grouping; only needed when scoping is on.
+      // Labels can be scoped to a list of any kind, and a failed fetch falls
+      // back to the cache so sections keep their names.
       final listsFuture = _scopingEnabled
-          ? ChecklistService.instance.getLists(widget.houseId)
+          ? ChecklistService.instance
+                .getListsOfEveryKind(widget.houseId)
+                .catchError(
+                  (Object _) =>
+                      ChecklistService.instance.getCachedListsOfEveryKind(
+                        widget.houseId,
+                      ) ??
+                      const <ChecklistList>[],
+                )
           : Future.value(const <ChecklistList>[]);
       final results = await Future.wait([
         prefsFuture,
@@ -174,7 +185,11 @@ class _LabelsViewState extends State<LabelsView> {
       final labels = byList.remove(list.id);
       if (labels != null && labels.isNotEmpty) {
         groups.add(
-          _LabelGroup(listId: list.id, title: list.name, labels: labels),
+          _LabelGroup(
+            listId: list.id,
+            title: scopedListName(list, _lists),
+            labels: labels,
+          ),
         );
       }
     }

@@ -4,6 +4,7 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/services/custom_field_service.dart';
 import 'package:pantry_core/utils/field_type_icons.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/form_components.dart';
@@ -319,6 +320,8 @@ class _CustomFieldEditorState extends State<CustomFieldEditor> {
   }
 
   Widget _buildScopeSelector() {
+    // A scope whose list isn't loaded shows as "All lists", but [_d.listId]
+    // keeps the real scope for saving.
     final knownIds = widget.lists.map((l) => l.id).toSet();
     final value = _d.listId == null || knownIds.contains(_d.listId)
         ? _d.listId
@@ -336,7 +339,7 @@ class _CustomFieldEditorState extends State<CustomFieldEditor> {
           DropdownMenuItem<int?>(
             value: list.id,
             child: Text(
-              list.name,
+              scopedListName(list, widget.lists),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

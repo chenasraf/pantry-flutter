@@ -5,6 +5,7 @@ import 'package:pantry_core/models/label.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/label_icons.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
@@ -83,12 +84,13 @@ class _CreateLabelDialogState extends State<CreateLabelDialog> {
   }
 
   Future<void> _loadLists() async {
-    final cached = ChecklistService.instance.getCachedLists(widget.houseId);
+    final service = ChecklistService.instance;
+    final cached = service.getCachedListsOfEveryKind(widget.houseId);
     if (cached != null && mounted) {
       setState(() => _lists = ChecklistService.sortLists(cached, 'custom'));
     }
     try {
-      final lists = await ChecklistService.instance.getLists(widget.houseId);
+      final lists = await service.getListsOfEveryKind(widget.houseId);
       if (mounted) {
         setState(() => _lists = ChecklistService.sortLists(lists, 'custom'));
       }
@@ -185,7 +187,8 @@ class _CreateLabelDialogState extends State<CreateLabelDialog> {
   Widget _buildListSelector() {
     // The current scope must always have a matching item, or the dropdown
     // asserts. When editing a label whose list hasn't loaded yet (cache miss),
-    // fall back to the global option until [_loadLists] fills it in.
+    // show the global option until [_loadLists] fills it in — only the display
+    // falls back; [_selectedListId] keeps the real scope for saving.
     final knownIds = _lists.map((l) => l.id).toSet();
     final value = _selectedListId == null || knownIds.contains(_selectedListId)
         ? _selectedListId
@@ -200,7 +203,7 @@ class _CreateLabelDialogState extends State<CreateLabelDialog> {
           DropdownMenuItem<int?>(
             value: list.id,
             child: Text(
-              list.name,
+              scopedListName(list, _lists),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
