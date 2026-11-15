@@ -1298,6 +1298,11 @@ class SettingsMessagesFr extends SettingsMessages {
   String get interfaceBarcodeSection => """Lecture de codes-barres""";
 
   /// ```dart
+  /// "Courses"
+  /// ```
+  String get interfaceShoppingSection => """Courses""";
+
+  /// ```dart
   /// "Action par défaut au toucher"
   /// ```
   String get defaultItemTapAction => """Action par défaut au toucher""";
@@ -1430,6 +1435,18 @@ class SettingsMessagesFr extends SettingsMessages {
   /// ```
   String get notesCheckedToBottomBody =>
       """Quand vous cochez un élément de la liste d’une note, il passe sous les éléments non cochés. Le décocher le fait remonter.""";
+
+  /// ```dart
+  /// "Garder l’écran allumé pendant les courses"
+  /// ```
+  String get keepScreenOnWhileShopping =>
+      """Garder l’écran allumé pendant les courses""";
+
+  /// ```dart
+  /// "L’écran ne s’éteint pas tout seul pendant les courses. Le bouton d’alimentation l’éteint toujours."
+  /// ```
+  String get keepScreenOnWhileShoppingBody =>
+      """L’écran ne s’éteint pas tout seul pendant les courses. Le bouton d’alimentation l’éteint toujours.""";
 
   /// ```dart
   /// "Description sur les articles"
@@ -9545,6 +9562,7 @@ Mot de passe : pantry-rocks""",
   """settings.interfaceAddingSection""": """Ajout d'éléments""",
   """settings.interfaceNotesSection""": """Notes""",
   """settings.interfaceBarcodeSection""": """Lecture de codes-barres""",
+  """settings.interfaceShoppingSection""": """Courses""",
   """settings.defaultItemTapAction""": """Action par défaut au toucher""",
   """settings.defaultItemTapActionBody""":
       """Ce qui se passe quand vous touchez la ligne d'un élément.""",
@@ -9599,6 +9617,10 @@ Mot de passe : pantry-rocks""",
       """Déplacer les éléments cochés en bas""",
   """settings.notesCheckedToBottomBody""":
       """Quand vous cochez un élément de la liste d’une note, il passe sous les éléments non cochés. Le décocher le fait remonter.""",
+  """settings.keepScreenOnWhileShopping""":
+      """Garder l’écran allumé pendant les courses""",
+  """settings.keepScreenOnWhileShoppingBody""":
+      """L’écran ne s’éteint pas tout seul pendant les courses. Le bouton d’alimentation l’éteint toujours.""",
   """settings.itemDescription""": """Description sur les articles""",
   """settings.itemDescriptionBody""":
       """Où la description d'un article apparaît sur sa ligne. Une description trop longue se termine par des points de suspension dans les deux cas.""",

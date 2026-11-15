@@ -1287,6 +1287,11 @@ class SettingsMessagesHe extends SettingsMessages {
   String get interfaceBarcodeSection => """סריקת ברקוד""";
 
   /// ```dart
+  /// "קניות"
+  /// ```
+  String get interfaceShoppingSection => """קניות""";
+
+  /// ```dart
   /// "פעולת ברירת מחדל בלחיצה"
   /// ```
   String get defaultItemTapAction => """פעולת ברירת מחדל בלחיצה""";
@@ -1416,6 +1421,17 @@ class SettingsMessagesHe extends SettingsMessages {
   /// ```
   String get notesCheckedToBottomBody =>
       """כשמסמנים פריט ברשימת סימון בפתק, הוא עובר אל מתחת לפריטים שלא סומנו. ביטול הסימון מחזיר אותו למעלה.""";
+
+  /// ```dart
+  /// "השארת המסך דלוק בזמן קניות"
+  /// ```
+  String get keepScreenOnWhileShopping => """השארת המסך דלוק בזמן קניות""";
+
+  /// ```dart
+  /// "המסך לא ייכבה מעצמו במהלך קנייה. כפתור ההפעלה עדיין מכבה אותו."
+  /// ```
+  String get keepScreenOnWhileShoppingBody =>
+      """המסך לא ייכבה מעצמו במהלך קנייה. כפתור ההפעלה עדיין מכבה אותו.""";
 
   /// ```dart
   /// "תיאור על פריטים"
@@ -9424,6 +9440,7 @@ Map<String, String> get messagesHeMap => {
   """settings.interfaceAddingSection""": """הוספת פריטים""",
   """settings.interfaceNotesSection""": """פתקים""",
   """settings.interfaceBarcodeSection""": """סריקת ברקוד""",
+  """settings.interfaceShoppingSection""": """קניות""",
   """settings.defaultItemTapAction""": """פעולת ברירת מחדל בלחיצה""",
   """settings.defaultItemTapActionBody""":
       """מה קורה כאשר לוחצים על שורת פריט.""",
@@ -9476,6 +9493,9 @@ Map<String, String> get messagesHeMap => {
   """settings.notesCheckedToBottom""": """העברת פריטים מסומנים לתחתית""",
   """settings.notesCheckedToBottomBody""":
       """כשמסמנים פריט ברשימת סימון בפתק, הוא עובר אל מתחת לפריטים שלא סומנו. ביטול הסימון מחזיר אותו למעלה.""",
+  """settings.keepScreenOnWhileShopping""": """השארת המסך דלוק בזמן קניות""",
+  """settings.keepScreenOnWhileShoppingBody""":
+      """המסך לא ייכבה מעצמו במהלך קנייה. כפתור ההפעלה עדיין מכבה אותו.""",
   """settings.itemDescription""": """תיאור על פריטים""",
   """settings.itemDescriptionBody""":
       """היכן מוצג התיאור של פריט בשורה שלו. תיאור ארוך מדי מסתיים בשלוש נקודות בשני המקרים.""",

@@ -1287,6 +1287,11 @@ class SettingsMessages {
   String get interfaceBarcodeSection => """Barcode scanning""";
 
   /// ```dart
+  /// "Shopping"
+  /// ```
+  String get interfaceShoppingSection => """Shopping""";
+
+  /// ```dart
   /// "Default item tap action"
   /// ```
   String get defaultItemTapAction => """Default item tap action""";
@@ -1418,6 +1423,17 @@ class SettingsMessages {
   /// ```
   String get notesCheckedToBottomBody =>
       """When you check an item in a note's checklist, move it below the unchecked items. Unchecking moves it back up.""";
+
+  /// ```dart
+  /// "Keep screen on while shopping"
+  /// ```
+  String get keepScreenOnWhileShopping => """Keep screen on while shopping""";
+
+  /// ```dart
+  /// "Stop the screen from turning off by itself during a shopping trip. The power button still turns it off."
+  /// ```
+  String get keepScreenOnWhileShoppingBody =>
+      """Stop the screen from turning off by itself during a shopping trip. The power button still turns it off.""";
 
   /// ```dart
   /// "Description on items"
@@ -9434,6 +9450,7 @@ Password: pantry-rocks""",
   """settings.interfaceAddingSection""": """Adding items""",
   """settings.interfaceNotesSection""": """Notes""",
   """settings.interfaceBarcodeSection""": """Barcode scanning""",
+  """settings.interfaceShoppingSection""": """Shopping""",
   """settings.defaultItemTapAction""": """Default item tap action""",
   """settings.defaultItemTapActionBody""":
       """What happens when you tap an item row.""",
@@ -9487,6 +9504,9 @@ Password: pantry-rocks""",
   """settings.notesCheckedToBottom""": """Move checked items to the bottom""",
   """settings.notesCheckedToBottomBody""":
       """When you check an item in a note's checklist, move it below the unchecked items. Unchecking moves it back up.""",
+  """settings.keepScreenOnWhileShopping""": """Keep screen on while shopping""",
+  """settings.keepScreenOnWhileShoppingBody""":
+      """Stop the screen from turning off by itself during a shopping trip. The power button still turns it off.""",
   """settings.itemDescription""": """Description on items""",
   """settings.itemDescriptionBody""":
       """Where an item's description is shown on its row. A description too long to fit ends with an ellipsis either way.""",

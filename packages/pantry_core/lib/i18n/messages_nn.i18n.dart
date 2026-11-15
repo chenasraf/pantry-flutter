@@ -1288,6 +1288,11 @@ class SettingsMessagesNn extends SettingsMessages {
   String get interfaceBarcodeSection => """null""";
 
   /// ```dart
+  /// "Handel"
+  /// ```
+  String get interfaceShoppingSection => """Handel""";
+
+  /// ```dart
   /// "Standardhandling for rad"
   /// ```
   String get defaultItemTapAction => """Standardhandling for rad""";
@@ -1419,6 +1424,17 @@ class SettingsMessagesNn extends SettingsMessages {
   /// ```
   String get notesCheckedToBottomBody =>
       """Når du kryssar av eit punkt i ei sjekkliste i eit notat, blir det flytt under dei som ikkje er kryssa av. Fjernar du krysset, flyttar det seg opp att.""";
+
+  /// ```dart
+  /// "Hald skjermen på under handelen"
+  /// ```
+  String get keepScreenOnWhileShopping => """Hald skjermen på under handelen""";
+
+  /// ```dart
+  /// "Skjermen slår seg ikkje av av seg sjølv under ein handel. Av/på-knappen slår han framleis av."
+  /// ```
+  String get keepScreenOnWhileShoppingBody =>
+      """Skjermen slår seg ikkje av av seg sjølv under ein handel. Av/på-knappen slår han framleis av.""";
 
   /// ```dart
   /// "Skildring på oppføringar"
@@ -9466,6 +9482,7 @@ Passord: pantry""",
   """settings.interfaceItemActionsSection""": """Handlingar på oppføringar""",
   """settings.interfaceAddingSection""": """Leggja til oppføringar""",
   """settings.interfaceNotesSection""": """Notat""",
+  """settings.interfaceShoppingSection""": """Handel""",
   """settings.defaultItemTapAction""": """Standardhandling for rad""",
   """settings.defaultItemTapActionBody""":
       """Kva som skjer når du trykkar på ei rad.""",
@@ -9519,6 +9536,10 @@ Passord: pantry""",
   """settings.notesCheckedToBottom""": """Flytt avkryssa punkt nedst""",
   """settings.notesCheckedToBottomBody""":
       """Når du kryssar av eit punkt i ei sjekkliste i eit notat, blir det flytt under dei som ikkje er kryssa av. Fjernar du krysset, flyttar det seg opp att.""",
+  """settings.keepScreenOnWhileShopping""":
+      """Hald skjermen på under handelen""",
+  """settings.keepScreenOnWhileShoppingBody""":
+      """Skjermen slår seg ikkje av av seg sjølv under ein handel. Av/på-knappen slår han framleis av.""",
   """settings.itemDescription""": """Skildring på oppføringar""",
   """settings.itemDescriptionBody""":
       """Kvar skildringa til ei oppføring blir vist i linja hennar. Ei skildring som er for lang, sluttar med ellipse i begge tilfelle.""",

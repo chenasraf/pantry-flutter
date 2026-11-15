@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
@@ -36,17 +39,48 @@ class ShoppingSessionView extends StatefulWidget {
 
 class _ShoppingSessionViewState extends State<ShoppingSessionView> {
   late final _controller = ShoppingSessionController(session: widget.session);
+  bool _keepingScreenOn = false;
+
+  /// Whether a wakelock was already on before this trip took one — debug
+  /// builds hold one for the whole run (see main.dart) — so leaving the trip
+  /// puts it back as it was rather than switching it off.
+  Future<bool>? _wakelockBefore;
 
   @override
   void initState() {
     super.initState();
     _controller.load();
+    PrefsService.instance.addListener(_syncWakelock);
+    _syncWakelock();
   }
 
   @override
   void dispose() {
+    PrefsService.instance.removeListener(_syncWakelock);
+    if (_keepingScreenOn) unawaited(_setKeepScreenOn(false));
     _controller.dispose();
     super.dispose();
+  }
+
+  void _syncWakelock() {
+    final keepOn = PrefsService.instance.keepScreenOnWhileShopping;
+    if (keepOn == _keepingScreenOn) return;
+    _keepingScreenOn = keepOn;
+    unawaited(_setKeepScreenOn(keepOn));
+  }
+
+  Future<void> _setKeepScreenOn(bool keepOn) async {
+    try {
+      if (keepOn) {
+        _wakelockBefore ??= WakelockPlus.enabled;
+        await _wakelockBefore;
+        await WakelockPlus.enable();
+      } else {
+        await WakelockPlus.toggle(enable: await _wakelockBefore ?? false);
+      }
+    } catch (e) {
+      debugPrint('[ShoppingSessionView] Failed to toggle wakelock: $e');
+    }
   }
 
   @override

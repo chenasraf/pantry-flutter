@@ -1294,6 +1294,11 @@ class SettingsMessagesEs extends SettingsMessages {
   String get interfaceBarcodeSection => """Escaneo de códigos de barras""";
 
   /// ```dart
+  /// "Compras"
+  /// ```
+  String get interfaceShoppingSection => """Compras""";
+
+  /// ```dart
   /// "Acción al tocar un elemento"
   /// ```
   String get defaultItemTapAction => """Acción al tocar un elemento""";
@@ -1427,6 +1432,18 @@ class SettingsMessagesEs extends SettingsMessages {
   /// ```
   String get notesCheckedToBottomBody =>
       """Al marcar un elemento de la lista de una nota, se mueve debajo de los no marcados. Al desmarcarlo, vuelve a subir.""";
+
+  /// ```dart
+  /// "Mantener la pantalla encendida al comprar"
+  /// ```
+  String get keepScreenOnWhileShopping =>
+      """Mantener la pantalla encendida al comprar""";
+
+  /// ```dart
+  /// "La pantalla no se apaga sola durante una compra. El botón de encendido la sigue apagando."
+  /// ```
+  String get keepScreenOnWhileShoppingBody =>
+      """La pantalla no se apaga sola durante una compra. El botón de encendido la sigue apagando.""";
 
   /// ```dart
   /// "Descripción en los artículos"
@@ -9530,6 +9547,7 @@ Contraseña: pantry-rocks""",
   """settings.interfaceAddingSection""": """Añadir elementos""",
   """settings.interfaceNotesSection""": """Notas""",
   """settings.interfaceBarcodeSection""": """Escaneo de códigos de barras""",
+  """settings.interfaceShoppingSection""": """Compras""",
   """settings.defaultItemTapAction""": """Acción al tocar un elemento""",
   """settings.defaultItemTapActionBody""":
       """Qué ocurre al tocar la fila de un elemento.""",
@@ -9584,6 +9602,10 @@ Contraseña: pantry-rocks""",
       """Mover los elementos marcados al final""",
   """settings.notesCheckedToBottomBody""":
       """Al marcar un elemento de la lista de una nota, se mueve debajo de los no marcados. Al desmarcarlo, vuelve a subir.""",
+  """settings.keepScreenOnWhileShopping""":
+      """Mantener la pantalla encendida al comprar""",
+  """settings.keepScreenOnWhileShoppingBody""":
+      """La pantalla no se apaga sola durante una compra. El botón de encendido la sigue apagando.""",
   """settings.itemDescription""": """Descripción en los artículos""",
   """settings.itemDescriptionBody""":
       """Dónde se muestra la descripción de un artículo en su fila. Una descripción demasiado larga termina con puntos suspensivos en ambos casos.""",

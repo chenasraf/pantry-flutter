@@ -302,6 +302,7 @@ settings:
   interfaceAddingSection: Leggja til oppføringar
   interfaceNotesSection: Notat
   interfaceBarcodeSection:
+  interfaceShoppingSection: "Handel"
   defaultItemTapAction: Standardhandling for rad
   defaultItemTapActionBody: "Kva som skjer når du trykkar på ei rad."
   itemTapActionNames:
@@ -358,6 +359,8 @@ settings:
     ellipse. Når slått av, bryt lange namn over fleire linjer.
   notesCheckedToBottom: Flytt avkryssa punkt nedst
   notesCheckedToBottomBody: "Når du kryssar av eit punkt i ei sjekkliste i eit notat, blir det flytt under dei som ikkje er kryssa av. Fjernar du krysset, flyttar det seg opp att."
+  keepScreenOnWhileShopping: "Hald skjermen på under handelen"
+  keepScreenOnWhileShoppingBody: "Skjermen slår seg ikkje av av seg sjølv under ein handel. Av/på-knappen slår han framleis av."
   itemDescription: Skildring på oppføringar
   itemDescriptionBody:
     Kvar skildringa til ei oppføring blir vist i linja hennar. Ei

@@ -318,6 +318,18 @@ class InterfaceSettingsView extends StatelessWidget {
         ),
     ];
 
+    final shopping = <Widget>[
+      if (ServerFeature.shopping)
+        SwitchListTile(
+          secondary: const Icon(Icons.light_mode_outlined),
+          title: Text(m.settings.keepScreenOnWhileShopping),
+          subtitle: Text(m.settings.keepScreenOnWhileShoppingBody),
+          value: prefs.keepScreenOnWhileShopping,
+          onChanged: (value) =>
+              context.read<PrefsService>().setKeepScreenOnWhileShopping(value),
+        ),
+    ];
+
     final notes = <Widget>[
       SwitchListTile(
         secondary: const Icon(Icons.checklist),
@@ -368,6 +380,7 @@ class InterfaceSettingsView extends StatelessWidget {
           ..._section(m.settings.interfaceListsSection, lists),
           ..._section(m.settings.interfaceItemActionsSection, itemActions),
           ..._section(m.settings.interfaceAddingSection, adding),
+          ..._section(m.settings.interfaceShoppingSection, shopping),
           ..._section(m.settings.interfaceNotesSection, notes),
           ..._section(m.settings.interfaceBarcodeSection, barcode),
         ],

@@ -159,6 +159,16 @@ extension PrefsServiceChecklistSetters on PrefsService {
     notifyListeners();
   }
 
+  Future<void> setKeepScreenOnWhileShopping(bool value) async {
+    if (_keepScreenOnWhileShopping == value) return;
+    _keepScreenOnWhileShopping = value;
+    await _storage.write(
+      key: PrefsService._keepScreenOnWhileShoppingKey,
+      value: value.toString(),
+    );
+    notifyListeners();
+  }
+
   Future<void> setNotesCheckedToBottom(bool value) async {
     if (_notesCheckedToBottom == value) return;
     _notesCheckedToBottom = value;

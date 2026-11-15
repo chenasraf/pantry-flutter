@@ -1294,6 +1294,11 @@ class SettingsMessagesDe extends SettingsMessages {
   String get interfaceBarcodeSection => """Barcode-Scan""";
 
   /// ```dart
+  /// "Einkaufen"
+  /// ```
+  String get interfaceShoppingSection => """Einkaufen""";
+
+  /// ```dart
   /// "Standardaktion beim Tippen"
   /// ```
   String get defaultItemTapAction => """Standardaktion beim Tippen""";
@@ -1427,6 +1432,18 @@ class SettingsMessagesDe extends SettingsMessages {
   /// ```
   String get notesCheckedToBottomBody =>
       """Wenn du einen Checklisteneintrag in einer Notiz abhakst, wird er unter die offenen Einträge verschoben. Beim Zurücksetzen wandert er wieder nach oben.""";
+
+  /// ```dart
+  /// "Bildschirm beim Einkaufen anlassen"
+  /// ```
+  String get keepScreenOnWhileShopping =>
+      """Bildschirm beim Einkaufen anlassen""";
+
+  /// ```dart
+  /// "Der Bildschirm schaltet sich während eines Einkaufs nicht von selbst aus. Mit der Ein-/Aus-Taste kannst du ihn weiterhin ausschalten."
+  /// ```
+  String get keepScreenOnWhileShoppingBody =>
+      """Der Bildschirm schaltet sich während eines Einkaufs nicht von selbst aus. Mit der Ein-/Aus-Taste kannst du ihn weiterhin ausschalten.""";
 
   /// ```dart
   /// "Beschreibung bei Einträgen"
@@ -9547,6 +9564,7 @@ Passwort: pantry-rocks""",
   """settings.interfaceAddingSection""": """Einträge hinzufügen""",
   """settings.interfaceNotesSection""": """Notizen""",
   """settings.interfaceBarcodeSection""": """Barcode-Scan""",
+  """settings.interfaceShoppingSection""": """Einkaufen""",
   """settings.defaultItemTapAction""": """Standardaktion beim Tippen""",
   """settings.defaultItemTapActionBody""":
       """Was passiert, wenn du eine Eintragszeile antippst.""",
@@ -9601,6 +9619,10 @@ Passwort: pantry-rocks""",
       """Erledigte Einträge nach unten verschieben""",
   """settings.notesCheckedToBottomBody""":
       """Wenn du einen Checklisteneintrag in einer Notiz abhakst, wird er unter die offenen Einträge verschoben. Beim Zurücksetzen wandert er wieder nach oben.""",
+  """settings.keepScreenOnWhileShopping""":
+      """Bildschirm beim Einkaufen anlassen""",
+  """settings.keepScreenOnWhileShoppingBody""":
+      """Der Bildschirm schaltet sich während eines Einkaufs nicht von selbst aus. Mit der Ein-/Aus-Taste kannst du ihn weiterhin ausschalten.""",
   """settings.itemDescription""": """Beschreibung bei Einträgen""",
   """settings.itemDescriptionBody""":
       """Wo die Beschreibung eines Eintrags in seiner Zeile erscheint. Eine zu lange Beschreibung endet in beiden Fällen mit Auslassungspunkten.""",

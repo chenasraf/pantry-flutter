@@ -45,6 +45,7 @@ class PrefsService extends ChangeNotifier {
   static const _validDensities = {'normal', 'dense', 'compact'};
   static const _swipeActionsEnabledKey = 'swipe_actions_enabled';
   static const _startShoppingFabEnabledKey = 'start_shopping_fab_enabled';
+  static const _keepScreenOnWhileShoppingKey = 'keep_screen_on_while_shopping';
   static const _listMenuStyleKey = 'list_menu_style';
   static const _validListMenuStyles = {'grid', 'list'};
   static const _truncateItemNamesKey = 'truncate_item_names';
@@ -215,6 +216,11 @@ class PrefsService extends ChangeNotifier {
   /// moves into the overflow menu instead.
   bool _startShoppingFabEnabled = true;
   bool get startShoppingFabEnabled => _startShoppingFabEnabled;
+
+  /// When true, the screen stays awake while a shopping trip is open. Off by
+  /// default since a screen that never dims costs battery.
+  bool _keepScreenOnWhileShopping = false;
+  bool get keepScreenOnWhileShopping => _keepScreenOnWhileShopping;
 
   /// How the checklist overflow menu presents its actions: "grid" (default)
   /// shows a grid of categories that drill into their actions; "list" shows
@@ -529,6 +535,8 @@ class PrefsService extends ChangeNotifier {
       _startShoppingFabEnabled = startShoppingFab == 'true';
     }
 
+    _keepScreenOnWhileShopping = all[_keepScreenOnWhileShoppingKey] == 'true';
+
     final listMenuStyle = all[_listMenuStyleKey];
     if (listMenuStyle != null && _validListMenuStyles.contains(listMenuStyle)) {
       _listMenuStyle = listMenuStyle;
@@ -742,6 +750,7 @@ class PrefsService extends ChangeNotifier {
     _checklistDensity = 'normal';
     _swipeActionsEnabled = true;
     _startShoppingFabEnabled = true;
+    _keepScreenOnWhileShopping = false;
     _listMenuStyle = 'grid';
     _truncateItemNames = false;
     _notesCheckedToBottom = false;
@@ -795,6 +804,7 @@ class PrefsService extends ChangeNotifier {
       _checklistDensityKey,
       _swipeActionsEnabledKey,
       _startShoppingFabEnabledKey,
+      _keepScreenOnWhileShoppingKey,
       _listMenuStyleKey,
       _truncateItemNamesKey,
       _notesCheckedToBottomKey,

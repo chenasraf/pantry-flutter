@@ -233,6 +233,7 @@ settings:
   interfaceAddingSection: הוספת פריטים
   interfaceNotesSection: פתקים
   interfaceBarcodeSection: "סריקת ברקוד"
+  interfaceShoppingSection: "קניות"
   defaultItemTapAction: פעולת ברירת מחדל בלחיצה
   defaultItemTapActionBody: מה קורה כאשר לוחצים על שורת פריט.
   itemTapActionNames:
@@ -279,6 +280,8 @@ settings:
   truncateItemNamesBody: שמירת כל שם פריט בשורה אחת, המסתיימת בשלוש נקודות. כשמכובה, שמות ארוכים נשברים לכמה שורות.
   notesCheckedToBottom: העברת פריטים מסומנים לתחתית
   notesCheckedToBottomBody: "כשמסמנים פריט ברשימת סימון בפתק, הוא עובר אל מתחת לפריטים שלא סומנו. ביטול הסימון מחזיר אותו למעלה."
+  keepScreenOnWhileShopping: "השארת המסך דלוק בזמן קניות"
+  keepScreenOnWhileShoppingBody: "המסך לא ייכבה מעצמו במהלך קנייה. כפתור ההפעלה עדיין מכבה אותו."
   itemDescription: תיאור על פריטים
   itemDescriptionBody: היכן מוצג התיאור של פריט בשורה שלו. תיאור ארוך מדי מסתיים בשלוש נקודות בשני המקרים.
   itemDescriptionNames:
