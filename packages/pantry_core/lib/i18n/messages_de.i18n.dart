@@ -7345,9 +7345,46 @@ class ShoppingMessagesDe extends ShoppingMessages {
   String get loadItemsFailed => """Artikel konnten nicht geladen werden.""";
 
   /// ```dart
-  /// "Dieser Einkauf wurde beendet."
+  /// "Dieser Einkauf ist beendet."
   /// ```
-  String get tripFinishedByHousemate => """Dieser Einkauf wurde beendet.""";
+  String get tripEndedByHousemate => """Dieser Einkauf ist beendet.""";
+
+  /// ```dart
+  /// "Einkauf abbrechen"
+  /// ```
+  String get cancelTrip => """Einkauf abbrechen""";
+
+  /// ```dart
+  /// "Diesen Einkauf abbrechen?"
+  /// ```
+  String get cancelTripTitle => """Diesen Einkauf abbrechen?""";
+
+  /// ```dart
+  /// "Der Einkauf endet für alle, die dabei sind. Nichts, was bei diesem Einkauf abgehakt wurde, wird auf euren Listen abgehakt, und kein Vorrat wird geändert."
+  /// ```
+  String get cancelTripBody =>
+      """Der Einkauf endet für alle, die dabei sind. Nichts, was bei diesem Einkauf abgehakt wurde, wird auf euren Listen abgehakt, und kein Vorrat wird geändert.""";
+
+  /// ```dart
+  /// "Weiter einkaufen"
+  /// ```
+  String get keepShopping => """Weiter einkaufen""";
+
+  /// ```dart
+  /// "Einkauf abgebrochen"
+  /// ```
+  String get tripCancelled => """Einkauf abgebrochen""";
+
+  /// ```dart
+  /// "Dieser Einkauf war bereits beendet."
+  /// ```
+  String get tripAlreadyEnded => """Dieser Einkauf war bereits beendet.""";
+
+  /// ```dart
+  /// "Der Einkauf konnte nicht abgebrochen werden."
+  /// ```
+  String get cancelTripFailed =>
+      """Der Einkauf konnte nicht abgebrochen werden.""";
 
   /// ```dart
   /// "${_plural(count, one: 'Einkauf mit 1 Person', many: 'Einkauf mit $count Personen')}"
@@ -7641,6 +7678,11 @@ class ShoppingMessagesDe extends ShoppingMessages {
   /// ```
   String get deleteTripFailed =>
       """Der Einkauf konnte nicht gelöscht werden.""";
+
+  /// ```dart
+  /// "Abgebrochen"
+  /// ```
+  String get cancelledBadge => """Abgebrochen""";
 
   /// ```dart
   /// "Etwas ist schiefgelaufen. Bitte versuche es erneut."
@@ -8602,6 +8644,17 @@ class WearMessagesDe extends WearMessages {
   /// "Verlassen ging nicht"
   /// ```
   String get leaveFailed => """Verlassen ging nicht""";
+
+  /// ```dart
+  /// "Endet für alle. Nichts Abgehakte landet auf euren Listen."
+  /// ```
+  String get cancelTripBody =>
+      """Endet für alle. Nichts Abgehakte landet auf euren Listen.""";
+
+  /// ```dart
+  /// "Abbrechen ging nicht"
+  /// ```
+  String get cancelFailed => """Abbrechen ging nicht""";
 
   /// ```dart
   /// "${_plural(count, one: '1 gekauft', many: '$count gekauft')}"
@@ -10630,7 +10683,16 @@ Passwort: pantry-rocks""",
   """shopping.quantityFailed""":
       """Die gekaufte Menge konnte nicht geändert werden.""",
   """shopping.loadItemsFailed""": """Artikel konnten nicht geladen werden.""",
-  """shopping.tripFinishedByHousemate""": """Dieser Einkauf wurde beendet.""",
+  """shopping.tripEndedByHousemate""": """Dieser Einkauf ist beendet.""",
+  """shopping.cancelTrip""": """Einkauf abbrechen""",
+  """shopping.cancelTripTitle""": """Diesen Einkauf abbrechen?""",
+  """shopping.cancelTripBody""":
+      """Der Einkauf endet für alle, die dabei sind. Nichts, was bei diesem Einkauf abgehakt wurde, wird auf euren Listen abgehakt, und kein Vorrat wird geändert.""",
+  """shopping.keepShopping""": """Weiter einkaufen""",
+  """shopping.tripCancelled""": """Einkauf abgebrochen""",
+  """shopping.tripAlreadyEnded""": """Dieser Einkauf war bereits beendet.""",
+  """shopping.cancelTripFailed""":
+      """Der Einkauf konnte nicht abgebrochen werden.""",
   """shopping.removeFromTrip""": """Aus Einkauf entfernen""",
   """shopping.removedFromTrip""": """Aus diesem Einkauf entfernt""",
   """shopping.undo""": """Rückgängig""",
@@ -10689,6 +10751,7 @@ Passwort: pantry-rocks""",
       """Dieser Einkauf und seine Summen werden dauerhaft aus dem Einkaufsverlauf entfernt. Das kann nicht rückgängig gemacht werden.""",
   """shopping.deleteTripFailed""":
       """Der Einkauf konnte nicht gelöscht werden.""",
+  """shopping.cancelledBadge""": """Abgebrochen""",
   """shopping.loadFailed""":
       """Etwas ist schiefgelaufen. Bitte versuche es erneut.""",
   """shopping.uncategorized""": """Ohne Kategorie""",
@@ -10844,6 +10907,9 @@ Passwort: pantry-rocks""",
   """wear.sharedTrip""": """Gemeinsamer Einkauf""",
   """wear.leaveTripBody""": """Der Einkauf läuft für die anderen weiter.""",
   """wear.leaveFailed""": """Verlassen ging nicht""",
+  """wear.cancelTripBody""":
+      """Endet für alle. Nichts Abgehakte landet auf euren Listen.""",
+  """wear.cancelFailed""": """Abbrechen ging nicht""",
   """wear.notBilled""": """Nicht gesetzt""",
   """wear.currency""": """Währung""",
   """wear.notANumber""": """Nur Zahlen""",

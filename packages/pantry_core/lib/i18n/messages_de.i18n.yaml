@@ -1388,7 +1388,14 @@ shopping:
   buyMore: Gekaufte Menge erhöhen
   quantityFailed: Die gekaufte Menge konnte nicht geändert werden.
   loadItemsFailed: Artikel konnten nicht geladen werden.
-  tripFinishedByHousemate: Dieser Einkauf wurde beendet.
+  tripEndedByHousemate: Dieser Einkauf ist beendet.
+  cancelTrip: Einkauf abbrechen
+  cancelTripTitle: Diesen Einkauf abbrechen?
+  cancelTripBody: Der Einkauf endet für alle, die dabei sind. Nichts, was bei diesem Einkauf abgehakt wurde, wird auf euren Listen abgehakt, und kein Vorrat wird geändert.
+  keepShopping: Weiter einkaufen
+  tripCancelled: Einkauf abgebrochen
+  tripAlreadyEnded: Dieser Einkauf war bereits beendet.
+  cancelTripFailed: Der Einkauf konnte nicht abgebrochen werden.
   shoppingWith(int count): "${_plural(count, one: 'Einkauf mit 1 Person', many: 'Einkauf mit $count Personen')}"
   removeFromTrip: Aus Einkauf entfernen
   removedFromTrip: Aus diesem Einkauf entfernt
@@ -1445,6 +1452,7 @@ shopping:
   deleteTripTitle: Einkauf löschen
   deleteTripBody: Dieser Einkauf und seine Summen werden dauerhaft aus dem Einkaufsverlauf entfernt. Das kann nicht rückgängig gemacht werden.
   deleteTripFailed: Der Einkauf konnte nicht gelöscht werden.
+  cancelledBadge: Abgebrochen
   loadFailed: Etwas ist schiefgelaufen. Bitte versuche es erneut.
   uncategorized: Ohne Kategorie
 
@@ -1633,6 +1641,8 @@ wear:
   sharedTrip: Gemeinsamer Einkauf
   leaveTripBody: Der Einkauf läuft für die anderen weiter.
   leaveFailed: Verlassen ging nicht
+  cancelTripBody: Endet für alle. Nichts Abgehakte landet auf euren Listen.
+  cancelFailed: Abbrechen ging nicht
   boughtTally(int count): "${_plural(count, one: '1 gekauft', many: '$count gekauft')}"
   storeTally(int count): "${_plural(count, one: '1 Geschäft', many: '$count Geschäfte')}"
   notBilled: Nicht gesetzt

@@ -151,7 +151,7 @@ class _ShoppingHistoryViewState extends State<ShoppingHistoryView> {
           sessionId: row.id,
           mode: ShoppingReviewMode.history,
           stores: _stores,
-          canEditBilled: row.userId == _currentUserId,
+          canEditBilled: row.userId == _currentUserId && !row.isCancelled,
           onDelete: _canDelete(row) ? () => _deleteAndRemove(row) : null,
         ),
       ),
@@ -439,29 +439,37 @@ class _HistoryCard extends StatelessWidget {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         _Chip(icon: Icons.schedule, label: timeLabel),
-                        _Chip(
-                          icon: Icons.check_circle_outline,
-                          label: m.shopping.itemsCount(row.itemCount),
-                        ),
+                        if (row.isCancelled)
+                          _Chip(
+                            icon: Icons.cancel_outlined,
+                            label: m.shopping.cancelledBadge,
+                          )
+                        else
+                          _Chip(
+                            icon: Icons.check_circle_outline,
+                            label: m.shopping.itemsCount(row.itemCount),
+                          ),
                       ],
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 6,
-                ),
-                decoration: AppSurfaces.of(context).chip(selected: true),
-                child: Text(
-                  total ?? '—',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: theme.colorScheme.primary,
+              if (!row.isCancelled) ...[
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
+                  decoration: AppSurfaces.of(context).chip(selected: true),
+                  child: Text(
+                    total ?? '—',
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: theme.colorScheme.primary,
+                    ),
                   ),
                 ),
-              ),
+              ],
               if (desktopMenu) ...[
                 const SizedBox(width: 4),
                 PopupMenuButton<String>(

@@ -7335,7 +7335,43 @@ class ShoppingMessagesEs extends ShoppingMessages {
   /// ```dart
   /// "Esta compra ha terminado."
   /// ```
-  String get tripFinishedByHousemate => """Esta compra ha terminado.""";
+  String get tripEndedByHousemate => """Esta compra ha terminado.""";
+
+  /// ```dart
+  /// "Cancelar compra"
+  /// ```
+  String get cancelTrip => """Cancelar compra""";
+
+  /// ```dart
+  /// "¿Cancelar esta compra?"
+  /// ```
+  String get cancelTripTitle => """¿Cancelar esta compra?""";
+
+  /// ```dart
+  /// "La compra termina para todos los que participan. Nada de lo marcado en esta compra se marca en tus listas, y no se cambia ningún stock."
+  /// ```
+  String get cancelTripBody =>
+      """La compra termina para todos los que participan. Nada de lo marcado en esta compra se marca en tus listas, y no se cambia ningún stock.""";
+
+  /// ```dart
+  /// "Seguir comprando"
+  /// ```
+  String get keepShopping => """Seguir comprando""";
+
+  /// ```dart
+  /// "Compra cancelada"
+  /// ```
+  String get tripCancelled => """Compra cancelada""";
+
+  /// ```dart
+  /// "Esta compra ya había terminado."
+  /// ```
+  String get tripAlreadyEnded => """Esta compra ya había terminado.""";
+
+  /// ```dart
+  /// "No se pudo cancelar la compra."
+  /// ```
+  String get cancelTripFailed => """No se pudo cancelar la compra.""";
 
   /// ```dart
   /// "${_plural(count, one: 'Comprando con 1 persona', many: 'Comprando con $count personas')}"
@@ -7624,6 +7660,11 @@ class ShoppingMessagesEs extends ShoppingMessages {
   /// "No se pudo eliminar la compra."
   /// ```
   String get deleteTripFailed => """No se pudo eliminar la compra.""";
+
+  /// ```dart
+  /// "Cancelada"
+  /// ```
+  String get cancelledBadge => """Cancelada""";
 
   /// ```dart
   /// "Algo salió mal. Inténtalo de nuevo."
@@ -8583,6 +8624,17 @@ class WearMessagesEs extends WearMessages {
   /// "No se pudo salir"
   /// ```
   String get leaveFailed => """No se pudo salir""";
+
+  /// ```dart
+  /// "Termina para todos. Nada marcado llega a tus listas."
+  /// ```
+  String get cancelTripBody =>
+      """Termina para todos. Nada marcado llega a tus listas.""";
+
+  /// ```dart
+  /// "No se pudo cancelar"
+  /// ```
+  String get cancelFailed => """No se pudo cancelar""";
 
   /// ```dart
   /// "${_plural(count, one: '1 comprado', many: '$count comprados')}"
@@ -10600,7 +10652,15 @@ Contraseña: pantry-rocks""",
   """shopping.buyMore""": """Aumentar la cantidad comprada""",
   """shopping.quantityFailed""": """No se pudo cambiar la cantidad comprada.""",
   """shopping.loadItemsFailed""": """No se pudieron cargar los artículos.""",
-  """shopping.tripFinishedByHousemate""": """Esta compra ha terminado.""",
+  """shopping.tripEndedByHousemate""": """Esta compra ha terminado.""",
+  """shopping.cancelTrip""": """Cancelar compra""",
+  """shopping.cancelTripTitle""": """¿Cancelar esta compra?""",
+  """shopping.cancelTripBody""":
+      """La compra termina para todos los que participan. Nada de lo marcado en esta compra se marca en tus listas, y no se cambia ningún stock.""",
+  """shopping.keepShopping""": """Seguir comprando""",
+  """shopping.tripCancelled""": """Compra cancelada""",
+  """shopping.tripAlreadyEnded""": """Esta compra ya había terminado.""",
+  """shopping.cancelTripFailed""": """No se pudo cancelar la compra.""",
   """shopping.removeFromTrip""": """Quitar de la compra""",
   """shopping.removedFromTrip""": """Quitado de esta compra""",
   """shopping.undo""": """Deshacer""",
@@ -10656,6 +10716,7 @@ Contraseña: pantry-rocks""",
   """shopping.deleteTripBody""":
       """Esta compra y sus totales se eliminarán permanentemente del historial de compras. Esta acción no se puede deshacer.""",
   """shopping.deleteTripFailed""": """No se pudo eliminar la compra.""",
+  """shopping.cancelledBadge""": """Cancelada""",
   """shopping.loadFailed""": """Algo salió mal. Inténtalo de nuevo.""",
   """shopping.uncategorized""": """Sin categoría""",
   """share.title""": """Compartir con Pantry""",
@@ -10810,6 +10871,9 @@ Contraseña: pantry-rocks""",
   """wear.sharedTrip""": """Compra compartida""",
   """wear.leaveTripBody""": """La compra sigue para los demás.""",
   """wear.leaveFailed""": """No se pudo salir""",
+  """wear.cancelTripBody""":
+      """Termina para todos. Nada marcado llega a tus listas.""",
+  """wear.cancelFailed""": """No se pudo cancelar""",
   """wear.notBilled""": """Sin definir""",
   """wear.currency""": """Moneda""",
   """wear.notANumber""": """Solo números""",

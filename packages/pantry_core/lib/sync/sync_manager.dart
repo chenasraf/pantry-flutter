@@ -586,6 +586,33 @@ class SyncManager {
         op,
   ];
 
+  /// Drop every queued check, uncheck, skip, unskip and till total for
+  /// [sessionId]. A cancelled trip discards what was done on it, so replaying
+  /// any of it would be acting on a trip the shopper threw away.
+  void discardShoppingTrip(int houseId, int sessionId) {
+    const tripEntities = {
+      SyncEntity.shoppingCheck,
+      SyncEntity.shoppingSkip,
+      SyncEntity.shoppingSession,
+    };
+    final ops = _queue.all();
+    final kept = [
+      for (final op in ops)
+        if (!(tripEntities.contains(op.entity) &&
+            op.houseId == houseId &&
+            op.parentId == sessionId))
+          op,
+    ];
+    if (kept.length == ops.length) return;
+    _queue.replaceAll(kept);
+    pendingCount.value = _queue.length;
+    _log.info(
+      'sync',
+      'Discarded ${ops.length - kept.length} ops for cancelled trip '
+          '$sessionId, ${_queue.length} queued',
+    );
+  }
+
   /// Enqueue an op. Returns immediately. If online, kicks the flush loop.
   /// Every op waiting, oldest first, exactly as enqueued.
   @visibleForTesting

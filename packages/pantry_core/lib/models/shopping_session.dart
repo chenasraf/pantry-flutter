@@ -70,6 +70,10 @@ class ShoppingSession {
   /// Server-derived: `closedAt == null && fresh`.
   final bool live;
   final int? closedAt;
+
+  /// Set alongside [closedAt] when the trip was cancelled rather than
+  /// finished: nothing checked on it reached the lists.
+  final int? abortedAt;
   final int createdAt;
   final int updatedAt;
 
@@ -89,6 +93,7 @@ class ShoppingSession {
     this.memberIds = const [],
     required this.live,
     this.closedAt,
+    this.abortedAt,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -118,6 +123,7 @@ class ShoppingSession {
             <String>[json['userId'] as String],
         live: json['live'] as bool,
         closedAt: json['closedAt'] as int?,
+        abortedAt: json['abortedAt'] as int?,
         createdAt: json['createdAt'] as int,
         updatedAt: json['updatedAt'] as int,
       );
@@ -138,9 +144,12 @@ class ShoppingSession {
     'memberIds': memberIds,
     'live': live,
     'closedAt': closedAt,
+    'abortedAt': abortedAt,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
   };
+
+  bool get isCancelled => abortedAt != null;
 
   /// Store ids in position order. `activeStoreId`'s "next store" is computed
   /// from this sequence client-side.

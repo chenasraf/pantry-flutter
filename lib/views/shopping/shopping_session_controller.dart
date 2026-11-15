@@ -933,6 +933,15 @@ class ShoppingSessionController extends ChangeNotifier {
     return _session;
   }
 
+  /// Cancels the trip for everyone on it. Throws [ShoppingSessionConflict]
+  /// when it had already ended.
+  Future<ShoppingSession> cancel() async {
+    _session = await _service.abort(houseId, sessionId);
+    SyncManager.instance.discardShoppingTrip(houseId, sessionId);
+    notifyListeners();
+    return _session;
+  }
+
   /// Refresh the session DTO from the server (e.g. after billed edits on the
   /// review screen) so the store bar reflects any changes.
   Future<void> refreshSession() async {
@@ -964,6 +973,7 @@ extension ShoppingSessionPrivacy on ShoppingSession {
         memberIds: s.memberIds,
         live: s.live,
         closedAt: s.closedAt,
+        abortedAt: s.abortedAt,
         createdAt: s.createdAt,
         updatedAt: s.updatedAt,
       );

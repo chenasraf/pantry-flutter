@@ -7338,9 +7338,45 @@ class ShoppingMessagesFr extends ShoppingMessages {
   String get loadItemsFailed => """Impossible de charger les articles.""";
 
   /// ```dart
-  /// "Ces courses ont été terminées."
+  /// "Ces courses sont terminées."
   /// ```
-  String get tripFinishedByHousemate => """Ces courses ont été terminées.""";
+  String get tripEndedByHousemate => """Ces courses sont terminées.""";
+
+  /// ```dart
+  /// "Annuler les courses"
+  /// ```
+  String get cancelTrip => """Annuler les courses""";
+
+  /// ```dart
+  /// "Annuler ces courses ?"
+  /// ```
+  String get cancelTripTitle => """Annuler ces courses ?""";
+
+  /// ```dart
+  /// "Les courses prennent fin pour tous ceux qui y participent. Rien de ce qui a été coché pendant ces courses n'est coché sur vos listes, et aucun stock n'est modifié."
+  /// ```
+  String get cancelTripBody =>
+      """Les courses prennent fin pour tous ceux qui y participent. Rien de ce qui a été coché pendant ces courses n'est coché sur vos listes, et aucun stock n'est modifié.""";
+
+  /// ```dart
+  /// "Continuer les courses"
+  /// ```
+  String get keepShopping => """Continuer les courses""";
+
+  /// ```dart
+  /// "Courses annulées"
+  /// ```
+  String get tripCancelled => """Courses annulées""";
+
+  /// ```dart
+  /// "Ces courses étaient déjà terminées."
+  /// ```
+  String get tripAlreadyEnded => """Ces courses étaient déjà terminées.""";
+
+  /// ```dart
+  /// "Impossible d'annuler les courses."
+  /// ```
+  String get cancelTripFailed => """Impossible d'annuler les courses.""";
 
   /// ```dart
   /// "${_plural(count, one: 'Courses avec 1 personne', many: 'Courses avec $count personnes')}"
@@ -7631,6 +7667,11 @@ class ShoppingMessagesFr extends ShoppingMessages {
   /// "Impossible de supprimer la course."
   /// ```
   String get deleteTripFailed => """Impossible de supprimer la course.""";
+
+  /// ```dart
+  /// "Annulées"
+  /// ```
+  String get cancelledBadge => """Annulées""";
 
   /// ```dart
   /// "Une erreur s'est produite. Veuillez réessayer."
@@ -8591,6 +8632,17 @@ class WearMessagesFr extends WearMessages {
   /// "Impossible de quitter"
   /// ```
   String get leaveFailed => """Impossible de quitter""";
+
+  /// ```dart
+  /// "Fin pour tout le monde. Rien de coché n'arrive sur vos listes."
+  /// ```
+  String get cancelTripBody =>
+      """Fin pour tout le monde. Rien de coché n'arrive sur vos listes.""";
+
+  /// ```dart
+  /// "Impossible d'annuler"
+  /// ```
+  String get cancelFailed => """Impossible d'annuler""";
 
   /// ```dart
   /// "${_plural(count, one: '1 acheté', many: '$count achetés')}"
@@ -10617,7 +10669,15 @@ Mot de passe : pantry-rocks""",
   """shopping.quantityFailed""":
       """Impossible de modifier la quantité achetée.""",
   """shopping.loadItemsFailed""": """Impossible de charger les articles.""",
-  """shopping.tripFinishedByHousemate""": """Ces courses ont été terminées.""",
+  """shopping.tripEndedByHousemate""": """Ces courses sont terminées.""",
+  """shopping.cancelTrip""": """Annuler les courses""",
+  """shopping.cancelTripTitle""": """Annuler ces courses ?""",
+  """shopping.cancelTripBody""":
+      """Les courses prennent fin pour tous ceux qui y participent. Rien de ce qui a été coché pendant ces courses n'est coché sur vos listes, et aucun stock n'est modifié.""",
+  """shopping.keepShopping""": """Continuer les courses""",
+  """shopping.tripCancelled""": """Courses annulées""",
+  """shopping.tripAlreadyEnded""": """Ces courses étaient déjà terminées.""",
+  """shopping.cancelTripFailed""": """Impossible d'annuler les courses.""",
   """shopping.removeFromTrip""": """Retirer de la sortie""",
   """shopping.removedFromTrip""": """Retiré de cette sortie""",
   """shopping.undo""": """Annuler""",
@@ -10673,6 +10733,7 @@ Mot de passe : pantry-rocks""",
   """shopping.deleteTripBody""":
       """Cette course et ses totaux seront définitivement supprimés de l'historique des courses. Cette action est irréversible.""",
   """shopping.deleteTripFailed""": """Impossible de supprimer la course.""",
+  """shopping.cancelledBadge""": """Annulées""",
   """shopping.loadFailed""":
       """Une erreur s'est produite. Veuillez réessayer.""",
   """shopping.uncategorized""": """Sans catégorie""",
@@ -10829,6 +10890,9 @@ Mot de passe : pantry-rocks""",
   """wear.sharedTrip""": """Sortie partagée""",
   """wear.leaveTripBody""": """La sortie continue pour les autres.""",
   """wear.leaveFailed""": """Impossible de quitter""",
+  """wear.cancelTripBody""":
+      """Fin pour tout le monde. Rien de coché n'arrive sur vos listes.""",
+  """wear.cancelFailed""": """Impossible d'annuler""",
   """wear.notBilled""": """Non renseigné""",
   """wear.currency""": """Devise""",
   """wear.notANumber""": """Chiffres uniquement""",

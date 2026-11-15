@@ -403,4 +403,5 @@ abstract final class ServerFeature {
   static bool get shoppingPutAway => _since('0.39.0');
   static bool get absoluteItemToggle => _since('0.39.0');
   static bool get shoppingDeferredChecks => _since('0.39.0');
+  static bool get shoppingCancelTrip => _since('0.39.0');
 }

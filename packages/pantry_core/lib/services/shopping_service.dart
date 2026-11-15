@@ -204,6 +204,29 @@ class ShoppingService {
     }
   }
 
+  /// (4a) Cancel the trip for everyone on it: it ends with nothing checked on
+  /// it reaching the lists and no stock changed. Sent directly, never queued —
+  /// a 409 means a housemate finished it first and their checks went through,
+  /// which the shopper has to be told rather than have replayed later.
+  /// Throws [ShoppingSessionConflict] carrying the already-ended session.
+  Future<ShoppingSession> abort(int houseId, int sessionId) async {
+    try {
+      final session = await _api.post<Map<String, dynamic>, ShoppingSession>(
+        '${_base(houseId)}/sessions/$sessionId/abort',
+        fromJson: ShoppingSession.fromJson,
+      );
+      cacheSession(null);
+      return session;
+    } on ApiException catch (e) {
+      final existing = _sessionFromErrorBody(e);
+      if (e.statusCode == 409 && existing != null) {
+        cacheSession(null);
+        throw ShoppingSessionConflict(existing);
+      }
+      rethrow;
+    }
+  }
+
   /// (5) Toggle whether the session is hidden from housemates' presence and
   /// house-scoped history.
   Future<ShoppingSession> setPrivacy(
@@ -518,7 +541,8 @@ class ShoppingService {
   }
 }
 
-/// Thrown by [ShoppingService.createSession] / [ShoppingService.close] on a 409,
+/// Thrown by [ShoppingService.createSession] / [ShoppingService.close] /
+/// [ShoppingService.abort] on a 409,
 /// carrying the session the server returned so the UI can offer Resume / End.
 class ShoppingSessionConflict implements Exception {
   final ShoppingSession session;

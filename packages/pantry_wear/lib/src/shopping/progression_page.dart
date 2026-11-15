@@ -5,6 +5,7 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/models/shopping_session.dart';
 import 'package:pantry_core/models/store.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
@@ -17,6 +18,7 @@ import '../widgets/wear_cta.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import '../widgets/wear_row.dart';
+import 'cancel_trip_page.dart';
 import 'leave_trip_page.dart';
 import 'store_till_page.dart';
 import 'trip_reminders_page.dart';
@@ -221,6 +223,7 @@ class _ProgressionPageState extends State<ProgressionPage> {
       required String label,
       String? value,
       bool spent = false,
+      bool warning = false,
       VoidCallback? onTap,
     }) {
       // Captured as the row is added, so the order lives in one place.
@@ -237,6 +240,7 @@ class _ProgressionPageState extends State<ProgressionPage> {
               label: label,
               value: value,
               spent: spent,
+              warning: warning,
               distance: d,
               onTap: onTap == null ? null : () => _tap(index, onTap),
             ),
@@ -284,22 +288,31 @@ class _ProgressionPageState extends State<ProgressionPage> {
         value: m.wear.hereNow,
         onTap: () {},
       );
-      return elements;
+    } else {
+      final legs = session?.orderedStoreIds ?? const <int>[];
+      final activeIndex = legs.indexOf(session?.activeStoreId ?? -1);
+      for (var i = 0; i < legs.length; i++) {
+        final id = legs[i];
+        final store = controller.storeById(id);
+        final here = id == session?.activeStoreId;
+        row(
+          icon: store == null ? EntityIcons.store : storeIcon(store.icon),
+          tint: _tintOf(store),
+          label: store?.name ?? m.shopping.anyStore,
+          value: here ? m.wear.hereNow : null,
+          spent: activeIndex >= 0 && i < activeIndex,
+          onTap: here ? () {} : () => unawaited(_advanceTo(id)),
+        );
+      }
     }
 
-    final legs = session?.orderedStoreIds ?? const <int>[];
-    final activeIndex = legs.indexOf(session?.activeStoreId ?? -1);
-    for (var i = 0; i < legs.length; i++) {
-      final id = legs[i];
-      final store = controller.storeById(id);
-      final here = id == session?.activeStoreId;
+    // Last, out of the way of the legs; the page it opens is the confirmation.
+    if (ServerFeature.shoppingCancelTrip) {
       row(
-        icon: store == null ? EntityIcons.store : storeIcon(store.icon),
-        tint: _tintOf(store),
-        label: store?.name ?? m.shopping.anyStore,
-        value: here ? m.wear.hereNow : null,
-        spent: activeIndex >= 0 && i < activeIndex,
-        onTap: here ? () {} : () => unawaited(_advanceTo(id)),
+        icon: Icons.cancel_outlined,
+        warning: true,
+        label: m.shopping.cancelTrip,
+        onTap: () => unawaited(_push(CancelTripPage(controller: controller))),
       );
     }
 

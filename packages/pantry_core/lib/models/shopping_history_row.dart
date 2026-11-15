@@ -9,6 +9,10 @@ class ShoppingHistoryRow {
   final String userId;
   final int createdAt;
   final int? closedAt;
+
+  /// Set when the trip was cancelled, which leaves it with no items and no
+  /// total.
+  final int? abortedAt;
   final List<String> stores;
   final int itemCount;
   final List<CurrencyAmount> grandTotal;
@@ -18,6 +22,7 @@ class ShoppingHistoryRow {
     required this.userId,
     required this.createdAt,
     required this.closedAt,
+    this.abortedAt,
     required this.stores,
     required this.itemCount,
     required this.grandTotal,
@@ -29,10 +34,13 @@ class ShoppingHistoryRow {
         userId: json['userId'] as String,
         createdAt: json['createdAt'] as int,
         closedAt: json['closedAt'] as int?,
+        abortedAt: json['abortedAt'] as int?,
         stores: ((json['stores'] as List?) ?? const [])
             .map((e) => e as String)
             .toList(),
         itemCount: json['itemCount'] as int,
         grandTotal: parseCurrencyAmounts(json['grandTotal']),
       );
+
+  bool get isCancelled => abortedAt != null;
 }

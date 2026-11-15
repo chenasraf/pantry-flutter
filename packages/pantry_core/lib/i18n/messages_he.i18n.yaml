@@ -1388,7 +1388,14 @@ shopping:
   buyMore: הגדלת הכמות שנקנתה
   quantityFailed: שינוי הכמות שנקנתה נכשל.
   loadItemsFailed: טעינת הפריטים נכשלה.
-  tripFinishedByHousemate: הקנייה הזאת הסתיימה.
+  tripEndedByHousemate: הקנייה הזאת הסתיימה.
+  cancelTrip: ביטול קנייה
+  cancelTripTitle: לבטל את הקנייה הזאת?
+  cancelTripBody: הקנייה תסתיים עבור כל מי שמשתתף בה. שום דבר שסומן בקנייה הזאת לא יסומן ברשימות שלך, והמלאי לא ישתנה.
+  keepShopping: להמשיך בקנייה
+  tripCancelled: הקנייה בוטלה
+  tripAlreadyEnded: הקנייה הזאת כבר הסתיימה.
+  cancelTripFailed: ביטול הקנייה נכשל.
   shoppingWith(int count): "${_plural(count, one: 'קונים יחד עם עוד אחד', many: 'קונים יחד עם עוד $count')}"
   removeFromTrip: הסרה מהקנייה
   removedFromTrip: הוסר מהקנייה הזו
@@ -1445,6 +1452,7 @@ shopping:
   deleteTripTitle: מחיקת קנייה
   deleteTripBody: הקנייה והסכומים שלה יוסרו לצמיתות מהיסטוריית הקניות. לא ניתן לבטל פעולה זו.
   deleteTripFailed: מחיקת הקנייה נכשלה.
+  cancelledBadge: בוטלה
   loadFailed: משהו השתבש. נסו שוב.
   uncategorized: ללא קטגוריה
 
@@ -1633,6 +1641,8 @@ wear:
   sharedTrip: קנייה משותפת
   leaveTripBody: הקנייה ממשיכה לשאר.
   leaveFailed: לא הצלחנו לצאת
+  cancelTripBody: מסתיימת עבור כולם. שום סימון לא מגיע לרשימות.
+  cancelFailed: הביטול נכשל
   boughtTally(int count): "${_plural(count, one: 'פריט אחד', many: '$count פריטים')}"
   storeTally(int count): "${_plural(count, one: 'חנות אחת', many: '$count חנויות')}"
   notBilled: לא הוזן

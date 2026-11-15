@@ -759,7 +759,7 @@ class ChecklistsController extends ChangeNotifier {
         // a shared trip that is a housemate finishing it, and the watch
         // swapping out of session mode mid-aisle has to account for itself.
         if (was != null) {
-          _dropped ??= m.shopping.tripFinishedByHousemate;
+          _dropped ??= m.shopping.tripEndedByHousemate;
           // The remembered list needs no rule of its own: it is still there
           // when the session was in this house, and invalid — so the
           // lowest-sortOrder rule picks — when it was in another.
@@ -899,13 +899,7 @@ class ChecklistsController extends ChangeNotifier {
     } catch (_) {
       return false;
     }
-    _session = null;
-    _review = null;
-    _done = const [];
-    _removed = const [];
-    _mirror.setSession(null);
-    await _loadFromCache();
-    _emit();
+    await _dropTrip();
     return true;
   }
 
@@ -1204,6 +1198,31 @@ class ChecklistsController extends ChangeNotifier {
     } catch (_) {
       return false;
     }
+    await _dropTrip();
+    return true;
+  }
+
+  /// End the trip for everyone on it with nothing checked on it reaching the
+  /// lists. Online only, like [closeTrip], and never queued: a trip a
+  /// housemate finished first had its checks go through, which the wearer is
+  /// told rather than shown a cancel that did not happen.
+  Future<bool> cancelTrip() async {
+    final house = _houseId;
+    final session = _session;
+    if (house == null || session == null || !_sync.isOnline) return false;
+    try {
+      await _shopping.abort(house, session.id);
+      _sync.discardShoppingTrip(house, session.id);
+    } on ShoppingSessionConflict catch (e) {
+      if (!e.session.isCancelled) _dropped = m.shopping.tripAlreadyEnded;
+    } catch (_) {
+      return false;
+    }
+    await _dropTrip();
+    return true;
+  }
+
+  Future<void> _dropTrip() async {
     _session = null;
     _review = null;
     _done = const [];
@@ -1211,7 +1230,6 @@ class ChecklistsController extends ChangeNotifier {
     _mirror.setSession(null);
     await _loadFromCache();
     _emit();
-    return true;
   }
 
   /// What was paid at [storeId]'s till — null for the trip's storeless

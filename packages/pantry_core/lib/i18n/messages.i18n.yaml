@@ -1393,7 +1393,14 @@ shopping:
   buyMore: Increase the amount bought
   quantityFailed: Could not change the amount bought.
   loadItemsFailed: Failed to load items.
-  tripFinishedByHousemate: This shopping trip was finished.
+  tripEndedByHousemate: This shopping trip has ended.
+  cancelTrip: Cancel trip
+  cancelTripTitle: Cancel this trip?
+  cancelTripBody: The trip ends for everyone on it. Nothing checked off on this trip is checked off on your lists, and no stock is changed.
+  keepShopping: Keep shopping
+  tripCancelled: Shopping trip cancelled
+  tripAlreadyEnded: This shopping trip had already ended.
+  cancelTripFailed: Couldn't cancel the trip.
   shoppingWith(int count): "${_plural(count, one: 'Shopping with 1 housemate', many: 'Shopping with $count housemates')}"
   removeFromTrip: Remove from trip
   removedFromTrip: Removed from this trip
@@ -1454,6 +1461,7 @@ shopping:
   deleteTripTitle: Delete trip
   deleteTripBody: This trip and its totals will be permanently removed from shopping history. This cannot be undone.
   deleteTripFailed: Could not delete the trip.
+  cancelledBadge: Cancelled
   # Common
   loadFailed: Something went wrong. Please try again.
   uncategorized: Uncategorized
@@ -1643,6 +1651,8 @@ wear:
   sharedTrip: Shared trip
   leaveTripBody: The trip keeps going for everyone else.
   leaveFailed: Couldn't leave
+  cancelTripBody: Ends it for everyone. Nothing checked off reaches your lists.
+  cancelFailed: Couldn't cancel
   boughtTally(int count): "${_plural(count, one: '1 bought', many: '$count bought')}"
   storeTally(int count): "${_plural(count, one: '1 shop', many: '$count shops')}"
   notBilled: Not set

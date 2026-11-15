@@ -1388,7 +1388,14 @@ shopping:
   buyMore: Augmenter la quantité achetée
   quantityFailed: Impossible de modifier la quantité achetée.
   loadItemsFailed: Impossible de charger les articles.
-  tripFinishedByHousemate: Ces courses ont été terminées.
+  tripEndedByHousemate: Ces courses sont terminées.
+  cancelTrip: Annuler les courses
+  cancelTripTitle: Annuler ces courses ?
+  cancelTripBody: Les courses prennent fin pour tous ceux qui y participent. Rien de ce qui a été coché pendant ces courses n'est coché sur vos listes, et aucun stock n'est modifié.
+  keepShopping: Continuer les courses
+  tripCancelled: Courses annulées
+  tripAlreadyEnded: Ces courses étaient déjà terminées.
+  cancelTripFailed: Impossible d'annuler les courses.
   shoppingWith(int count): "${_plural(count, one: 'Courses avec 1 personne', many: 'Courses avec $count personnes')}"
   removeFromTrip: Retirer de la sortie
   removedFromTrip: Retiré de cette sortie
@@ -1445,6 +1452,7 @@ shopping:
   deleteTripTitle: Supprimer la course
   deleteTripBody: Cette course et ses totaux seront définitivement supprimés de l'historique des courses. Cette action est irréversible.
   deleteTripFailed: Impossible de supprimer la course.
+  cancelledBadge: Annulées
   loadFailed: Une erreur s'est produite. Veuillez réessayer.
   uncategorized: Sans catégorie
 
@@ -1633,6 +1641,8 @@ wear:
   sharedTrip: Sortie partagée
   leaveTripBody: La sortie continue pour les autres.
   leaveFailed: Impossible de quitter
+  cancelTripBody: Fin pour tout le monde. Rien de coché n'arrive sur vos listes.
+  cancelFailed: Impossible d'annuler
   boughtTally(int count): "${_plural(count, one: '1 acheté', many: '$count achetés')}"
   storeTally(int count): "${_plural(count, one: '1 magasin', many: '$count magasins')}"
   notBilled: Non renseigné

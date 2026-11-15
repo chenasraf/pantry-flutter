@@ -7257,9 +7257,45 @@ class ShoppingMessages {
   String get loadItemsFailed => """Failed to load items.""";
 
   /// ```dart
-  /// "This shopping trip was finished."
+  /// "This shopping trip has ended."
   /// ```
-  String get tripFinishedByHousemate => """This shopping trip was finished.""";
+  String get tripEndedByHousemate => """This shopping trip has ended.""";
+
+  /// ```dart
+  /// "Cancel trip"
+  /// ```
+  String get cancelTrip => """Cancel trip""";
+
+  /// ```dart
+  /// "Cancel this trip?"
+  /// ```
+  String get cancelTripTitle => """Cancel this trip?""";
+
+  /// ```dart
+  /// "The trip ends for everyone on it. Nothing checked off on this trip is checked off on your lists, and no stock is changed."
+  /// ```
+  String get cancelTripBody =>
+      """The trip ends for everyone on it. Nothing checked off on this trip is checked off on your lists, and no stock is changed.""";
+
+  /// ```dart
+  /// "Keep shopping"
+  /// ```
+  String get keepShopping => """Keep shopping""";
+
+  /// ```dart
+  /// "Shopping trip cancelled"
+  /// ```
+  String get tripCancelled => """Shopping trip cancelled""";
+
+  /// ```dart
+  /// "This shopping trip had already ended."
+  /// ```
+  String get tripAlreadyEnded => """This shopping trip had already ended.""";
+
+  /// ```dart
+  /// "Couldn't cancel the trip."
+  /// ```
+  String get cancelTripFailed => """Couldn't cancel the trip.""";
 
   /// ```dart
   /// "${_plural(count, one: 'Shopping with 1 housemate', many: 'Shopping with $count housemates')}"
@@ -7548,6 +7584,11 @@ class ShoppingMessages {
   /// "Could not delete the trip."
   /// ```
   String get deleteTripFailed => """Could not delete the trip.""";
+
+  /// ```dart
+  /// "Cancelled"
+  /// ```
+  String get cancelledBadge => """Cancelled""";
 
   /// ```dart
   /// "Something went wrong. Please try again."
@@ -8503,6 +8544,17 @@ class WearMessages {
   /// "Couldn't leave"
   /// ```
   String get leaveFailed => """Couldn't leave""";
+
+  /// ```dart
+  /// "Ends it for everyone. Nothing checked off reaches your lists."
+  /// ```
+  String get cancelTripBody =>
+      """Ends it for everyone. Nothing checked off reaches your lists.""";
+
+  /// ```dart
+  /// "Couldn't cancel"
+  /// ```
+  String get cancelFailed => """Couldn't cancel""";
 
   /// ```dart
   /// "${_plural(count, one: '1 bought', many: '$count bought')}"
@@ -10449,8 +10501,15 @@ Password: pantry-rocks""",
   """shopping.buyMore""": """Increase the amount bought""",
   """shopping.quantityFailed""": """Could not change the amount bought.""",
   """shopping.loadItemsFailed""": """Failed to load items.""",
-  """shopping.tripFinishedByHousemate""":
-      """This shopping trip was finished.""",
+  """shopping.tripEndedByHousemate""": """This shopping trip has ended.""",
+  """shopping.cancelTrip""": """Cancel trip""",
+  """shopping.cancelTripTitle""": """Cancel this trip?""",
+  """shopping.cancelTripBody""":
+      """The trip ends for everyone on it. Nothing checked off on this trip is checked off on your lists, and no stock is changed.""",
+  """shopping.keepShopping""": """Keep shopping""",
+  """shopping.tripCancelled""": """Shopping trip cancelled""",
+  """shopping.tripAlreadyEnded""": """This shopping trip had already ended.""",
+  """shopping.cancelTripFailed""": """Couldn't cancel the trip.""",
   """shopping.removeFromTrip""": """Remove from trip""",
   """shopping.removedFromTrip""": """Removed from this trip""",
   """shopping.undo""": """Undo""",
@@ -10504,6 +10563,7 @@ Password: pantry-rocks""",
   """shopping.deleteTripBody""":
       """This trip and its totals will be permanently removed from shopping history. This cannot be undone.""",
   """shopping.deleteTripFailed""": """Could not delete the trip.""",
+  """shopping.cancelledBadge""": """Cancelled""",
   """shopping.loadFailed""": """Something went wrong. Please try again.""",
   """shopping.uncategorized""": """Uncategorized""",
   """share.title""": """Share to Pantry""",
@@ -10655,6 +10715,9 @@ Password: pantry-rocks""",
   """wear.sharedTrip""": """Shared trip""",
   """wear.leaveTripBody""": """The trip keeps going for everyone else.""",
   """wear.leaveFailed""": """Couldn't leave""",
+  """wear.cancelTripBody""":
+      """Ends it for everyone. Nothing checked off reaches your lists.""",
+  """wear.cancelFailed""": """Couldn't cancel""",
   """wear.notBilled""": """Not set""",
   """wear.currency""": """Currency""",
   """wear.notANumber""": """Numbers only""",

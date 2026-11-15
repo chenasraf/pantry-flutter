@@ -8,6 +8,8 @@ import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/models/shopping_session.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
@@ -209,10 +211,64 @@ class _SessionBodyState extends State<_SessionBody> {
     if (_departed || !mounted) return;
     _departed = true;
     showAppToast(
-      message: m.shopping.tripFinishedByHousemate,
+      message: m.shopping.tripEndedByHousemate,
       kind: ToastKind.info,
     );
     Navigator.of(context).pop();
+  }
+
+  /// Ends the trip for everyone without anything on it reaching the lists.
+  /// Online only: a housemate finishing it first means their checks went
+  /// through, and the shopper has to hear that rather than "cancelled".
+  Future<void> _cancelTrip() async {
+    if (_busy) return;
+    if (!await _confirmCancelTrip()) return;
+    if (!mounted) return;
+    setState(() => _busy = true);
+    try {
+      await _c.cancel();
+      _departed = true;
+      showAppToast(message: m.shopping.tripCancelled, kind: ToastKind.success);
+      if (mounted) Navigator.of(context).pop();
+    } on ShoppingSessionConflict catch (e) {
+      _departed = true;
+      showAppToast(
+        message: e.session.isCancelled
+            ? m.shopping.tripCancelled
+            : m.shopping.tripAlreadyEnded,
+        kind: ToastKind.info,
+      );
+      if (mounted) Navigator.of(context).pop();
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _busy = false);
+      showAppToast(message: m.shopping.cancelTripFailed, kind: ToastKind.error);
+    }
+  }
+
+  Future<bool> _confirmCancelTrip() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(m.shopping.cancelTripTitle),
+        content: Text(m.shopping.cancelTripBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(m.shopping.keepShopping),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(ctx).colorScheme.error,
+              foregroundColor: Theme.of(ctx).colorScheme.onError,
+            ),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(m.shopping.cancelTrip),
+          ),
+        ],
+      ),
+    );
+    return confirmed == true;
   }
 
   Future<void> _openReminders() async {
@@ -323,6 +379,33 @@ class _SessionBodyState extends State<_SessionBody> {
                 icon: const Icon(Icons.logout),
                 tooltip: m.shopping.leaveTrip,
                 onPressed: _busy ? null : _leave,
+              ),
+            if (ServerFeature.shoppingCancelTrip)
+              PopupMenuButton<VoidCallback>(
+                key: const ValueKey('trip-overflow'),
+                enabled: !_busy,
+                onSelected: (action) => action(),
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: _cancelTrip,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.cancel_outlined,
+                          size: 20,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          m.shopping.cancelTrip,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
           ],
         ),

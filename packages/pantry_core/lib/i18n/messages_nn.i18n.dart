@@ -7281,7 +7281,43 @@ class ShoppingMessagesNn extends ShoppingMessages {
   /// ```dart
   /// "Denne handelen er avslutta."
   /// ```
-  String get tripFinishedByHousemate => """Denne handelen er avslutta.""";
+  String get tripEndedByHousemate => """Denne handelen er avslutta.""";
+
+  /// ```dart
+  /// "Avbryt handelen"
+  /// ```
+  String get cancelTrip => """Avbryt handelen""";
+
+  /// ```dart
+  /// "Avbryte denne handelen?"
+  /// ```
+  String get cancelTripTitle => """Avbryte denne handelen?""";
+
+  /// ```dart
+  /// "Handelen tek slutt for alle som er med. Ingenting som er kryssa av på denne handelen, blir kryssa av på listene dine, og ingen lager blir endra."
+  /// ```
+  String get cancelTripBody =>
+      """Handelen tek slutt for alle som er med. Ingenting som er kryssa av på denne handelen, blir kryssa av på listene dine, og ingen lager blir endra.""";
+
+  /// ```dart
+  /// "Handle vidare"
+  /// ```
+  String get keepShopping => """Handle vidare""";
+
+  /// ```dart
+  /// "Handelen er avbroten"
+  /// ```
+  String get tripCancelled => """Handelen er avbroten""";
+
+  /// ```dart
+  /// "Denne handelen var alt avslutta."
+  /// ```
+  String get tripAlreadyEnded => """Denne handelen var alt avslutta.""";
+
+  /// ```dart
+  /// "Klarte ikkje å avbryte handelen."
+  /// ```
+  String get cancelTripFailed => """Klarte ikkje å avbryte handelen.""";
 
   /// ```dart
   /// "${_plural(count, one: 'Handlar med 1 annan', many: 'Handlar med $count andre')}"
@@ -7570,6 +7606,11 @@ class ShoppingMessagesNn extends ShoppingMessages {
   /// "Klarte ikkje å slette handelen."
   /// ```
   String get deleteTripFailed => """Klarte ikkje å slette handelen.""";
+
+  /// ```dart
+  /// "Avbroten"
+  /// ```
+  String get cancelledBadge => """Avbroten""";
 
   /// ```dart
   /// "Noko gjekk gale. Prøv igjen."
@@ -8528,6 +8569,17 @@ class WearMessagesNn extends WearMessages {
   /// "Fekk ikkje gå ut"
   /// ```
   String get leaveFailed => """Fekk ikkje gå ut""";
+
+  /// ```dart
+  /// "Tek slutt for alle. Ingenting avkryssa kjem på listene."
+  /// ```
+  String get cancelTripBody =>
+      """Tek slutt for alle. Ingenting avkryssa kjem på listene.""";
+
+  /// ```dart
+  /// "Fekk ikkje avbryte"
+  /// ```
+  String get cancelFailed => """Fekk ikkje avbryte""";
 
   /// ```dart
   /// "${_plural(count, one: '1 kjøpt', many: '$count kjøpte')}"
@@ -10497,7 +10549,15 @@ Passord: pantry""",
   """shopping.quantityFailed""":
       """Klarte ikkje å endre mengda som er kjøpt.""",
   """shopping.loadItemsFailed""": """Klarte ikkje å laste varene.""",
-  """shopping.tripFinishedByHousemate""": """Denne handelen er avslutta.""",
+  """shopping.tripEndedByHousemate""": """Denne handelen er avslutta.""",
+  """shopping.cancelTrip""": """Avbryt handelen""",
+  """shopping.cancelTripTitle""": """Avbryte denne handelen?""",
+  """shopping.cancelTripBody""":
+      """Handelen tek slutt for alle som er med. Ingenting som er kryssa av på denne handelen, blir kryssa av på listene dine, og ingen lager blir endra.""",
+  """shopping.keepShopping""": """Handle vidare""",
+  """shopping.tripCancelled""": """Handelen er avbroten""",
+  """shopping.tripAlreadyEnded""": """Denne handelen var alt avslutta.""",
+  """shopping.cancelTripFailed""": """Klarte ikkje å avbryte handelen.""",
   """shopping.removeFromTrip""": """Fjern frå handleturen""",
   """shopping.removedFromTrip""": """Fjerna frå denne handleturen""",
   """shopping.undo""": """Angre""",
@@ -10552,6 +10612,7 @@ Passord: pantry""",
   """shopping.deleteTripBody""":
       """Denne handelen og summane hennar blir fjerna for godt frå handlehistorikken. Dette kan ikkje angrast.""",
   """shopping.deleteTripFailed""": """Klarte ikkje å slette handelen.""",
+  """shopping.cancelledBadge""": """Avbroten""",
   """shopping.loadFailed""": """Noko gjekk gale. Prøv igjen.""",
   """shopping.uncategorized""": """Utan kategori""",
   """share.title""": """Del til Pantry""",
@@ -10704,6 +10765,9 @@ Passord: pantry""",
   """wear.sharedTrip""": """Delt handletur""",
   """wear.leaveTripBody""": """Handleturen held fram for dei andre.""",
   """wear.leaveFailed""": """Fekk ikkje gå ut""",
+  """wear.cancelTripBody""":
+      """Tek slutt for alle. Ingenting avkryssa kjem på listene.""",
+  """wear.cancelFailed""": """Fekk ikkje avbryte""",
   """wear.notBilled""": """Ikkje sett""",
   """wear.currency""": """Valuta""",
   """wear.notANumber""": """Berre tal""",

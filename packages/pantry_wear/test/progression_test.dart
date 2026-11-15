@@ -3,8 +3,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/member.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
+import 'package:pantry_core/utils/version.dart';
 import 'package:pantry_wear/src/checklists/checklists_controller.dart';
+import 'package:pantry_wear/src/shopping/cancel_trip_page.dart';
 import 'package:pantry_wear/src/shopping/leave_trip_page.dart';
 import 'package:pantry_wear/src/shopping/progression_page.dart';
 import 'package:pantry_wear/src/shopping/store_till_page.dart';
@@ -491,6 +494,36 @@ void main() {
       // opened a page promising otherwise would be a lie.
       expect(find.byType(LeaveTripPage), findsNothing);
       expect(rowFor(tester, m.wear.sharedTrip).onTap, isNull);
+    });
+  });
+
+  group('cancelling the trip', () {
+    void seedServer(String version) => ServerVersionService.instance.debugSeed(
+      pantryVersion: Version.parse(version),
+    );
+
+    tearDown(() => ServerVersionService.instance.debugSeed());
+
+    testWidgets('an older server offers no cancel', (tester) async {
+      seedServer('0.38.0');
+      await pumpProgression(tester, seeded());
+
+      expect(find.text(m.shopping.cancelTrip), findsNothing);
+    });
+
+    testWidgets('it is the last row, and asks before it acts', (tester) async {
+      seedServer('0.39.0');
+      await pumpProgression(tester, seeded());
+
+      // Reminders, then the three legs, then the cancel.
+      tester.state<SnapFocusListState>(find.byType(SnapFocusList)).centreOn(4);
+      await tester.pumpAndSettle();
+      expect(rowFor(tester, m.shopping.cancelTrip).warning, isTrue);
+      await tester.tap(find.text(m.shopping.cancelTrip));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(CancelTripPage), findsOneWidget);
+      expect(find.text(m.wear.cancelTripBody), findsOneWidget);
     });
   });
 }

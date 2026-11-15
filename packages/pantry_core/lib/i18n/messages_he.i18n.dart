@@ -7262,7 +7262,43 @@ class ShoppingMessagesHe extends ShoppingMessages {
   /// ```dart
   /// "הקנייה הזאת הסתיימה."
   /// ```
-  String get tripFinishedByHousemate => """הקנייה הזאת הסתיימה.""";
+  String get tripEndedByHousemate => """הקנייה הזאת הסתיימה.""";
+
+  /// ```dart
+  /// "ביטול קנייה"
+  /// ```
+  String get cancelTrip => """ביטול קנייה""";
+
+  /// ```dart
+  /// "לבטל את הקנייה הזאת?"
+  /// ```
+  String get cancelTripTitle => """לבטל את הקנייה הזאת?""";
+
+  /// ```dart
+  /// "הקנייה תסתיים עבור כל מי שמשתתף בה. שום דבר שסומן בקנייה הזאת לא יסומן ברשימות שלך, והמלאי לא ישתנה."
+  /// ```
+  String get cancelTripBody =>
+      """הקנייה תסתיים עבור כל מי שמשתתף בה. שום דבר שסומן בקנייה הזאת לא יסומן ברשימות שלך, והמלאי לא ישתנה.""";
+
+  /// ```dart
+  /// "להמשיך בקנייה"
+  /// ```
+  String get keepShopping => """להמשיך בקנייה""";
+
+  /// ```dart
+  /// "הקנייה בוטלה"
+  /// ```
+  String get tripCancelled => """הקנייה בוטלה""";
+
+  /// ```dart
+  /// "הקנייה הזאת כבר הסתיימה."
+  /// ```
+  String get tripAlreadyEnded => """הקנייה הזאת כבר הסתיימה.""";
+
+  /// ```dart
+  /// "ביטול הקנייה נכשל."
+  /// ```
+  String get cancelTripFailed => """ביטול הקנייה נכשל.""";
 
   /// ```dart
   /// "${_plural(count, one: 'קונים יחד עם עוד אחד', many: 'קונים יחד עם עוד $count')}"
@@ -7551,6 +7587,11 @@ class ShoppingMessagesHe extends ShoppingMessages {
   /// "מחיקת הקנייה נכשלה."
   /// ```
   String get deleteTripFailed => """מחיקת הקנייה נכשלה.""";
+
+  /// ```dart
+  /// "בוטלה"
+  /// ```
+  String get cancelledBadge => """בוטלה""";
 
   /// ```dart
   /// "משהו השתבש. נסו שוב."
@@ -8501,6 +8542,17 @@ class WearMessagesHe extends WearMessages {
   /// "לא הצלחנו לצאת"
   /// ```
   String get leaveFailed => """לא הצלחנו לצאת""";
+
+  /// ```dart
+  /// "מסתיימת עבור כולם. שום סימון לא מגיע לרשימות."
+  /// ```
+  String get cancelTripBody =>
+      """מסתיימת עבור כולם. שום סימון לא מגיע לרשימות.""";
+
+  /// ```dart
+  /// "הביטול נכשל"
+  /// ```
+  String get cancelFailed => """הביטול נכשל""";
 
   /// ```dart
   /// "${_plural(count, one: 'פריט אחד', many: '$count פריטים')}"
@@ -10421,7 +10473,15 @@ Map<String, String> get messagesHeMap => {
   """shopping.buyMore""": """הגדלת הכמות שנקנתה""",
   """shopping.quantityFailed""": """שינוי הכמות שנקנתה נכשל.""",
   """shopping.loadItemsFailed""": """טעינת הפריטים נכשלה.""",
-  """shopping.tripFinishedByHousemate""": """הקנייה הזאת הסתיימה.""",
+  """shopping.tripEndedByHousemate""": """הקנייה הזאת הסתיימה.""",
+  """shopping.cancelTrip""": """ביטול קנייה""",
+  """shopping.cancelTripTitle""": """לבטל את הקנייה הזאת?""",
+  """shopping.cancelTripBody""":
+      """הקנייה תסתיים עבור כל מי שמשתתף בה. שום דבר שסומן בקנייה הזאת לא יסומן ברשימות שלך, והמלאי לא ישתנה.""",
+  """shopping.keepShopping""": """להמשיך בקנייה""",
+  """shopping.tripCancelled""": """הקנייה בוטלה""",
+  """shopping.tripAlreadyEnded""": """הקנייה הזאת כבר הסתיימה.""",
+  """shopping.cancelTripFailed""": """ביטול הקנייה נכשל.""",
   """shopping.removeFromTrip""": """הסרה מהקנייה""",
   """shopping.removedFromTrip""": """הוסר מהקנייה הזו""",
   """shopping.undo""": """בטל""",
@@ -10475,6 +10535,7 @@ Map<String, String> get messagesHeMap => {
   """shopping.deleteTripBody""":
       """הקנייה והסכומים שלה יוסרו לצמיתות מהיסטוריית הקניות. לא ניתן לבטל פעולה זו.""",
   """shopping.deleteTripFailed""": """מחיקת הקנייה נכשלה.""",
+  """shopping.cancelledBadge""": """בוטלה""",
   """shopping.loadFailed""": """משהו השתבש. נסו שוב.""",
   """shopping.uncategorized""": """ללא קטגוריה""",
   """share.title""": """שיתוף ל-Pantry""",
@@ -10619,6 +10680,9 @@ Map<String, String> get messagesHeMap => {
   """wear.sharedTrip""": """קנייה משותפת""",
   """wear.leaveTripBody""": """הקנייה ממשיכה לשאר.""",
   """wear.leaveFailed""": """לא הצלחנו לצאת""",
+  """wear.cancelTripBody""":
+      """מסתיימת עבור כולם. שום סימון לא מגיע לרשימות.""",
+  """wear.cancelFailed""": """הביטול נכשל""",
   """wear.notBilled""": """לא הוזן""",
   """wear.currency""": """מטבע""",
   """wear.notANumber""": """מספרים בלבד""",

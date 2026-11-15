@@ -1529,7 +1529,14 @@ shopping:
   buyMore: Auk mengda som er kjøpt
   quantityFailed: Klarte ikkje å endre mengda som er kjøpt.
   loadItemsFailed: Klarte ikkje å laste varene.
-  tripFinishedByHousemate: Denne handelen er avslutta.
+  tripEndedByHousemate: Denne handelen er avslutta.
+  cancelTrip: Avbryt handelen
+  cancelTripTitle: Avbryte denne handelen?
+  cancelTripBody: Handelen tek slutt for alle som er med. Ingenting som er kryssa av på denne handelen, blir kryssa av på listene dine, og ingen lager blir endra.
+  keepShopping: Handle vidare
+  tripCancelled: Handelen er avbroten
+  tripAlreadyEnded: Denne handelen var alt avslutta.
+  cancelTripFailed: Klarte ikkje å avbryte handelen.
   shoppingWith(int count): "${_plural(count, one: 'Handlar med 1 annan', many: 'Handlar med $count andre')}"
   removeFromTrip: Fjern frå handleturen
   removedFromTrip: Fjerna frå denne handleturen
@@ -1586,6 +1593,7 @@ shopping:
   deleteTripTitle: Slett handelen
   deleteTripBody: Denne handelen og summane hennar blir fjerna for godt frå handlehistorikken. Dette kan ikkje angrast.
   deleteTripFailed: Klarte ikkje å slette handelen.
+  cancelledBadge: Avbroten
   loadFailed: Noko gjekk gale. Prøv igjen.
   uncategorized: Utan kategori
 
@@ -1779,6 +1787,8 @@ wear:
   sharedTrip: Delt handletur
   leaveTripBody: Handleturen held fram for dei andre.
   leaveFailed: Fekk ikkje gå ut
+  cancelTripBody: Tek slutt for alle. Ingenting avkryssa kjem på listene.
+  cancelFailed: Fekk ikkje avbryte
   boughtTally(int count): "${_plural(count, one: '1 kjøpt', many: '$count kjøpte')}"
   storeTally(int count): "${_plural(count, one: '1 butikk', many: '$count butikkar')}"
   notBilled: Ikkje sett
