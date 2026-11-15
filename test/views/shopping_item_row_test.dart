@@ -71,8 +71,12 @@ void main() {
 
   /// The row on its own, with a controller that has never loaded — reference
   /// data is best-effort everywhere it is read, so an empty one is a legal
-  /// state and the row has to draw in it.
+  /// state and the row has to draw in it. Phone-wide, where the quantity stays
+  /// a chip beside the amount stepper rather than moving into it.
   Future<void> pumpRow(WidgetTester tester, ListItem item) async {
+    tester.view.physicalSize = const Size(400, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     final controller = ShoppingSessionController(session: session());
     addTearDown(controller.dispose);
     await tester.pumpWidget(

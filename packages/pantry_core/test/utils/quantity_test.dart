@@ -74,6 +74,22 @@ void main() {
     expect(down('9999'), '9000');
   });
 
+  test('stops at a floor of one for an amount to buy', () {
+    expect(stepQuantity('2 L', -1, min: 1), '1 L');
+    expect(stepQuantity('1 L', -1, min: 1), '1 L');
+    expect(stepQuantity('15', -1, min: 1), '10');
+    expect(stepQuantity('1 loaf', 1, min: 1), '2 loaf');
+  });
+
+  test('says whether a step down is left', () {
+    expect(canStepDown('2 L', min: 1), isTrue);
+    expect(canStepDown('1 L', min: 1), isFalse);
+    expect(canStepDown('1 L'), isTrue);
+    expect(canStepDown('0'), isFalse);
+    expect(canStepDown('some'), isFalse);
+    expect(canStepDown(''), isFalse);
+  });
+
   test('leaves a number too large to read alone', () {
     const huge = '99999999999999999999999 g';
     expect(up(huge), huge);

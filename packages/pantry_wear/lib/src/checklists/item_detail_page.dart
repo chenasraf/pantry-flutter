@@ -7,6 +7,7 @@ import 'package:pantry_core/models/stock.dart';
 import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/price.dart';
+import 'package:pantry_core/utils/quantity.dart';
 import 'package:pantry_core/utils/rrule.dart';
 import 'package:pantry_core/utils/stock_display.dart';
 import 'package:pantry_core/utils/stock_rules.dart';
@@ -26,8 +27,8 @@ import 'inventory_card.dart';
 import 'item_image.dart';
 import '../widgets/wear_surfaces.dart';
 
-/// Read-only. The watch writes check-state and nothing else, so the actions
-/// here are the two check verbs and a hand-off to the phone.
+/// Read-only but for check state, and on a trip the amount being bought, so
+/// the actions here are the two check verbs and a hand-off to the phone.
 ///
 /// An inventory item has no check state: it shows its stock, expiry and link
 /// instead, and the hand-off is its only action.
@@ -104,9 +105,26 @@ class ItemDetailPage extends StatelessWidget {
               const SizedBox(height: 14),
               if (inventory) ..._stockFacts(context),
               if (item.quantity != null && !inventory)
-                WearFact(
-                  label: m.settings.chipNames.quantity,
-                  value: EntityChip(textColor: neutral, label: item.quantity!),
+                // The row keeps its one tap for checking off, so the amount
+                // bought is stepped here, where there is room for a stepper.
+                ListenableBuilder(
+                  listenable: controller,
+                  builder: (context, _) {
+                    final live =
+                        controller.items
+                            .where((i) => i.id == item.id)
+                            .firstOrNull ??
+                        item;
+                    return WearFact(
+                      label: m.settings.chipNames.quantity,
+                      value: inSession && controller.canStepAmount(live)
+                          ? _AmountBought(item: live, controller: controller)
+                          : EntityChip(
+                              textColor: neutral,
+                              label: live.quantity ?? item.quantity!,
+                            ),
+                    );
+                  },
                 ),
               if (category != null)
                 WearFact(
@@ -277,6 +295,57 @@ extension on ItemDetailPage {
         ),
       ),
     ];
+  }
+}
+
+/// − {amount} +, for buying more or less than the list asked for. The phone's
+/// rules: − is off at 1, and the unit rides along.
+class _AmountBought extends StatelessWidget {
+  final ListItem item;
+  final ChecklistsController controller;
+
+  const _AmountBought({required this.item, required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    final quantity = item.quantity ?? '';
+    return Row(
+      children: [
+        WearRoundButton(
+          icon: Icons.remove,
+          label: m.shopping.buyLess,
+          size: 36,
+          onTap: canStepDown(quantity, min: 1)
+              ? () => controller.stepAmount(item, -1)
+              : null,
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsetsDirectional.symmetric(horizontal: 4),
+            // Shrunk rather than cut, like the inventory stepper's amount.
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                quantity,
+                maxLines: 1,
+                textDirection: detectTextDirection(quantity),
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+        WearRoundButton(
+          icon: Icons.add,
+          label: m.shopping.buyMore,
+          size: 36,
+          onTap: () => controller.stepAmount(item, 1),
+        ),
+      ],
+    );
   }
 }
 

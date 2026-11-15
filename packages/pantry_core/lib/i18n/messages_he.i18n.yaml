@@ -1384,6 +1384,9 @@ shopping:
   doneToday(int count): "הושלם ($count)"
   nothingToBuyHere: אין מה לקנות כאן.
   checkFailed: עדכון הפריט נכשל.
+  buyLess: הקטנת הכמות שנקנתה
+  buyMore: הגדלת הכמות שנקנתה
+  quantityFailed: שינוי הכמות שנקנתה נכשל.
   loadItemsFailed: טעינת הפריטים נכשלה.
   tripFinishedByHousemate: הקנייה הזאת הסתיימה.
   shoppingWith(int count): "${_plural(count, one: 'קונים יחד עם עוד אחד', many: 'קונים יחד עם עוד $count')}"

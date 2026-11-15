@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/category.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/label.dart';
 import 'package:pantry_core/models/member.dart';
 import 'package:pantry_core/models/shopping_estimate.dart';
@@ -16,6 +17,7 @@ import 'package:pantry_core/models/shopping_session.dart';
 import 'package:pantry_core/models/store.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/category_service.dart';
+import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/house_service.dart';
 import 'package:pantry_core/services/label_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
@@ -24,7 +26,10 @@ import 'package:pantry_core/services/store_service.dart';
 import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
+import 'package:pantry_core/utils/quantity.dart';
+import 'package:pantry_core/utils/stock_rules.dart';
 
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/restock_feedback.dart';
 
 /// All the items under one category, for the grouped dense view. [category] is
@@ -228,6 +233,10 @@ class ShoppingSessionController extends ChangeNotifier {
   /// reconciles this view promptly instead of waiting for the next ~1-min poll.
   void _bindSync() {
     _appliedSub ??= SyncManager.instance.onApplied.listen((e) {
+      if (_isAmountOp(e.op)) {
+        _amountApplied(e.op, e.entity);
+        return;
+      }
       // A check landed on the server — refresh the session review so the Done
       // drawer / in-cart count catch up. The item list is already optimistic.
       // An uncheck (delete) landing instead pulls the full list so the item
@@ -263,6 +272,10 @@ class ShoppingSessionController extends ChangeNotifier {
       }
     });
     _skippedSub ??= SyncManager.instance.onSkipped.listen((e) {
+      if (_isAmountOp(e.op)) {
+        _amountDropped(e.op);
+        return;
+      }
       // A check/uncheck was dropped (e.g. the session closed, or a 4xx) — clear
       // the matching optimistic guard so the next fetch is authoritative.
       if (_isOwnCheckOp(e.op)) {
@@ -349,6 +362,8 @@ class ShoppingSessionController extends ChangeNotifier {
 
   Future<void> load() async {
     _bindSync();
+    _permissions = null;
+    _lists = null;
     _loading = _items.isEmpty;
     notifyListeners();
 
@@ -615,13 +630,16 @@ class ShoppingSessionController extends ChangeNotifier {
       (id, _) =>
           !_uncheckedPending.contains(id) || fetched.any((i) => i.id == id),
     );
-    _items = fetched
-        .where(
-          (i) =>
-              !_checkedPending.contains(i.id) &&
-              !_skippedPending.contains(i.id),
-        )
-        .toList();
+    // An amount still on its way to the server is the one the shopper last
+    // set, not the one this read caught.
+    _items = [
+      for (final i in fetched)
+        if (!_checkedPending.contains(i.id) && !_skippedPending.contains(i.id))
+          switch (_pendingAmount[i.id]) {
+            final pending? => i.copyWith(quantity: pending.quantity),
+            null => i,
+          },
+    ];
     for (final item in _uncheckedReinsert.values) {
       if (!_items.any((i) => i.id == item.id)) _items = [..._items, item];
     }
@@ -770,6 +788,105 @@ class ShoppingSessionController extends ChangeNotifier {
         createdAt: DateTime.now().millisecondsSinceEpoch,
       ),
     );
+  }
+
+  HousePermissions? _permissions;
+  Map<int, ChecklistList>? _lists;
+
+  /// Whether the shopper can step how much of [item] they bought: a to-buy
+  /// item whose quantity has a number, on a list they may edit. Checking items
+  /// off is not enough, because the step rewrites the item itself.
+  bool canStepAmount(ListItem item) {
+    if (item.done || firstNumber(item.quantity) == null) return false;
+    final permissions = _permissions ??=
+        HouseService.instance
+            .getCached()
+            ?.where((h) => h.id == houseId)
+            .firstOrNull
+            ?.effectivePermissions ??
+        HousePermissions.unrestricted;
+    if (!permissions.canEditLists) return false;
+    final lists = _lists ??= {
+      for (final l
+          in ChecklistService.instance.getCachedLists(houseId) ?? const [])
+        l.id: l,
+    };
+    return lists[item.listId]?.isWritable ?? true;
+  }
+
+  /// The latest amount sent per item and what it replaced, so the answer to
+  /// an earlier tap cannot overwrite a later one.
+  final Map<int, ({String opUuid, String quantity, String previous})>
+  _pendingAmount = {};
+
+  /// Record buying more or less of [item] than the list asked for. The item's
+  /// quantity is what checking it off restocks, so it is set before the item
+  /// goes into the cart. Never below 1: taking an item off the trip is
+  /// [skipItem], not stepping it to nothing.
+  void stepAmount(ListItem item, int direction) {
+    final index = _items.indexWhere((i) => i.id == item.id);
+    if (index == -1) return;
+    final current = _items[index];
+    final previous = current.quantity;
+    if (previous == null || firstNumber(previous) == null) return;
+    final quantity = stepQuantity(previous, direction, min: 1);
+    if (quantity == previous) return;
+    _items = [..._items]..[index] = current.copyWith(quantity: quantity);
+    final opUuid = SyncIds.newOpUuid();
+    _pendingAmount[item.id] = (
+      opUuid: opUuid,
+      quantity: quantity,
+      previous: previous,
+    );
+    notifyListeners();
+    SyncManager.instance.enqueue(
+      SyncOp(
+        uuid: opUuid,
+        entity: SyncEntity.checklistItem,
+        op: SyncOpKind.update,
+        houseId: houseId,
+        parentId: current.listId,
+        entityId: current.id,
+        body: {'quantity': quantity},
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
+  }
+
+  bool _isAmountOp(SyncOp op) =>
+      op.entity == SyncEntity.checklistItem &&
+      op.houseId == houseId &&
+      _pendingAmount[op.entityId]?.opUuid == op.uuid;
+
+  /// The server may pin the quantity as set by hand, so the row takes what it
+  /// answered rather than what was sent.
+  void _amountApplied(SyncOp op, Object? entity) {
+    final id = op.entityId!;
+    _pendingAmount.remove(id);
+    if (entity is! ListItem) return;
+    showRestockFeedback(entity.restockSync.map(syncEventMessage).toList());
+    _items = [
+      for (final i in _items)
+        i.id == id
+            ? i.copyWith(
+                quantity: entity.quantity,
+                quantityPinned: entity.quantityPinned,
+              )
+            : i,
+    ];
+    notifyListeners();
+  }
+
+  void _amountDropped(SyncOp op) {
+    final id = op.entityId!;
+    final pending = _pendingAmount.remove(id);
+    if (pending == null) return;
+    _items = [
+      for (final i in _items)
+        i.id == id ? i.copyWith(quantity: pending.previous) : i,
+    ];
+    notifyListeners();
+    showAppToast(message: m.shopping.quantityFailed, kind: ToastKind.error);
   }
 
   /// Move to [storeId] and adopt the returned session (new active store, so the

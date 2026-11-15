@@ -23,19 +23,21 @@ int _gridUp(int value) {
   return (value ~/ step) * step + step;
 }
 
-/// The first grid value below [value]. The step comes from `value - 1` so a
-/// value sitting on a band boundary descends into the band beneath it
-/// (10 → 9, not 10 → 5).
-int _gridDown(int value) {
-  if (value <= 0) return 0;
+/// The first grid value below [value], never below [min]. The step comes from
+/// `value - 1` so a value sitting on a band boundary descends into the band
+/// beneath it (10 → 9, not 10 → 5).
+int _gridDown(int value, int min) {
+  if (value <= min) return value < 0 ? 0 : value;
   final step = _stepAt(value - 1);
-  return ((value - 1) ~/ step) * step;
+  final stepped = ((value - 1) ~/ step) * step;
+  return stepped < min ? min : stepped;
 }
 
 /// Step the number inside [quantity] one grid value up ([direction] positive)
 /// or down, keeping the unit and any surrounding text. A quantity with no
-/// number at all gains a leading "1" when stepped up.
-String stepQuantity(String quantity, int direction) {
+/// number at all gains a leading "1" when stepped up. Steps down stop at
+/// [min]: 0 for what is on hand, 1 for an amount to buy.
+String stepQuantity(String quantity, int direction, {int min = 0}) {
   final match = _numberRun.firstMatch(quantity);
   if (match == null) {
     if (direction <= 0) return quantity;
@@ -43,7 +45,16 @@ String stepQuantity(String quantity, int direction) {
   }
   final current = int.tryParse(match.group(0)!);
   if (current == null) return quantity;
-  final stepped = direction > 0 ? _gridUp(current) : _gridDown(current);
+  final stepped = direction > 0 ? _gridUp(current) : _gridDown(current, min);
   final next = stepped > _maxQuantity ? _maxQuantity : stepped;
   return quantity.replaceRange(match.start, match.end, '$next');
+}
+
+/// Whether [quantity] holds a number that [stepQuantity] can take down a grid
+/// value without going below [min].
+bool canStepDown(String quantity, {int min = 0}) {
+  final match = _numberRun.firstMatch(quantity);
+  if (match == null) return false;
+  final current = int.tryParse(match.group(0)!);
+  return current != null && current > min;
 }

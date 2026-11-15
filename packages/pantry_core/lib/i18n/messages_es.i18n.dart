@@ -7313,6 +7313,21 @@ class ShoppingMessagesEs extends ShoppingMessages {
   String get checkFailed => """No se pudo actualizar el artículo.""";
 
   /// ```dart
+  /// "Reducir la cantidad comprada"
+  /// ```
+  String get buyLess => """Reducir la cantidad comprada""";
+
+  /// ```dart
+  /// "Aumentar la cantidad comprada"
+  /// ```
+  String get buyMore => """Aumentar la cantidad comprada""";
+
+  /// ```dart
+  /// "No se pudo cambiar la cantidad comprada."
+  /// ```
+  String get quantityFailed => """No se pudo cambiar la cantidad comprada.""";
+
+  /// ```dart
   /// "No se pudieron cargar los artículos."
   /// ```
   String get loadItemsFailed => """No se pudieron cargar los artículos.""";
@@ -10575,6 +10590,9 @@ Contraseña: pantry-rocks""",
   """shopping.everythingInCart""": """Todo está en el carrito.""",
   """shopping.nothingToBuyHere""": """Nada que comprar aquí.""",
   """shopping.checkFailed""": """No se pudo actualizar el artículo.""",
+  """shopping.buyLess""": """Reducir la cantidad comprada""",
+  """shopping.buyMore""": """Aumentar la cantidad comprada""",
+  """shopping.quantityFailed""": """No se pudo cambiar la cantidad comprada.""",
   """shopping.loadItemsFailed""": """No se pudieron cargar los artículos.""",
   """shopping.tripFinishedByHousemate""": """Esta compra ha terminado.""",
   """shopping.removeFromTrip""": """Quitar de la compra""",

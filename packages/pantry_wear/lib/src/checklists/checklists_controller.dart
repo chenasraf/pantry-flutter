@@ -27,6 +27,7 @@ import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 import 'package:pantry_core/utils/currencies.dart';
 import 'package:pantry_core/utils/list_kind_strings.dart';
+import 'package:pantry_core/utils/quantity.dart';
 import 'package:pantry_core/utils/stock_display.dart';
 import 'package:pantry_core/utils/stock_rules.dart';
 
@@ -77,7 +78,9 @@ class ChecklistsController extends ChangeNotifier {
     String? currentUserId,
     String itemSort = 'custom',
     List<int> storeCategoryOrder = const [],
+    bool canEditLists = true,
   }) : _seededUserId = currentUserId {
+    _canEditLists = canEditLists;
     _itemSort = itemSort;
     _houseId = houseId;
     _list = list;
@@ -96,6 +99,13 @@ class ChecklistsController extends ChangeNotifier {
     _members = {for (final m in members) m.userId: m};
     _joinableTrips = joinableTrips;
     _loading = false;
+  }
+
+  /// Have a seeded controller hear the queue's answers, as [start] does.
+  @visibleForTesting
+  void listenToSyncForTest() {
+    _applied ??= _sync.onApplied.listen(_onApplied);
+    _skipped ??= _sync.onSkipped.listen(_onSkipped);
   }
 
   /// Stand a seeded trip in another shop and say so, which is what [advanceTo]
@@ -218,6 +228,10 @@ class ChecklistsController extends ChangeNotifier {
   /// Whether the wearer may check items off in the scoped house, which is the
   /// permission joining asks for — joining a trip is checking things off it.
   var _canCheckItems = true;
+
+  /// Whether the wearer may edit items in the scoped house, which stepping the
+  /// amount bought on a trip does.
+  var _canEditLists = true;
 
   List<ListItem> _items = const [];
 
@@ -351,6 +365,12 @@ class ChecklistsController extends ChangeNotifier {
   /// Kept until the op leaves the queue, so a poll landing mid-flight cannot
   /// flicker a row back.
   final _doneOverride = <int, bool>{};
+
+  /// The amount bought the wearer last stepped a trip item to, with the write
+  /// that carries it. Kept until that write leaves the queue, for the same
+  /// reason as [_doneOverride].
+  final _amountOverride =
+      <int, ({String opUuid, String quantity, String previous})>{};
 
   /// Whether the watch face is carrying the trip chip, as far as this process
   /// knows — null until the first read settles. A notification outlives the
@@ -697,6 +717,7 @@ class ChecklistsController extends ChangeNotifier {
       if (house.id != id) continue;
       _houseName = house.name;
       _canCheckItems = house.effectivePermissions.canCheckItems;
+      _canEditLists = house.effectivePermissions.canEditLists;
       return;
     }
   }
@@ -1082,7 +1103,11 @@ class ChecklistsController extends ChangeNotifier {
     };
     return [
       for (final item in items)
-        if (!hidden.contains(item.id)) item,
+        if (!hidden.contains(item.id))
+          switch (_amountOverride[item.id]) {
+            final stepped? => item.copyWith(quantity: stepped.quantity),
+            null => item,
+          },
     ];
   }
 
@@ -1356,6 +1381,52 @@ class ChecklistsController extends ChangeNotifier {
     );
   }
 
+  /// Whether the wearer can step how much of [item] they bought: a to-buy
+  /// trip item whose quantity has a number, on a list they may edit. The
+  /// phone's rule, so a row offers the same thing on both.
+  bool canStepAmount(ListItem item) =>
+      _session != null &&
+      !item.done &&
+      _items.any((i) => i.id == item.id) &&
+      firstNumber(item.quantity) != null &&
+      _canEditLists &&
+      (listOf(item)?.isWritable ?? true);
+
+  /// Record buying more or less of [item] than the list asked for, before it
+  /// is checked off — the check restocks by the item's quantity. Never below
+  /// 1: taking it off the trip is [skipItem].
+  void stepAmount(ListItem item, int direction) {
+    final house = _houseId;
+    final current = _itemById(item.id);
+    final previous = current?.quantity;
+    if (house == null || current == null || previous == null) return;
+    if (firstNumber(previous) == null) return;
+    final quantity = stepQuantity(previous, direction, min: 1);
+    if (quantity == previous) return;
+    final opUuid = SyncIds.newOpUuid();
+    _amountOverride[item.id] = (
+      opUuid: opUuid,
+      quantity: quantity,
+      previous: previous,
+    );
+    final updated = current.copyWith(quantity: quantity);
+    _replaceItem(updated);
+    _writeThrough(updated);
+    _emit();
+    _sync.enqueue(
+      SyncOp(
+        uuid: opUuid,
+        entity: SyncEntity.checklistItem,
+        op: SyncOpKind.update,
+        houseId: house,
+        parentId: current.listId,
+        entityId: current.id,
+        body: {'quantity': quantity},
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
+  }
+
   void _move(ListItem item, _Collection from, _Collection to) {
     List<ListItem> without(List<ListItem> source) => [
       for (final i in source)
@@ -1562,8 +1633,16 @@ class ChecklistsController extends ChangeNotifier {
     if (event.op.houseId != _houseId) return;
     if (event.op.entity == SyncEntity.checklistItem) {
       _doneOverride.remove(event.op.effectiveEntityId);
+      _releaseAmount(event.op);
     }
     unawaited(refresh());
+  }
+
+  /// Only the latest step's write settles the amount: an earlier one landing
+  /// says nothing about the taps after it.
+  void _releaseAmount(SyncOp op) {
+    final id = op.effectiveEntityId;
+    if (_amountOverride[id]?.opUuid == op.uuid) _amountOverride.remove(id);
   }
 
   /// A dropped op is the one case where the row has to go back: the server
@@ -1571,7 +1650,20 @@ class ChecklistsController extends ChangeNotifier {
   void _onSkipped(SyncOpSkipped event) {
     if (event.op.houseId != _houseId) return;
     _doneOverride.remove(event.op.effectiveEntityId);
-    _dropped = m.sync.syncError;
+    final id = event.op.effectiveEntityId;
+    final amount = _amountOverride[id];
+    if (amount != null && amount.opUuid == event.op.uuid) {
+      _amountOverride.remove(id);
+      final current = id == null ? null : _itemById(id);
+      if (current != null) {
+        final restored = current.copyWith(quantity: amount.previous);
+        _replaceItem(restored);
+        _writeThrough(restored);
+      }
+      _dropped = m.shopping.quantityFailed;
+    } else {
+      _dropped = m.sync.syncError;
+    }
     unawaited(refresh());
   }
 }

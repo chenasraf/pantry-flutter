@@ -7259,6 +7259,21 @@ class ShoppingMessagesNn extends ShoppingMessages {
   String get checkFailed => """Klarte ikkje å oppdatere vara.""";
 
   /// ```dart
+  /// "Minsk mengda som er kjøpt"
+  /// ```
+  String get buyLess => """Minsk mengda som er kjøpt""";
+
+  /// ```dart
+  /// "Auk mengda som er kjøpt"
+  /// ```
+  String get buyMore => """Auk mengda som er kjøpt""";
+
+  /// ```dart
+  /// "Klarte ikkje å endre mengda som er kjøpt."
+  /// ```
+  String get quantityFailed => """Klarte ikkje å endre mengda som er kjøpt.""";
+
+  /// ```dart
   /// "Klarte ikkje å laste varene."
   /// ```
   String get loadItemsFailed => """Klarte ikkje å laste varene.""";
@@ -10471,6 +10486,10 @@ Passord: pantry""",
   """shopping.everythingInCart""": """Alt er i korga.""",
   """shopping.nothingToBuyHere""": """Ingenting å kjøpe her.""",
   """shopping.checkFailed""": """Klarte ikkje å oppdatere vara.""",
+  """shopping.buyLess""": """Minsk mengda som er kjøpt""",
+  """shopping.buyMore""": """Auk mengda som er kjøpt""",
+  """shopping.quantityFailed""":
+      """Klarte ikkje å endre mengda som er kjøpt.""",
   """shopping.loadItemsFailed""": """Klarte ikkje å laste varene.""",
   """shopping.tripFinishedByHousemate""": """Denne handelen er avslutta.""",
   """shopping.removeFromTrip""": """Fjern frå handleturen""",

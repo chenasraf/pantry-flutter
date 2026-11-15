@@ -7237,6 +7237,21 @@ class ShoppingMessages {
   String get checkFailed => """Couldn't update the item.""";
 
   /// ```dart
+  /// "Decrease the amount bought"
+  /// ```
+  String get buyLess => """Decrease the amount bought""";
+
+  /// ```dart
+  /// "Increase the amount bought"
+  /// ```
+  String get buyMore => """Increase the amount bought""";
+
+  /// ```dart
+  /// "Could not change the amount bought."
+  /// ```
+  String get quantityFailed => """Could not change the amount bought.""";
+
+  /// ```dart
   /// "Failed to load items."
   /// ```
   String get loadItemsFailed => """Failed to load items.""";
@@ -10424,6 +10439,9 @@ Password: pantry-rocks""",
   """shopping.everythingInCart""": """Everything's in the cart.""",
   """shopping.nothingToBuyHere""": """Nothing to buy here.""",
   """shopping.checkFailed""": """Couldn't update the item.""",
+  """shopping.buyLess""": """Decrease the amount bought""",
+  """shopping.buyMore""": """Increase the amount bought""",
+  """shopping.quantityFailed""": """Could not change the amount bought.""",
   """shopping.loadItemsFailed""": """Failed to load items.""",
   """shopping.tripFinishedByHousemate""":
       """This shopping trip was finished.""",

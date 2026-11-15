@@ -7240,6 +7240,21 @@ class ShoppingMessagesHe extends ShoppingMessages {
   String get checkFailed => """עדכון הפריט נכשל.""";
 
   /// ```dart
+  /// "הקטנת הכמות שנקנתה"
+  /// ```
+  String get buyLess => """הקטנת הכמות שנקנתה""";
+
+  /// ```dart
+  /// "הגדלת הכמות שנקנתה"
+  /// ```
+  String get buyMore => """הגדלת הכמות שנקנתה""";
+
+  /// ```dart
+  /// "שינוי הכמות שנקנתה נכשל."
+  /// ```
+  String get quantityFailed => """שינוי הכמות שנקנתה נכשל.""";
+
+  /// ```dart
   /// "טעינת הפריטים נכשלה."
   /// ```
   String get loadItemsFailed => """טעינת הפריטים נכשלה.""";
@@ -10396,6 +10411,9 @@ Map<String, String> get messagesHeMap => {
   """shopping.everythingInCart""": """הכול בעגלה.""",
   """shopping.nothingToBuyHere""": """אין מה לקנות כאן.""",
   """shopping.checkFailed""": """עדכון הפריט נכשל.""",
+  """shopping.buyLess""": """הקטנת הכמות שנקנתה""",
+  """shopping.buyMore""": """הגדלת הכמות שנקנתה""",
+  """shopping.quantityFailed""": """שינוי הכמות שנקנתה נכשל.""",
   """shopping.loadItemsFailed""": """טעינת הפריטים נכשלה.""",
   """shopping.tripFinishedByHousemate""": """הקנייה הזאת הסתיימה.""",
   """shopping.removeFromTrip""": """הסרה מהקנייה""",

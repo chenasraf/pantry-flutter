@@ -378,7 +378,7 @@ class _Controls extends StatelessWidget {
               : _Stepper(item: item, name: name, onSetOnHand: onSetOnHand),
         ),
         const SizedBox(width: _closeGap),
-        _RoundButton(
+        WearRoundButton(
           icon: Icons.check,
           label: m.wear.stockClose,
           size: _closeSize,
@@ -412,7 +412,7 @@ class _Stepper extends StatelessWidget {
     final canFill = counted && target != null && value != target;
     return Row(
       children: [
-        _RoundButton(
+        WearRoundButton(
           icon: Icons.remove,
           label: m.stock.decrease,
           size: 36,
@@ -450,7 +450,7 @@ class _Stepper extends StatelessWidget {
             ),
           ),
         ),
-        _RoundButton(
+        WearRoundButton(
           icon: Icons.add,
           label: m.stock.increase,
           size: 36,
@@ -667,7 +667,9 @@ class _RenewDrawerState extends State<RenewDrawer> {
   }
 }
 
-class _RoundButton extends StatelessWidget {
+/// A round step or close button, sized for a thumb on the glass. A null
+/// [onTap] greys it out.
+class WearRoundButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback? onTap;
@@ -677,7 +679,8 @@ class _RoundButton extends StatelessWidget {
   /// Null draws the neutral button.
   final Color? fill;
 
-  const _RoundButton({
+  const WearRoundButton({
+    super.key,
     required this.icon,
     required this.label,
     required this.onTap,

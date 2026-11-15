@@ -1384,6 +1384,9 @@ shopping:
   doneToday(int count): "Fait ($count)"
   nothingToBuyHere: Rien à acheter ici.
   checkFailed: Impossible de mettre à jour l'article.
+  buyLess: Diminuer la quantité achetée
+  buyMore: Augmenter la quantité achetée
+  quantityFailed: Impossible de modifier la quantité achetée.
   loadItemsFailed: Impossible de charger les articles.
   tripFinishedByHousemate: Ces courses ont été terminées.
   shoppingWith(int count): "${_plural(count, one: 'Courses avec 1 personne', many: 'Courses avec $count personnes')}"

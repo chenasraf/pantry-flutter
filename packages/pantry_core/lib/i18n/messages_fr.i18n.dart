@@ -7317,6 +7317,22 @@ class ShoppingMessagesFr extends ShoppingMessages {
   String get checkFailed => """Impossible de mettre à jour l'article.""";
 
   /// ```dart
+  /// "Diminuer la quantité achetée"
+  /// ```
+  String get buyLess => """Diminuer la quantité achetée""";
+
+  /// ```dart
+  /// "Augmenter la quantité achetée"
+  /// ```
+  String get buyMore => """Augmenter la quantité achetée""";
+
+  /// ```dart
+  /// "Impossible de modifier la quantité achetée."
+  /// ```
+  String get quantityFailed =>
+      """Impossible de modifier la quantité achetée.""";
+
+  /// ```dart
   /// "Impossible de charger les articles."
   /// ```
   String get loadItemsFailed => """Impossible de charger les articles.""";
@@ -10590,6 +10606,10 @@ Mot de passe : pantry-rocks""",
   """shopping.everythingInCart""": """Tout est dans le panier.""",
   """shopping.nothingToBuyHere""": """Rien à acheter ici.""",
   """shopping.checkFailed""": """Impossible de mettre à jour l'article.""",
+  """shopping.buyLess""": """Diminuer la quantité achetée""",
+  """shopping.buyMore""": """Augmenter la quantité achetée""",
+  """shopping.quantityFailed""":
+      """Impossible de modifier la quantité achetée.""",
   """shopping.loadItemsFailed""": """Impossible de charger les articles.""",
   """shopping.tripFinishedByHousemate""": """Ces courses ont été terminées.""",
   """shopping.removeFromTrip""": """Retirer de la sortie""",

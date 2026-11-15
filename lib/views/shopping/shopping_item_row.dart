@@ -10,13 +10,16 @@ import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/label_icons.dart';
+import 'package:pantry_core/utils/layout_breakpoints.dart';
 import 'package:pantry_core/utils/price.dart';
+import 'package:pantry_core/utils/quantity.dart';
 import 'package:pantry_core/utils/rrule.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry_core/widgets/entity_chip.dart';
 import 'package:pantry/views/checklists/restock_markers.dart';
 import 'package:pantry/views/shopping/shopping_session_controller.dart';
+import 'package:pantry/widgets/amount_stepper.dart';
 import 'package:pantry/widgets/item_description.dart';
 import 'package:pantry/widgets/item_thumb.dart';
 
@@ -29,7 +32,9 @@ import 'package:pantry/widgets/item_thumb.dart';
 /// elsewhere, because that is the one thing a shopper does over and over with a
 /// phone in one hand. Reaching the item itself is the trailing button's job,
 /// and nothing in the middle of the row takes a tap except the picture, which
-/// opens full-screen for a shopper checking they have the right tin.
+/// opens full-screen for a shopper checking they have the right tin. Beside the
+/// trailing button, a counted item has a stepper for buying more or less of it
+/// than the list asked for.
 ///
 /// Swiping the row aside removes the item from this trip only (see [onSkip]).
 class ShoppingItemRow extends StatelessWidget {
@@ -50,11 +55,19 @@ class ShoppingItemRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) =>
+          _build(context, narrow: isNarrowListPane(constraints.maxWidth)),
+    );
+  }
+
+  Widget _build(BuildContext context, {required bool narrow}) {
     final theme = Theme.of(context);
     final prefs = context.watch<PrefsService>();
     // The store leg being walked, so a row shows this store's price rather than
     // always the store-less default.
     final storeContext = controller.session.activeStoreId;
+    final stepsAmount = controller.canStepAmount(item);
     final description = itemDescription(item, prefs);
     final descriptionLine =
         description?.placement == ItemDescriptionPlacement.line
@@ -68,6 +81,8 @@ class ShoppingItemRow extends StatelessWidget {
       noteLabel: description?.placement == ItemDescriptionPlacement.chip
           ? description!.text
           : null,
+      // The wide stepper shows the amount between its buttons.
+      hideQuantity: stepsAmount && !narrow,
     );
 
     return Dismissible(
@@ -130,6 +145,10 @@ class ShoppingItemRow extends StatelessWidget {
                   ],
                 ),
               ),
+              if (stepsAmount) ...[
+                const SizedBox(width: 8),
+                _amountStepper(narrow: narrow),
+              ],
               IconButton(
                 icon: const Icon(Icons.visibility_outlined, size: 20),
                 tooltip: m.checklists.swipeView,
@@ -140,6 +159,27 @@ class ShoppingItemRow extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  /// How much of the item is being bought, for a shopper picking up more or
+  /// less than the list asked for before checking it off.
+  Widget _amountStepper({required bool narrow}) {
+    final quantity = item.quantity ?? '';
+    return AmountStepper(
+      decrease: (
+        label: m.shopping.buyLess,
+        onTap: canStepDown(quantity, min: 1)
+            ? () => controller.stepAmount(item, -1)
+            : null,
+        onLongPress: null,
+      ),
+      increase: (
+        label: m.shopping.buyMore,
+        onTap: () => controller.stepAmount(item, 1),
+        onLongPress: null,
+      ),
+      amount: narrow ? null : AmountStepperText(quantity),
     );
   }
 
@@ -157,6 +197,7 @@ class ShoppingItemRow extends StatelessWidget {
     PrefsService prefs,
     int? storeContext, {
     required bool hideNote,
+    required bool hideQuantity,
     String? noteLabel,
   }) {
     final cs = Theme.of(context).colorScheme;
@@ -194,7 +235,8 @@ class ShoppingItemRow extends StatelessWidget {
     final quantity = item.quantity;
     if (item.showsPinnedQuantity) {
       chips.add(PinnedQuantityChip(quantity: quantity));
-    } else if (quantity != null &&
+    } else if (!hideQuantity &&
+        quantity != null &&
         quantity.trim().isNotEmpty &&
         prefs.isItemChipVisible(ItemChipKind.quantity.key)) {
       chips.add(

@@ -10,6 +10,7 @@ import 'package:pantry_core/utils/stock_display.dart';
 import 'package:pantry_core/utils/stock_rules.dart';
 import 'package:pantry_core/widgets/entity_chip.dart';
 import 'package:pantry/theme/app_theme.dart';
+import 'package:pantry/widgets/amount_stepper.dart';
 
 import 'stock_link_parts.dart';
 
@@ -271,7 +272,6 @@ class OnHandStepper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     final onHand = effectiveOnHand(item);
     final value = firstNumber(onHand);
     final target = firstNumber(item.target);
@@ -280,94 +280,24 @@ class OnHandStepper extends StatelessWidget {
     final canDown = counted && value > 0;
     final canFill = counted && target != null && value != target;
 
-    final minus = _StepButton(
-      icon: Icons.remove,
-      tooltip: m.stock.decrease,
-      onTap: canDown ? () => set(stepQuantity(onHand, -1)) : null,
-      onLongPress: canDown ? () => set(withNumber(onHand, 0)) : null,
-    );
-    final plus = _StepButton(
-      icon: Icons.add,
-      tooltip: m.stock.increase,
-      onTap: counted ? () => set(stepQuantity(onHand, 1)) : null,
-      onLongPress: canFill ? () => set(withNumber(onHand, target)) : null,
-    );
-    if (!showAmount) {
-      return Row(mainAxisSize: MainAxisSize.min, children: [minus, plus]);
-    }
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: cs.outlineVariant),
-        borderRadius: BorderRadius.circular(SurfaceRadius.chip),
+    return AmountStepper(
+      decrease: (
+        label: m.stock.decrease,
+        onTap: canDown ? () => set(stepQuantity(onHand, -1)) : null,
+        onLongPress: canDown ? () => set(withNumber(onHand, 0)) : null,
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          minus,
-          OnHandAmount(
-            item: item,
-            onSetOnHand: counted ? set : null,
-            builder: (context) => ConstrainedBox(
-              constraints: const BoxConstraints(minWidth: 24, maxWidth: 120),
-              child: Text(
-                onHand,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-              ),
-            ),
-          ),
-          plus,
-        ],
+      increase: (
+        label: m.stock.increase,
+        onTap: counted ? () => set(stepQuantity(onHand, 1)) : null,
+        onLongPress: canFill ? () => set(withNumber(onHand, target)) : null,
       ),
-    );
-  }
-}
-
-class _StepButton extends StatelessWidget {
-  const _StepButton({
-    required this.icon,
-    required this.tooltip,
-    required this.onTap,
-    required this.onLongPress,
-  });
-
-  final IconData icon;
-  final String tooltip;
-  final VoidCallback? onTap;
-  final VoidCallback? onLongPress;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final enabled = onTap != null;
-    return Tooltip(
-      message: tooltip,
-      child: Semantics(
-        button: true,
-        enabled: enabled,
-        label: tooltip,
-        excludeSemantics: true,
-        child: InkResponse(
-          onTap: onTap,
-          onLongPress: onLongPress,
-          radius: 20,
-          child: SizedBox(
-            width: 40,
-            height: 40,
-            child: Icon(
-              icon,
-              size: 20,
-              color: enabled
-                  ? cs.onSurface
-                  : cs.onSurface.withValues(alpha: 0.38),
-            ),
-          ),
-        ),
-      ),
+      amount: showAmount
+          ? OnHandAmount(
+              item: item,
+              onSetOnHand: counted ? set : null,
+              builder: (context) => AmountStepperText(onHand),
+            )
+          : null,
     );
   }
 }

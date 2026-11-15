@@ -1525,6 +1525,9 @@ shopping:
   doneToday(int count): "Ferdig ($count)"
   nothingToBuyHere: Ingenting å kjøpe her.
   checkFailed: Klarte ikkje å oppdatere vara.
+  buyLess: Minsk mengda som er kjøpt
+  buyMore: Auk mengda som er kjøpt
+  quantityFailed: Klarte ikkje å endre mengda som er kjøpt.
   loadItemsFailed: Klarte ikkje å laste varene.
   tripFinishedByHousemate: Denne handelen er avslutta.
   shoppingWith(int count): "${_plural(count, one: 'Handlar med 1 annan', many: 'Handlar med $count andre')}"
