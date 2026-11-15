@@ -609,6 +609,8 @@ checklists:
     storesTitle: Set stores
     labelsTitle: Set labels
     clearCategory: No category
+    noSharedCategories: "The selected items are on different lists, which share no categories."
+    noSharedLabels: "The selected items are on different lists, which share no labels."
     move: Move
     copy: Copy
     category: Category

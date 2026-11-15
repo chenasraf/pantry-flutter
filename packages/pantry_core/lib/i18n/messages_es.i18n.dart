@@ -3866,6 +3866,18 @@ class BatchChecklistsMessagesEs extends BatchChecklistsMessages {
   String get clearCategory => """Sin categoría""";
 
   /// ```dart
+  /// "Los artículos seleccionados están en listas distintas que no comparten categorías."
+  /// ```
+  String get noSharedCategories =>
+      """Los artículos seleccionados están en listas distintas que no comparten categorías.""";
+
+  /// ```dart
+  /// "Los artículos seleccionados están en listas distintas que no comparten etiquetas."
+  /// ```
+  String get noSharedLabels =>
+      """Los artículos seleccionados están en listas distintas que no comparten etiquetas.""";
+
+  /// ```dart
   /// "Mover"
   /// ```
   String get move => """Mover""";
@@ -9952,6 +9964,10 @@ Contraseña: pantry-rocks""",
   """checklists.batch.storesTitle""": """Establecer tiendas""",
   """checklists.batch.labelsTitle""": """Establecer etiquetas""",
   """checklists.batch.clearCategory""": """Sin categoría""",
+  """checklists.batch.noSharedCategories""":
+      """Los artículos seleccionados están en listas distintas que no comparten categorías.""",
+  """checklists.batch.noSharedLabels""":
+      """Los artículos seleccionados están en listas distintas que no comparten etiquetas.""",
   """checklists.batch.move""": """Mover""",
   """checklists.batch.copy""": """Copiar""",
   """checklists.batch.category""": """Categoría""",

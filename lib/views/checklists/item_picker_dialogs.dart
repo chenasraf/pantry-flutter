@@ -69,6 +69,7 @@ Future<int?> pickTargetList(
 Future<int?> pickCategory(
   BuildContext context, {
   required List<Category> categories,
+  String? emptyHint,
 }) {
   final cs = Theme.of(context).colorScheme;
   return showDialog<int>(
@@ -86,6 +87,16 @@ Future<int?> pickCategory(
             ],
           ),
         ),
+        if (categories.isEmpty && emptyHint != null)
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(24, 8, 24, 4),
+            child: Text(
+              emptyHint,
+              style: Theme.of(
+                ctx,
+              ).textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+            ),
+          ),
         for (final cat in categories)
           SimpleDialogOption(
             onPressed: () => Navigator.pop(ctx, cat.id),
@@ -135,11 +146,12 @@ Future<List<int>?> pickStores(
 Future<List<int>?> pickLabels(
   BuildContext context, {
   required List<Label> labels,
+  String? emptyText,
 }) {
   return _pickEntities(
     context,
     title: m.checklists.batch.labelsTitle,
-    emptyText: m.labels.noLabels,
+    emptyText: emptyText ?? m.labels.noLabels,
     entries: [
       for (final l in labels)
         _EntityEntry(

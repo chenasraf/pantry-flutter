@@ -703,6 +703,8 @@ checklists:
     storesTitle: Vel butikkar
     labelsTitle: Vel etikettar
     clearCategory: Ingen kategori
+    noSharedCategories: "Dei valde oppføringane er på ulike lister som ikkje har felles kategoriar."
+    noSharedLabels: "Dei valde oppføringane er på ulike lister som ikkje har felles etikettar."
     move: Flytt
     copy: Kopier
     category: Kategori

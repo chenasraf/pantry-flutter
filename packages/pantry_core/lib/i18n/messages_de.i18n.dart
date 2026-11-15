@@ -3873,6 +3873,18 @@ class BatchChecklistsMessagesDe extends BatchChecklistsMessages {
   String get clearCategory => """Keine Kategorie""";
 
   /// ```dart
+  /// "Die ausgewählten Einträge liegen in verschiedenen Listen, die keine gemeinsamen Kategorien haben."
+  /// ```
+  String get noSharedCategories =>
+      """Die ausgewählten Einträge liegen in verschiedenen Listen, die keine gemeinsamen Kategorien haben.""";
+
+  /// ```dart
+  /// "Die ausgewählten Einträge liegen in verschiedenen Listen, die keine gemeinsamen Etiketten haben."
+  /// ```
+  String get noSharedLabels =>
+      """Die ausgewählten Einträge liegen in verschiedenen Listen, die keine gemeinsamen Etiketten haben.""";
+
+  /// ```dart
   /// "Verschieben"
   /// ```
   String get move => """Verschieben""";
@@ -9970,6 +9982,10 @@ Passwort: pantry-rocks""",
   """checklists.batch.storesTitle""": """Geschäfte festlegen""",
   """checklists.batch.labelsTitle""": """Etiketten festlegen""",
   """checklists.batch.clearCategory""": """Keine Kategorie""",
+  """checklists.batch.noSharedCategories""":
+      """Die ausgewählten Einträge liegen in verschiedenen Listen, die keine gemeinsamen Kategorien haben.""",
+  """checklists.batch.noSharedLabels""":
+      """Die ausgewählten Einträge liegen in verschiedenen Listen, die keine gemeinsamen Etiketten haben.""",
   """checklists.batch.move""": """Verschieben""",
   """checklists.batch.copy""": """Kopieren""",
   """checklists.batch.category""": """Kategorie""",

@@ -3830,6 +3830,18 @@ class BatchChecklistsMessagesNn extends BatchChecklistsMessages {
   String get clearCategory => """Ingen kategori""";
 
   /// ```dart
+  /// "Dei valde oppføringane er på ulike lister som ikkje har felles kategoriar."
+  /// ```
+  String get noSharedCategories =>
+      """Dei valde oppføringane er på ulike lister som ikkje har felles kategoriar.""";
+
+  /// ```dart
+  /// "Dei valde oppføringane er på ulike lister som ikkje har felles etikettar."
+  /// ```
+  String get noSharedLabels =>
+      """Dei valde oppføringane er på ulike lister som ikkje har felles etikettar.""";
+
+  /// ```dart
   /// "Flytt"
   /// ```
   String get move => """Flytt""";
@@ -9868,6 +9880,10 @@ Passord: pantry""",
   """checklists.batch.storesTitle""": """Vel butikkar""",
   """checklists.batch.labelsTitle""": """Vel etikettar""",
   """checklists.batch.clearCategory""": """Ingen kategori""",
+  """checklists.batch.noSharedCategories""":
+      """Dei valde oppføringane er på ulike lister som ikkje har felles kategoriar.""",
+  """checklists.batch.noSharedLabels""":
+      """Dei valde oppføringane er på ulike lister som ikkje har felles etikettar.""",
   """checklists.batch.move""": """Flytt""",
   """checklists.batch.copy""": """Kopier""",
   """checklists.batch.category""": """Kategori""",

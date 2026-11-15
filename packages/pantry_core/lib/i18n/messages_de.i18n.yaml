@@ -609,6 +609,8 @@ checklists:
     storesTitle: Geschäfte festlegen
     labelsTitle: Etiketten festlegen
     clearCategory: Keine Kategorie
+    noSharedCategories: "Die ausgewählten Einträge liegen in verschiedenen Listen, die keine gemeinsamen Kategorien haben."
+    noSharedLabels: "Die ausgewählten Einträge liegen in verschiedenen Listen, die keine gemeinsamen Etiketten haben."
     move: Verschieben
     copy: Kopieren
     category: Kategorie

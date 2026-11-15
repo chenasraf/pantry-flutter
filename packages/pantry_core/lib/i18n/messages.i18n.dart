@@ -3826,6 +3826,18 @@ class BatchChecklistsMessages {
   String get clearCategory => """No category""";
 
   /// ```dart
+  /// "The selected items are on different lists, which share no categories."
+  /// ```
+  String get noSharedCategories =>
+      """The selected items are on different lists, which share no categories.""";
+
+  /// ```dart
+  /// "The selected items are on different lists, which share no labels."
+  /// ```
+  String get noSharedLabels =>
+      """The selected items are on different lists, which share no labels.""";
+
+  /// ```dart
   /// "Move"
   /// ```
   String get move => """Move""";
@@ -9839,6 +9851,10 @@ Password: pantry-rocks""",
   """checklists.batch.storesTitle""": """Set stores""",
   """checklists.batch.labelsTitle""": """Set labels""",
   """checklists.batch.clearCategory""": """No category""",
+  """checklists.batch.noSharedCategories""":
+      """The selected items are on different lists, which share no categories.""",
+  """checklists.batch.noSharedLabels""":
+      """The selected items are on different lists, which share no labels.""",
   """checklists.batch.move""": """Move""",
   """checklists.batch.copy""": """Copy""",
   """checklists.batch.category""": """Category""",

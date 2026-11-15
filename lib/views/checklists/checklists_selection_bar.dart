@@ -178,6 +178,9 @@ class SelectionActionBar extends StatelessWidget {
         .toList();
   }
 
+  static bool _spansLists(List<ListItem> items) =>
+      items.map((i) => i.listId).toSet().length > 1;
+
   Future<void> _move(BuildContext context) async {
     final affected = List.of(controller.selectedItems);
     final targets = _targetLists();
@@ -212,12 +215,14 @@ class SelectionActionBar extends StatelessWidget {
 
   Future<void> _category(BuildContext context) async {
     final affected = List.of(controller.selectedItems);
-    // Selected items may span lists (meta view), so only globals are safe there;
-    // in a per-list view the current list's scope applies.
-    final cats = controller.categoriesForList(
-      controller.isMetaMode ? null : controller.currentList?.id,
+    final cats = controller.categoriesForItems(affected);
+    final choice = await pickCategory(
+      context,
+      categories: cats,
+      emptyHint: cats.isEmpty && _spansLists(affected)
+          ? m.checklists.batch.noSharedCategories
+          : null,
     );
-    final choice = await pickCategory(context, categories: cats);
     if (choice == null) return;
     final categoryId = choice == kBatchClearCategory ? null : choice;
     controller.batchSetCategory(categoryId);
@@ -240,7 +245,14 @@ class SelectionActionBar extends StatelessWidget {
 
   Future<void> _labels(BuildContext context) async {
     final affected = List.of(controller.selectedItems);
-    final choice = await pickLabels(context, labels: controller.sortedLabels);
+    final labels = controller.labelsForItems(affected);
+    final choice = await pickLabels(
+      context,
+      labels: labels,
+      emptyText: _spansLists(affected)
+          ? m.checklists.batch.noSharedLabels
+          : null,
+    );
     if (choice == null) return;
     controller.batchSetLabels(choice);
     _showUndo(

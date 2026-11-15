@@ -3835,6 +3835,18 @@ class BatchChecklistsMessagesHe extends BatchChecklistsMessages {
   String get clearCategory => """ללא קטגוריה""";
 
   /// ```dart
+  /// "הפריטים שנבחרו נמצאים ברשימות שונות שאין להן קטגוריות משותפות."
+  /// ```
+  String get noSharedCategories =>
+      """הפריטים שנבחרו נמצאים ברשימות שונות שאין להן קטגוריות משותפות.""";
+
+  /// ```dart
+  /// "הפריטים שנבחרו נמצאים ברשימות שונות שאין להן תוויות משותפות."
+  /// ```
+  String get noSharedLabels =>
+      """הפריטים שנבחרו נמצאים ברשימות שונות שאין להן תוויות משותפות.""";
+
+  /// ```dart
   /// "העבר"
   /// ```
   String get move => """העבר""";
@@ -9823,6 +9835,10 @@ Map<String, String> get messagesHeMap => {
   """checklists.batch.storesTitle""": """הגדרת חנויות""",
   """checklists.batch.labelsTitle""": """הגדרת תוויות""",
   """checklists.batch.clearCategory""": """ללא קטגוריה""",
+  """checklists.batch.noSharedCategories""":
+      """הפריטים שנבחרו נמצאים ברשימות שונות שאין להן קטגוריות משותפות.""",
+  """checklists.batch.noSharedLabels""":
+      """הפריטים שנבחרו נמצאים ברשימות שונות שאין להן תוויות משותפות.""",
   """checklists.batch.move""": """העבר""",
   """checklists.batch.copy""": """העתק""",
   """checklists.batch.category""": """קטגוריה""",

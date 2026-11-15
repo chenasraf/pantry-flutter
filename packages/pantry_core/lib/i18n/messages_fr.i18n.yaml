@@ -609,6 +609,8 @@ checklists:
     storesTitle: Définir les magasins
     labelsTitle: Définir les étiquettes
     clearCategory: Aucune catégorie
+    noSharedCategories: "Les articles sélectionnés sont dans des listes différentes qui ne partagent aucune catégorie."
+    noSharedLabels: "Les articles sélectionnés sont dans des listes différentes qui ne partagent aucune étiquette."
     move: Déplacer
     copy: Copier
     category: Catégorie

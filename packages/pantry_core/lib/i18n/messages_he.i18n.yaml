@@ -609,6 +609,8 @@ checklists:
     storesTitle: הגדרת חנויות
     labelsTitle: הגדרת תוויות
     clearCategory: ללא קטגוריה
+    noSharedCategories: "הפריטים שנבחרו נמצאים ברשימות שונות שאין להן קטגוריות משותפות."
+    noSharedLabels: "הפריטים שנבחרו נמצאים ברשימות שונות שאין להן תוויות משותפות."
     move: העבר
     copy: העתק
     category: קטגוריה

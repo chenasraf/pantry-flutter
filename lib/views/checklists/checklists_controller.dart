@@ -341,6 +341,18 @@ class ChecklistsController extends ChangeNotifier {
     ];
   }
 
+  /// Categories valid for every one of [items]: their list's when they all
+  /// share one, otherwise only the globals. The batch endpoints don't check
+  /// scope, so this is the only guard against a category from another list.
+  List<models.Category> categoriesForItems(Iterable<ListItem> items) =>
+      categoriesForList(_sharedListId(items));
+
+  /// The one list every item in [items] is on, or null when they span lists.
+  static int? _sharedListId(Iterable<ListItem> items) {
+    final ids = {for (final i in items) i.listId};
+    return ids.length == 1 ? ids.single : null;
+  }
+
   Map<int, models.Store> _stores = {};
   Map<int, models.Store> get stores => _stores;
 
@@ -372,6 +384,10 @@ class ChecklistsController extends ChangeNotifier {
         if (l.listId == null || (listId != null && l.listId == listId)) l,
     ];
   }
+
+  /// Labels valid for every one of [items]. Mirrors [categoriesForItems].
+  List<models.Label> labelsForItems(Iterable<ListItem> items) =>
+      labelsForList(_sharedListId(items));
 
   /// Resolve an item's `labelIds` to the labels that still exist, in sort
   /// order. Ids whose label was deleted are silently dropped.
