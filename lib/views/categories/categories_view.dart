@@ -11,6 +11,7 @@ import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 import 'package:pantry_core/utils/category_icons.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
@@ -101,8 +102,18 @@ class _CategoriesViewState extends State<CategoriesView> {
         widget.houseId,
       );
       // Lists back the per-scope grouping; only needed when scoping is on.
+      // Categories can be scoped to a list of any kind, and a failed fetch
+      // falls back to the cache so sections keep their names.
       final listsFuture = _scopingEnabled
-          ? ChecklistService.instance.getLists(widget.houseId)
+          ? ChecklistService.instance
+                .getListsOfEveryKind(widget.houseId)
+                .catchError(
+                  (Object _) =>
+                      ChecklistService.instance.getCachedListsOfEveryKind(
+                        widget.houseId,
+                      ) ??
+                      const <ChecklistList>[],
+                )
           : Future.value(const <ChecklistList>[]);
       final results = await Future.wait([
         prefsFuture,
@@ -232,7 +243,11 @@ class _CategoriesViewState extends State<CategoriesView> {
       final cats = byList.remove(list.id);
       if (cats != null && cats.isNotEmpty) {
         groups.add(
-          _CategoryGroup(listId: list.id, title: list.name, categories: cats),
+          _CategoryGroup(
+            listId: list.id,
+            title: scopedListName(list, _lists),
+            categories: cats,
+          ),
         );
       }
     }

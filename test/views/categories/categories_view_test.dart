@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
+import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/version.dart';
@@ -33,33 +34,32 @@ void main() {
     'houseId': 1,
     'name': name,
     'icon': 'tag',
-    'color': '',
+    'color': '#ef4444',
     'sortOrder': id - 1,
     'listId': listId,
     'createdAt': 0,
     'updatedAt': 0,
   };
 
-  Map<String, dynamic> list(int id, String name, int sortOrder) => {
+  Map<String, dynamic> list(
+    int id,
+    String name,
+    int sortOrder, {
+    String kind = 'checklist',
+  }) => {
     'id': id,
     'houseId': 1,
     'name': name,
     'icon': 'list',
+    'kind': kind,
     'sortOrder': sortOrder,
     'createdAt': 0,
     'updatedAt': 0,
   };
 
-  final categories = [
-    category(1, 'Pantry', null),
-    category(2, 'Misc', null),
-    category(3, 'Dairy', groceries),
-    category(4, 'Screws', hardware),
-  ];
-  final lists = [
-    list(groceries, 'Groceries', 0),
-    list(hardware, 'Hardware', 1),
-  ];
+  var categories = <Map<String, dynamic>>[];
+  var lists = <Map<String, dynamic>>[];
+  var inventories = <Map<String, dynamic>>[];
 
   /// Serves reads only; writes fail as retryable so a reorder stays queued.
   http.Client server() => MockClient((request) async {
@@ -71,6 +71,7 @@ void main() {
     if (path.endsWith('/prefs')) data = {'categorySort': 'custom'};
     if (path.endsWith('/categories')) data = categories;
     if (path.endsWith('/lists')) data = lists;
+    if (path.endsWith('/inventories')) data = inventories;
     return http.Response(
       jsonEncode({
         'ocs': {
@@ -102,6 +103,14 @@ void main() {
   }
 
   setUp(() async {
+    categories = [
+      category(1, 'Pantry', null),
+      category(2, 'Misc', null),
+      category(3, 'Dairy', groceries),
+      category(4, 'Screws', hardware),
+    ];
+    lists = [list(groceries, 'Groceries', 0), list(hardware, 'Hardware', 1)];
+    inventories = [];
     ServerVersionService.instance.debugSeed(
       pantryVersion: Version.parse('0.28.0'),
     );
@@ -277,6 +286,126 @@ void main() {
       expect(order.skip(1), [2, 1, 3, 4]);
 
       await quiesce(tester);
+    });
+  });
+
+  group('with inventories', () {
+    const freezer = 30;
+    const pantryInventory = 31;
+
+    setUp(() {
+      ServerVersionService.instance.debugSeed(
+        pantryVersion: Version.parse('0.38.0'),
+      );
+      lists = [list(groceries, 'Groceries', 0), list(hardware, 'Pantry', 1)];
+      inventories = [
+        list(freezer, 'Freezer', 2, kind: 'inventory'),
+        list(pantryInventory, 'Pantry', 3, kind: 'inventory'),
+      ];
+      categories = [
+        category(1, 'Misc', null),
+        category(2, 'Dairy', groceries),
+        category(3, 'Ice cream', freezer),
+        category(4, 'Screws', hardware),
+        category(5, 'Cans', pantryInventory),
+      ];
+    });
+
+    testWidgets('sections are titled with the inventory names', (tester) async {
+      await withServer(() async {
+        await pumpManager(tester);
+
+        expect(find.text('FREEZER'), findsOneWidget);
+        expect(find.textContaining('#'), findsNothing);
+
+        await quiesce(tester);
+      });
+    });
+
+    testWidgets('a checklist and an inventory sharing a name say which is '
+        'which', (tester) async {
+      await withServer(() async {
+        await pumpManager(tester);
+
+        expect(find.text('PANTRY · CHECKLIST'), findsOneWidget);
+        expect(find.text('PANTRY · INVENTORY'), findsOneWidget);
+
+        await quiesce(tester);
+      });
+    });
+
+    testWidgets('opened from an inventory, its section is named', (
+      tester,
+    ) async {
+      await withServer(() async {
+        await pumpManager(tester, listId: freezer);
+
+        expect(find.text('FREEZER'), findsOneWidget);
+        expect(find.text('Ice cream'), findsOneWidget);
+        expect(find.text('Dairy'), findsNothing);
+
+        await quiesce(tester);
+      });
+    });
+
+    testWidgets('the form offers inventories and keeps an inventory scope', (
+      tester,
+    ) async {
+      await withServer(() async {
+        await pumpManager(tester);
+
+        await tester.tap(find.text('Ice cream'));
+        await tester.pumpAndSettle();
+
+        final dropdown = tester.widget<DropdownButton<int?>>(
+          find.byType(DropdownButton<int?>),
+        );
+        expect(dropdown.value, freezer);
+        expect([
+          for (final item in dropdown.items!) item.value,
+        ], containsAll([freezer, pantryInventory]));
+
+        await tester.tap(find.widgetWithText(InkWell, 'Save'));
+        await tester.pumpAndSettle();
+
+        final op = manager.queueForTest.all().lastWhere(
+          (op) =>
+              op.entity == SyncEntity.category && op.op == SyncOpKind.update,
+        );
+        expect(op.body['listId'], freezer);
+        expect(find.text('Ice cream'), findsOneWidget);
+        expect(find.text('FREEZER'), findsOneWidget);
+
+        await quiesce(tester);
+      });
+    });
+
+    testWidgets('saving keeps a scope whose list is not loaded', (
+      tester,
+    ) async {
+      await withServer(() async {
+        const unknown = 99;
+        await tester.pumpWidget(
+          MaterialApp(
+            home: CategoryFormView(
+              houseId: 1,
+              existing: Category.fromJson(category(6, 'Spare', unknown)),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.widgetWithText(InkWell, 'Save'));
+        await tester.pumpAndSettle();
+
+        final op = manager.queueForTest.all().lastWhere(
+          (op) =>
+              op.entity == SyncEntity.category && op.op == SyncOpKind.update,
+        );
+        expect(op.body['listId'], unknown);
+
+        await quiesce(tester);
+      });
     });
   });
 

@@ -1,4 +1,5 @@
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/list_kind.dart';
 
 /// Strings that name a kind inside its own section. Each kind has its own
@@ -155,4 +156,16 @@ class ListKindStrings {
 
 extension ListKindL10n on ListKind {
   ListKindStrings get strings => ListKindStrings(this);
+}
+
+/// [list]'s name, followed by its kind when a list of another kind in [lists]
+/// has the same name — scope pickers and section headers mix every kind, and
+/// "Pantry" the checklist and "Pantry" the inventory would otherwise read the
+/// same.
+String scopedListName(ChecklistList list, Iterable<ChecklistList> lists) {
+  final name = list.name.trim().toLowerCase();
+  final clash = lists.any(
+    (l) => l.kind != list.kind && l.name.trim().toLowerCase() == name,
+  );
+  return clash ? '${list.name} · ${list.kind.strings.name}' : list.name;
 }
