@@ -52,9 +52,11 @@ void main() {
       'syncFileId': 256,
       'syncOwnerUid': 'admin',
       'syncPath': '/Templates/Weekly shop.md',
+      'syncPathHost': 'Admin',
       'syncAt': 1790116844,
     });
     final edited = note.copyWith(content: 'milk\nbread');
+    expect(edited.syncPathHost, 'Admin');
     expect(edited.isSynced, isTrue);
     expect(edited.syncFileId, 256);
     expect(edited.syncOwnerUid, 'admin');
@@ -89,6 +91,26 @@ void main() {
         'syncPath': '/Templates/Weekly shop.md',
       });
       expect(note.syncDisplayPath, 'Templates/Weekly shop.md');
+    });
+
+    test('names whose files the path is in when they are not yours', () {
+      final note = Note.fromJson({
+        ..._baseJson(),
+        'syncFileId': 256,
+        'syncPath': '/Notes/Plants.md',
+        'syncPathHost': 'Alice',
+      });
+      expect(note.syncDisplayPath, '@Alice/Notes/Plants.md');
+    });
+
+    test('shows the bare path when the server omits the host', () {
+      final note = Note.fromJson({
+        ..._baseJson(),
+        'syncFileId': 256,
+        'syncPath': '/Notes/Plants.md',
+      });
+      expect(note.syncPathHost, isNull);
+      expect(note.syncDisplayPath, 'Notes/Plants.md');
     });
 
     test('is null while the bound file is out of reach', () {

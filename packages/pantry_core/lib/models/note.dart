@@ -27,8 +27,9 @@ class Note {
   /// nor necessarily the viewer.
   final String? syncOwnerUid;
 
-  /// Where the bound file sits under [syncOwnerUid]'s files root, e.g.
-  /// `/Templates/Weekly shop.md`.
+  /// Where the bound file sits, e.g. `/Templates/Weekly shop.md`: under the
+  /// viewer's own files root when they can reach it there (their file, or a
+  /// folder shared with them), otherwise under [syncPathHost]'s.
   ///
   /// The server resolves this from [syncFileId] on every response rather than
   /// storing it, so the path follows the file when someone moves it in Files.
@@ -36,6 +37,11 @@ class Note {
   /// trash, or purged — leaving a note with a [syncFileId] and no path. That
   /// is a binding waiting for its file back, not a broken one.
   final String? syncPath;
+
+  /// The display name of the account whose files [syncPath] is relative to,
+  /// or `null` when the path is in the viewer's own files. Older servers never
+  /// send it, and resolve [syncPath] against the owner's files regardless.
+  final String? syncPathHost;
 
   /// When the note and its file last agreed, in unix seconds.
   final int? syncAt;
@@ -55,6 +61,7 @@ class Note {
     this.syncFileId,
     this.syncOwnerUid,
     this.syncPath,
+    this.syncPathHost,
     this.syncAt,
   });
 
@@ -73,6 +80,7 @@ class Note {
     syncFileId: json['syncFileId'] as int?,
     syncOwnerUid: json['syncOwnerUid'] as String?,
     syncPath: json['syncPath'] as String?,
+    syncPathHost: json['syncPathHost'] as String?,
     syncAt: json['syncAt'] as int?,
   );
 
@@ -91,6 +99,7 @@ class Note {
     'syncFileId': syncFileId,
     'syncOwnerUid': syncOwnerUid,
     'syncPath': syncPath,
+    'syncPathHost': syncPathHost,
     'syncAt': syncAt,
   };
 
@@ -117,6 +126,7 @@ class Note {
     syncFileId: syncFileId,
     syncOwnerUid: syncOwnerUid,
     syncPath: syncPath,
+    syncPathHost: syncPathHost,
     syncAt: syncAt,
   );
 }
@@ -138,9 +148,17 @@ extension NoteFileSync on Note {
 
   /// The bound file's path as it is shown, leading slash dropped, or `null`
   /// when the file is out of reach. See [Note.syncPath].
+  ///
+  /// A path in someone else's files is prefixed `@<host>/`, as the web does,
+  /// so it isn't read as a path in the viewer's own. The host is a display
+  /// name and may hold spaces or slashes; the result is for reading, not a
+  /// path to resolve.
   String? get syncDisplayPath {
     final path = syncPath;
     if (path == null || path.isEmpty) return null;
-    return path.startsWith('/') ? path.substring(1) : path;
+    final relative = path.startsWith('/') ? path.substring(1) : path;
+    final host = syncPathHost;
+    if (host == null || host.isEmpty) return relative;
+    return '@$host/$relative';
   }
 }
