@@ -75,7 +75,10 @@ extension ChecklistServiceTemplates on ChecklistService {
   ) async {
     return ApiClient.instance.put<Map<String, dynamic>, TemplateLists>(
       '${kindPath(houseId, ListKind.template)}/$templateId/lists',
-      body: value.toJson(),
+      body: value.toJson()
+        ..removeWhere(
+          (k, _) => k == 'learnItems' && !ServerFeature.templateLearnItems,
+        ),
       fromJson: (data) => TemplateLists.fromJson(data),
     );
   }

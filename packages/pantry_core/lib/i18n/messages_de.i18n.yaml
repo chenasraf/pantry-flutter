@@ -1035,6 +1035,8 @@ templates:
   everyList: Jede Liste
   suggestInPlaceholder: Keine Listen
   suggestInHint: Beim Eintippen eines neuen Eintrags auf diesen Listen werden passende Einträge aus dieser Vorlage vorgeschlagen. Mit „Jede Liste“ werden auch später erstellte Listen einbezogen.
+  learnItems: Neue Einträge aus verknüpften Listen automatisch hinzufügen
+  learnItemsHint: Ein auf diesen Listen hinzugefügter Eintrag wird in diese Vorlage kopiert, außer eine mit der Liste verknüpfte Vorlage enthält bereits einen Eintrag mit demselben Namen.
   listWithKind(String list, String kind): "$list ($kind)"
   attachFailed: Die angehängten Vorlagen konnten nicht gespeichert werden
   fillLabel: Vorlageneinträge mit diesen Vorgaben füllen

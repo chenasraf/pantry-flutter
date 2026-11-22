@@ -5484,6 +5484,18 @@ class TemplatesMessagesEs extends TemplatesMessages {
       """Al escribir un artículo nuevo en estas listas, se sugieren artículos coincidentes de esta plantilla. Al seleccionar "Todas las listas" también se incluyen las listas creadas más adelante.""";
 
   /// ```dart
+  /// "Añadir automáticamente los artículos nuevos de las listas vinculadas"
+  /// ```
+  String get learnItems =>
+      """Añadir automáticamente los artículos nuevos de las listas vinculadas""";
+
+  /// ```dart
+  /// "Un artículo añadido en estas listas se copia a esta plantilla, salvo que una plantilla vinculada a esa lista ya tenga un artículo con el mismo nombre."
+  /// ```
+  String get learnItemsHint =>
+      """Un artículo añadido en estas listas se copia a esta plantilla, salvo que una plantilla vinculada a esa lista ya tenga un artículo con el mismo nombre.""";
+
+  /// ```dart
   /// "$list ($kind)"
   /// ```
   String listWithKind(String list, String kind) => """$list ($kind)""";
@@ -10651,6 +10663,10 @@ Contraseña: pantry-rocks""",
   """templates.suggestInPlaceholder""": """Sin listas""",
   """templates.suggestInHint""":
       """Al escribir un artículo nuevo en estas listas, se sugieren artículos coincidentes de esta plantilla. Al seleccionar "Todas las listas" también se incluyen las listas creadas más adelante.""",
+  """templates.learnItems""":
+      """Añadir automáticamente los artículos nuevos de las listas vinculadas""",
+  """templates.learnItemsHint""":
+      """Un artículo añadido en estas listas se copia a esta plantilla, salvo que una plantilla vinculada a esa lista ya tenga un artículo con el mismo nombre.""",
   """templates.attachFailed""":
       """No se pudieron guardar las plantillas adjuntas""",
   """templates.fillLabel""":

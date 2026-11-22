@@ -1035,6 +1035,8 @@ templates:
   everyList: Every list
   suggestInPlaceholder: No lists
   suggestInHint: Typing a new item on these lists suggests matching items from this template. Selecting "Every list" includes lists made later.
+  learnItems: Automatically add new items from attached lists
+  learnItemsHint: An item added on these lists is copied into this template, unless a template attached to that list already has an item with the same name.
   listWithKind(String list, String kind): "$list ($kind)"
   attachFailed: Could not save the attached templates
   fillLabel: Fill template items from these defaults

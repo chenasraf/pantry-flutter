@@ -1170,6 +1170,8 @@ templates:
   everyList: Alle lister
   suggestInPlaceholder: Ingen lister
   suggestInHint: Når du skriv inn ei ny oppføring i desse listene, får du forslag om samsvarande oppføringar frå denne malen. Vel du «Alle lister», kjem òg lister som vert oppretta seinare med.
+  learnItems: Legg automatisk til nye oppføringar frå tilknytte lister
+  learnItemsHint: Ei oppføring som vert lagd til i desse listene, vert kopiert til denne malen, med mindre ein mal som er knytt til den lista, alt har ei oppføring med same namn.
   listWithKind(String list, String kind): "$list ($kind)"
   attachFailed: Klarte ikkje lagre dei tilknytte malane
   fillLabel: Fyll maloppføringar frå desse standardverdiane

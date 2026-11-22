@@ -5485,6 +5485,18 @@ class TemplatesMessagesFr extends TemplatesMessages {
       """La saisie d'un nouvel article dans ces listes suggère les articles correspondants de ce modèle. Sélectionner « Toutes les listes » inclut aussi les listes créées par la suite.""";
 
   /// ```dart
+  /// "Ajouter automatiquement les nouveaux articles des listes associées"
+  /// ```
+  String get learnItems =>
+      """Ajouter automatiquement les nouveaux articles des listes associées""";
+
+  /// ```dart
+  /// "Un article ajouté dans ces listes est copié dans ce modèle, sauf si un modèle associé à cette liste contient déjà un article du même nom."
+  /// ```
+  String get learnItemsHint =>
+      """Un article ajouté dans ces listes est copié dans ce modèle, sauf si un modèle associé à cette liste contient déjà un article du même nom.""";
+
+  /// ```dart
   /// "$list ($kind)"
   /// ```
   String listWithKind(String list, String kind) => """$list ($kind)""";
@@ -10665,6 +10677,10 @@ Mot de passe : pantry-rocks""",
   """templates.suggestInPlaceholder""": """Aucune liste""",
   """templates.suggestInHint""":
       """La saisie d'un nouvel article dans ces listes suggère les articles correspondants de ce modèle. Sélectionner « Toutes les listes » inclut aussi les listes créées par la suite.""",
+  """templates.learnItems""":
+      """Ajouter automatiquement les nouveaux articles des listes associées""",
+  """templates.learnItemsHint""":
+      """Un article ajouté dans ces listes est copié dans ce modèle, sauf si un modèle associé à cette liste contient déjà un article du même nom.""",
   """templates.attachFailed""":
       """Impossible d'enregistrer les modèles associés""",
   """templates.fillLabel""":

@@ -5492,6 +5492,18 @@ class TemplatesMessagesDe extends TemplatesMessages {
       """Beim Eintippen eines neuen Eintrags auf diesen Listen werden passende Einträge aus dieser Vorlage vorgeschlagen. Mit „Jede Liste“ werden auch später erstellte Listen einbezogen.""";
 
   /// ```dart
+  /// "Neue Einträge aus verknüpften Listen automatisch hinzufügen"
+  /// ```
+  String get learnItems =>
+      """Neue Einträge aus verknüpften Listen automatisch hinzufügen""";
+
+  /// ```dart
+  /// "Ein auf diesen Listen hinzugefügter Eintrag wird in diese Vorlage kopiert, außer eine mit der Liste verknüpfte Vorlage enthält bereits einen Eintrag mit demselben Namen."
+  /// ```
+  String get learnItemsHint =>
+      """Ein auf diesen Listen hinzugefügter Eintrag wird in diese Vorlage kopiert, außer eine mit der Liste verknüpfte Vorlage enthält bereits einen Eintrag mit demselben Namen.""";
+
+  /// ```dart
   /// "$list ($kind)"
   /// ```
   String listWithKind(String list, String kind) => """$list ($kind)""";
@@ -10679,6 +10691,10 @@ Passwort: pantry-rocks""",
   """templates.suggestInPlaceholder""": """Keine Listen""",
   """templates.suggestInHint""":
       """Beim Eintippen eines neuen Eintrags auf diesen Listen werden passende Einträge aus dieser Vorlage vorgeschlagen. Mit „Jede Liste“ werden auch später erstellte Listen einbezogen.""",
+  """templates.learnItems""":
+      """Neue Einträge aus verknüpften Listen automatisch hinzufügen""",
+  """templates.learnItemsHint""":
+      """Ein auf diesen Listen hinzugefügter Eintrag wird in diese Vorlage kopiert, außer eine mit der Liste verknüpfte Vorlage enthält bereits einen Eintrag mit demselben Namen.""",
   """templates.attachFailed""":
       """Die angehängten Vorlagen konnten nicht gespeichert werden""",
   """templates.fillLabel""": """Vorlageneinträge mit diesen Vorgaben füllen""",

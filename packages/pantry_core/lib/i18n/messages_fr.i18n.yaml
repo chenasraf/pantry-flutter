@@ -1035,6 +1035,8 @@ templates:
   everyList: Toutes les listes
   suggestInPlaceholder: Aucune liste
   suggestInHint: La saisie d'un nouvel article dans ces listes suggère les articles correspondants de ce modèle. Sélectionner « Toutes les listes » inclut aussi les listes créées par la suite.
+  learnItems: Ajouter automatiquement les nouveaux articles des listes associées
+  learnItemsHint: Un article ajouté dans ces listes est copié dans ce modèle, sauf si un modèle associé à cette liste contient déjà un article du même nom.
   listWithKind(String list, String kind): "$list ($kind)"
   attachFailed: Impossible d'enregistrer les modèles associés
   fillLabel: Remplir les articles de modèle avec ces valeurs

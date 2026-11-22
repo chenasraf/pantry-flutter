@@ -69,16 +69,38 @@ class TemplateLists {
   final bool everyList;
   final List<int> listIds;
 
-  const TemplateLists({this.everyList = false, this.listIds = const []});
+  /// New items created on the attached lists are copied into the template.
+  final bool learnItems;
+
+  const TemplateLists({
+    this.everyList = false,
+    this.listIds = const [],
+    this.learnItems = false,
+  });
 
   bool get isEmpty => !everyList && listIds.isEmpty;
+
+  TemplateLists copyWith({
+    bool? everyList,
+    List<int>? listIds,
+    bool? learnItems,
+  }) => TemplateLists(
+    everyList: everyList ?? this.everyList,
+    listIds: listIds ?? this.listIds,
+    learnItems: learnItems ?? this.learnItems,
+  );
 
   factory TemplateLists.fromJson(Map<String, dynamic> json) => TemplateLists(
     everyList: json['everyList'] as bool? ?? false,
     listIds: _ids(json['listIds']),
+    learnItems: json['learnItems'] as bool? ?? false,
   );
 
-  Map<String, dynamic> toJson() => {'everyList': everyList, 'listIds': listIds};
+  Map<String, dynamic> toJson() => {
+    'everyList': everyList,
+    'listIds': listIds,
+    'learnItems': learnItems,
+  };
 }
 
 List<int> _ids(Object? raw) => [

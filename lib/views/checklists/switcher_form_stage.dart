@@ -132,6 +132,7 @@ class _ListFormStageState extends State<ListFormStage> {
     final isTemplate = list.kind == ListKind.template;
     final changed = isTemplate
         ? _templateLists.everyList != _initialTemplateLists.everyList ||
+              _templateLists.learnItems != _initialTemplateLists.learnItems ||
               !_sameIds(_templateLists.listIds, _initialTemplateLists.listIds)
         : !_sameIds(_templateIds, _initialTemplateIds);
     if (!changed) return;

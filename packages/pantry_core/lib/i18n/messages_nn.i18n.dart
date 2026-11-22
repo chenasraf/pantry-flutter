@@ -5438,6 +5438,18 @@ class TemplatesMessagesNn extends TemplatesMessages {
       """Når du skriv inn ei ny oppføring i desse listene, får du forslag om samsvarande oppføringar frå denne malen. Vel du «Alle lister», kjem òg lister som vert oppretta seinare med.""";
 
   /// ```dart
+  /// "Legg automatisk til nye oppføringar frå tilknytte lister"
+  /// ```
+  String get learnItems =>
+      """Legg automatisk til nye oppføringar frå tilknytte lister""";
+
+  /// ```dart
+  /// "Ei oppføring som vert lagd til i desse listene, vert kopiert til denne malen, med mindre ein mal som er knytt til den lista, alt har ei oppføring med same namn."
+  /// ```
+  String get learnItemsHint =>
+      """Ei oppføring som vert lagd til i desse listene, vert kopiert til denne malen, med mindre ein mal som er knytt til den lista, alt har ei oppføring med same namn.""";
+
+  /// ```dart
   /// "$list ($kind)"
   /// ```
   String listWithKind(String list, String kind) => """$list ($kind)""";
@@ -10553,6 +10565,10 @@ Passord: pantry""",
   """templates.suggestInPlaceholder""": """Ingen lister""",
   """templates.suggestInHint""":
       """Når du skriv inn ei ny oppføring i desse listene, får du forslag om samsvarande oppføringar frå denne malen. Vel du «Alle lister», kjem òg lister som vert oppretta seinare med.""",
+  """templates.learnItems""":
+      """Legg automatisk til nye oppføringar frå tilknytte lister""",
+  """templates.learnItemsHint""":
+      """Ei oppføring som vert lagd til i desse listene, vert kopiert til denne malen, med mindre ein mal som er knytt til den lista, alt har ei oppføring med same namn.""",
   """templates.attachFailed""": """Klarte ikkje lagre dei tilknytte malane""",
   """templates.fillLabel""":
       """Fyll maloppføringar frå desse standardverdiane""",

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/list_kind_strings.dart';
 
 import 'checklists_controller.dart';
@@ -83,13 +84,32 @@ class TemplateListsField extends StatelessWidget {
         contentPadding: EdgeInsetsDirectional.zero,
         title: Text(m.templates.everyList),
         value: value.everyList,
-        onChanged: (on) =>
-            onChanged(TemplateLists(everyList: on, listIds: value.listIds)),
+        onChanged: (on) => onChanged(value.copyWith(everyList: on)),
       ),
+      trailing: ServerFeature.templateLearnItems
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SwitchListTile(
+                  contentPadding: EdgeInsetsDirectional.zero,
+                  title: Text(m.templates.learnItems),
+                  value: value.learnItems,
+                  onChanged: (on) => onChanged(value.copyWith(learnItems: on)),
+                ),
+                Text(
+                  m.templates.learnItemsHint,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            )
+          : null,
       options: value.everyList ? null : options,
       selected: value.listIds,
-      onChanged: (ids) =>
-          onChanged(TemplateLists(everyList: value.everyList, listIds: ids)),
+      onChanged: (ids) => onChanged(value.copyWith(listIds: ids)),
     );
   }
 }
@@ -99,6 +119,7 @@ class _AttachmentSection extends StatelessWidget {
   final String hint;
   final String placeholder;
   final Widget? leading;
+  final Widget? trailing;
 
   /// Null hides the chips.
   final List<({int id, String label})>? options;
@@ -110,6 +131,7 @@ class _AttachmentSection extends StatelessWidget {
     required this.hint,
     required this.placeholder,
     this.leading,
+    this.trailing,
     required this.options,
     required this.selected,
     required this.onChanged,
@@ -157,6 +179,7 @@ class _AttachmentSection extends StatelessWidget {
         ],
         const SizedBox(height: 8),
         Text(hint, style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant)),
+        ?trailing,
       ],
     );
   }

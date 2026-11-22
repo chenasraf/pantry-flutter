@@ -5418,6 +5418,18 @@ class TemplatesMessages {
       """Typing a new item on these lists suggests matching items from this template. Selecting "Every list" includes lists made later.""";
 
   /// ```dart
+  /// "Automatically add new items from attached lists"
+  /// ```
+  String get learnItems =>
+      """Automatically add new items from attached lists""";
+
+  /// ```dart
+  /// "An item added on these lists is copied into this template, unless a template attached to that list already has an item with the same name."
+  /// ```
+  String get learnItemsHint =>
+      """An item added on these lists is copied into this template, unless a template attached to that list already has an item with the same name.""";
+
+  /// ```dart
   /// "$list ($kind)"
   /// ```
   String listWithKind(String list, String kind) => """$list ($kind)""";
@@ -10504,6 +10516,10 @@ Password: pantry-rocks""",
   """templates.suggestInPlaceholder""": """No lists""",
   """templates.suggestInHint""":
       """Typing a new item on these lists suggests matching items from this template. Selecting "Every list" includes lists made later.""",
+  """templates.learnItems""":
+      """Automatically add new items from attached lists""",
+  """templates.learnItemsHint""":
+      """An item added on these lists is copied into this template, unless a template attached to that list already has an item with the same name.""",
   """templates.attachFailed""": """Could not save the attached templates""",
   """templates.fillLabel""": """Fill template items from these defaults""",
   """templates.fillHint""":
