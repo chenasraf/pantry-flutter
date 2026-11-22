@@ -7640,6 +7640,68 @@ class ShoppingMessages {
   String get cancelledBadge => """Cancelled""";
 
   /// ```dart
+  /// "Undo trip"
+  /// ```
+  String get undoTrip => """Undo trip""";
+
+  /// ```dart
+  /// "Undo this trip?"
+  /// ```
+  String get undoTripTitle => """Undo this trip?""";
+
+  /// ```dart
+  /// "Everything checked off on this trip goes back on its list, and what it added to your inventories is taken back out. Items changed since the trip are left as they are."
+  /// ```
+  String get undoTripBody =>
+      """Everything checked off on this trip goes back on its list, and what it added to your inventories is taken back out. Items changed since the trip are left as they are.""";
+
+  /// ```dart
+  /// "Shopping trip undone"
+  /// ```
+  String get undoTripDone => """Shopping trip undone""";
+
+  /// ```dart
+  /// "This trip can no longer be undone"
+  /// ```
+  String get undoTripConflict => """This trip can no longer be undone""";
+
+  /// ```dart
+  /// "Could not undo the trip."
+  /// ```
+  String get undoTripFailed => """Could not undo the trip.""";
+
+  /// ```dart
+  /// "Some items were left as they are"
+  /// ```
+  String get undoSkippedTitle => """Some items were left as they are""";
+
+  /// ```dart
+  /// "The trip was undone, but these items were not put back:"
+  /// ```
+  String get undoSkippedBody =>
+      """The trip was undone, but these items were not put back:""";
+
+  /// ```dart
+  /// "An item"
+  /// ```
+  String get undoSkippedUnnamed => """An item""";
+
+  /// ```dart
+  /// "it changed after the trip"
+  /// ```
+  String get undoSkippedChanged => """it changed after the trip""";
+
+  /// ```dart
+  /// "it was deleted"
+  /// ```
+  String get undoSkippedGone => """it was deleted""";
+
+  /// ```dart
+  /// "Undone"
+  /// ```
+  String get undoneBadge => """Undone""";
+
+  /// ```dart
   /// "Something went wrong. Please try again."
   /// ```
   String get loadFailed => """Something went wrong. Please try again.""";
@@ -10626,6 +10688,20 @@ Password: pantry-rocks""",
       """This trip and its totals will be permanently removed from shopping history. This cannot be undone.""",
   """shopping.deleteTripFailed""": """Could not delete the trip.""",
   """shopping.cancelledBadge""": """Cancelled""",
+  """shopping.undoTrip""": """Undo trip""",
+  """shopping.undoTripTitle""": """Undo this trip?""",
+  """shopping.undoTripBody""":
+      """Everything checked off on this trip goes back on its list, and what it added to your inventories is taken back out. Items changed since the trip are left as they are.""",
+  """shopping.undoTripDone""": """Shopping trip undone""",
+  """shopping.undoTripConflict""": """This trip can no longer be undone""",
+  """shopping.undoTripFailed""": """Could not undo the trip.""",
+  """shopping.undoSkippedTitle""": """Some items were left as they are""",
+  """shopping.undoSkippedBody""":
+      """The trip was undone, but these items were not put back:""",
+  """shopping.undoSkippedUnnamed""": """An item""",
+  """shopping.undoSkippedChanged""": """it changed after the trip""",
+  """shopping.undoSkippedGone""": """it was deleted""",
+  """shopping.undoneBadge""": """Undone""",
   """shopping.loadFailed""": """Something went wrong. Please try again.""",
   """shopping.uncategorized""": """Uncategorized""",
   """share.title""": """Share to Pantry""",

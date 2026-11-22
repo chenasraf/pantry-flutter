@@ -7735,6 +7735,70 @@ class ShoppingMessagesDe extends ShoppingMessages {
   String get cancelledBadge => """Abgebrochen""";
 
   /// ```dart
+  /// "Einkauf rückgängig machen"
+  /// ```
+  String get undoTrip => """Einkauf rückgängig machen""";
+
+  /// ```dart
+  /// "Diesen Einkauf rückgängig machen?"
+  /// ```
+  String get undoTripTitle => """Diesen Einkauf rückgängig machen?""";
+
+  /// ```dart
+  /// "Alles, was bei diesem Einkauf abgehakt wurde, kommt zurück auf seine Liste, und was er euren Vorräten hinzugefügt hat, wird wieder abgezogen. Artikel, die seitdem geändert wurden, bleiben, wie sie sind."
+  /// ```
+  String get undoTripBody =>
+      """Alles, was bei diesem Einkauf abgehakt wurde, kommt zurück auf seine Liste, und was er euren Vorräten hinzugefügt hat, wird wieder abgezogen. Artikel, die seitdem geändert wurden, bleiben, wie sie sind.""";
+
+  /// ```dart
+  /// "Einkauf rückgängig gemacht"
+  /// ```
+  String get undoTripDone => """Einkauf rückgängig gemacht""";
+
+  /// ```dart
+  /// "Dieser Einkauf kann nicht mehr rückgängig gemacht werden"
+  /// ```
+  String get undoTripConflict =>
+      """Dieser Einkauf kann nicht mehr rückgängig gemacht werden""";
+
+  /// ```dart
+  /// "Der Einkauf konnte nicht rückgängig gemacht werden."
+  /// ```
+  String get undoTripFailed =>
+      """Der Einkauf konnte nicht rückgängig gemacht werden.""";
+
+  /// ```dart
+  /// "Einige Artikel wurden nicht verändert"
+  /// ```
+  String get undoSkippedTitle => """Einige Artikel wurden nicht verändert""";
+
+  /// ```dart
+  /// "Der Einkauf wurde rückgängig gemacht, aber diese Artikel wurden nicht zurückgesetzt:"
+  /// ```
+  String get undoSkippedBody =>
+      """Der Einkauf wurde rückgängig gemacht, aber diese Artikel wurden nicht zurückgesetzt:""";
+
+  /// ```dart
+  /// "Ein Artikel"
+  /// ```
+  String get undoSkippedUnnamed => """Ein Artikel""";
+
+  /// ```dart
+  /// "er wurde nach dem Einkauf geändert"
+  /// ```
+  String get undoSkippedChanged => """er wurde nach dem Einkauf geändert""";
+
+  /// ```dart
+  /// "er wurde gelöscht"
+  /// ```
+  String get undoSkippedGone => """er wurde gelöscht""";
+
+  /// ```dart
+  /// "Rückgängig gemacht"
+  /// ```
+  String get undoneBadge => """Rückgängig gemacht""";
+
+  /// ```dart
   /// "Etwas ist schiefgelaufen. Bitte versuche es erneut."
   /// ```
   String get loadFailed =>
@@ -10816,6 +10880,22 @@ Passwort: pantry-rocks""",
   """shopping.deleteTripFailed""":
       """Der Einkauf konnte nicht gelöscht werden.""",
   """shopping.cancelledBadge""": """Abgebrochen""",
+  """shopping.undoTrip""": """Einkauf rückgängig machen""",
+  """shopping.undoTripTitle""": """Diesen Einkauf rückgängig machen?""",
+  """shopping.undoTripBody""":
+      """Alles, was bei diesem Einkauf abgehakt wurde, kommt zurück auf seine Liste, und was er euren Vorräten hinzugefügt hat, wird wieder abgezogen. Artikel, die seitdem geändert wurden, bleiben, wie sie sind.""",
+  """shopping.undoTripDone""": """Einkauf rückgängig gemacht""",
+  """shopping.undoTripConflict""":
+      """Dieser Einkauf kann nicht mehr rückgängig gemacht werden""",
+  """shopping.undoTripFailed""":
+      """Der Einkauf konnte nicht rückgängig gemacht werden.""",
+  """shopping.undoSkippedTitle""": """Einige Artikel wurden nicht verändert""",
+  """shopping.undoSkippedBody""":
+      """Der Einkauf wurde rückgängig gemacht, aber diese Artikel wurden nicht zurückgesetzt:""",
+  """shopping.undoSkippedUnnamed""": """Ein Artikel""",
+  """shopping.undoSkippedChanged""": """er wurde nach dem Einkauf geändert""",
+  """shopping.undoSkippedGone""": """er wurde gelöscht""",
+  """shopping.undoneBadge""": """Rückgängig gemacht""",
   """shopping.loadFailed""":
       """Etwas ist schiefgelaufen. Bitte versuche es erneut.""",
   """shopping.uncategorized""": """Ohne Kategorie""",

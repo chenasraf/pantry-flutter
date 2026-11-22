@@ -1462,6 +1462,18 @@ shopping:
   deleteTripBody: הקנייה והסכומים שלה יוסרו לצמיתות מהיסטוריית הקניות. לא ניתן לבטל פעולה זו.
   deleteTripFailed: מחיקת הקנייה נכשלה.
   cancelledBadge: בוטלה
+  undoTrip: החזרת הקנייה לאחור
+  undoTripTitle: "להחזיר את הקנייה הזאת לאחור?"
+  undoTripBody: כל מה שסומן בקנייה הזאת יחזור לרשימה שלו, ומה שהיא הוסיפה למלאי יוסר ממנו. פריטים שהשתנו מאז הקנייה יישארו כמו שהם.
+  undoTripDone: הקנייה הוחזרה לאחור
+  undoTripConflict: כבר אי אפשר להחזיר את הקנייה הזאת לאחור
+  undoTripFailed: החזרת הקנייה לאחור נכשלה.
+  undoSkippedTitle: חלק מהפריטים נשארו כמו שהם
+  undoSkippedBody: "הקנייה הוחזרה לאחור, אבל הפריטים האלה לא הוחזרו:"
+  undoSkippedUnnamed: פריט
+  undoSkippedChanged: הוא השתנה אחרי הקנייה
+  undoSkippedGone: הוא נמחק
+  undoneBadge: הוחזרה לאחור
   loadFailed: משהו השתבש. נסו שוב.
   uncategorized: ללא קטגוריה
 

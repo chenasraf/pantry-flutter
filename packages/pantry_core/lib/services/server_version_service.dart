@@ -406,4 +406,5 @@ abstract final class ServerFeature {
   static bool get shoppingCancelTrip => _since('0.39.0');
 
   static bool get itemMemory => _since('0.40.0');
+  static bool get shoppingUndoTrip => _since('0.40.0');
 }

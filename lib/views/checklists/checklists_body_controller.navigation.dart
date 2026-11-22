@@ -101,11 +101,18 @@ extension ChecklistsBodyNavigation on ChecklistsBodyController {
   }
 
   Future<void> openShoppingHistory(BuildContext context) async {
+    var tripUndone = false;
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => ShoppingHistoryView(houseId: domain.houseId),
+        builder: (_) => ShoppingHistoryView(
+          houseId: domain.houseId,
+          onTripUndone: () => tripUndone = true,
+        ),
       ),
     );
+    // An undo reopens items and takes stock back out across every list the
+    // trip touched, not just the one on screen.
+    if (tripUndone) await domain.refresh();
     await refreshShoppingSession();
   }
 

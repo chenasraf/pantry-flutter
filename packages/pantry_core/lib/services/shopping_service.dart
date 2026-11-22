@@ -7,6 +7,7 @@ import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/models/shopping_put_away.dart';
 import 'package:pantry_core/models/shopping_review.dart';
 import 'package:pantry_core/models/shopping_session.dart';
+import 'package:pantry_core/models/shopping_undo.dart';
 import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/cache_store.dart';
 import 'package:pantry_core/services/server_version_service.dart';
@@ -506,6 +507,17 @@ class ShoppingService {
   /// shopper asked for it is more surprising than a delete that fails.
   Future<void> deleteSession(int houseId, int sessionId) {
     return _api.delete('${_base(houseId)}/sessions/$sessionId');
+  }
+
+  /// (23) Walk back a finished trip: reopen what it checked off and take what
+  /// it put away back out. Sent directly for the same reason as
+  /// [deleteSession]. A 409 [ApiException] means the trip can no longer be
+  /// undone — still live, cancelled, or already undone.
+  Future<ShoppingUndoResult> undoSession(int houseId, int sessionId) {
+    return _api.post<Map<String, dynamic>, ShoppingUndoResult>(
+      '${_base(houseId)}/sessions/$sessionId/undo',
+      fromJson: ShoppingUndoResult.fromJson,
+    );
   }
 
   // -- Helpers ---------------------------------------------------------------

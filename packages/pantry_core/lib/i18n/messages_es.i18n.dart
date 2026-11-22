@@ -7717,6 +7717,69 @@ class ShoppingMessagesEs extends ShoppingMessages {
   String get cancelledBadge => """Cancelada""";
 
   /// ```dart
+  /// "Deshacer compra"
+  /// ```
+  String get undoTrip => """Deshacer compra""";
+
+  /// ```dart
+  /// "¿Deshacer esta compra?"
+  /// ```
+  String get undoTripTitle => """¿Deshacer esta compra?""";
+
+  /// ```dart
+  /// "Todo lo marcado en esta compra vuelve a su lista, y lo que añadió a tus inventarios se vuelve a quitar. Los artículos que cambiaron desde la compra se quedan como están."
+  /// ```
+  String get undoTripBody =>
+      """Todo lo marcado en esta compra vuelve a su lista, y lo que añadió a tus inventarios se vuelve a quitar. Los artículos que cambiaron desde la compra se quedan como están.""";
+
+  /// ```dart
+  /// "Compra deshecha"
+  /// ```
+  String get undoTripDone => """Compra deshecha""";
+
+  /// ```dart
+  /// "Esta compra ya no se puede deshacer"
+  /// ```
+  String get undoTripConflict => """Esta compra ya no se puede deshacer""";
+
+  /// ```dart
+  /// "No se pudo deshacer la compra."
+  /// ```
+  String get undoTripFailed => """No se pudo deshacer la compra.""";
+
+  /// ```dart
+  /// "Algunos artículos se quedaron como estaban"
+  /// ```
+  String get undoSkippedTitle =>
+      """Algunos artículos se quedaron como estaban""";
+
+  /// ```dart
+  /// "La compra se deshizo, pero estos artículos no se restauraron:"
+  /// ```
+  String get undoSkippedBody =>
+      """La compra se deshizo, pero estos artículos no se restauraron:""";
+
+  /// ```dart
+  /// "Un artículo"
+  /// ```
+  String get undoSkippedUnnamed => """Un artículo""";
+
+  /// ```dart
+  /// "cambió después de la compra"
+  /// ```
+  String get undoSkippedChanged => """cambió después de la compra""";
+
+  /// ```dart
+  /// "se eliminó"
+  /// ```
+  String get undoSkippedGone => """se eliminó""";
+
+  /// ```dart
+  /// "Deshecha"
+  /// ```
+  String get undoneBadge => """Deshecha""";
+
+  /// ```dart
   /// "Algo salió mal. Inténtalo de nuevo."
   /// ```
   String get loadFailed => """Algo salió mal. Inténtalo de nuevo.""";
@@ -10781,6 +10844,21 @@ Contraseña: pantry-rocks""",
       """Esta compra y sus totales se eliminarán permanentemente del historial de compras. Esta acción no se puede deshacer.""",
   """shopping.deleteTripFailed""": """No se pudo eliminar la compra.""",
   """shopping.cancelledBadge""": """Cancelada""",
+  """shopping.undoTrip""": """Deshacer compra""",
+  """shopping.undoTripTitle""": """¿Deshacer esta compra?""",
+  """shopping.undoTripBody""":
+      """Todo lo marcado en esta compra vuelve a su lista, y lo que añadió a tus inventarios se vuelve a quitar. Los artículos que cambiaron desde la compra se quedan como están.""",
+  """shopping.undoTripDone""": """Compra deshecha""",
+  """shopping.undoTripConflict""": """Esta compra ya no se puede deshacer""",
+  """shopping.undoTripFailed""": """No se pudo deshacer la compra.""",
+  """shopping.undoSkippedTitle""":
+      """Algunos artículos se quedaron como estaban""",
+  """shopping.undoSkippedBody""":
+      """La compra se deshizo, pero estos artículos no se restauraron:""",
+  """shopping.undoSkippedUnnamed""": """Un artículo""",
+  """shopping.undoSkippedChanged""": """cambió después de la compra""",
+  """shopping.undoSkippedGone""": """se eliminó""",
+  """shopping.undoneBadge""": """Deshecha""",
   """shopping.loadFailed""": """Algo salió mal. Inténtalo de nuevo.""",
   """shopping.uncategorized""": """Sin categoría""",
   """share.title""": """Compartir con Pantry""",

@@ -1471,6 +1471,18 @@ shopping:
   deleteTripBody: This trip and its totals will be permanently removed from shopping history. This cannot be undone.
   deleteTripFailed: Could not delete the trip.
   cancelledBadge: Cancelled
+  undoTrip: Undo trip
+  undoTripTitle: "Undo this trip?"
+  undoTripBody: Everything checked off on this trip goes back on its list, and what it added to your inventories is taken back out. Items changed since the trip are left as they are.
+  undoTripDone: Shopping trip undone
+  undoTripConflict: This trip can no longer be undone
+  undoTripFailed: Could not undo the trip.
+  undoSkippedTitle: Some items were left as they are
+  undoSkippedBody: "The trip was undone, but these items were not put back:"
+  undoSkippedUnnamed: An item
+  undoSkippedChanged: it changed after the trip
+  undoSkippedGone: it was deleted
+  undoneBadge: Undone
   # Common
   loadFailed: Something went wrong. Please try again.
   uncategorized: Uncategorized

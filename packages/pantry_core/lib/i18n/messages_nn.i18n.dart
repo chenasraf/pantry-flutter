@@ -7662,6 +7662,68 @@ class ShoppingMessagesNn extends ShoppingMessages {
   String get cancelledBadge => """Avbroten""";
 
   /// ```dart
+  /// "Angre handelen"
+  /// ```
+  String get undoTrip => """Angre handelen""";
+
+  /// ```dart
+  /// "Angre denne handelen?"
+  /// ```
+  String get undoTripTitle => """Angre denne handelen?""";
+
+  /// ```dart
+  /// "Alt som vart kryssa av på denne handelen går tilbake på lista si, og det han la til i lagera dine vert teke ut att. Varer som er endra sidan handelen, vert verande som dei er."
+  /// ```
+  String get undoTripBody =>
+      """Alt som vart kryssa av på denne handelen går tilbake på lista si, og det han la til i lagera dine vert teke ut att. Varer som er endra sidan handelen, vert verande som dei er.""";
+
+  /// ```dart
+  /// "Handelen er angra"
+  /// ```
+  String get undoTripDone => """Handelen er angra""";
+
+  /// ```dart
+  /// "Denne handelen kan ikkje angrast lenger"
+  /// ```
+  String get undoTripConflict => """Denne handelen kan ikkje angrast lenger""";
+
+  /// ```dart
+  /// "Klarte ikkje å angre handelen."
+  /// ```
+  String get undoTripFailed => """Klarte ikkje å angre handelen.""";
+
+  /// ```dart
+  /// "Nokre varer vart verande som dei var"
+  /// ```
+  String get undoSkippedTitle => """Nokre varer vart verande som dei var""";
+
+  /// ```dart
+  /// "Handelen vart angra, men desse varene vart ikkje sette tilbake:"
+  /// ```
+  String get undoSkippedBody =>
+      """Handelen vart angra, men desse varene vart ikkje sette tilbake:""";
+
+  /// ```dart
+  /// "Ei vare"
+  /// ```
+  String get undoSkippedUnnamed => """Ei vare""";
+
+  /// ```dart
+  /// "ho vart endra etter handelen"
+  /// ```
+  String get undoSkippedChanged => """ho vart endra etter handelen""";
+
+  /// ```dart
+  /// "ho vart sletta"
+  /// ```
+  String get undoSkippedGone => """ho vart sletta""";
+
+  /// ```dart
+  /// "Angra"
+  /// ```
+  String get undoneBadge => """Angra""";
+
+  /// ```dart
   /// "Noko gjekk gale. Prøv igjen."
   /// ```
   String get loadFailed => """Noko gjekk gale. Prøv igjen.""";
@@ -10676,6 +10738,21 @@ Passord: pantry""",
       """Denne handelen og summane hennar blir fjerna for godt frå handlehistorikken. Dette kan ikkje angrast.""",
   """shopping.deleteTripFailed""": """Klarte ikkje å slette handelen.""",
   """shopping.cancelledBadge""": """Avbroten""",
+  """shopping.undoTrip""": """Angre handelen""",
+  """shopping.undoTripTitle""": """Angre denne handelen?""",
+  """shopping.undoTripBody""":
+      """Alt som vart kryssa av på denne handelen går tilbake på lista si, og det han la til i lagera dine vert teke ut att. Varer som er endra sidan handelen, vert verande som dei er.""",
+  """shopping.undoTripDone""": """Handelen er angra""",
+  """shopping.undoTripConflict""":
+      """Denne handelen kan ikkje angrast lenger""",
+  """shopping.undoTripFailed""": """Klarte ikkje å angre handelen.""",
+  """shopping.undoSkippedTitle""": """Nokre varer vart verande som dei var""",
+  """shopping.undoSkippedBody""":
+      """Handelen vart angra, men desse varene vart ikkje sette tilbake:""",
+  """shopping.undoSkippedUnnamed""": """Ei vare""",
+  """shopping.undoSkippedChanged""": """ho vart endra etter handelen""",
+  """shopping.undoSkippedGone""": """ho vart sletta""",
+  """shopping.undoneBadge""": """Angra""",
   """shopping.loadFailed""": """Noko gjekk gale. Prøv igjen.""",
   """shopping.uncategorized""": """Utan kategori""",
   """share.title""": """Del til Pantry""",

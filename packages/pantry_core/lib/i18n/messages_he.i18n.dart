@@ -7643,6 +7643,68 @@ class ShoppingMessagesHe extends ShoppingMessages {
   String get cancelledBadge => """בוטלה""";
 
   /// ```dart
+  /// "החזרת הקנייה לאחור"
+  /// ```
+  String get undoTrip => """החזרת הקנייה לאחור""";
+
+  /// ```dart
+  /// "להחזיר את הקנייה הזאת לאחור?"
+  /// ```
+  String get undoTripTitle => """להחזיר את הקנייה הזאת לאחור?""";
+
+  /// ```dart
+  /// "כל מה שסומן בקנייה הזאת יחזור לרשימה שלו, ומה שהיא הוסיפה למלאי יוסר ממנו. פריטים שהשתנו מאז הקנייה יישארו כמו שהם."
+  /// ```
+  String get undoTripBody =>
+      """כל מה שסומן בקנייה הזאת יחזור לרשימה שלו, ומה שהיא הוסיפה למלאי יוסר ממנו. פריטים שהשתנו מאז הקנייה יישארו כמו שהם.""";
+
+  /// ```dart
+  /// "הקנייה הוחזרה לאחור"
+  /// ```
+  String get undoTripDone => """הקנייה הוחזרה לאחור""";
+
+  /// ```dart
+  /// "כבר אי אפשר להחזיר את הקנייה הזאת לאחור"
+  /// ```
+  String get undoTripConflict => """כבר אי אפשר להחזיר את הקנייה הזאת לאחור""";
+
+  /// ```dart
+  /// "החזרת הקנייה לאחור נכשלה."
+  /// ```
+  String get undoTripFailed => """החזרת הקנייה לאחור נכשלה.""";
+
+  /// ```dart
+  /// "חלק מהפריטים נשארו כמו שהם"
+  /// ```
+  String get undoSkippedTitle => """חלק מהפריטים נשארו כמו שהם""";
+
+  /// ```dart
+  /// "הקנייה הוחזרה לאחור, אבל הפריטים האלה לא הוחזרו:"
+  /// ```
+  String get undoSkippedBody =>
+      """הקנייה הוחזרה לאחור, אבל הפריטים האלה לא הוחזרו:""";
+
+  /// ```dart
+  /// "פריט"
+  /// ```
+  String get undoSkippedUnnamed => """פריט""";
+
+  /// ```dart
+  /// "הוא השתנה אחרי הקנייה"
+  /// ```
+  String get undoSkippedChanged => """הוא השתנה אחרי הקנייה""";
+
+  /// ```dart
+  /// "הוא נמחק"
+  /// ```
+  String get undoSkippedGone => """הוא נמחק""";
+
+  /// ```dart
+  /// "הוחזרה לאחור"
+  /// ```
+  String get undoneBadge => """הוחזרה לאחור""";
+
+  /// ```dart
   /// "משהו השתבש. נסו שוב."
   /// ```
   String get loadFailed => """משהו השתבש. נסו שוב.""";
@@ -10598,6 +10660,21 @@ Map<String, String> get messagesHeMap => {
       """הקנייה והסכומים שלה יוסרו לצמיתות מהיסטוריית הקניות. לא ניתן לבטל פעולה זו.""",
   """shopping.deleteTripFailed""": """מחיקת הקנייה נכשלה.""",
   """shopping.cancelledBadge""": """בוטלה""",
+  """shopping.undoTrip""": """החזרת הקנייה לאחור""",
+  """shopping.undoTripTitle""": """להחזיר את הקנייה הזאת לאחור?""",
+  """shopping.undoTripBody""":
+      """כל מה שסומן בקנייה הזאת יחזור לרשימה שלו, ומה שהיא הוסיפה למלאי יוסר ממנו. פריטים שהשתנו מאז הקנייה יישארו כמו שהם.""",
+  """shopping.undoTripDone""": """הקנייה הוחזרה לאחור""",
+  """shopping.undoTripConflict""":
+      """כבר אי אפשר להחזיר את הקנייה הזאת לאחור""",
+  """shopping.undoTripFailed""": """החזרת הקנייה לאחור נכשלה.""",
+  """shopping.undoSkippedTitle""": """חלק מהפריטים נשארו כמו שהם""",
+  """shopping.undoSkippedBody""":
+      """הקנייה הוחזרה לאחור, אבל הפריטים האלה לא הוחזרו:""",
+  """shopping.undoSkippedUnnamed""": """פריט""",
+  """shopping.undoSkippedChanged""": """הוא השתנה אחרי הקנייה""",
+  """shopping.undoSkippedGone""": """הוא נמחק""",
+  """shopping.undoneBadge""": """הוחזרה לאחור""",
   """shopping.loadFailed""": """משהו השתבש. נסו שוב.""",
   """shopping.uncategorized""": """ללא קטגוריה""",
   """share.title""": """שיתוף ל-Pantry""",

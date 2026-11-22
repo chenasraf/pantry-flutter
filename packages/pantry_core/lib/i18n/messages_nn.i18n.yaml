@@ -1603,6 +1603,18 @@ shopping:
   deleteTripBody: Denne handelen og summane hennar blir fjerna for godt frå handlehistorikken. Dette kan ikkje angrast.
   deleteTripFailed: Klarte ikkje å slette handelen.
   cancelledBadge: Avbroten
+  undoTrip: Angre handelen
+  undoTripTitle: "Angre denne handelen?"
+  undoTripBody: Alt som vart kryssa av på denne handelen går tilbake på lista si, og det han la til i lagera dine vert teke ut att. Varer som er endra sidan handelen, vert verande som dei er.
+  undoTripDone: Handelen er angra
+  undoTripConflict: Denne handelen kan ikkje angrast lenger
+  undoTripFailed: Klarte ikkje å angre handelen.
+  undoSkippedTitle: Nokre varer vart verande som dei var
+  undoSkippedBody: "Handelen vart angra, men desse varene vart ikkje sette tilbake:"
+  undoSkippedUnnamed: Ei vare
+  undoSkippedChanged: ho vart endra etter handelen
+  undoSkippedGone: ho vart sletta
+  undoneBadge: Angra
   loadFailed: Noko gjekk gale. Prøv igjen.
   uncategorized: Utan kategori
 

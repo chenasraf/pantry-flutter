@@ -1462,6 +1462,18 @@ shopping:
   deleteTripBody: Cette course et ses totaux seront définitivement supprimés de l'historique des courses. Cette action est irréversible.
   deleteTripFailed: Impossible de supprimer la course.
   cancelledBadge: Annulées
+  undoTrip: Défaire les courses
+  undoTripTitle: "Défaire ces courses ?"
+  undoTripBody: Tout ce qui a été coché pendant ces courses retourne sur sa liste, et ce qu'elles ont ajouté à vos inventaires en est retiré. Les articles modifiés depuis restent tels quels.
+  undoTripDone: Courses défaites
+  undoTripConflict: Ces courses ne peuvent plus être défaites
+  undoTripFailed: Impossible de défaire les courses.
+  undoSkippedTitle: Certains articles sont restés tels quels
+  undoSkippedBody: "Les courses ont été défaites, mais ces articles n'ont pas été rétablis :"
+  undoSkippedUnnamed: Un article
+  undoSkippedChanged: il a été modifié après les courses
+  undoSkippedGone: il a été supprimé
+  undoneBadge: Défaites
   loadFailed: Une erreur s'est produite. Veuillez réessayer.
   uncategorized: Sans catégorie
 

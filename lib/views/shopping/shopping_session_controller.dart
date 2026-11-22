@@ -974,6 +974,7 @@ extension ShoppingSessionPrivacy on ShoppingSession {
         live: s.live,
         closedAt: s.closedAt,
         abortedAt: s.abortedAt,
+        undoneAt: s.undoneAt,
         createdAt: s.createdAt,
         updatedAt: s.updatedAt,
       );

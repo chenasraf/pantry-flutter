@@ -1462,6 +1462,18 @@ shopping:
   deleteTripBody: Esta compra y sus totales se eliminarán permanentemente del historial de compras. Esta acción no se puede deshacer.
   deleteTripFailed: No se pudo eliminar la compra.
   cancelledBadge: Cancelada
+  undoTrip: Deshacer compra
+  undoTripTitle: "¿Deshacer esta compra?"
+  undoTripBody: Todo lo marcado en esta compra vuelve a su lista, y lo que añadió a tus inventarios se vuelve a quitar. Los artículos que cambiaron desde la compra se quedan como están.
+  undoTripDone: Compra deshecha
+  undoTripConflict: Esta compra ya no se puede deshacer
+  undoTripFailed: No se pudo deshacer la compra.
+  undoSkippedTitle: Algunos artículos se quedaron como estaban
+  undoSkippedBody: "La compra se deshizo, pero estos artículos no se restauraron:"
+  undoSkippedUnnamed: Un artículo
+  undoSkippedChanged: cambió después de la compra
+  undoSkippedGone: se eliminó
+  undoneBadge: Deshecha
   loadFailed: Algo salió mal. Inténtalo de nuevo.
   uncategorized: Sin categoría
 

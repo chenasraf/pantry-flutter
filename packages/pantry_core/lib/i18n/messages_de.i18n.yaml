@@ -1462,6 +1462,18 @@ shopping:
   deleteTripBody: Dieser Einkauf und seine Summen werden dauerhaft aus dem Einkaufsverlauf entfernt. Das kann nicht rückgängig gemacht werden.
   deleteTripFailed: Der Einkauf konnte nicht gelöscht werden.
   cancelledBadge: Abgebrochen
+  undoTrip: Einkauf rückgängig machen
+  undoTripTitle: "Diesen Einkauf rückgängig machen?"
+  undoTripBody: Alles, was bei diesem Einkauf abgehakt wurde, kommt zurück auf seine Liste, und was er euren Vorräten hinzugefügt hat, wird wieder abgezogen. Artikel, die seitdem geändert wurden, bleiben, wie sie sind.
+  undoTripDone: Einkauf rückgängig gemacht
+  undoTripConflict: Dieser Einkauf kann nicht mehr rückgängig gemacht werden
+  undoTripFailed: Der Einkauf konnte nicht rückgängig gemacht werden.
+  undoSkippedTitle: Einige Artikel wurden nicht verändert
+  undoSkippedBody: "Der Einkauf wurde rückgängig gemacht, aber diese Artikel wurden nicht zurückgesetzt:"
+  undoSkippedUnnamed: Ein Artikel
+  undoSkippedChanged: er wurde nach dem Einkauf geändert
+  undoSkippedGone: er wurde gelöscht
+  undoneBadge: Rückgängig gemacht
   loadFailed: Etwas ist schiefgelaufen. Bitte versuche es erneut.
   uncategorized: Ohne Kategorie
 

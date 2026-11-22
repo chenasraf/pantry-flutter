@@ -7724,6 +7724,69 @@ class ShoppingMessagesFr extends ShoppingMessages {
   String get cancelledBadge => """Annulées""";
 
   /// ```dart
+  /// "Défaire les courses"
+  /// ```
+  String get undoTrip => """Défaire les courses""";
+
+  /// ```dart
+  /// "Défaire ces courses ?"
+  /// ```
+  String get undoTripTitle => """Défaire ces courses ?""";
+
+  /// ```dart
+  /// "Tout ce qui a été coché pendant ces courses retourne sur sa liste, et ce qu'elles ont ajouté à vos inventaires en est retiré. Les articles modifiés depuis restent tels quels."
+  /// ```
+  String get undoTripBody =>
+      """Tout ce qui a été coché pendant ces courses retourne sur sa liste, et ce qu'elles ont ajouté à vos inventaires en est retiré. Les articles modifiés depuis restent tels quels.""";
+
+  /// ```dart
+  /// "Courses défaites"
+  /// ```
+  String get undoTripDone => """Courses défaites""";
+
+  /// ```dart
+  /// "Ces courses ne peuvent plus être défaites"
+  /// ```
+  String get undoTripConflict =>
+      """Ces courses ne peuvent plus être défaites""";
+
+  /// ```dart
+  /// "Impossible de défaire les courses."
+  /// ```
+  String get undoTripFailed => """Impossible de défaire les courses.""";
+
+  /// ```dart
+  /// "Certains articles sont restés tels quels"
+  /// ```
+  String get undoSkippedTitle => """Certains articles sont restés tels quels""";
+
+  /// ```dart
+  /// "Les courses ont été défaites, mais ces articles n'ont pas été rétablis :"
+  /// ```
+  String get undoSkippedBody =>
+      """Les courses ont été défaites, mais ces articles n'ont pas été rétablis :""";
+
+  /// ```dart
+  /// "Un article"
+  /// ```
+  String get undoSkippedUnnamed => """Un article""";
+
+  /// ```dart
+  /// "il a été modifié après les courses"
+  /// ```
+  String get undoSkippedChanged => """il a été modifié après les courses""";
+
+  /// ```dart
+  /// "il a été supprimé"
+  /// ```
+  String get undoSkippedGone => """il a été supprimé""";
+
+  /// ```dart
+  /// "Défaites"
+  /// ```
+  String get undoneBadge => """Défaites""";
+
+  /// ```dart
   /// "Une erreur s'est produite. Veuillez réessayer."
   /// ```
   String get loadFailed => """Une erreur s'est produite. Veuillez réessayer.""";
@@ -10798,6 +10861,22 @@ Mot de passe : pantry-rocks""",
       """Cette course et ses totaux seront définitivement supprimés de l'historique des courses. Cette action est irréversible.""",
   """shopping.deleteTripFailed""": """Impossible de supprimer la course.""",
   """shopping.cancelledBadge""": """Annulées""",
+  """shopping.undoTrip""": """Défaire les courses""",
+  """shopping.undoTripTitle""": """Défaire ces courses ?""",
+  """shopping.undoTripBody""":
+      """Tout ce qui a été coché pendant ces courses retourne sur sa liste, et ce qu'elles ont ajouté à vos inventaires en est retiré. Les articles modifiés depuis restent tels quels.""",
+  """shopping.undoTripDone""": """Courses défaites""",
+  """shopping.undoTripConflict""":
+      """Ces courses ne peuvent plus être défaites""",
+  """shopping.undoTripFailed""": """Impossible de défaire les courses.""",
+  """shopping.undoSkippedTitle""":
+      """Certains articles sont restés tels quels""",
+  """shopping.undoSkippedBody""":
+      """Les courses ont été défaites, mais ces articles n'ont pas été rétablis :""",
+  """shopping.undoSkippedUnnamed""": """Un article""",
+  """shopping.undoSkippedChanged""": """il a été modifié après les courses""",
+  """shopping.undoSkippedGone""": """il a été supprimé""",
+  """shopping.undoneBadge""": """Défaites""",
   """shopping.loadFailed""":
       """Une erreur s'est produite. Veuillez réessayer.""",
   """shopping.uncategorized""": """Sans catégorie""",

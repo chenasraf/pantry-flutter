@@ -21,6 +21,7 @@ import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/shopping/delete_trip_dialog.dart';
 import 'package:pantry/views/shopping/shopping_review_view.dart';
+import 'package:pantry/views/shopping/undo_trip_dialog.dart';
 import 'package:pantry/widgets/context_menu_region.dart';
 import 'package:pantry/widgets/member_avatar.dart';
 
@@ -30,7 +31,15 @@ import 'package:pantry/widgets/member_avatar.dart';
 class ShoppingHistoryView extends StatefulWidget {
   final int houseId;
 
-  const ShoppingHistoryView({super.key, required this.houseId});
+  /// Called once a trip was undone, so whoever opened the history can reload
+  /// the lists and inventories it changed.
+  final VoidCallback? onTripUndone;
+
+  const ShoppingHistoryView({
+    super.key,
+    required this.houseId,
+    this.onTripUndone,
+  });
 
   @override
   State<ShoppingHistoryView> createState() => _ShoppingHistoryViewState();
@@ -151,7 +160,8 @@ class _ShoppingHistoryViewState extends State<ShoppingHistoryView> {
           sessionId: row.id,
           mode: ShoppingReviewMode.history,
           stores: _stores,
-          canEditBilled: row.userId == _currentUserId && !row.isCancelled,
+          canEditBilled:
+              row.userId == _currentUserId && !row.isCancelled && !row.isUndone,
           onDelete: _canDelete(row) ? () => _deleteAndRemove(row) : null,
         ),
       ),
@@ -198,6 +208,35 @@ class _ShoppingHistoryViewState extends State<ShoppingHistoryView> {
   Future<void> _confirmAndDelete(ShoppingHistoryRow row) async {
     if (!await confirmDeleteTrip(context)) return;
     await _deleteAndRemove(row);
+  }
+
+  bool _canUndo(ShoppingHistoryRow row) =>
+      ServerFeature.shoppingUndoTrip && row.canBeUndoneBy(_currentUserId);
+
+  Future<void> _confirmAndUndo(ShoppingHistoryRow row) async {
+    if (!await confirmUndoTrip(context)) return;
+    try {
+      final result = await _service.undoSession(widget.houseId, row.id);
+      widget.onTripUndone?.call();
+      if (!mounted) return;
+      if (result.skipped.isEmpty) {
+        showAppToast(message: m.shopping.undoTripDone);
+      } else {
+        unawaited(showUndoSkipped(context, result.skipped));
+      }
+    } on ApiException catch (e) {
+      showAppToast(
+        message: e.statusCode == 409
+            ? m.shopping.undoTripConflict
+            : m.shopping.undoTripFailed,
+        kind: ToastKind.error,
+      );
+    } catch (_) {
+      showAppToast(message: m.shopping.undoTripFailed, kind: ToastKind.error);
+    }
+    // Either way the row may have moved on: undone now, or by whoever got
+    // there first.
+    await _refreshRow(row.id);
   }
 
   /// A typed total is queued rather than sent, so it reaches the server — and
@@ -313,6 +352,7 @@ class _ShoppingHistoryViewState extends State<ShoppingHistoryView> {
             memberName: _memberNames[row.userId],
             onTap: () => _openSummary(row),
             onDelete: canDelete ? () => _confirmAndDelete(row) : null,
+            onUndo: _canUndo(row) ? () => _confirmAndUndo(row) : null,
           );
           // A swipe is awkward with a mouse or trackpad; desktop reaches the
           // same action through the card's menu instead.
@@ -340,31 +380,54 @@ class _HistoryCard extends StatelessWidget {
   /// Asks to delete the trip; null when the viewer may not.
   final VoidCallback? onDelete;
 
+  /// Asks to undo the trip; null when the viewer may not.
+  final VoidCallback? onUndo;
+
   const _HistoryCard({
     required this.row,
     required this.memberName,
     required this.onTap,
     this.onDelete,
+    this.onUndo,
   });
+
+  bool get _hasActions => onDelete != null || onUndo != null;
 
   List<PopupMenuEntry<String>> _menuItems(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return [
-      PopupMenuItem(
-        value: 'delete',
-        child: Row(
-          children: [
-            Icon(Icons.delete_outline, size: 20, color: cs.error),
-            const SizedBox(width: 12),
-            Text(m.shopping.deleteTrip, style: TextStyle(color: cs.error)),
-          ],
+      if (onUndo != null)
+        PopupMenuItem(
+          value: 'undo',
+          child: Row(
+            children: [
+              const Icon(Icons.undo, size: 20),
+              const SizedBox(width: 12),
+              Text(m.shopping.undoTrip),
+            ],
+          ),
         ),
-      ),
+      if (onDelete != null)
+        PopupMenuItem(
+          value: 'delete',
+          child: Row(
+            children: [
+              Icon(Icons.delete_outline, size: 20, color: cs.error),
+              const SizedBox(width: 12),
+              Text(m.shopping.deleteTrip, style: TextStyle(color: cs.error)),
+            ],
+          ),
+        ),
     ];
   }
 
   void _onMenuSelected(String value) {
-    if (value == 'delete') onDelete?.call();
+    switch (value) {
+      case 'undo':
+        onUndo?.call();
+      case 'delete':
+        onDelete?.call();
+    }
   }
 
   /// Swiping is the quick path on a phone, but a hidden gesture alone is easy
@@ -374,10 +437,25 @@ class _HistoryCard extends StatelessWidget {
     final selected = await showModalBottomSheet<String>(
       context: context,
       builder: (ctx) => SafeArea(
-        child: ListTile(
-          leading: Icon(Icons.delete_outline, color: cs.error),
-          title: Text(m.shopping.deleteTrip, style: TextStyle(color: cs.error)),
-          onTap: () => Navigator.pop(ctx, 'delete'),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (onUndo != null)
+              ListTile(
+                leading: const Icon(Icons.undo),
+                title: Text(m.shopping.undoTrip),
+                onTap: () => Navigator.pop(ctx, 'undo'),
+              ),
+            if (onDelete != null)
+              ListTile(
+                leading: Icon(Icons.delete_outline, color: cs.error),
+                title: Text(
+                  m.shopping.deleteTrip,
+                  style: TextStyle(color: cs.error),
+                ),
+                onTap: () => Navigator.pop(ctx, 'delete'),
+              ),
+          ],
         ),
       ),
     );
@@ -406,13 +484,14 @@ class _HistoryCard extends StatelessWidget {
     final timeLabel = duration == null
         ? formatDate(when)
         : '${formatDate(when)} · $duration';
-    final desktopMenu = onDelete != null && !PlatformInfo.isMobile;
+    final desktopMenu = _hasActions && !PlatformInfo.isMobile;
+    final showTotal = !row.isCancelled && !row.isUndone;
 
     final card = Card(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: InkWell(
         onTap: onTap,
-        onLongPress: onDelete != null && PlatformInfo.isMobile
+        onLongPress: _hasActions && PlatformInfo.isMobile
             ? () => _showActionSheet(context)
             : null,
         borderRadius: BorderRadius.circular(SurfaceRadius.card),
@@ -449,12 +528,17 @@ class _HistoryCard extends StatelessWidget {
                             icon: Icons.check_circle_outline,
                             label: m.shopping.itemsCount(row.itemCount),
                           ),
+                        if (row.isUndone)
+                          _Chip(
+                            icon: Icons.undo,
+                            label: m.shopping.undoneBadge,
+                          ),
                       ],
                     ),
                   ],
                 ),
               ),
-              if (!row.isCancelled) ...[
+              if (showTotal) ...[
                 const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(

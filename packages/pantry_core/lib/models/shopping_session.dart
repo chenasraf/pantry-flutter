@@ -74,6 +74,10 @@ class ShoppingSession {
   /// Set alongside [closedAt] when the trip was cancelled rather than
   /// finished: nothing checked on it reached the lists.
   final int? abortedAt;
+
+  /// Set when a finished trip was undone: what it checked off is open again
+  /// and what it put away is taken back out.
+  final int? undoneAt;
   final int createdAt;
   final int updatedAt;
 
@@ -94,6 +98,7 @@ class ShoppingSession {
     required this.live,
     this.closedAt,
     this.abortedAt,
+    this.undoneAt,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -124,6 +129,7 @@ class ShoppingSession {
         live: json['live'] as bool,
         closedAt: json['closedAt'] as int?,
         abortedAt: json['abortedAt'] as int?,
+        undoneAt: json['undoneAt'] as int?,
         createdAt: json['createdAt'] as int,
         updatedAt: json['updatedAt'] as int,
       );
@@ -145,6 +151,7 @@ class ShoppingSession {
     'live': live,
     'closedAt': closedAt,
     'abortedAt': abortedAt,
+    'undoneAt': undoneAt,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
   };
