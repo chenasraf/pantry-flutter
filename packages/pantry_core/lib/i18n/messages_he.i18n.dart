@@ -1071,6 +1071,49 @@ class OnboardingMessagesHe extends OnboardingMessages {
   /// "חלה"
   /// ```
   String get templateMockSecond => """חלה""";
+
+  /// ```dart
+  /// "כתבו כמו שאתם אומרים"
+  /// ```
+  String get smartInputTitle => """כתבו כמו שאתם אומרים""";
+
+  /// ```dart
+  /// "כתבו "2 ליטר חלב" ו־Pantry ימלא את הכמות ויציע קטגוריה לפי מה שבני הבית בחרו בעבר לפריט הזה. מה שאתם מקלידים או בוחרים בעצמכם תמיד קובע."
+  /// ```
+  String get smartInputBody =>
+      """כתבו "2 ליטר חלב" ו־Pantry ימלא את הכמות ויציע קטגוריה לפי מה שבני הבית בחרו בעבר לפריט הזה. מה שאתם מקלידים או בוחרים בעצמכם תמיד קובע.""";
+
+  /// ```dart
+  /// "הסירו הצעה שאינכם רוצים עם ה־✕ שלה. כדי להפסיק את ההצעות לגמרי, כבו את ${toggle} ב־${settings} ← ${section}."
+  /// ```
+  String smartInputHow(String settings, String section, String toggle) =>
+      """הסירו הצעה שאינכם רוצים עם ה־✕ שלה. כדי להפסיק את ההצעות לגמרי, כבו את ${toggle} ב־${settings} ← ${section}.""";
+
+  /// ```dart
+  /// "2 ליטר חלב"
+  /// ```
+  String get smartInputMockTyped => """2 ליטר חלב""";
+
+  /// ```dart
+  /// "חלב"
+  /// ```
+  String get smartInputMockName => """חלב""";
+
+  /// ```dart
+  /// "2 ליטר"
+  /// ```
+  String get smartInputMockAmount => """2 ליטר""";
+
+  /// ```dart
+  /// "מוצרי חלב"
+  /// ```
+  String get smartInputMockCategory => """מוצרי חלב""";
+
+  /// ```dart
+  /// "* הצעות קטגוריה דורשות את Pantry ל-Nextcloud בגרסה ${version}+"
+  /// ```
+  String smartInputMemoryNote(String version) =>
+      """* הצעות קטגוריה דורשות את Pantry ל-Nextcloud בגרסה ${version}+""";
   DevOnboardingMessagesHe get dev => DevOnboardingMessagesHe(this);
 }
 
@@ -9682,6 +9725,13 @@ Map<String, String> get messagesHeMap => {
   """onboarding.templateMockTyped""": """חל""",
   """onboarding.templateMockFirst""": """חלב""",
   """onboarding.templateMockSecond""": """חלה""",
+  """onboarding.smartInputTitle""": """כתבו כמו שאתם אומרים""",
+  """onboarding.smartInputBody""":
+      """כתבו "2 ליטר חלב" ו־Pantry ימלא את הכמות ויציע קטגוריה לפי מה שבני הבית בחרו בעבר לפריט הזה. מה שאתם מקלידים או בוחרים בעצמכם תמיד קובע.""",
+  """onboarding.smartInputMockTyped""": """2 ליטר חלב""",
+  """onboarding.smartInputMockName""": """חלב""",
+  """onboarding.smartInputMockAmount""": """2 ליטר""",
+  """onboarding.smartInputMockCategory""": """מוצרי חלב""",
   """onboarding.dev.showOnboarding""": """הצג היכרות""",
   """onboarding.dev.pickLastSeenTitle""": """תצוגה מקדימה של החדש""",
   """onboarding.dev.pickLastSeenBody""":

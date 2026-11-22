@@ -1081,6 +1081,49 @@ Mot de passe : pantry-rocks""";
   /// "Lardons"
   /// ```
   String get templateMockSecond => """Lardons""";
+
+  /// ```dart
+  /// "Écrivez comme vous le diriez"
+  /// ```
+  String get smartInputTitle => """Écrivez comme vous le diriez""";
+
+  /// ```dart
+  /// "Tapez « 2 L de lait » et Pantry remplit la quantité, puis propose une catégorie d'après ce que votre foyer a choisi pour cet article auparavant. Ce que vous tapez ou choisissez vous-même l'emporte toujours."
+  /// ```
+  String get smartInputBody =>
+      """Tapez « 2 L de lait » et Pantry remplit la quantité, puis propose une catégorie d'après ce que votre foyer a choisi pour cet article auparavant. Ce que vous tapez ou choisissez vous-même l'emporte toujours.""";
+
+  /// ```dart
+  /// "Écartez une suggestion dont vous ne voulez pas avec son ✕. Pour ne plus recevoir de suggestions, désactivez ${toggle} dans ${settings} → ${section}."
+  /// ```
+  String smartInputHow(String settings, String section, String toggle) =>
+      """Écartez une suggestion dont vous ne voulez pas avec son ✕. Pour ne plus recevoir de suggestions, désactivez ${toggle} dans ${settings} → ${section}.""";
+
+  /// ```dart
+  /// "2 L de lait"
+  /// ```
+  String get smartInputMockTyped => """2 L de lait""";
+
+  /// ```dart
+  /// "lait"
+  /// ```
+  String get smartInputMockName => """lait""";
+
+  /// ```dart
+  /// "2 L"
+  /// ```
+  String get smartInputMockAmount => """2 L""";
+
+  /// ```dart
+  /// "Produits laitiers"
+  /// ```
+  String get smartInputMockCategory => """Produits laitiers""";
+
+  /// ```dart
+  /// "* Les suggestions de catégorie nécessitent Pantry pour Nextcloud v${version}+"
+  /// ```
+  String smartInputMemoryNote(String version) =>
+      """* Les suggestions de catégorie nécessitent Pantry pour Nextcloud v${version}+""";
   DevOnboardingMessagesFr get dev => DevOnboardingMessagesFr(this);
 }
 
@@ -9804,6 +9847,13 @@ Mot de passe : pantry-rocks""",
   """onboarding.templateMockTyped""": """La""",
   """onboarding.templateMockFirst""": """Lait""",
   """onboarding.templateMockSecond""": """Lardons""",
+  """onboarding.smartInputTitle""": """Écrivez comme vous le diriez""",
+  """onboarding.smartInputBody""":
+      """Tapez « 2 L de lait » et Pantry remplit la quantité, puis propose une catégorie d'après ce que votre foyer a choisi pour cet article auparavant. Ce que vous tapez ou choisissez vous-même l'emporte toujours.""",
+  """onboarding.smartInputMockTyped""": """2 L de lait""",
+  """onboarding.smartInputMockName""": """lait""",
+  """onboarding.smartInputMockAmount""": """2 L""",
+  """onboarding.smartInputMockCategory""": """Produits laitiers""",
   """onboarding.dev.showOnboarding""": """Afficher l'intro""",
   """onboarding.dev.pickLastSeenTitle""": """Aperçu des nouveautés""",
   """onboarding.dev.pickLastSeenBody""":

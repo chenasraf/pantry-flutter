@@ -188,6 +188,14 @@ onboarding:
   templateMockTyped: "Mi"
   templateMockFirst: "Milk"
   templateMockSecond: "Mince"
+  smartInputTitle: "Type it the way you'd say it"
+  smartInputBody: 'Write "2 L milk" and Pantry fills in the amount, then suggests a category from what your household picked for that item before. Anything you type or pick yourself always wins.'
+  smartInputHow(String settings, String section, String toggle): "Drop a guess you don't want with its ✕. To stop the guessing altogether, turn off ${toggle} in ${settings} → ${section}."
+  smartInputMockTyped: "2 L milk"
+  smartInputMockName: "milk"
+  smartInputMockAmount: "2 L"
+  smartInputMockCategory: "Dairy"
+  smartInputMemoryNote(String version): "* Category suggestions require Pantry for Nextcloud v${version}+"
   dev:
     showOnboarding: "Show onboarding"
     pickLastSeenTitle: "Preview what's new"

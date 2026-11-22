@@ -1071,6 +1071,49 @@ Password: pantry-rocks""";
   /// "Mince"
   /// ```
   String get templateMockSecond => """Mince""";
+
+  /// ```dart
+  /// "Type it the way you'd say it"
+  /// ```
+  String get smartInputTitle => """Type it the way you'd say it""";
+
+  /// ```dart
+  /// "Write "2 L milk" and Pantry fills in the amount, then suggests a category from what your household picked for that item before. Anything you type or pick yourself always wins."
+  /// ```
+  String get smartInputBody =>
+      """Write "2 L milk" and Pantry fills in the amount, then suggests a category from what your household picked for that item before. Anything you type or pick yourself always wins.""";
+
+  /// ```dart
+  /// "Drop a guess you don't want with its ✕. To stop the guessing altogether, turn off ${toggle} in ${settings} → ${section}."
+  /// ```
+  String smartInputHow(String settings, String section, String toggle) =>
+      """Drop a guess you don't want with its ✕. To stop the guessing altogether, turn off ${toggle} in ${settings} → ${section}.""";
+
+  /// ```dart
+  /// "2 L milk"
+  /// ```
+  String get smartInputMockTyped => """2 L milk""";
+
+  /// ```dart
+  /// "milk"
+  /// ```
+  String get smartInputMockName => """milk""";
+
+  /// ```dart
+  /// "2 L"
+  /// ```
+  String get smartInputMockAmount => """2 L""";
+
+  /// ```dart
+  /// "Dairy"
+  /// ```
+  String get smartInputMockCategory => """Dairy""";
+
+  /// ```dart
+  /// "* Category suggestions require Pantry for Nextcloud v${version}+"
+  /// ```
+  String smartInputMemoryNote(String version) =>
+      """* Category suggestions require Pantry for Nextcloud v${version}+""";
   DevOnboardingMessages get dev => DevOnboardingMessages(this);
 }
 
@@ -9692,6 +9735,13 @@ Password: pantry-rocks""",
   """onboarding.templateMockTyped""": """Mi""",
   """onboarding.templateMockFirst""": """Milk""",
   """onboarding.templateMockSecond""": """Mince""",
+  """onboarding.smartInputTitle""": """Type it the way you'd say it""",
+  """onboarding.smartInputBody""":
+      """Write "2 L milk" and Pantry fills in the amount, then suggests a category from what your household picked for that item before. Anything you type or pick yourself always wins.""",
+  """onboarding.smartInputMockTyped""": """2 L milk""",
+  """onboarding.smartInputMockName""": """milk""",
+  """onboarding.smartInputMockAmount""": """2 L""",
+  """onboarding.smartInputMockCategory""": """Dairy""",
   """onboarding.dev.showOnboarding""": """Show onboarding""",
   """onboarding.dev.pickLastSeenTitle""": """Preview what's new""",
   """onboarding.dev.pickLastSeenBody""":

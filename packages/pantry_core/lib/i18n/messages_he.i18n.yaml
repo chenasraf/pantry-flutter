@@ -188,6 +188,14 @@ onboarding:
   templateMockTyped: "חל"
   templateMockFirst: "חלב"
   templateMockSecond: "חלה"
+  smartInputTitle: "כתבו כמו שאתם אומרים"
+  smartInputBody: 'כתבו "2 ליטר חלב" ו־Pantry ימלא את הכמות ויציע קטגוריה לפי מה שבני הבית בחרו בעבר לפריט הזה. מה שאתם מקלידים או בוחרים בעצמכם תמיד קובע.'
+  smartInputHow(String settings, String section, String toggle): "הסירו הצעה שאינכם רוצים עם ה־✕ שלה. כדי להפסיק את ההצעות לגמרי, כבו את ${toggle} ב־${settings} ← ${section}."
+  smartInputMockTyped: "2 ליטר חלב"
+  smartInputMockName: "חלב"
+  smartInputMockAmount: "2 ליטר"
+  smartInputMockCategory: "מוצרי חלב"
+  smartInputMemoryNote(String version): "* הצעות קטגוריה דורשות את Pantry ל-Nextcloud בגרסה ${version}+"
   dev:
     showOnboarding: "הצג היכרות"
     pickLastSeenTitle: "תצוגה מקדימה של החדש"

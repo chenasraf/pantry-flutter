@@ -254,6 +254,14 @@ onboarding:
   templateMockTyped: "Mj"
   templateMockFirst: "Mjølk"
   templateMockSecond: "Mjøl"
+  smartInputTitle: "Skriv det slik du seier det"
+  smartInputBody: 'Skriv "2 L mjølk", så fyller Pantry inn mengda og føreslår ein kategori ut frå kva hushaldet ditt valde for varen før. Det du skriv eller vel sjølv, går alltid føre.'
+  smartInputHow(String settings, String section, String toggle): "Fjern eit forslag du ikkje vil ha med ✕-en. For å slutte med forslag heilt, slå av ${toggle} under ${settings} → ${section}."
+  smartInputMockTyped: "2 L mjølk"
+  smartInputMockName: "mjølk"
+  smartInputMockAmount: "2 L"
+  smartInputMockCategory: "Meieri"
+  smartInputMemoryNote(String version): "* Kategoriforslag krev Pantry for Nextcloud v${version}+"
   dev:
     showOnboarding: Vis oppstartshjelp
     pickLastSeenTitle: Førehandsvis kva som er nytt

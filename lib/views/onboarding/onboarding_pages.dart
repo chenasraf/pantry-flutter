@@ -20,6 +20,7 @@ import 'pages/progress_hero_dismiss_page.dart';
 import 'pages/progress_hero_page.dart';
 import 'pages/quick_actions_page.dart';
 import 'pages/shopping_mode_page.dart';
+import 'pages/smart_input_page.dart';
 import 'pages/swipe_actions_page.dart';
 import 'pages/templates_page.dart';
 import 'pages/watch_page.dart';
@@ -227,6 +228,12 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
     ),
     OnboardingPageEntry(
       builder: (_) => const TemplatesOnboardingPage(),
+      showWhen: onboardingUpgradersOnly,
+    ),
+  ],
+  '0.40.0': [
+    OnboardingPageEntry(
+      builder: (_) => const SmartInputOnboardingPage(),
       showWhen: onboardingUpgradersOnly,
     ),
   ],

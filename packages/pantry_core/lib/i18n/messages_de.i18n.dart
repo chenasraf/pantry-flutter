@@ -1077,6 +1077,49 @@ Passwort: pantry-rocks""";
   /// "Mineralwasser"
   /// ```
   String get templateMockSecond => """Mineralwasser""";
+
+  /// ```dart
+  /// "Schreib es, wie du es sagst"
+  /// ```
+  String get smartInputTitle => """Schreib es, wie du es sagst""";
+
+  /// ```dart
+  /// "Schreib „2 L Milch“, und Pantry trägt die Menge ein und schlägt eine Kategorie vor – nach dem, was dein Haushalt zuvor für diesen Artikel gewählt hat. Was du selbst eingibst oder auswählst, hat immer Vorrang."
+  /// ```
+  String get smartInputBody =>
+      """Schreib „2 L Milch“, und Pantry trägt die Menge ein und schlägt eine Kategorie vor – nach dem, was dein Haushalt zuvor für diesen Artikel gewählt hat. Was du selbst eingibst oder auswählst, hat immer Vorrang.""";
+
+  /// ```dart
+  /// "Einen Vorschlag, den du nicht willst, entfernst du mit seinem ✕. Um gar keine Vorschläge mehr zu bekommen, schalte ${toggle} unter ${settings} → ${section} aus."
+  /// ```
+  String smartInputHow(String settings, String section, String toggle) =>
+      """Einen Vorschlag, den du nicht willst, entfernst du mit seinem ✕. Um gar keine Vorschläge mehr zu bekommen, schalte ${toggle} unter ${settings} → ${section} aus.""";
+
+  /// ```dart
+  /// "2 L Milch"
+  /// ```
+  String get smartInputMockTyped => """2 L Milch""";
+
+  /// ```dart
+  /// "Milch"
+  /// ```
+  String get smartInputMockName => """Milch""";
+
+  /// ```dart
+  /// "2 L"
+  /// ```
+  String get smartInputMockAmount => """2 L""";
+
+  /// ```dart
+  /// "Milchprodukte"
+  /// ```
+  String get smartInputMockCategory => """Milchprodukte""";
+
+  /// ```dart
+  /// "* Kategorievorschläge erfordern Pantry für Nextcloud v${version}+"
+  /// ```
+  String smartInputMemoryNote(String version) =>
+      """* Kategorievorschläge erfordern Pantry für Nextcloud v${version}+""";
   DevOnboardingMessagesDe get dev => DevOnboardingMessagesDe(this);
 }
 
@@ -9811,6 +9854,13 @@ Passwort: pantry-rocks""",
   """onboarding.templateMockTyped""": """Mi""",
   """onboarding.templateMockFirst""": """Milch""",
   """onboarding.templateMockSecond""": """Mineralwasser""",
+  """onboarding.smartInputTitle""": """Schreib es, wie du es sagst""",
+  """onboarding.smartInputBody""":
+      """Schreib „2 L Milch“, und Pantry trägt die Menge ein und schlägt eine Kategorie vor – nach dem, was dein Haushalt zuvor für diesen Artikel gewählt hat. Was du selbst eingibst oder auswählst, hat immer Vorrang.""",
+  """onboarding.smartInputMockTyped""": """2 L Milch""",
+  """onboarding.smartInputMockName""": """Milch""",
+  """onboarding.smartInputMockAmount""": """2 L""",
+  """onboarding.smartInputMockCategory""": """Milchprodukte""",
   """onboarding.dev.showOnboarding""": """Onboarding anzeigen""",
   """onboarding.dev.pickLastSeenTitle""": """Neuigkeiten ansehen""",
   """onboarding.dev.pickLastSeenBody""":

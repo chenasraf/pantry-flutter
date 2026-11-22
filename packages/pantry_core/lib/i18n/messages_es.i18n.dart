@@ -1077,6 +1077,49 @@ Contraseña: pantry-rocks""";
   /// "Lechuga"
   /// ```
   String get templateMockSecond => """Lechuga""";
+
+  /// ```dart
+  /// "Escríbelo como lo dirías"
+  /// ```
+  String get smartInputTitle => """Escríbelo como lo dirías""";
+
+  /// ```dart
+  /// "Escribe "2 L de leche" y Pantry rellena la cantidad y sugiere una categoría según lo que tu hogar eligió antes para ese artículo. Lo que escribas o elijas tú siempre tiene prioridad."
+  /// ```
+  String get smartInputBody =>
+      """Escribe "2 L de leche" y Pantry rellena la cantidad y sugiere una categoría según lo que tu hogar eligió antes para ese artículo. Lo que escribas o elijas tú siempre tiene prioridad.""";
+
+  /// ```dart
+  /// "Descarta una sugerencia que no quieras con su ✕. Para dejar de recibir sugerencias, desactiva ${toggle} en ${settings} → ${section}."
+  /// ```
+  String smartInputHow(String settings, String section, String toggle) =>
+      """Descarta una sugerencia que no quieras con su ✕. Para dejar de recibir sugerencias, desactiva ${toggle} en ${settings} → ${section}.""";
+
+  /// ```dart
+  /// "2 L de leche"
+  /// ```
+  String get smartInputMockTyped => """2 L de leche""";
+
+  /// ```dart
+  /// "leche"
+  /// ```
+  String get smartInputMockName => """leche""";
+
+  /// ```dart
+  /// "2 L"
+  /// ```
+  String get smartInputMockAmount => """2 L""";
+
+  /// ```dart
+  /// "Lácteos"
+  /// ```
+  String get smartInputMockCategory => """Lácteos""";
+
+  /// ```dart
+  /// "* Las sugerencias de categoría requieren Pantry para Nextcloud v${version}+"
+  /// ```
+  String smartInputMemoryNote(String version) =>
+      """* Las sugerencias de categoría requieren Pantry para Nextcloud v${version}+""";
   DevOnboardingMessagesEs get dev => DevOnboardingMessagesEs(this);
 }
 
@@ -9790,6 +9833,13 @@ Contraseña: pantry-rocks""",
   """onboarding.templateMockTyped""": """Le""",
   """onboarding.templateMockFirst""": """Leche""",
   """onboarding.templateMockSecond""": """Lechuga""",
+  """onboarding.smartInputTitle""": """Escríbelo como lo dirías""",
+  """onboarding.smartInputBody""":
+      """Escribe "2 L de leche" y Pantry rellena la cantidad y sugiere una categoría según lo que tu hogar eligió antes para ese artículo. Lo que escribas o elijas tú siempre tiene prioridad.""",
+  """onboarding.smartInputMockTyped""": """2 L de leche""",
+  """onboarding.smartInputMockName""": """leche""",
+  """onboarding.smartInputMockAmount""": """2 L""",
+  """onboarding.smartInputMockCategory""": """Lácteos""",
   """onboarding.dev.showOnboarding""": """Mostrar introducción""",
   """onboarding.dev.pickLastSeenTitle""": """Ver novedades""",
   """onboarding.dev.pickLastSeenBody""":

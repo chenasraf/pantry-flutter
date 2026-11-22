@@ -188,6 +188,14 @@ onboarding:
   templateMockTyped: "Le"
   templateMockFirst: "Leche"
   templateMockSecond: "Lechuga"
+  smartInputTitle: "Escríbelo como lo dirías"
+  smartInputBody: 'Escribe "2 L de leche" y Pantry rellena la cantidad y sugiere una categoría según lo que tu hogar eligió antes para ese artículo. Lo que escribas o elijas tú siempre tiene prioridad.'
+  smartInputHow(String settings, String section, String toggle): "Descarta una sugerencia que no quieras con su ✕. Para dejar de recibir sugerencias, desactiva ${toggle} en ${settings} → ${section}."
+  smartInputMockTyped: "2 L de leche"
+  smartInputMockName: "leche"
+  smartInputMockAmount: "2 L"
+  smartInputMockCategory: "Lácteos"
+  smartInputMemoryNote(String version): "* Las sugerencias de categoría requieren Pantry para Nextcloud v${version}+"
   dev:
     showOnboarding: "Mostrar introducción"
     pickLastSeenTitle: "Ver novedades"

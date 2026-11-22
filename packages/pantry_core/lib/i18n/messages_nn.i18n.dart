@@ -1074,6 +1074,49 @@ Passord: pantry""";
   /// "Mjøl"
   /// ```
   String get templateMockSecond => """Mjøl""";
+
+  /// ```dart
+  /// "Skriv det slik du seier det"
+  /// ```
+  String get smartInputTitle => """Skriv det slik du seier det""";
+
+  /// ```dart
+  /// "Skriv "2 L mjølk", så fyller Pantry inn mengda og føreslår ein kategori ut frå kva hushaldet ditt valde for varen før. Det du skriv eller vel sjølv, går alltid føre."
+  /// ```
+  String get smartInputBody =>
+      """Skriv "2 L mjølk", så fyller Pantry inn mengda og føreslår ein kategori ut frå kva hushaldet ditt valde for varen før. Det du skriv eller vel sjølv, går alltid føre.""";
+
+  /// ```dart
+  /// "Fjern eit forslag du ikkje vil ha med ✕-en. For å slutte med forslag heilt, slå av ${toggle} under ${settings} → ${section}."
+  /// ```
+  String smartInputHow(String settings, String section, String toggle) =>
+      """Fjern eit forslag du ikkje vil ha med ✕-en. For å slutte med forslag heilt, slå av ${toggle} under ${settings} → ${section}.""";
+
+  /// ```dart
+  /// "2 L mjølk"
+  /// ```
+  String get smartInputMockTyped => """2 L mjølk""";
+
+  /// ```dart
+  /// "mjølk"
+  /// ```
+  String get smartInputMockName => """mjølk""";
+
+  /// ```dart
+  /// "2 L"
+  /// ```
+  String get smartInputMockAmount => """2 L""";
+
+  /// ```dart
+  /// "Meieri"
+  /// ```
+  String get smartInputMockCategory => """Meieri""";
+
+  /// ```dart
+  /// "* Kategoriforslag krev Pantry for Nextcloud v${version}+"
+  /// ```
+  String smartInputMemoryNote(String version) =>
+      """* Kategoriforslag krev Pantry for Nextcloud v${version}+""";
   DevOnboardingMessagesNn get dev => DevOnboardingMessagesNn(this);
 }
 
@@ -9727,6 +9770,13 @@ Passord: pantry""",
   """onboarding.templateMockTyped""": """Mj""",
   """onboarding.templateMockFirst""": """Mjølk""",
   """onboarding.templateMockSecond""": """Mjøl""",
+  """onboarding.smartInputTitle""": """Skriv det slik du seier det""",
+  """onboarding.smartInputBody""":
+      """Skriv "2 L mjølk", så fyller Pantry inn mengda og føreslår ein kategori ut frå kva hushaldet ditt valde for varen før. Det du skriv eller vel sjølv, går alltid føre.""",
+  """onboarding.smartInputMockTyped""": """2 L mjølk""",
+  """onboarding.smartInputMockName""": """mjølk""",
+  """onboarding.smartInputMockAmount""": """2 L""",
+  """onboarding.smartInputMockCategory""": """Meieri""",
   """onboarding.dev.showOnboarding""": """Vis oppstartshjelp""",
   """onboarding.dev.pickLastSeenTitle""": """Førehandsvis kva som er nytt""",
   """onboarding.dev.pickLastSeenBody""":
