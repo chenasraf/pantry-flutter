@@ -645,7 +645,8 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
       category: item.categoryId != null
           ? controller.categories[item.categoryId]
           : null,
-      stores: controller.storesFor(item),
+      // Under store headers the chip would only repeat the header above it.
+      stores: widget.groupByStore ? const [] : controller.storesFor(item),
       labels: controller.labelsFor(item),
       pendingImage: controller.pendingItemImage(item.id),
       houseId: controller.houseId,

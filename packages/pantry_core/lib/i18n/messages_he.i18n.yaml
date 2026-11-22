@@ -498,6 +498,8 @@ customFields:
 stores:
   manageTitle: ניהול חנויות
   noStores: אין חנויות עדיין.
+  count(int count): "${_plural(count, one: 'חנות אחת', many: '$count חנויות')}"
+  itemStoresTitle: חנויות
   editTitle: עריכת חנות
   addTitle: חנות חדשה
   name: שם

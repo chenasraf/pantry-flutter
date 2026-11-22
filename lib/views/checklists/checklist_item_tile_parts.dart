@@ -19,7 +19,6 @@ import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/label_icons.dart';
 import 'package:pantry_core/utils/rrule.dart';
-import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/widgets/entity_chip.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry/theme/app_theme.dart';
@@ -29,8 +28,8 @@ import 'package:pantry/widgets/description_detail_dialog.dart';
 import 'package:pantry/widgets/item_description.dart';
 import 'package:pantry/widgets/item_thumb.dart';
 import 'package:pantry/widgets/member_avatar.dart';
-import 'package:pantry/widgets/store_detail_dialog.dart';
 import 'inventory_row_parts.dart';
+import 'item_stores_chip.dart';
 import 'restock_markers.dart';
 import 'stock_link_parts.dart';
 import 'swipe_reveal_row.dart';
@@ -640,21 +639,9 @@ class _MetaRow extends StatelessWidget {
             textColor: catColor,
             background: catColor.withValues(alpha: 0.13),
           ),
-        if (prefs.isItemChipVisible(ItemChipKind.store.key))
-          for (final s in stores)
-            EntityChip(
-              leading: Icon(
-                storeIcon(s.icon),
-                size: 12,
-                color: parseHexColor(s.color) ?? cs.primary,
-              ),
-              label: s.name,
-              textColor: parseHexColor(s.color) ?? cs.primary,
-              background: (parseHexColor(s.color) ?? cs.primary).withValues(
-                alpha: 0.13,
-              ),
-              onTap: () => showStoreDetails(context, s),
-            ),
+        if (stores.isNotEmpty &&
+            prefs.isItemChipVisible(ItemChipKind.store.key))
+          ItemStoresChip(stores: stores),
         if (prefs.isItemChipVisible(ItemChipKind.label.key))
           for (final l in labels)
             EntityChip(

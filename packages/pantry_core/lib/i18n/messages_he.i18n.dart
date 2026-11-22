@@ -2676,6 +2676,17 @@ class StoresMessagesHe extends StoresMessages {
   String get noStores => """אין חנויות עדיין.""";
 
   /// ```dart
+  /// "${_plural(count, one: 'חנות אחת', many: '$count חנויות')}"
+  /// ```
+  String count(int count) =>
+      """${_plural(count, one: 'חנות אחת', many: '$count חנויות')}""";
+
+  /// ```dart
+  /// "חנויות"
+  /// ```
+  String get itemStoresTitle => """חנויות""";
+
+  /// ```dart
   /// "עריכת חנות"
   /// ```
   String get editTitle => """עריכת חנות""";
@@ -9995,6 +10006,7 @@ Map<String, String> get messagesHeMap => {
   """customFields.remapClear""": """לנקות אותה מהפריטים האלה""",
   """stores.manageTitle""": """ניהול חנויות""",
   """stores.noStores""": """אין חנויות עדיין.""",
+  """stores.itemStoresTitle""": """חנויות""",
   """stores.editTitle""": """עריכת חנות""",
   """stores.addTitle""": """חנות חדשה""",
   """stores.name""": """שם""",

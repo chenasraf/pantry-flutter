@@ -498,6 +498,8 @@ customFields:
 stores:
   manageTitle: Gestionar tiendas
   noStores: Aún no hay tiendas.
+  count(int count): "${_plural(count, one: '1 tienda', many: '$count tiendas')}"
+  itemStoresTitle: Tiendas
   editTitle: Editar tienda
   addTitle: Nueva tienda
   name: Nombre

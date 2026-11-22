@@ -2701,6 +2701,17 @@ class StoresMessagesFr extends StoresMessages {
   String get noStores => """Aucun magasin pour le moment.""";
 
   /// ```dart
+  /// "${_plural(count, one: '1 magasin', many: '$count magasins')}"
+  /// ```
+  String count(int count) =>
+      """${_plural(count, one: '1 magasin', many: '$count magasins')}""";
+
+  /// ```dart
+  /// "Magasins"
+  /// ```
+  String get itemStoresTitle => """Magasins""";
+
+  /// ```dart
   /// "Modifier le magasin"
   /// ```
   String get editTitle => """Modifier le magasin""";
@@ -10140,6 +10151,7 @@ Mot de passe : pantry-rocks""",
   """customFields.remapClear""": """La retirer de ces articles""",
   """stores.manageTitle""": """Gérer les magasins""",
   """stores.noStores""": """Aucun magasin pour le moment.""",
+  """stores.itemStoresTitle""": """Magasins""",
   """stores.editTitle""": """Modifier le magasin""",
   """stores.addTitle""": """Nouveau magasin""",
   """stores.name""": """Nom""",

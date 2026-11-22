@@ -591,6 +591,8 @@ customFields:
 stores:
   manageTitle: Behandle butikkar
   noStores: Ingen butikkar enno.
+  count(int count): "${_plural(count, one: '1 butikk', many: '$count butikkar')}"
+  itemStoresTitle: Butikkar
   editTitle: Rediger butikk
   addTitle: Ny butikk
   name: Namn

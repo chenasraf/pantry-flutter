@@ -498,6 +498,8 @@ customFields:
 stores:
   manageTitle: Gérer les magasins
   noStores: Aucun magasin pour le moment.
+  count(int count): "${_plural(count, one: '1 magasin', many: '$count magasins')}"
+  itemStoresTitle: Magasins
   editTitle: Modifier le magasin
   addTitle: Nouveau magasin
   name: Nom

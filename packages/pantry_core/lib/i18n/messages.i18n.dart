@@ -2669,6 +2669,17 @@ class StoresMessages {
   String get noStores => """No stores yet.""";
 
   /// ```dart
+  /// "${_plural(count, one: '1 store', many: '$count stores')}"
+  /// ```
+  String count(int count) =>
+      """${_plural(count, one: '1 store', many: '$count stores')}""";
+
+  /// ```dart
+  /// "Stores"
+  /// ```
+  String get itemStoresTitle => """Stores""";
+
+  /// ```dart
   /// "Edit store"
   /// ```
   String get editTitle => """Edit store""";
@@ -10009,6 +10020,7 @@ Password: pantry-rocks""",
   """customFields.remapClear""": """Clear it from those items""",
   """stores.manageTitle""": """Manage stores""",
   """stores.noStores""": """No stores yet.""",
+  """stores.itemStoresTitle""": """Stores""",
   """stores.editTitle""": """Edit store""",
   """stores.addTitle""": """New store""",
   """stores.name""": """Name""",

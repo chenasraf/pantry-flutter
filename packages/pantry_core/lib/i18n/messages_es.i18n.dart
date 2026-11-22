@@ -2699,6 +2699,17 @@ class StoresMessagesEs extends StoresMessages {
   String get noStores => """Aún no hay tiendas.""";
 
   /// ```dart
+  /// "${_plural(count, one: '1 tienda', many: '$count tiendas')}"
+  /// ```
+  String count(int count) =>
+      """${_plural(count, one: '1 tienda', many: '$count tiendas')}""";
+
+  /// ```dart
+  /// "Tiendas"
+  /// ```
+  String get itemStoresTitle => """Tiendas""";
+
+  /// ```dart
   /// "Editar tienda"
   /// ```
   String get editTitle => """Editar tienda""";
@@ -10123,6 +10134,7 @@ Contraseña: pantry-rocks""",
   """customFields.remapClear""": """Quitarla de esos artículos""",
   """stores.manageTitle""": """Gestionar tiendas""",
   """stores.noStores""": """Aún no hay tiendas.""",
+  """stores.itemStoresTitle""": """Tiendas""",
   """stores.editTitle""": """Editar tienda""",
   """stores.addTitle""": """Nueva tienda""",
   """stores.name""": """Nombre""",

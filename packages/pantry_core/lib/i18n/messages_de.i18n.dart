@@ -2698,6 +2698,17 @@ class StoresMessagesDe extends StoresMessages {
   String get noStores => """Noch keine Geschäfte.""";
 
   /// ```dart
+  /// "${_plural(count, one: '1 Geschäft', many: '$count Geschäfte')}"
+  /// ```
+  String count(int count) =>
+      """${_plural(count, one: '1 Geschäft', many: '$count Geschäfte')}""";
+
+  /// ```dart
+  /// "Geschäfte"
+  /// ```
+  String get itemStoresTitle => """Geschäfte""";
+
+  /// ```dart
   /// "Geschäft bearbeiten"
   /// ```
   String get editTitle => """Geschäft bearbeiten""";
@@ -10145,6 +10156,7 @@ Passwort: pantry-rocks""",
   """customFields.remapClear""": """Aus diesen Einträgen entfernen""",
   """stores.manageTitle""": """Geschäfte verwalten""",
   """stores.noStores""": """Noch keine Geschäfte.""",
+  """stores.itemStoresTitle""": """Geschäfte""",
   """stores.editTitle""": """Geschäft bearbeiten""",
   """stores.addTitle""": """Neues Geschäft""",
   """stores.name""": """Name""",

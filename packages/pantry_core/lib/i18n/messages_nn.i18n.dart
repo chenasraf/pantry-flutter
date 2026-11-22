@@ -2665,6 +2665,17 @@ class StoresMessagesNn extends StoresMessages {
   String get noStores => """Ingen butikkar enno.""";
 
   /// ```dart
+  /// "${_plural(count, one: '1 butikk', many: '$count butikkar')}"
+  /// ```
+  String count(int count) =>
+      """${_plural(count, one: '1 butikk', many: '$count butikkar')}""";
+
+  /// ```dart
+  /// "Butikkar"
+  /// ```
+  String get itemStoresTitle => """Butikkar""";
+
+  /// ```dart
   /// "Rediger butikk"
   /// ```
   String get editTitle => """Rediger butikk""";
@@ -10040,6 +10051,7 @@ Passord: pantry""",
   """customFields.remapClear""": """Fjern det frå desse oppføringane""",
   """stores.manageTitle""": """Behandle butikkar""",
   """stores.noStores""": """Ingen butikkar enno.""",
+  """stores.itemStoresTitle""": """Butikkar""",
   """stores.editTitle""": """Rediger butikk""",
   """stores.addTitle""": """Ny butikk""",
   """stores.name""": """Namn""",
