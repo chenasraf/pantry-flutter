@@ -6700,6 +6700,64 @@ class NotesWallMessages {
   String syncedAt(String when) => """Synced ${when}""";
 
   /// ```dart
+  /// "Sync with a file"
+  /// ```
+  String get startFileSync => """Sync with a file""";
+
+  /// ```dart
+  /// "Stop syncing with file"
+  /// ```
+  String get stopFileSync => """Stop syncing with file""";
+
+  /// ```dart
+  /// "Import from Nextcloud"
+  /// ```
+  String get importFromNextcloud => """Import from Nextcloud""";
+
+  /// ```dart
+  /// "Syncing with ${path}"
+  /// ```
+  String syncingWith(String path) => """Syncing with ${path}""";
+
+  /// ```dart
+  /// "Stopped syncing with the file"
+  /// ```
+  String get fileSyncStopped => """Stopped syncing with the file""";
+
+  /// ```dart
+  /// "Imported ${title}"
+  /// ```
+  String importedNote(String title) => """Imported ${title}""";
+
+  /// ```dart
+  /// "Could not start syncing with a file."
+  /// ```
+  String get startFileSyncFailed => """Could not start syncing with a file.""";
+
+  /// ```dart
+  /// "Could not stop syncing with the file."
+  /// ```
+  String get stopFileSyncFailed => """Could not stop syncing with the file.""";
+
+  /// ```dart
+  /// "Could not import the file."
+  /// ```
+  String get importFromFileFailed => """Could not import the file.""";
+
+  /// ```dart
+  /// "Stop syncing with the file?"
+  /// ```
+  String get stopFileSyncConfirm => """Stop syncing with the file?""";
+
+  /// ```dart
+  /// "The note and the file keep what they have now, but changes to one will no longer reach the other."
+  /// ```
+  String get stopFileSyncConfirmBody =>
+      """The note and the file keep what they have now, but changes to one will no longer reach the other.""";
+  FilePickerNotesWallMessages get filePicker =>
+      FilePickerNotesWallMessages(this);
+
+  /// ```dart
   /// "Title"
   /// ```
   String get title => """Title""";
@@ -6714,6 +6772,51 @@ class NotesWallMessages {
   /// ```
   String get color => """Color""";
   SortNotesWallMessages get sort => SortNotesWallMessages(this);
+}
+
+class FilePickerNotesWallMessages {
+  final NotesWallMessages _parent;
+  const FilePickerNotesWallMessages(this._parent);
+
+  /// ```dart
+  /// "Choose a folder"
+  /// ```
+  String get chooseFolder => """Choose a folder""";
+
+  /// ```dart
+  /// "Choose a file"
+  /// ```
+  String get chooseFile => """Choose a file""";
+
+  /// ```dart
+  /// "Choose this folder"
+  /// ```
+  String get chooseThisFolder => """Choose this folder""";
+
+  /// ```dart
+  /// "Files"
+  /// ```
+  String get root => """Files""";
+
+  /// ```dart
+  /// "This folder is empty."
+  /// ```
+  String get emptyFolder => """This folder is empty.""";
+
+  /// ```dart
+  /// "No text files in this folder."
+  /// ```
+  String get noTextFiles => """No text files in this folder.""";
+
+  /// ```dart
+  /// "Could not open this folder."
+  /// ```
+  String get failedToLoad => """Could not open this folder.""";
+
+  /// ```dart
+  /// "You can't add files to this folder."
+  /// ```
+  String get folderReadOnly => """You can't add files to this folder.""";
 }
 
 class SortNotesWallMessages {
@@ -10519,6 +10622,27 @@ Password: pantry-rocks""",
   """notesWall.importToList""": """Import to list""",
   """notesWall.importNoLists""": """No lists available to import into.""",
   """notesWall.syncedFileMissing""": """Synced file is missing""",
+  """notesWall.startFileSync""": """Sync with a file""",
+  """notesWall.stopFileSync""": """Stop syncing with file""",
+  """notesWall.importFromNextcloud""": """Import from Nextcloud""",
+  """notesWall.fileSyncStopped""": """Stopped syncing with the file""",
+  """notesWall.startFileSyncFailed""":
+      """Could not start syncing with a file.""",
+  """notesWall.stopFileSyncFailed""":
+      """Could not stop syncing with the file.""",
+  """notesWall.importFromFileFailed""": """Could not import the file.""",
+  """notesWall.stopFileSyncConfirm""": """Stop syncing with the file?""",
+  """notesWall.stopFileSyncConfirmBody""":
+      """The note and the file keep what they have now, but changes to one will no longer reach the other.""",
+  """notesWall.filePicker.chooseFolder""": """Choose a folder""",
+  """notesWall.filePicker.chooseFile""": """Choose a file""",
+  """notesWall.filePicker.chooseThisFolder""": """Choose this folder""",
+  """notesWall.filePicker.root""": """Files""",
+  """notesWall.filePicker.emptyFolder""": """This folder is empty.""",
+  """notesWall.filePicker.noTextFiles""": """No text files in this folder.""",
+  """notesWall.filePicker.failedToLoad""": """Could not open this folder.""",
+  """notesWall.filePicker.folderReadOnly""":
+      """You can't add files to this folder.""",
   """notesWall.title""": """Title""",
   """notesWall.content""": """Content""",
   """notesWall.color""": """Color""",

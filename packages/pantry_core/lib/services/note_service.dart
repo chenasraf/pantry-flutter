@@ -121,6 +121,34 @@ class NoteService {
     );
   }
 
+  // -- File sync --
+
+  /// Binds the note to a new Markdown file the server creates in
+  /// [folderPath], relative to the account's files root.
+  Future<Note> startFileSync(int houseId, int noteId, String folderPath) {
+    return ApiClient.instance.post<Map<String, dynamic>, Note>(
+      '/houses/$houseId/notes/$noteId/sync',
+      body: {'folderPath': folderPath},
+      fromJson: Note.fromJson,
+    );
+  }
+
+  Future<Note> stopFileSync(int houseId, int noteId) {
+    return ApiClient.instance.deleteWithResult<Map<String, dynamic>, Note>(
+      '/houses/$houseId/notes/$noteId/sync',
+      fromJson: Note.fromJson,
+    );
+  }
+
+  /// Creates a note from the file at [path], kept in sync with it.
+  Future<Note> importFromFile(int houseId, String path) {
+    return ApiClient.instance.post<Map<String, dynamic>, Note>(
+      '/houses/$houseId/notes/import',
+      body: {'path': path, 'sync': true},
+      fromJson: Note.fromJson,
+    );
+  }
+
   // -- House Prefs (reuses PhotoService.getHousePrefs pattern) --
 
   Future<void> setNoteSort(int houseId, String sort) async {

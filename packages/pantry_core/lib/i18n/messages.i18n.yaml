@@ -1278,6 +1278,26 @@ notesWall:
   syncedToFile(String path): "Synced to ${path}"
   syncedFileMissing: Synced file is missing
   syncedAt(String when): "Synced ${when}"
+  startFileSync: "Sync with a file"
+  stopFileSync: "Stop syncing with file"
+  importFromNextcloud: "Import from Nextcloud"
+  syncingWith(String path): "Syncing with ${path}"
+  fileSyncStopped: "Stopped syncing with the file"
+  importedNote(String title): "Imported ${title}"
+  startFileSyncFailed: "Could not start syncing with a file."
+  stopFileSyncFailed: "Could not stop syncing with the file."
+  importFromFileFailed: "Could not import the file."
+  stopFileSyncConfirm: "Stop syncing with the file?"
+  stopFileSyncConfirmBody: "The note and the file keep what they have now, but changes to one will no longer reach the other."
+  filePicker:
+    chooseFolder: "Choose a folder"
+    chooseFile: "Choose a file"
+    chooseThisFolder: "Choose this folder"
+    root: "Files"
+    emptyFolder: "This folder is empty."
+    noTextFiles: "No text files in this folder."
+    failedToLoad: "Could not open this folder."
+    folderReadOnly: "You can't add files to this folder."
   title: Title
   content: Content
   color: Color

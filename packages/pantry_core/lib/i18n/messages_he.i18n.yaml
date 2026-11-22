@@ -1278,6 +1278,26 @@ notesWall:
   syncedToFile(String path): "מסונכרן עם ${path}"
   syncedFileMissing: הקובץ המסונכרן חסר
   syncedAt(String when): "סונכרן ${when}"
+  startFileSync: "סנכרון עם קובץ"
+  stopFileSync: "הפסקת סנכרון עם הקובץ"
+  importFromNextcloud: "ייבוא מ-Nextcloud"
+  syncingWith(String path): "מסונכרן עם ${path}"
+  fileSyncStopped: "הסנכרון עם הקובץ הופסק"
+  importedNote(String title): "${title} יובאה"
+  startFileSyncFailed: "לא ניתן להתחיל סנכרון עם קובץ."
+  stopFileSyncFailed: "לא ניתן להפסיק את הסנכרון עם הקובץ."
+  importFromFileFailed: "לא ניתן לייבא את הקובץ."
+  stopFileSyncConfirm: "להפסיק את הסנכרון עם הקובץ?"
+  stopFileSyncConfirmBody: "ההערה והקובץ ישמרו את התוכן הנוכחי, אבל שינויים באחד לא יגיעו עוד לשני."
+  filePicker:
+    chooseFolder: "בחירת תיקייה"
+    chooseFile: "בחירת קובץ"
+    chooseThisFolder: "בחירת תיקייה זו"
+    root: "קבצים"
+    emptyFolder: "התיקייה ריקה."
+    noTextFiles: "אין קובצי טקסט בתיקייה זו."
+    failedToLoad: "לא ניתן לפתוח את התיקייה."
+    folderReadOnly: "אין לך הרשאה להוסיף קבצים לתיקייה זו."
   title: כותרת
   content: תוכן
   color: צבע

@@ -358,6 +358,41 @@ class NotesController extends ChangeNotifier {
     );
   }
 
+  // -- File sync --
+  //
+  // Not queued: the server creates or reads a file the user picked while
+  // looking at it, and a failure (folder not writable, file too large) is
+  // theirs to see and correct now rather than at some later drain.
+
+  Future<Note> startFileSync(Note note, String folderPath) async {
+    final updated = await _service.startFileSync(houseId, note.id, folderPath);
+    _replace(updated);
+    return updated;
+  }
+
+  Future<Note> stopFileSync(Note note) async {
+    final updated = await _service.stopFileSync(houseId, note.id);
+    _replace(updated);
+    return updated;
+  }
+
+  Future<Note> importFromFile(String path) async {
+    final note = await _service.importFromFile(houseId, path);
+    final firstUnpinned = _notes.indexWhere((n) => !n.isPinned);
+    _notes.insert(firstUnpinned == -1 ? _notes.length : firstUnpinned, note);
+    _service.cacheNotes(houseId, _notes);
+    notifyListeners();
+    return note;
+  }
+
+  void _replace(Note note) {
+    final i = _notes.indexWhere((n) => n.id == note.id);
+    if (i == -1) return;
+    _notes[i] = _withPendingContent(note);
+    _service.cacheNotes(houseId, _notes);
+    notifyListeners();
+  }
+
   // -- Trash --
 
   Future<void> setTrashMode(bool enabled) async {

@@ -6723,6 +6723,66 @@ class NotesWallMessagesNn extends NotesWallMessages {
   String syncedAt(String when) => """Synkronisert ${when}""";
 
   /// ```dart
+  /// "Synkroniser med ei fil"
+  /// ```
+  String get startFileSync => """Synkroniser med ei fil""";
+
+  /// ```dart
+  /// "Stopp synkronisering med fila"
+  /// ```
+  String get stopFileSync => """Stopp synkronisering med fila""";
+
+  /// ```dart
+  /// "Importer frå Nextcloud"
+  /// ```
+  String get importFromNextcloud => """Importer frå Nextcloud""";
+
+  /// ```dart
+  /// "Synkroniserer med ${path}"
+  /// ```
+  String syncingWith(String path) => """Synkroniserer med ${path}""";
+
+  /// ```dart
+  /// "Slutta å synkronisere med fila"
+  /// ```
+  String get fileSyncStopped => """Slutta å synkronisere med fila""";
+
+  /// ```dart
+  /// "Importerte ${title}"
+  /// ```
+  String importedNote(String title) => """Importerte ${title}""";
+
+  /// ```dart
+  /// "Kunne ikkje starte synkronisering med ei fil."
+  /// ```
+  String get startFileSyncFailed =>
+      """Kunne ikkje starte synkronisering med ei fil.""";
+
+  /// ```dart
+  /// "Kunne ikkje stoppe synkroniseringa med fila."
+  /// ```
+  String get stopFileSyncFailed =>
+      """Kunne ikkje stoppe synkroniseringa med fila.""";
+
+  /// ```dart
+  /// "Kunne ikkje importere fila."
+  /// ```
+  String get importFromFileFailed => """Kunne ikkje importere fila.""";
+
+  /// ```dart
+  /// "Stoppe synkroniseringa med fila?"
+  /// ```
+  String get stopFileSyncConfirm => """Stoppe synkroniseringa med fila?""";
+
+  /// ```dart
+  /// "Notatet og fila beheld det dei har no, men endringar i den eine kjem ikkje lenger fram til den andre."
+  /// ```
+  String get stopFileSyncConfirmBody =>
+      """Notatet og fila beheld det dei har no, men endringar i den eine kjem ikkje lenger fram til den andre.""";
+  FilePickerNotesWallMessagesNn get filePicker =>
+      FilePickerNotesWallMessagesNn(this);
+
+  /// ```dart
   /// "Tittel"
   /// ```
   String get title => """Tittel""";
@@ -6737,6 +6797,52 @@ class NotesWallMessagesNn extends NotesWallMessages {
   /// ```
   String get color => """Farge""";
   SortNotesWallMessagesNn get sort => SortNotesWallMessagesNn(this);
+}
+
+class FilePickerNotesWallMessagesNn extends FilePickerNotesWallMessages {
+  final NotesWallMessagesNn _parent;
+  const FilePickerNotesWallMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Vel ei mappe"
+  /// ```
+  String get chooseFolder => """Vel ei mappe""";
+
+  /// ```dart
+  /// "Vel ei fil"
+  /// ```
+  String get chooseFile => """Vel ei fil""";
+
+  /// ```dart
+  /// "Vel denne mappa"
+  /// ```
+  String get chooseThisFolder => """Vel denne mappa""";
+
+  /// ```dart
+  /// "Filer"
+  /// ```
+  String get root => """Filer""";
+
+  /// ```dart
+  /// "Denne mappa er tom."
+  /// ```
+  String get emptyFolder => """Denne mappa er tom.""";
+
+  /// ```dart
+  /// "Ingen tekstfiler i denne mappa."
+  /// ```
+  String get noTextFiles => """Ingen tekstfiler i denne mappa.""";
+
+  /// ```dart
+  /// "Kunne ikkje opne denne mappa."
+  /// ```
+  String get failedToLoad => """Kunne ikkje opne denne mappa.""";
+
+  /// ```dart
+  /// "Du kan ikkje leggje til filer i denne mappa."
+  /// ```
+  String get folderReadOnly =>
+      """Du kan ikkje leggje til filer i denne mappa.""";
 }
 
 class SortNotesWallMessagesNn extends SortNotesWallMessages {
@@ -10570,6 +10676,27 @@ Passord: pantry""",
   """notesWall.importNoLists""":
       """Ingen lister tilgjengelege å importere til.""",
   """notesWall.syncedFileMissing""": """Den synkroniserte fila manglar""",
+  """notesWall.startFileSync""": """Synkroniser med ei fil""",
+  """notesWall.stopFileSync""": """Stopp synkronisering med fila""",
+  """notesWall.importFromNextcloud""": """Importer frå Nextcloud""",
+  """notesWall.fileSyncStopped""": """Slutta å synkronisere med fila""",
+  """notesWall.startFileSyncFailed""":
+      """Kunne ikkje starte synkronisering med ei fil.""",
+  """notesWall.stopFileSyncFailed""":
+      """Kunne ikkje stoppe synkroniseringa med fila.""",
+  """notesWall.importFromFileFailed""": """Kunne ikkje importere fila.""",
+  """notesWall.stopFileSyncConfirm""": """Stoppe synkroniseringa med fila?""",
+  """notesWall.stopFileSyncConfirmBody""":
+      """Notatet og fila beheld det dei har no, men endringar i den eine kjem ikkje lenger fram til den andre.""",
+  """notesWall.filePicker.chooseFolder""": """Vel ei mappe""",
+  """notesWall.filePicker.chooseFile""": """Vel ei fil""",
+  """notesWall.filePicker.chooseThisFolder""": """Vel denne mappa""",
+  """notesWall.filePicker.root""": """Filer""",
+  """notesWall.filePicker.emptyFolder""": """Denne mappa er tom.""",
+  """notesWall.filePicker.noTextFiles""": """Ingen tekstfiler i denne mappa.""",
+  """notesWall.filePicker.failedToLoad""": """Kunne ikkje opne denne mappa.""",
+  """notesWall.filePicker.folderReadOnly""":
+      """Du kan ikkje leggje til filer i denne mappa.""",
   """notesWall.title""": """Tittel""",
   """notesWall.content""": """Innhald""",
   """notesWall.color""": """Farge""",

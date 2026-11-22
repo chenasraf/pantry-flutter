@@ -6707,6 +6707,64 @@ class NotesWallMessagesHe extends NotesWallMessages {
   String syncedAt(String when) => """סונכרן ${when}""";
 
   /// ```dart
+  /// "סנכרון עם קובץ"
+  /// ```
+  String get startFileSync => """סנכרון עם קובץ""";
+
+  /// ```dart
+  /// "הפסקת סנכרון עם הקובץ"
+  /// ```
+  String get stopFileSync => """הפסקת סנכרון עם הקובץ""";
+
+  /// ```dart
+  /// "ייבוא מ-Nextcloud"
+  /// ```
+  String get importFromNextcloud => """ייבוא מ-Nextcloud""";
+
+  /// ```dart
+  /// "מסונכרן עם ${path}"
+  /// ```
+  String syncingWith(String path) => """מסונכרן עם ${path}""";
+
+  /// ```dart
+  /// "הסנכרון עם הקובץ הופסק"
+  /// ```
+  String get fileSyncStopped => """הסנכרון עם הקובץ הופסק""";
+
+  /// ```dart
+  /// "${title} יובאה"
+  /// ```
+  String importedNote(String title) => """${title} יובאה""";
+
+  /// ```dart
+  /// "לא ניתן להתחיל סנכרון עם קובץ."
+  /// ```
+  String get startFileSyncFailed => """לא ניתן להתחיל סנכרון עם קובץ.""";
+
+  /// ```dart
+  /// "לא ניתן להפסיק את הסנכרון עם הקובץ."
+  /// ```
+  String get stopFileSyncFailed => """לא ניתן להפסיק את הסנכרון עם הקובץ.""";
+
+  /// ```dart
+  /// "לא ניתן לייבא את הקובץ."
+  /// ```
+  String get importFromFileFailed => """לא ניתן לייבא את הקובץ.""";
+
+  /// ```dart
+  /// "להפסיק את הסנכרון עם הקובץ?"
+  /// ```
+  String get stopFileSyncConfirm => """להפסיק את הסנכרון עם הקובץ?""";
+
+  /// ```dart
+  /// "ההערה והקובץ ישמרו את התוכן הנוכחי, אבל שינויים באחד לא יגיעו עוד לשני."
+  /// ```
+  String get stopFileSyncConfirmBody =>
+      """ההערה והקובץ ישמרו את התוכן הנוכחי, אבל שינויים באחד לא יגיעו עוד לשני.""";
+  FilePickerNotesWallMessagesHe get filePicker =>
+      FilePickerNotesWallMessagesHe(this);
+
+  /// ```dart
   /// "כותרת"
   /// ```
   String get title => """כותרת""";
@@ -6721,6 +6779,51 @@ class NotesWallMessagesHe extends NotesWallMessages {
   /// ```
   String get color => """צבע""";
   SortNotesWallMessagesHe get sort => SortNotesWallMessagesHe(this);
+}
+
+class FilePickerNotesWallMessagesHe extends FilePickerNotesWallMessages {
+  final NotesWallMessagesHe _parent;
+  const FilePickerNotesWallMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "בחירת תיקייה"
+  /// ```
+  String get chooseFolder => """בחירת תיקייה""";
+
+  /// ```dart
+  /// "בחירת קובץ"
+  /// ```
+  String get chooseFile => """בחירת קובץ""";
+
+  /// ```dart
+  /// "בחירת תיקייה זו"
+  /// ```
+  String get chooseThisFolder => """בחירת תיקייה זו""";
+
+  /// ```dart
+  /// "קבצים"
+  /// ```
+  String get root => """קבצים""";
+
+  /// ```dart
+  /// "התיקייה ריקה."
+  /// ```
+  String get emptyFolder => """התיקייה ריקה.""";
+
+  /// ```dart
+  /// "אין קובצי טקסט בתיקייה זו."
+  /// ```
+  String get noTextFiles => """אין קובצי טקסט בתיקייה זו.""";
+
+  /// ```dart
+  /// "לא ניתן לפתוח את התיקייה."
+  /// ```
+  String get failedToLoad => """לא ניתן לפתוח את התיקייה.""";
+
+  /// ```dart
+  /// "אין לך הרשאה להוסיף קבצים לתיקייה זו."
+  /// ```
+  String get folderReadOnly => """אין לך הרשאה להוסיף קבצים לתיקייה זו.""";
 }
 
 class SortNotesWallMessagesHe extends SortNotesWallMessages {
@@ -10496,6 +10599,25 @@ Map<String, String> get messagesHeMap => {
   """notesWall.importToList""": """ייבוא לרשימה""",
   """notesWall.importNoLists""": """אין רשימות זמינות לייבוא.""",
   """notesWall.syncedFileMissing""": """הקובץ המסונכרן חסר""",
+  """notesWall.startFileSync""": """סנכרון עם קובץ""",
+  """notesWall.stopFileSync""": """הפסקת סנכרון עם הקובץ""",
+  """notesWall.importFromNextcloud""": """ייבוא מ-Nextcloud""",
+  """notesWall.fileSyncStopped""": """הסנכרון עם הקובץ הופסק""",
+  """notesWall.startFileSyncFailed""": """לא ניתן להתחיל סנכרון עם קובץ.""",
+  """notesWall.stopFileSyncFailed""": """לא ניתן להפסיק את הסנכרון עם הקובץ.""",
+  """notesWall.importFromFileFailed""": """לא ניתן לייבא את הקובץ.""",
+  """notesWall.stopFileSyncConfirm""": """להפסיק את הסנכרון עם הקובץ?""",
+  """notesWall.stopFileSyncConfirmBody""":
+      """ההערה והקובץ ישמרו את התוכן הנוכחי, אבל שינויים באחד לא יגיעו עוד לשני.""",
+  """notesWall.filePicker.chooseFolder""": """בחירת תיקייה""",
+  """notesWall.filePicker.chooseFile""": """בחירת קובץ""",
+  """notesWall.filePicker.chooseThisFolder""": """בחירת תיקייה זו""",
+  """notesWall.filePicker.root""": """קבצים""",
+  """notesWall.filePicker.emptyFolder""": """התיקייה ריקה.""",
+  """notesWall.filePicker.noTextFiles""": """אין קובצי טקסט בתיקייה זו.""",
+  """notesWall.filePicker.failedToLoad""": """לא ניתן לפתוח את התיקייה.""",
+  """notesWall.filePicker.folderReadOnly""":
+      """אין לך הרשאה להוסיף קבצים לתיקייה זו.""",
   """notesWall.title""": """כותרת""",
   """notesWall.content""": """תוכן""",
   """notesWall.color""": """צבע""",

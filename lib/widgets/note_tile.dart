@@ -11,6 +11,7 @@ import 'package:pantry/views/checklists/import_to_list.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/notes/note_detail_view.dart';
+import 'package:pantry/views/notes/note_file_sync_actions.dart';
 import 'package:pantry/views/notes/note_form_view.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
 import 'package:pantry/widgets/context_menu_region.dart';
@@ -277,6 +278,24 @@ class NoteTile extends StatelessWidget {
           ],
         ),
       ),
+    if (canChangeNoteFileSync(controller, note))
+      PopupMenuItem(
+        value: note.syncFileId == null ? 'start_sync' : 'stop_sync',
+        child: Row(
+          children: [
+            Icon(
+              note.syncFileId == null ? Icons.sync : Icons.sync_disabled,
+              size: 18,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              note.syncFileId == null
+                  ? m.notesWall.startFileSync
+                  : m.notesWall.stopFileSync,
+            ),
+          ],
+        ),
+      ),
     if (_canImportToList)
       PopupMenuItem(
         value: 'import_to_list',
@@ -317,6 +336,10 @@ class NoteTile extends StatelessWidget {
         _editNote(context);
       case 'pin':
         controller.togglePin(note);
+      case 'start_sync':
+        startNoteFileSync(context, controller, note);
+      case 'stop_sync':
+        stopNoteFileSync(context, controller, note);
       case 'import_to_list':
         final content = note.content;
         if (content != null && content.trim().isNotEmpty) {

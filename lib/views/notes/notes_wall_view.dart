@@ -9,6 +9,7 @@ import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
+import 'package:pantry/widgets/nav_action_offer.dart';
 import 'package:pantry_core/utils/note_sort.dart';
 import 'package:pantry/widgets/note_selection_actions.dart';
 import 'package:pantry/widgets/note_tile.dart';
@@ -17,6 +18,7 @@ import 'package:pantry/views/home/home_app_bar_spec.dart';
 import 'package:pantry/views/home/home_floating_nav.dart';
 import 'package:provider/provider.dart';
 import 'note_detail_view.dart';
+import 'note_file_sync_actions.dart';
 import 'note_form_view.dart';
 import 'notes_controller.dart';
 
@@ -64,13 +66,6 @@ class _NotesWallViewState extends State<NotesWallView> {
       });
     }
     PendingNoteShareService.instance.addListener(_handlePendingShare);
-    // Drop whatever the previous wall left in the nav slot. An offer from this
-    // one looks identical and would be discarded as unchanged, leaving the
-    // button wired to a wall that is gone.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      widget.navActionHolder?.value = null;
-    });
     WidgetsBinding.instance.addPostFrameCallback((_) => _handlePendingShare());
   }
 
@@ -241,32 +236,41 @@ class _NotesWallBody extends StatelessWidget {
     }
   }
 
-  /// Hand the nav bar the wall's primary action. Deferred a frame so a
-  /// listenable isn't mutated mid-build.
-  void _publishNavAction(BuildContext context, NotesController controller) {
-    final holder = navActionHolder;
-    if (holder == null) return;
-    final offer =
-        !controller.isTrashMode && controller.permissions.canCreateNotes
-        ? NavPrimaryAction(
-            icon: Icons.add,
-            label: m.notesWall.newNote,
-            onTap: () => _createNote(context, controller),
-          )
-        : null;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!context.mounted) return;
-      holder.value = offer;
-    });
-  }
+  List<NavMenuAction> _addActions(
+    BuildContext context,
+    NotesController controller,
+  ) => [
+    if (!controller.isTrashMode && controller.permissions.canCreateNotes)
+      (
+        icon: Icons.note_add_outlined,
+        label: m.notesWall.newNote,
+        onTap: () => _createNote(context, controller),
+      ),
+    if (!controller.isTrashMode && canImportNoteFromFile(controller))
+      (
+        icon: Icons.file_open_outlined,
+        label: m.notesWall.importFromNextcloud,
+        onTap: () => importNoteFromFile(context, controller),
+      ),
+  ];
 
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<NotesController>();
     final prefs = context.watch<PrefsService>();
-    _publishNavAction(context, controller);
     _publishAppBarSpec(context, controller);
+    return NavActionOffer(
+      holder: navActionHolder,
+      actions: _addActions(context, controller),
+      child: _content(context, controller, prefs),
+    );
+  }
 
+  Widget _content(
+    BuildContext context,
+    NotesController controller,
+    PrefsService prefs,
+  ) {
     if (controller.isLoading && controller.notes.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }

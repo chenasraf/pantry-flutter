@@ -7,12 +7,11 @@ import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/utils/apple_host_info.dart';
 import 'package:pantry/views/home/home_floating_nav.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
+import 'package:pantry/widgets/nav_action_offer.dart';
 
-/// Offers the board's ways of adding a photo to the home nav's trailing
-/// button, which fans them out above itself.
+/// The board's ways of adding a photo, offered through [NavActionOffer].
 ///
-/// Draws nothing of its own — it lives in the board's tree only to hold the
-/// camera probe and to re-offer the actions as permissions change.
+/// Stateful only to hold the camera probe.
 class PhotoAddActions extends StatefulWidget {
   final PhotoBoardController controller;
   final ValueNotifier<NavPrimaryAction?>? holder;
@@ -37,13 +36,6 @@ class _PhotoAddActionsState extends State<PhotoAddActions> {
   @override
   void initState() {
     super.initState();
-    // Drop whatever the previous board left in the nav slot. An offer from this
-    // one looks identical and would be discarded as unchanged, leaving the
-    // button wired to a board that is gone.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      widget.holder?.value = null;
-    });
     if (_cameraSupported) {
       isiOSAppOnMac().then((onMac) {
         if (!mounted || !onMac) return;
@@ -123,9 +115,6 @@ class _PhotoAddActionsState extends State<PhotoAddActions> {
 
   @override
   Widget build(BuildContext context) {
-    final holder = widget.holder;
-    if (holder == null) return const SizedBox.shrink();
-
     final perms = widget.controller.permissions;
     final actions = <NavMenuAction>[
       if (widget.enabled && perms.canUploadPhotos)
@@ -147,17 +136,6 @@ class _PhotoAddActionsState extends State<PhotoAddActions> {
           onTap: _createFolderDialog,
         ),
     ];
-
-    // Nothing the user may do here — leave the button off the bar entirely.
-    final offer = actions.isEmpty
-        ? null
-        : NavPrimaryAction(icon: Icons.add, label: m.common.add, menu: actions);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      holder.value = offer;
-    });
-
-    return const SizedBox.shrink();
+    return NavActionOffer(holder: widget.holder, actions: actions);
   }
 }

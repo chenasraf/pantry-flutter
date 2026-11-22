@@ -1278,6 +1278,26 @@ notesWall:
   syncedToFile(String path): "Synchronisée avec ${path}"
   syncedFileMissing: Le fichier synchronisé est introuvable
   syncedAt(String when): "Synchronisée ${when}"
+  startFileSync: "Synchroniser avec un fichier"
+  stopFileSync: "Arrêter la synchronisation avec le fichier"
+  importFromNextcloud: "Importer depuis Nextcloud"
+  syncingWith(String path): "Synchronisation avec ${path}"
+  fileSyncStopped: "Synchronisation avec le fichier arrêtée"
+  importedNote(String title): "${title} importée"
+  startFileSyncFailed: "Impossible de démarrer la synchronisation avec un fichier."
+  stopFileSyncFailed: "Impossible d'arrêter la synchronisation avec le fichier."
+  importFromFileFailed: "Impossible d'importer le fichier."
+  stopFileSyncConfirm: "Arrêter la synchronisation avec le fichier ?"
+  stopFileSyncConfirmBody: "La note et le fichier gardent leur contenu actuel, mais les modifications de l'un n'atteindront plus l'autre."
+  filePicker:
+    chooseFolder: "Choisir un dossier"
+    chooseFile: "Choisir un fichier"
+    chooseThisFolder: "Choisir ce dossier"
+    root: "Fichiers"
+    emptyFolder: "Ce dossier est vide."
+    noTextFiles: "Aucun fichier texte dans ce dossier."
+    failedToLoad: "Impossible d'ouvrir ce dossier."
+    folderReadOnly: "Vous ne pouvez pas ajouter de fichiers à ce dossier."
   title: Titre
   content: Contenu
   color: Couleur

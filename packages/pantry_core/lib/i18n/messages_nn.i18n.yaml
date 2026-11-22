@@ -1417,6 +1417,26 @@ notesWall:
   syncedToFile(String path): "Synkronisert med ${path}"
   syncedFileMissing: Den synkroniserte fila manglar
   syncedAt(String when): "Synkronisert ${when}"
+  startFileSync: "Synkroniser med ei fil"
+  stopFileSync: "Stopp synkronisering med fila"
+  importFromNextcloud: "Importer frå Nextcloud"
+  syncingWith(String path): "Synkroniserer med ${path}"
+  fileSyncStopped: "Slutta å synkronisere med fila"
+  importedNote(String title): "Importerte ${title}"
+  startFileSyncFailed: "Kunne ikkje starte synkronisering med ei fil."
+  stopFileSyncFailed: "Kunne ikkje stoppe synkroniseringa med fila."
+  importFromFileFailed: "Kunne ikkje importere fila."
+  stopFileSyncConfirm: "Stoppe synkroniseringa med fila?"
+  stopFileSyncConfirmBody: "Notatet og fila beheld det dei har no, men endringar i den eine kjem ikkje lenger fram til den andre."
+  filePicker:
+    chooseFolder: "Vel ei mappe"
+    chooseFile: "Vel ei fil"
+    chooseThisFolder: "Vel denne mappa"
+    root: "Filer"
+    emptyFolder: "Denne mappa er tom."
+    noTextFiles: "Ingen tekstfiler i denne mappa."
+    failedToLoad: "Kunne ikkje opne denne mappa."
+    folderReadOnly: "Du kan ikkje leggje til filer i denne mappa."
   title: Tittel
   content: Innhald
   color: Farge

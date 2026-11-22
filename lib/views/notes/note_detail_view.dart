@@ -13,6 +13,7 @@ import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/utils/markdown_list.dart';
 import 'package:pantry/views/checklists/import_to_list.dart';
 import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry/views/notes/note_file_sync_actions.dart';
 import 'package:pantry/views/notes/note_form_view.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
 import 'package:pantry/widgets/markdown_task_checkbox.dart';
@@ -43,6 +44,14 @@ class _NoteDetailViewState extends State<NoteDetailView> {
     final content = _note.content;
     if (content == null || content.trim().isEmpty) return;
     showImportToListDialog(context, houseId: _note.houseId, markdown: content);
+  }
+
+  Future<void> _toggleFileSync(BuildContext context) async {
+    final updated = _note.syncFileId == null
+        ? await startNoteFileSync(context, widget.controller, _note)
+        : await stopNoteFileSync(context, widget.controller, _note);
+    if (updated == null || !mounted) return;
+    setState(() => _note = updated);
   }
 
   Future<void> _onToggleCheckbox(int ordinal) async {
@@ -167,6 +176,16 @@ class _NoteDetailViewState extends State<NoteDetailView> {
         foregroundColor: textColor,
         title: Directionality(textDirection: titleDir, child: Text(note.title)),
         actions: [
+          if (canChangeNoteFileSync(controller, note))
+            IconButton(
+              icon: Icon(
+                note.syncFileId == null ? Icons.sync : Icons.sync_disabled,
+              ),
+              tooltip: note.syncFileId == null
+                  ? m.notesWall.startFileSync
+                  : m.notesWall.stopFileSync,
+              onPressed: () => _toggleFileSync(context),
+            ),
           if (canImportToList)
             IconButton(
               icon: const Icon(Icons.playlist_add),

@@ -17,10 +17,16 @@ class NextcloudCredentials {
   final String loginName;
   final String appPassword;
 
+  /// The account's user id, which names its WebDAV files root. Not the same
+  /// as [loginName] for email or LDAP logins, and only learnt from the server,
+  /// so null until [AuthService.accountUserId] has asked.
+  final String? userId;
+
   const NextcloudCredentials({
     required this.serverUrl,
     required this.loginName,
     required this.appPassword,
+    this.userId,
   });
 
   Map<String, String> get basicAuthHeaders => {
@@ -29,10 +35,18 @@ class NextcloudCredentials {
     'OCS-APIREQUEST': 'true',
   };
 
+  NextcloudCredentials withUserId(String userId) => NextcloudCredentials(
+    serverUrl: serverUrl,
+    loginName: loginName,
+    appPassword: appPassword,
+    userId: userId,
+  );
+
   Map<String, dynamic> toJson() => {
     'serverUrl': serverUrl,
     'loginName': loginName,
     'appPassword': appPassword,
+    'userId': ?userId,
   };
 
   factory NextcloudCredentials.fromJson(Map<String, dynamic> json) =>
@@ -40,6 +54,7 @@ class NextcloudCredentials {
         serverUrl: json['serverUrl'] as String,
         loginName: json['loginName'] as String,
         appPassword: json['appPassword'] as String,
+        userId: json['userId'] as String?,
       );
 }
 
@@ -159,6 +174,7 @@ class AuthService {
         serverUrl: url,
         loginName: creds.loginName,
         appPassword: creds.appPassword,
+        userId: creds.userId,
       ),
     );
     return true;
@@ -266,14 +282,42 @@ class AuthService {
   /// Nextcloud's own OCS API, beside the Pantry app's.
   static const _cloudApi = ApiClient(basePath: '/ocs/v2.php/cloud');
 
+  Future<Map<String, dynamic>?> _getUser() =>
+      _cloudApi.get<Map<String, dynamic>?, Map<String, dynamic>?>(
+        '/user',
+        fromJson: (data) => data,
+      );
+
+  /// The signed-in account's user id, asked of the server once and kept with
+  /// the credential from then on. Throws what the request throws when it is
+  /// not known yet and the server cannot be asked.
+  Future<String> accountUserId() async {
+    final creds = _credentials;
+    if (creds == null) throw StateError('Not authenticated');
+    final cached = creds.userId;
+    if (cached != null) return cached;
+    final id = (await _getUser())?['id'];
+    if (id is! String || id.isEmpty) {
+      throw const ApiException(0, 'The server did not name the account');
+    }
+    await _rememberUserId(creds, id);
+    return id;
+  }
+
+  /// Keeps [id] only while [creds] is still the session's: a sign-out racing
+  /// the request must not bring the credential back.
+  Future<void> _rememberUserId(NextcloudCredentials creds, String id) async {
+    if (!identical(_credentials, creds) || creds.userId == id) return;
+    await _persistCredentials(creds.withUserId(id));
+  }
+
   Future<void> fetchUserProfile() async {
-    if (_credentials == null) return;
+    final creds = _credentials;
+    if (creds == null) return;
     try {
-      final userData = await _cloudApi
-          .get<Map<String, dynamic>?, Map<String, dynamic>?>(
-            '/user',
-            fromJson: (data) => data,
-          );
+      final userData = await _getUser();
+      final id = userData?['id'];
+      if (id is String && id.isNotEmpty) await _rememberUserId(creds, id);
       _displayName =
           userData?['display-name'] as String? ??
           userData?['displayname'] as String?;
@@ -541,9 +585,13 @@ class AuthService {
   }
 
   Future<void> _saveCredentials(NextcloudCredentials creds) async {
-    _credentials = creds;
     _clearUnauthorized();
     serverRedirect.value = null;
+    await _persistCredentials(creds);
+  }
+
+  Future<void> _persistCredentials(NextcloudCredentials creds) async {
+    _credentials = creds;
     await _storage.write(
       key: _credentialsKey,
       value: jsonEncode(creds.toJson()),

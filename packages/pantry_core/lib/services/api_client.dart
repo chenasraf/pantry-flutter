@@ -129,7 +129,8 @@ class ApiRequest {
   /// exception — it is the one verb whose repetition is a second row — which is
   /// why the queue's own at-least-once contract, and not this, is what the
   /// server arbitrates.
-  bool get isRead => method == 'GET' || method == 'HEAD';
+  bool get isRead =>
+      method == 'GET' || method == 'HEAD' || method == 'PROPFIND';
 }
 
 /// How a server answered a conditional GET.
@@ -372,8 +373,16 @@ class ApiClient {
         client.patch(r.uri, headers: r.headers, body: body).timeout(r.timeout),
       'DELETE' =>
         client.delete(r.uri, headers: r.headers, body: body).timeout(r.timeout),
-      _ => throw ArgumentError('Unsupported method ${r.method}'),
+      _ => _performOther(client, r).timeout(r.timeout),
     };
+  }
+
+  /// A verb `package:http` has no shorthand for, such as WebDAV's PROPFIND.
+  Future<http.Response> _performOther(http.Client client, ApiRequest r) async {
+    final request = http.Request(r.method, r.uri)..headers.addAll(r.headers);
+    final body = r.body;
+    if (body != null) request.bodyBytes = body;
+    return http.Response.fromStream(await client.send(request));
   }
 
   /// Which server the failure above was against. Every request this client
@@ -657,6 +666,31 @@ class ApiClient {
       ),
     );
     return _handleResponse<D, T>(response, fromJson);
+  }
+
+  /// A request whose body and answer are not OCS JSON, such as WebDAV's,
+  /// through the same transport as every other call. [path] is appended to
+  /// [basePath] as given, so its segments must already be percent-encoded.
+  Future<http.Response> send(
+    String method,
+    String path, {
+    Map<String, String>? headers,
+    List<int>? body,
+  }) async {
+    final response = await _send(
+      ApiRequest(
+        method: method,
+        uri: _uri(path),
+        headers: {..._credentials.basicAuthHeaders, ...?headers},
+        timeout: _timeout,
+        body: body,
+      ),
+    );
+    _notify(response.statusCode);
+    if (response.statusCode >= 400) {
+      throw ApiException(response.statusCode, response.body);
+    }
+    return response;
   }
 
   Uri buildUri(String path, [Map<String, String>? query]) => _uri(path, query);

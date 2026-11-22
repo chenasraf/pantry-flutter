@@ -6784,6 +6784,68 @@ class NotesWallMessagesDe extends NotesWallMessages {
   String syncedAt(String when) => """Synchronisiert ${when}""";
 
   /// ```dart
+  /// "Mit einer Datei synchronisieren"
+  /// ```
+  String get startFileSync => """Mit einer Datei synchronisieren""";
+
+  /// ```dart
+  /// "Synchronisierung mit Datei beenden"
+  /// ```
+  String get stopFileSync => """Synchronisierung mit Datei beenden""";
+
+  /// ```dart
+  /// "Aus Nextcloud importieren"
+  /// ```
+  String get importFromNextcloud => """Aus Nextcloud importieren""";
+
+  /// ```dart
+  /// "Wird mit ${path} synchronisiert"
+  /// ```
+  String syncingWith(String path) => """Wird mit ${path} synchronisiert""";
+
+  /// ```dart
+  /// "Synchronisierung mit der Datei beendet"
+  /// ```
+  String get fileSyncStopped => """Synchronisierung mit der Datei beendet""";
+
+  /// ```dart
+  /// "${title} importiert"
+  /// ```
+  String importedNote(String title) => """${title} importiert""";
+
+  /// ```dart
+  /// "Synchronisierung mit einer Datei konnte nicht gestartet werden."
+  /// ```
+  String get startFileSyncFailed =>
+      """Synchronisierung mit einer Datei konnte nicht gestartet werden.""";
+
+  /// ```dart
+  /// "Synchronisierung mit der Datei konnte nicht beendet werden."
+  /// ```
+  String get stopFileSyncFailed =>
+      """Synchronisierung mit der Datei konnte nicht beendet werden.""";
+
+  /// ```dart
+  /// "Die Datei konnte nicht importiert werden."
+  /// ```
+  String get importFromFileFailed =>
+      """Die Datei konnte nicht importiert werden.""";
+
+  /// ```dart
+  /// "Synchronisierung mit der Datei beenden?"
+  /// ```
+  String get stopFileSyncConfirm =>
+      """Synchronisierung mit der Datei beenden?""";
+
+  /// ```dart
+  /// "Notiz und Datei behalten ihren aktuellen Inhalt, aber Änderungen an einer erreichen die andere nicht mehr."
+  /// ```
+  String get stopFileSyncConfirmBody =>
+      """Notiz und Datei behalten ihren aktuellen Inhalt, aber Änderungen an einer erreichen die andere nicht mehr.""";
+  FilePickerNotesWallMessagesDe get filePicker =>
+      FilePickerNotesWallMessagesDe(this);
+
+  /// ```dart
   /// "Titel"
   /// ```
   String get title => """Titel""";
@@ -6798,6 +6860,52 @@ class NotesWallMessagesDe extends NotesWallMessages {
   /// ```
   String get color => """Farbe""";
   SortNotesWallMessagesDe get sort => SortNotesWallMessagesDe(this);
+}
+
+class FilePickerNotesWallMessagesDe extends FilePickerNotesWallMessages {
+  final NotesWallMessagesDe _parent;
+  const FilePickerNotesWallMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Ordner auswählen"
+  /// ```
+  String get chooseFolder => """Ordner auswählen""";
+
+  /// ```dart
+  /// "Datei auswählen"
+  /// ```
+  String get chooseFile => """Datei auswählen""";
+
+  /// ```dart
+  /// "Diesen Ordner auswählen"
+  /// ```
+  String get chooseThisFolder => """Diesen Ordner auswählen""";
+
+  /// ```dart
+  /// "Dateien"
+  /// ```
+  String get root => """Dateien""";
+
+  /// ```dart
+  /// "Dieser Ordner ist leer."
+  /// ```
+  String get emptyFolder => """Dieser Ordner ist leer.""";
+
+  /// ```dart
+  /// "Keine Textdateien in diesem Ordner."
+  /// ```
+  String get noTextFiles => """Keine Textdateien in diesem Ordner.""";
+
+  /// ```dart
+  /// "Dieser Ordner konnte nicht geöffnet werden."
+  /// ```
+  String get failedToLoad => """Dieser Ordner konnte nicht geöffnet werden.""";
+
+  /// ```dart
+  /// "Du kannst diesem Ordner keine Dateien hinzufügen."
+  /// ```
+  String get folderReadOnly =>
+      """Du kannst diesem Ordner keine Dateien hinzufügen.""";
 }
 
 class SortNotesWallMessagesDe extends SortNotesWallMessages {
@@ -10699,6 +10807,31 @@ Passwort: pantry-rocks""",
   """notesWall.importToList""": """In Liste importieren""",
   """notesWall.importNoLists""": """Keine Listen zum Importieren verfügbar.""",
   """notesWall.syncedFileMissing""": """Synchronisierte Datei fehlt""",
+  """notesWall.startFileSync""": """Mit einer Datei synchronisieren""",
+  """notesWall.stopFileSync""": """Synchronisierung mit Datei beenden""",
+  """notesWall.importFromNextcloud""": """Aus Nextcloud importieren""",
+  """notesWall.fileSyncStopped""": """Synchronisierung mit der Datei beendet""",
+  """notesWall.startFileSyncFailed""":
+      """Synchronisierung mit einer Datei konnte nicht gestartet werden.""",
+  """notesWall.stopFileSyncFailed""":
+      """Synchronisierung mit der Datei konnte nicht beendet werden.""",
+  """notesWall.importFromFileFailed""":
+      """Die Datei konnte nicht importiert werden.""",
+  """notesWall.stopFileSyncConfirm""":
+      """Synchronisierung mit der Datei beenden?""",
+  """notesWall.stopFileSyncConfirmBody""":
+      """Notiz und Datei behalten ihren aktuellen Inhalt, aber Änderungen an einer erreichen die andere nicht mehr.""",
+  """notesWall.filePicker.chooseFolder""": """Ordner auswählen""",
+  """notesWall.filePicker.chooseFile""": """Datei auswählen""",
+  """notesWall.filePicker.chooseThisFolder""": """Diesen Ordner auswählen""",
+  """notesWall.filePicker.root""": """Dateien""",
+  """notesWall.filePicker.emptyFolder""": """Dieser Ordner ist leer.""",
+  """notesWall.filePicker.noTextFiles""":
+      """Keine Textdateien in diesem Ordner.""",
+  """notesWall.filePicker.failedToLoad""":
+      """Dieser Ordner konnte nicht geöffnet werden.""",
+  """notesWall.filePicker.folderReadOnly""":
+      """Du kannst diesem Ordner keine Dateien hinzufügen.""",
   """notesWall.title""": """Titel""",
   """notesWall.content""": """Inhalt""",
   """notesWall.color""": """Farbe""",

@@ -6777,6 +6777,67 @@ class NotesWallMessagesFr extends NotesWallMessages {
   String syncedAt(String when) => """Synchronisée ${when}""";
 
   /// ```dart
+  /// "Synchroniser avec un fichier"
+  /// ```
+  String get startFileSync => """Synchroniser avec un fichier""";
+
+  /// ```dart
+  /// "Arrêter la synchronisation avec le fichier"
+  /// ```
+  String get stopFileSync => """Arrêter la synchronisation avec le fichier""";
+
+  /// ```dart
+  /// "Importer depuis Nextcloud"
+  /// ```
+  String get importFromNextcloud => """Importer depuis Nextcloud""";
+
+  /// ```dart
+  /// "Synchronisation avec ${path}"
+  /// ```
+  String syncingWith(String path) => """Synchronisation avec ${path}""";
+
+  /// ```dart
+  /// "Synchronisation avec le fichier arrêtée"
+  /// ```
+  String get fileSyncStopped => """Synchronisation avec le fichier arrêtée""";
+
+  /// ```dart
+  /// "${title} importée"
+  /// ```
+  String importedNote(String title) => """${title} importée""";
+
+  /// ```dart
+  /// "Impossible de démarrer la synchronisation avec un fichier."
+  /// ```
+  String get startFileSyncFailed =>
+      """Impossible de démarrer la synchronisation avec un fichier.""";
+
+  /// ```dart
+  /// "Impossible d'arrêter la synchronisation avec le fichier."
+  /// ```
+  String get stopFileSyncFailed =>
+      """Impossible d'arrêter la synchronisation avec le fichier.""";
+
+  /// ```dart
+  /// "Impossible d'importer le fichier."
+  /// ```
+  String get importFromFileFailed => """Impossible d'importer le fichier.""";
+
+  /// ```dart
+  /// "Arrêter la synchronisation avec le fichier ?"
+  /// ```
+  String get stopFileSyncConfirm =>
+      """Arrêter la synchronisation avec le fichier ?""";
+
+  /// ```dart
+  /// "La note et le fichier gardent leur contenu actuel, mais les modifications de l'un n'atteindront plus l'autre."
+  /// ```
+  String get stopFileSyncConfirmBody =>
+      """La note et le fichier gardent leur contenu actuel, mais les modifications de l'un n'atteindront plus l'autre.""";
+  FilePickerNotesWallMessagesFr get filePicker =>
+      FilePickerNotesWallMessagesFr(this);
+
+  /// ```dart
   /// "Titre"
   /// ```
   String get title => """Titre""";
@@ -6791,6 +6852,52 @@ class NotesWallMessagesFr extends NotesWallMessages {
   /// ```
   String get color => """Couleur""";
   SortNotesWallMessagesFr get sort => SortNotesWallMessagesFr(this);
+}
+
+class FilePickerNotesWallMessagesFr extends FilePickerNotesWallMessages {
+  final NotesWallMessagesFr _parent;
+  const FilePickerNotesWallMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Choisir un dossier"
+  /// ```
+  String get chooseFolder => """Choisir un dossier""";
+
+  /// ```dart
+  /// "Choisir un fichier"
+  /// ```
+  String get chooseFile => """Choisir un fichier""";
+
+  /// ```dart
+  /// "Choisir ce dossier"
+  /// ```
+  String get chooseThisFolder => """Choisir ce dossier""";
+
+  /// ```dart
+  /// "Fichiers"
+  /// ```
+  String get root => """Fichiers""";
+
+  /// ```dart
+  /// "Ce dossier est vide."
+  /// ```
+  String get emptyFolder => """Ce dossier est vide.""";
+
+  /// ```dart
+  /// "Aucun fichier texte dans ce dossier."
+  /// ```
+  String get noTextFiles => """Aucun fichier texte dans ce dossier.""";
+
+  /// ```dart
+  /// "Impossible d'ouvrir ce dossier."
+  /// ```
+  String get failedToLoad => """Impossible d'ouvrir ce dossier.""";
+
+  /// ```dart
+  /// "Vous ne pouvez pas ajouter de fichiers à ce dossier."
+  /// ```
+  String get folderReadOnly =>
+      """Vous ne pouvez pas ajouter de fichiers à ce dossier.""";
 }
 
 class SortNotesWallMessagesFr extends SortNotesWallMessages {
@@ -10686,6 +10793,32 @@ Mot de passe : pantry-rocks""",
       """Aucune liste disponible pour l'importation.""",
   """notesWall.syncedFileMissing""":
       """Le fichier synchronisé est introuvable""",
+  """notesWall.startFileSync""": """Synchroniser avec un fichier""",
+  """notesWall.stopFileSync""":
+      """Arrêter la synchronisation avec le fichier""",
+  """notesWall.importFromNextcloud""": """Importer depuis Nextcloud""",
+  """notesWall.fileSyncStopped""":
+      """Synchronisation avec le fichier arrêtée""",
+  """notesWall.startFileSyncFailed""":
+      """Impossible de démarrer la synchronisation avec un fichier.""",
+  """notesWall.stopFileSyncFailed""":
+      """Impossible d'arrêter la synchronisation avec le fichier.""",
+  """notesWall.importFromFileFailed""": """Impossible d'importer le fichier.""",
+  """notesWall.stopFileSyncConfirm""":
+      """Arrêter la synchronisation avec le fichier ?""",
+  """notesWall.stopFileSyncConfirmBody""":
+      """La note et le fichier gardent leur contenu actuel, mais les modifications de l'un n'atteindront plus l'autre.""",
+  """notesWall.filePicker.chooseFolder""": """Choisir un dossier""",
+  """notesWall.filePicker.chooseFile""": """Choisir un fichier""",
+  """notesWall.filePicker.chooseThisFolder""": """Choisir ce dossier""",
+  """notesWall.filePicker.root""": """Fichiers""",
+  """notesWall.filePicker.emptyFolder""": """Ce dossier est vide.""",
+  """notesWall.filePicker.noTextFiles""":
+      """Aucun fichier texte dans ce dossier.""",
+  """notesWall.filePicker.failedToLoad""":
+      """Impossible d'ouvrir ce dossier.""",
+  """notesWall.filePicker.folderReadOnly""":
+      """Vous ne pouvez pas ajouter de fichiers à ce dossier.""",
   """notesWall.title""": """Titre""",
   """notesWall.content""": """Contenu""",
   """notesWall.color""": """Couleur""",
