@@ -788,6 +788,7 @@ checklists:
   hideProgressHero: "Fortschrittskarte ausblenden"
   sortTooltip: "Sortieren"
   doneCount(int count): "Erledigt · $count"
+  estimatedTotal: "Geschätzte Summe:"
   uncheckAll: "Alle Häkchen entfernen"
   uncheckAllConfirm: "Bei allen Einträgen das Häkchen entfernen?"
   uncheckAllConfirmBody: "Jeder abgehakte Eintrag in dieser Liste wird in die aktive Liste zurückgeholt."

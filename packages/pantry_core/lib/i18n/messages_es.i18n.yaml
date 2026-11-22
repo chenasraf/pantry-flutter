@@ -788,6 +788,7 @@ checklists:
   hideProgressHero: "Ocultar tarjeta de progreso"
   sortTooltip: "Ordenar"
   doneCount(int count): "Hechos · $count"
+  estimatedTotal: "Total estimado:"
   uncheckAll: "Desmarcar todo"
   uncheckAllConfirm: "¿Desmarcar todos los artículos?"
   uncheckAllConfirmBody: "Todos los artículos marcados de esta lista volverán a la lista activa."

@@ -788,6 +788,7 @@ checklists:
   hideProgressHero: "הסתר כרטיס התקדמות"
   sortTooltip: "מיון"
   doneCount(int count): "בוצעו · $count"
+  estimatedTotal: "סה״כ משוער:"
   uncheckAll: "בטל סימון להכול"
   uncheckAllConfirm: "לבטל את הסימון של כל הפריטים?"
   uncheckAllConfirmBody: "כל פריט מסומן ברשימה זו יוחזר לרשימה הפעילה."

@@ -1,5 +1,7 @@
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/shopping_estimate.dart';
 import 'package:pantry_core/utils/currencies.dart';
+import 'package:pantry_core/utils/stock_rules.dart';
 
 /// True when the raw price fields carry a usable price (a type and a min
 /// amount). Mirrors the web app's `hasPrice`.
@@ -61,6 +63,34 @@ ItemPrice? resolveItemPrice(List<ItemPrice> prices, int? storeId) {
     }
   }
   return storelessPrice(prices);
+}
+
+/// Sum price × quantity per currency, range-aware, with each item's price
+/// resolved for [storeId]. The quantity's first number is the unit count (1
+/// when it has none); unpriced items are skipped, and currencies are kept apart
+/// because there is no rate to convert between them. Mirrors the web app's
+/// `estimateTotal`.
+ShoppingEstimate estimateItemsTotal(Iterable<ListItem> items, int? storeId) {
+  final byCurrency = <String, ({double min, double max})>{};
+  for (final item in items) {
+    final price = resolveItemPrice(item.prices, storeId);
+    if (price == null || !price.hasValue) continue;
+    final min = price.priceMin!;
+    final max = price.priceType == 'range' && price.priceMax != null
+        ? price.priceMax!
+        : min;
+    final units = firstNumber(item.quantity) ?? 1;
+    final currency = price.priceCurrency ?? '';
+    final sum = byCurrency[currency] ?? (min: 0.0, max: 0.0);
+    byCurrency[currency] = (
+      min: sum.min + min * units,
+      max: sum.max + max * units,
+    );
+  }
+  return [
+    for (final MapEntry(key: currency, value: sum) in byCurrency.entries)
+      CurrencyRange(currency: currency, min: sum.min, max: sum.max),
+  ];
 }
 
 extension ItemPriceX on ItemPrice {

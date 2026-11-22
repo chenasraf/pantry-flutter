@@ -3427,6 +3427,11 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String doneCount(int count) => """בוצעו · $count""";
 
   /// ```dart
+  /// "סה״כ משוער:"
+  /// ```
+  String get estimatedTotal => """סה״כ משוער:""";
+
+  /// ```dart
   /// "בטל סימון להכול"
   /// ```
   String get uncheckAll => """בטל סימון להכול""";
@@ -10176,6 +10181,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.allDone""": """הכל בוצע 🎉""",
   """checklists.hideProgressHero""": """הסתר כרטיס התקדמות""",
   """checklists.sortTooltip""": """מיון""",
+  """checklists.estimatedTotal""": """סה״כ משוער:""",
   """checklists.uncheckAll""": """בטל סימון להכול""",
   """checklists.uncheckAllConfirm""": """לבטל את הסימון של כל הפריטים?""",
   """checklists.uncheckAllConfirmBody""":

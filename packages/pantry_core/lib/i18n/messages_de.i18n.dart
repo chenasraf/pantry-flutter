@@ -3461,6 +3461,11 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String doneCount(int count) => """Erledigt · $count""";
 
   /// ```dart
+  /// "Geschätzte Summe:"
+  /// ```
+  String get estimatedTotal => """Geschätzte Summe:""";
+
+  /// ```dart
   /// "Alle Häkchen entfernen"
   /// ```
   String get uncheckAll => """Alle Häkchen entfernen""";
@@ -10352,6 +10357,7 @@ Passwort: pantry-rocks""",
   """checklists.allDone""": """Alles erledigt 🎉""",
   """checklists.hideProgressHero""": """Fortschrittskarte ausblenden""",
   """checklists.sortTooltip""": """Sortieren""",
+  """checklists.estimatedTotal""": """Geschätzte Summe:""",
   """checklists.uncheckAll""": """Alle Häkchen entfernen""",
   """checklists.uncheckAllConfirm""":
       """Bei allen Einträgen das Häkchen entfernen?""",

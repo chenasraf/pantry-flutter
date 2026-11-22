@@ -10,6 +10,7 @@ import 'package:pantry_core/models/label.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
+import 'package:pantry_core/models/shopping_estimate.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
@@ -353,6 +354,22 @@ class _BodyState extends State<_Body> {
           );
           final activeItems = filteredItems.where((i) => !i.done).toList();
           final doneItems = filteredItems.where((i) => i.done).toList();
+          // Inventories are left out: their quantity is what's on hand, not
+          // what to buy. With a single store filtered, prices resolve against
+          // that store as they do on a trip there.
+          final estimate =
+              ServerFeature.itemPrice &&
+                  !controller.isInventoryKind &&
+                  !controller.isSoftView
+              ? formatShoppingEstimate(
+                  estimateItemsTotal(
+                    activeItems,
+                    body.selectedStoreIds.length == 1
+                        ? body.selectedStoreIds.first
+                        : null,
+                  ),
+                )
+              : null;
           final prefs = context.watch<PrefsService>();
           // Drag-to-reorder is only meaningful under custom sort, and only when
           // the active partition is the full set: reordering writes sort_order
@@ -975,6 +992,7 @@ class _BodyState extends State<_Body> {
                                             controller: controller,
                                             activeItems: activeItems,
                                             doneItems: doneItems,
+                                            estimate: estimate,
                                             canReorder: canReorder,
                                             canReorderGroups: canReorderGroups,
                                             isCards: isCards,

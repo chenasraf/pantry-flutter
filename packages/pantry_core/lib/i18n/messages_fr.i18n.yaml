@@ -788,6 +788,7 @@ checklists:
   hideProgressHero: "Masquer la carte de progression"
   sortTooltip: "Trier"
   doneCount(int count): "Faits · $count"
+  estimatedTotal: "Total estimé :"
   uncheckAll: "Tout décocher"
   uncheckAllConfirm: "Décocher tous les articles ?"
   uncheckAllConfirmBody: "Chaque article coché de cette liste sera renvoyé vers la liste active."

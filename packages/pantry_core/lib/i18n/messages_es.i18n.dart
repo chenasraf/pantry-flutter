@@ -3456,6 +3456,11 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String doneCount(int count) => """Hechos · $count""";
 
   /// ```dart
+  /// "Total estimado:"
+  /// ```
+  String get estimatedTotal => """Total estimado:""";
+
+  /// ```dart
   /// "Desmarcar todo"
   /// ```
   String get uncheckAll => """Desmarcar todo""";
@@ -10318,6 +10323,7 @@ Contraseña: pantry-rocks""",
   """checklists.allDone""": """Todo listo 🎉""",
   """checklists.hideProgressHero""": """Ocultar tarjeta de progreso""",
   """checklists.sortTooltip""": """Ordenar""",
+  """checklists.estimatedTotal""": """Total estimado:""",
   """checklists.uncheckAll""": """Desmarcar todo""",
   """checklists.uncheckAllConfirm""": """¿Desmarcar todos los artículos?""",
   """checklists.uncheckAllConfirmBody""":

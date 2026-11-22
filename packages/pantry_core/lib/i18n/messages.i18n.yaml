@@ -788,6 +788,7 @@ checklists:
   hideProgressHero: "Hide progress card"
   sortTooltip: "Sort"
   doneCount(int count): "Done · $count"
+  estimatedTotal: "Estimated total:"
   uncheckAll: Uncheck all
   uncheckAllConfirm: Uncheck all items?
   uncheckAllConfirmBody: Every checked item in this list will be returned to the active list.

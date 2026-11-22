@@ -25,6 +25,10 @@ class ChecklistItemList extends StatefulWidget {
   final ChecklistsController controller;
   final List<ListItem> activeItems;
   final List<ListItem> doneItems;
+
+  /// Formatted estimated total of [activeItems], shown above them; null hides
+  /// the line.
+  final String? estimate;
   final bool canReorder;
 
   /// When true (category / store sort with the within-group ordering
@@ -59,6 +63,7 @@ class ChecklistItemList extends StatefulWidget {
     required this.controller,
     required this.activeItems,
     required this.doneItems,
+    this.estimate,
     required this.canReorder,
     required this.canReorderGroups,
     required this.isCards,
@@ -157,6 +162,7 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
           top: widget.topInset > 4 ? widget.topInset : 4,
         ),
       ),
+      if (widget.estimate != null) _estimateLine(context, widget.estimate!),
     ];
 
     if (widget.canReorder) {
@@ -243,6 +249,35 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
         controller: _scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: slivers,
+      ),
+    );
+  }
+
+  Widget _estimateLine(BuildContext context, String estimate) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(20, 4, 20, 6),
+        child: Text.rich(
+          key: const ValueKey('list-estimate'),
+          TextSpan(
+            children: [
+              TextSpan(text: '${m.checklists.estimatedTotal} '),
+              TextSpan(
+                text: estimate,
+                style: TextStyle(
+                  color: cs.onSurface,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+          textAlign: TextAlign.end,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: cs.onSurfaceVariant,
+          ),
+        ),
       ),
     );
   }

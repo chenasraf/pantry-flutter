@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/shopping_estimate.dart';
 import 'package:pantry_core/utils/price.dart';
 
 ItemPrice price({
@@ -16,10 +17,11 @@ ItemPrice price({
   priceCurrency: priceCurrency,
 );
 
-ListItem priced(List<ItemPrice> prices) => ListItem(
+ListItem priced(List<ItemPrice> prices, {String? quantity}) => ListItem(
   id: 1,
   listId: 2,
   name: 'Milk',
+  quantity: quantity,
   done: false,
   repeatFromCompletion: false,
   deleteOnDone: false,
@@ -156,6 +158,76 @@ void main() {
         price(priceType: 'set', priceMin: 5, priceCurrency: 'USD'),
       ]);
       expect(item.formattedPriceFor(99), r'$5');
+    });
+  });
+
+  group('estimateItemsTotal', () {
+    test('multiplies each price by the first number in the quantity', () {
+      final total = estimateItemsTotal([
+        priced([
+          price(priceType: 'set', priceMin: 2.5, priceCurrency: 'USD'),
+        ], quantity: '3 L'),
+        priced([price(priceType: 'set', priceMin: 4, priceCurrency: 'USD')]),
+      ], null);
+      expect(formatShoppingEstimate(total), r'$11.5');
+    });
+
+    test('skips unpriced items and returns nothing when none are priced', () {
+      expect(estimateItemsTotal([priced(const [])], null), isEmpty);
+      final total = estimateItemsTotal([
+        priced(const []),
+        priced([price(priceType: 'set', priceMin: 5, priceCurrency: 'USD')]),
+      ], null);
+      expect(formatShoppingEstimate(total), r'$5');
+    });
+
+    test('sums ranges into a min–max span', () {
+      final total = estimateItemsTotal([
+        priced([
+          price(
+            priceType: 'range',
+            priceMin: 1,
+            priceMax: 3,
+            priceCurrency: 'USD',
+          ),
+        ], quantity: '2'),
+        priced([price(priceType: 'set', priceMin: 4, priceCurrency: 'USD')]),
+      ], null);
+      expect(formatShoppingEstimate(total), r'≈$6–$10');
+    });
+
+    test('keeps each currency apart', () {
+      final total = estimateItemsTotal([
+        priced([price(priceType: 'set', priceMin: 5, priceCurrency: 'USD')]),
+        priced([price(priceType: 'set', priceMin: 7, priceCurrency: 'ILS')]),
+        priced([price(priceType: 'set', priceMin: 1, priceCurrency: 'USD')]),
+      ], null);
+      expect(formatShoppingEstimate(total), r'$6 · 7₪');
+    });
+
+    test('resolves the store price, falling back to the store-less one', () {
+      final items = [
+        priced([
+          price(priceType: 'set', priceMin: 5, priceCurrency: 'USD'),
+          price(
+            storeId: 12,
+            priceType: 'set',
+            priceMin: 3,
+            priceCurrency: 'USD',
+          ),
+        ]),
+        priced([price(priceType: 'set', priceMin: 2, priceCurrency: 'USD')]),
+        priced([
+          price(
+            storeId: 12,
+            priceType: 'set',
+            priceMin: 9,
+            priceCurrency: 'USD',
+          ),
+        ]),
+      ];
+      expect(formatShoppingEstimate(estimateItemsTotal(items, 12)), r'$14');
+      expect(formatShoppingEstimate(estimateItemsTotal(items, null)), r'$7');
     });
   });
 

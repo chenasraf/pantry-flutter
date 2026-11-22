@@ -3419,6 +3419,11 @@ class ChecklistsMessages {
   String doneCount(int count) => """Done · $count""";
 
   /// ```dart
+  /// "Estimated total:"
+  /// ```
+  String get estimatedTotal => """Estimated total:""";
+
+  /// ```dart
   /// "Uncheck all"
   /// ```
   String get uncheckAll => """Uncheck all""";
@@ -10196,6 +10201,7 @@ Password: pantry-rocks""",
   """checklists.allDone""": """All done 🎉""",
   """checklists.hideProgressHero""": """Hide progress card""",
   """checklists.sortTooltip""": """Sort""",
+  """checklists.estimatedTotal""": """Estimated total:""",
   """checklists.uncheckAll""": """Uncheck all""",
   """checklists.uncheckAllConfirm""": """Uncheck all items?""",
   """checklists.uncheckAllConfirmBody""":

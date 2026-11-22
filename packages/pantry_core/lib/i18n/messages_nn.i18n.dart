@@ -3422,6 +3422,11 @@ class ChecklistsMessagesNn extends ChecklistsMessages {
   String doneCount(int count) => """Fullført · $count""";
 
   /// ```dart
+  /// "Estimert sum:"
+  /// ```
+  String get estimatedTotal => """Estimert sum:""";
+
+  /// ```dart
   /// "Fjern alle avkryssingar"
   /// ```
   String get uncheckAll => """Fjern alle avkryssingar""";
@@ -10232,6 +10237,7 @@ Passord: pantry""",
   """checklists.allDone""": """Ferdig 🎉""",
   """checklists.hideProgressHero""": """Sjul framgangskort""",
   """checklists.sortTooltip""": """Sorter""",
+  """checklists.estimatedTotal""": """Estimert sum:""",
   """checklists.uncheckAll""": """Fjern alle avkryssingar""",
   """checklists.uncheckAllConfirm""":
       """Fjerne avkryssing på alle oppføringar?""",

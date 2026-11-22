@@ -910,6 +910,7 @@ checklists:
   hideProgressHero: Sjul framgangskort
   sortTooltip: Sorter
   doneCount(int count): Fullført · $count
+  estimatedTotal: "Estimert sum:"
   uncheckAll: "Fjern alle avkryssingar"
   uncheckAllConfirm: "Fjerne avkryssing på alle oppføringar?"
   uncheckAllConfirmBody: "Alle avkryssa oppføringar i denne lista blir sende tilbake til den aktive lista."
