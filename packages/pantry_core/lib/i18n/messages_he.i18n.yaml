@@ -296,6 +296,8 @@ settings:
     never: לעולם לא להשתמש מחדש
   suggestArchivedItems: הצעת פריטים בארכיון
   suggestArchivedItemsBody: בעת הוספת פריט, לחפש הצעות לשימוש חוזר גם בפריטים שבארכיון. שימוש חוזר בפריט מארכיון מוציא אותו מהארכיון.
+  smartItemInput: קלט חכם
+  smartItemInputBody: זיהוי כמויות כמו ״2 ליטר חלב״ בזמן ההקלדה, והצעת הקטגוריה והכמות שבהן השתמשתם בעבר.
   barcodeFillName: "מילוי השם"
   barcodeFillNameBody: "שימוש בשם המוצר מברקוד שנסרק כשם הפריט."
   barcodeFillCategory: "מילוי הקטגוריה"
@@ -889,6 +891,8 @@ checklists:
     pickTargetList: בחר רשימה
     multiple: מרובה
     multipleHint: הפרד פריטים בשורות חדשות
+    suggested: מוצע
+    dropSuggestion: הסרת ההצעה
   price:
     label: מחיר
     set: קבוע

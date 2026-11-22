@@ -1484,6 +1484,17 @@ class SettingsMessagesEs extends SettingsMessages {
       """Al añadir un artículo, buscar también sugerencias de reutilización entre los artículos archivados. Reutilizar un artículo archivado lo desarchiva.""";
 
   /// ```dart
+  /// "Entrada inteligente"
+  /// ```
+  String get smartItemInput => """Entrada inteligente""";
+
+  /// ```dart
+  /// "Reconocer cantidades como «2 L leche» al escribir y sugerir la categoría y la cantidad usadas antes."
+  /// ```
+  String get smartItemInputBody =>
+      """Reconocer cantidades como «2 L leche» al escribir y sugerir la categoría y la cantidad usadas antes.""";
+
+  /// ```dart
   /// "Rellenar el nombre"
   /// ```
   String get barcodeFillName => """Rellenar el nombre""";
@@ -4745,6 +4756,16 @@ class ComposeChecklistsMessagesEs extends ComposeChecklistsMessages {
   /// "Separa los elementos con saltos de línea"
   /// ```
   String get multipleHint => """Separa los elementos con saltos de línea""";
+
+  /// ```dart
+  /// "Sugerido"
+  /// ```
+  String get suggested => """Sugerido""";
+
+  /// ```dart
+  /// "Quitar sugerencia"
+  /// ```
+  String get dropSuggestion => """Quitar sugerencia""";
 }
 
 class PriceChecklistsMessagesEs extends PriceChecklistsMessages {
@@ -9634,6 +9655,9 @@ Contraseña: pantry-rocks""",
   """settings.suggestArchivedItems""": """Sugerir artículos archivados""",
   """settings.suggestArchivedItemsBody""":
       """Al añadir un artículo, buscar también sugerencias de reutilización entre los artículos archivados. Reutilizar un artículo archivado lo desarchiva.""",
+  """settings.smartItemInput""": """Entrada inteligente""",
+  """settings.smartItemInputBody""":
+      """Reconocer cantidades como «2 L leche» al escribir y sugerir la categoría y la cantidad usadas antes.""",
   """settings.barcodeFillName""": """Rellenar el nombre""",
   """settings.barcodeFillNameBody""":
       """Usar el nombre del producto de un código de barras escaneado como nombre del artículo.""",
@@ -10238,6 +10262,8 @@ Contraseña: pantry-rocks""",
   """checklists.compose.multiple""": """Varios""",
   """checklists.compose.multipleHint""":
       """Separa los elementos con saltos de línea""",
+  """checklists.compose.suggested""": """Sugerido""",
+  """checklists.compose.dropSuggestion""": """Quitar sugerencia""",
   """checklists.price.label""": """Precio""",
   """checklists.price.set""": """Fijo""",
   """checklists.price.range""": """Rango""",

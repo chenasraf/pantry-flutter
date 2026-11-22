@@ -19,6 +19,7 @@ import 'services/localizations_delegates.dart';
 import 'package:pantry_core/services/category_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/house_service.dart';
+import 'package:pantry_core/services/item_memory_service.dart';
 import 'services/image_cache_service.dart';
 import 'package:pantry_core/services/label_service.dart';
 import 'services/list_link_service.dart';
@@ -164,6 +165,7 @@ void main(List<String> args) async {
     await Future.wait([
       HouseService.instance.cache.load(),
       CategoryService.instance.cache.load(),
+      ItemMemoryService.instance.cache.load(),
       StoreService.instance.cache.load(),
       ChecklistService.instance.cache.load(),
       PhotoService.instance.cache.load(),
@@ -494,6 +496,7 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
       PrefsService.instance.clear(),
       HouseService.instance.cache.clear(),
       CategoryService.instance.cache.clear(),
+      ItemMemoryService.instance.clear(),
       StoreService.instance.cache.clear(),
       ChecklistService.instance.cache.clear(),
       PhotoService.instance.cache.clear(),

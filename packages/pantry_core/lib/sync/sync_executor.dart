@@ -9,6 +9,7 @@ import 'package:pantry_core/models/label.dart';
 import 'package:pantry_core/models/note.dart';
 import 'package:pantry_core/models/photo.dart';
 import 'package:pantry_core/models/store.dart';
+import 'package:pantry_core/models/suggestion_rejected.dart';
 import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/category_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
@@ -329,6 +330,9 @@ class SyncExecutor {
           reorderPoint: op.body['reorderPoint'] as String?,
           expiresAt: op.body['expiresAt'] as int?,
           shelfLifeDays: op.body['shelfLifeDays'] as int?,
+          suggestionRejected: SuggestionRejected.fromJson(
+            op.body['suggestionRejected'],
+          ),
         );
         return SyncResult(item);
       case SyncOpKind.update:

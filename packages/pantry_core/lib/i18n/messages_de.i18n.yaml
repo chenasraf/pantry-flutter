@@ -296,6 +296,8 @@ settings:
     never: Nie wiederverwenden
   suggestArchivedItems: Archivierte Einträge vorschlagen
   suggestArchivedItemsBody: Beim Hinzufügen eines Eintrags auch archivierte Einträge für Wiederverwendungsvorschläge durchsuchen. Das Wiederverwenden eines archivierten Eintrags hebt die Archivierung auf.
+  smartItemInput: Intelligente Eingabe
+  smartItemInputBody: Mengen wie „2 L Milch“ beim Tippen erkennen und die zuvor verwendete Kategorie und Menge vorschlagen.
   barcodeFillName: "Namen ausfüllen"
   barcodeFillNameBody: "Den Produktnamen eines gescannten Barcodes als Namen des Eintrags verwenden."
   barcodeFillCategory: "Kategorie ausfüllen"
@@ -889,6 +891,8 @@ checklists:
     pickTargetList: Liste wählen
     multiple: Mehrere
     multipleHint: Einträge durch Zeilenumbrüche trennen
+    suggested: Vorgeschlagen
+    dropSuggestion: Vorschlag entfernen
   price:
     label: Preis
     set: Fest

@@ -14,6 +14,9 @@ import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/views/checklists/form_components.dart';
 import 'package:pantry/views/checklists/item_compose_bar.dart'
     show ComposeSubmission;
+import 'package:pantry/views/checklists/item_compose_chips.dart'
+    show ItemGuessRow;
+import 'package:pantry/views/checklists/item_guess.dart';
 
 /// What the import dialog hands back to its caller on confirm: one
 /// [ComposeSubmission] per selected item (name from the parsed list, every
@@ -43,6 +46,12 @@ class MarkdownImportResult {
 /// OS file drag-and-drop is intentionally not offered (no desktop file-drop
 /// plugin); import is limited to upload-file and paste, which share one buffer.
 class MarkdownImportDialog extends StatefulWidget {
+  /// The house imported into, whose item memory guesses each line's details.
+  final int houseId;
+
+  /// The list imported into, when the caller fixes it up front.
+  final int? listId;
+
   final List<models.Category> categories;
 
   /// Current global "reuse existing items" pref (ask | reuse | never). The
@@ -75,6 +84,8 @@ class MarkdownImportDialog extends StatefulWidget {
 
   const MarkdownImportDialog({
     super.key,
+    required this.houseId,
+    this.listId,
     required this.categories,
     required this.reusePref,
     required this.reuseFeatureAvailable,
@@ -96,6 +107,9 @@ class _MarkdownImportDialogState extends State<MarkdownImportDialog> {
 
   List<ParsedMarkdownItem> _parsed = const [];
   List<bool> _selected = const [];
+
+  /// Guesses dropped on each found item, parallel to [_parsed].
+  List<ItemGuessDrops> _drops = const [];
 
   late int? _listId = _initialListId();
   late List<models.Category> _categories = _categoriesForCurrentList();
@@ -137,8 +151,30 @@ class _MarkdownImportDialogState extends State<MarkdownImportDialog> {
       _textController.text = initial;
       _parsed = parseMarkdownItems(initial);
       _selected = List.filled(_parsed.length, true);
+      _drops = [for (final _ in _parsed) ItemGuessDrops()];
     }
+    _qtyController.addListener(_onSharedQuantityChanged);
   }
+
+  void _onSharedQuantityChanged() => setState(() {});
+
+  ItemGuess _guessFor(int i) => ItemGuess.of(
+    _parsed[i].name,
+    houseId: widget.houseId,
+    listId: _showListPicker ? _listId : widget.listId,
+    usableCategoryIds: [for (final c in _categories) c.id],
+    drops: _drops[i],
+  );
+
+  /// The quantity [guess] gives its item over the one shared by every item:
+  /// one typed on the line always, a remembered one only when none is shared.
+  String? _quantityGuess(ItemGuess guess) {
+    if (!guess.quantityRemembered) return guess.quantity;
+    return _qtyController.text.trim().isEmpty ? guess.quantity : null;
+  }
+
+  int? _categoryGuess(ItemGuess guess) =>
+      _categoryId == null ? guess.categoryId : null;
 
   void _onListChanged(int? id) {
     if (id == null || id == _listId) return;
@@ -155,7 +191,9 @@ class _MarkdownImportDialogState extends State<MarkdownImportDialog> {
   @override
   void dispose() {
     _textController.dispose();
-    _qtyController.dispose();
+    _qtyController
+      ..removeListener(_onSharedQuantityChanged)
+      ..dispose();
     _descController.dispose();
     super.dispose();
   }
@@ -165,6 +203,7 @@ class _MarkdownImportDialogState extends State<MarkdownImportDialog> {
       _parsed = parseMarkdownItems(_textController.text);
       // Select everything whenever the parsed set changes.
       _selected = List.filled(_parsed.length, true);
+      _drops = [for (final _ in _parsed) ItemGuessDrops()];
     });
   }
 
@@ -215,15 +254,18 @@ class _MarkdownImportDialogState extends State<MarkdownImportDialog> {
     final submissions = <ComposeSubmission>[];
     for (var i = 0; i < _parsed.length; i++) {
       if (!_selected[i]) continue;
+      final guess = _guessFor(i);
+      final quantity = _quantityGuess(guess) ?? (qty.isEmpty ? null : qty);
       submissions.add(
         ComposeSubmission(
-          name: _parsed[i].name,
+          name: guess.name,
           description: desc.isEmpty ? null : desc,
-          quantity: qty.isEmpty ? null : qty,
-          categoryId: _categoryId,
+          quantity: quantity,
+          categoryId: _categoryId ?? _categoryGuess(guess),
           rrule: recurring ? _recurrence.toRrule() : null,
           deleteOnDone: once,
           repeatFromCompletion: recurring && _recurrence.repeatFromCompletion,
+          suggestionRejected: _drops[i].rejection(submittedQuantity: quantity),
         ),
       );
     }
@@ -373,12 +415,30 @@ class _MarkdownImportDialogState extends State<MarkdownImportDialog> {
         padding: const EdgeInsets.symmetric(vertical: 4),
         itemCount: _parsed.length,
         itemBuilder: (context, i) {
+          final guess = _guessFor(i);
+          final quantity = _quantityGuess(guess);
+          final categoryId = _categoryGuess(guess);
+          final category = categoryId == null
+              ? null
+              : _categories.cast<models.Category?>().firstWhere(
+                  (c) => c!.id == categoryId,
+                  orElse: () => null,
+                );
           return CheckboxListTile(
             dense: true,
             controlAffinity: ListTileControlAffinity.leading,
             value: _selected[i],
             onChanged: (v) => setState(() => _selected[i] = v ?? false),
-            title: Text(_parsed[i].name),
+            title: ItemGuessRow(
+              padding: EdgeInsets.zero,
+              name: guess.name,
+              quantityGuess: quantity,
+              onDropQuantity: () =>
+                  setState(() => guess.dropQuantity(_drops[i])),
+              categoryGuess: category,
+              onDropCategory: () =>
+                  setState(() => _drops[i].categoryId = categoryId),
+            ),
           );
         },
       ),

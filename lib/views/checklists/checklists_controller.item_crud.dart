@@ -99,6 +99,7 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
     String? reorderPoint,
     int? expiresAt,
     int? shelfLifeDays,
+    SuggestionRejected? suggestionRejected,
   }) async {
     final list = _currentList;
     if (list == null || isAllListsId(list.id)) {
@@ -128,6 +129,7 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
       reorderPoint: reorderPoint,
       expiresAt: expiresAt,
       shelfLifeDays: shelfLifeDays,
+      suggestionRejected: suggestionRejected,
     );
   }
 
@@ -155,6 +157,7 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
     String? reorderPoint,
     int? expiresAt,
     int? shelfLifeDays,
+    SuggestionRejected? suggestionRejected,
   }) async {
     final listId = targetListId;
     final tempId = _sync.newTempId();
@@ -232,6 +235,8 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
           'reorderPoint': ?reorderPoint,
           'expiresAt': ?expiresAt,
           'shelfLifeDays': ?shelfLifeDays,
+          if (suggestionRejected != null && !suggestionRejected.isEmpty)
+            'suggestionRejected': suggestionRejected.toJson(),
         },
         createdAt: _now(),
       ),

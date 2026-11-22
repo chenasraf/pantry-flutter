@@ -44,6 +44,15 @@ class ChipRow extends StatelessWidget {
   /// Opens the target list's item defaults; `null` hides the button.
   final VoidCallback? onEditDefaults;
 
+  /// A category guessed for the typed name, shown while the draft has none.
+  final int? guessedCategoryId;
+  final VoidCallback? onDropCategoryGuess;
+
+  /// A quantity read out of the typed name or remembered for it, shown in
+  /// place of the draft's own.
+  final String? quantityGuess;
+  final VoidCallback? onDropQuantityGuess;
+
   const ChipRow({
     super.key,
     required this.draft,
@@ -63,14 +72,21 @@ class ChipRow extends StatelessWidget {
     this.showTypeChip = true,
     this.showQuantityChip = true,
     this.onEditDefaults,
+    this.guessedCategoryId,
+    this.onDropCategoryGuess,
+    this.quantityGuess,
+    this.onDropQuantityGuess,
   });
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final cat = draft.categoryId != null
+    final categoryGuessed =
+        draft.categoryId == null && guessedCategoryId != null;
+    final categoryId = draft.categoryId ?? guessedCategoryId;
+    final cat = categoryId != null
         ? categories.cast<models.Category?>().firstWhere(
-            (c) => c!.id == draft.categoryId,
+            (c) => c!.id == categoryId,
             orElse: () => null,
           )
         : null;
@@ -106,7 +122,8 @@ class ChipRow extends StatelessWidget {
         ? selectedLabels.first.name
         : '${selectedLabels.first.name} +${selectedLabels.length - 1}';
 
-    final hasQty = draft.quantity.trim().isNotEmpty;
+    final qtyGuess = quantityGuess;
+    final hasQty = qtyGuess != null || draft.quantity.trim().isNotEmpty;
     final hasDesc = draft.description.trim().isNotEmpty;
     final hasType = draft.lifecycle != ItemLifecycle.staple;
     final hasPrice = draft.price.hasAnyPrice;
@@ -148,6 +165,7 @@ class ChipRow extends StatelessWidget {
                 : null,
             selected: openTray == Tray.category,
             onTap: () => onOpen(Tray.category),
+            onDrop: categoryGuessed && cat != null ? onDropCategoryGuess : null,
           ),
           if (showStoreChip) ...[
             const SizedBox(width: 8),
@@ -187,12 +205,25 @@ class ChipRow extends StatelessWidget {
             const SizedBox(width: 8),
             _ComposeChip(
               label: hasQty
-                  ? draft.quantity
+                  ? (qtyGuess ?? draft.quantity)
                   : m.checklists.compose.chipQuantity,
               color: hasQty ? cs.primary : null,
               icon: Icons.format_list_numbered,
               selected: openTray == Tray.quantity,
               onTap: () => onOpen(Tray.quantity),
+              onDrop: qtyGuess != null ? onDropQuantityGuess : null,
+            ),
+          ] else if (qtyGuess != null) ...[
+            // Inventories carry on hand on the Stock chip, so a guessed amount
+            // gets a chip of its own that edits through the Stock tray.
+            const SizedBox(width: 8),
+            _ComposeChip(
+              label: qtyGuess,
+              color: cs.primary,
+              icon: Icons.format_list_numbered,
+              selected: false,
+              onTap: () => onOpen(Tray.stock),
+              onDrop: onDropQuantityGuess,
             ),
           ],
           if (draft.stock case final stock?) ...[
@@ -365,6 +396,10 @@ class _ComposeChip extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
+  /// Set while the chip shows a guess rather than a value the person chose;
+  /// the chip then carries a ✕ that drops the guess.
+  final VoidCallback? onDrop;
+
   const _ComposeChip({
     required this.label,
     this.color,
@@ -372,6 +407,7 @@ class _ComposeChip extends StatelessWidget {
     this.leading,
     required this.selected,
     required this.onTap,
+    this.onDrop,
   });
 
   @override
@@ -380,21 +416,30 @@ class _ComposeChip extends StatelessWidget {
     final accent = color ?? cs.onSurfaceVariant;
     final isSet = color != null;
     final surfaces = AppSurfaces.of(context);
-    return InkWell(
+    final chip = InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(SurfaceRadius.chip),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        padding: EdgeInsetsDirectional.fromSTEB(
+          12,
+          7,
+          onDrop != null ? 4 : 12,
+          7,
+        ),
         decoration: isSet
             ? surfaces.chip(tint: accent, selected: selected)
             : surfaces.chip(selected: selected),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (onDrop != null) ...[
+              Icon(Icons.auto_awesome, size: 12, color: accent),
+              const SizedBox(width: 5),
+            ],
             if (leading != null) ...[
               leading!,
               const SizedBox(width: 6),
-            ] else if (icon != null) ...[
+            ] else if (icon != null && onDrop == null) ...[
               Icon(icon, size: 14, color: accent),
               const SizedBox(width: 6),
             ],
@@ -402,12 +447,153 @@ class _ComposeChip extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: 13,
-                fontWeight: isSet ? FontWeight.w700 : FontWeight.w600,
+                fontWeight: isSet && onDrop == null
+                    ? FontWeight.w700
+                    : FontWeight.w600,
                 color: accent,
               ),
             ),
+            if (onDrop != null) GuessDropButton(color: accent, onTap: onDrop!),
           ],
         ),
+      ),
+    );
+    if (onDrop == null) return chip;
+    return Tooltip(
+      message: m.checklists.compose.suggested,
+      waitDuration: const Duration(milliseconds: 600),
+      child: chip,
+    );
+  }
+}
+
+/// The ✕ on a guessed value, which drops the guess.
+class GuessDropButton extends StatelessWidget {
+  final Color color;
+  final VoidCallback onTap;
+
+  const GuessDropButton({super.key, required this.color, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: m.checklists.compose.dropSuggestion,
+      waitDuration: const Duration(milliseconds: 600),
+      child: InkWell(
+        onTap: onTap,
+        customBorder: const CircleBorder(),
+        child: Padding(
+          padding: const EdgeInsetsDirectional.only(start: 4),
+          child: Icon(Icons.close, size: 14, color: color),
+        ),
+      ),
+    );
+  }
+}
+
+/// A guessed value on a review row: the guess in its accent, with a ✕ that
+/// drops it.
+class GuessChip extends StatelessWidget {
+  final String label;
+  final Color? color;
+  final Widget? leading;
+  final VoidCallback onDrop;
+
+  const GuessChip({
+    super.key,
+    required this.label,
+    this.color,
+    this.leading,
+    required this.onDrop,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = color ?? Theme.of(context).colorScheme.primary;
+    return Tooltip(
+      message: m.checklists.compose.suggested,
+      waitDuration: const Duration(milliseconds: 600),
+      child: Container(
+        padding: const EdgeInsetsDirectional.fromSTEB(8, 3, 4, 3),
+        decoration: AppSurfaces.of(context).chip(tint: accent),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.auto_awesome, size: 11, color: accent),
+            const SizedBox(width: 4),
+            if (leading != null) ...[leading!, const SizedBox(width: 4)],
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: accent,
+              ),
+            ),
+            GuessDropButton(color: accent, onTap: onDrop),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// One item of a batch being added, as its typed line reads: the name, with
+/// the guessed quantity and category as chips that can be dropped.
+class ItemGuessRow extends StatelessWidget {
+  final String name;
+  final String? quantityGuess;
+  final VoidCallback? onDropQuantity;
+  final models.Category? categoryGuess;
+  final VoidCallback? onDropCategory;
+
+  final EdgeInsetsGeometry padding;
+
+  const ItemGuessRow({
+    super.key,
+    required this.name,
+    this.quantityGuess,
+    this.onDropQuantity,
+    this.categoryGuess,
+    this.onDropCategory,
+    this.padding = const EdgeInsetsDirectional.symmetric(
+      horizontal: 12,
+      vertical: 6,
+    ),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final category = categoryGuess;
+    final categoryColor = category == null
+        ? null
+        : (parseHexColor(category.color) ?? cs.primary);
+    return Padding(
+      padding: padding,
+      child: Wrap(
+        spacing: 6,
+        runSpacing: 4,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Text(name, style: TextStyle(fontSize: 14, color: cs.onSurface)),
+          if (quantityGuess != null && onDropQuantity != null)
+            GuessChip(label: quantityGuess!, onDrop: onDropQuantity!),
+          if (category != null && onDropCategory != null)
+            GuessChip(
+              label: category.name,
+              color: categoryColor,
+              leading: Container(
+                width: 7,
+                height: 7,
+                decoration: BoxDecoration(
+                  color: categoryColor,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              onDrop: onDropCategory!,
+            ),
+        ],
       ),
     );
   }

@@ -1473,6 +1473,17 @@ class SettingsMessages {
       """When adding an item, also search archived items for reuse suggestions. Reusing an archived item unarchives it.""";
 
   /// ```dart
+  /// "Smart input"
+  /// ```
+  String get smartItemInput => """Smart input""";
+
+  /// ```dart
+  /// "Read amounts like "2 L milk" as you type, and suggest the category and amount used before."
+  /// ```
+  String get smartItemInputBody =>
+      """Read amounts like "2 L milk" as you type, and suggest the category and amount used before.""";
+
+  /// ```dart
   /// "Fill in the name"
   /// ```
   String get barcodeFillName => """Fill in the name""";
@@ -4695,6 +4706,16 @@ class ComposeChecklistsMessages {
   /// "Separate items by new lines"
   /// ```
   String get multipleHint => """Separate items by new lines""";
+
+  /// ```dart
+  /// "Suggested"
+  /// ```
+  String get suggested => """Suggested""";
+
+  /// ```dart
+  /// "Remove suggestion"
+  /// ```
+  String get dropSuggestion => """Remove suggestion""";
 }
 
 class PriceChecklistsMessages {
@@ -9534,6 +9555,9 @@ Password: pantry-rocks""",
   """settings.suggestArchivedItems""": """Suggest archived items""",
   """settings.suggestArchivedItemsBody""":
       """When adding an item, also search archived items for reuse suggestions. Reusing an archived item unarchives it.""",
+  """settings.smartItemInput""": """Smart input""",
+  """settings.smartItemInputBody""":
+      """Read amounts like "2 L milk" as you type, and suggest the category and amount used before.""",
   """settings.barcodeFillName""": """Fill in the name""",
   """settings.barcodeFillNameBody""":
       """Use the product name from a scanned barcode as the item name.""",
@@ -10112,6 +10136,8 @@ Password: pantry-rocks""",
   """checklists.compose.pickTargetList""": """Pick a list""",
   """checklists.compose.multiple""": """Multiple""",
   """checklists.compose.multipleHint""": """Separate items by new lines""",
+  """checklists.compose.suggested""": """Suggested""",
+  """checklists.compose.dropSuggestion""": """Remove suggestion""",
   """checklists.price.label""": """Price""",
   """checklists.price.set""": """Set""",
   """checklists.price.range""": """Range""",

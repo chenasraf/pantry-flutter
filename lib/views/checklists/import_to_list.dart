@@ -60,6 +60,7 @@ Future<void> showImportToListDialog(
     final result = await showDialog<MarkdownImportResult>(
       context: context,
       builder: (_) => MarkdownImportDialog(
+        houseId: houseId,
         categories: controller.categoriesForList(initialId),
         reusePref: prefs.reuseExistingItems,
         reuseFeatureAvailable: ServerFeature.reuseExistingItems,
@@ -99,6 +100,7 @@ Future<void> showImportToListDialog(
         rrule: s.rrule,
         repeatFromCompletion: s.repeatFromCompletion,
         deleteOnDone: s.deleteOnDone,
+        suggestionRejected: s.suggestionRejected,
       );
       added++;
     }

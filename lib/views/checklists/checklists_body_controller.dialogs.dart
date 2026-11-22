@@ -177,6 +177,7 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
           reorderPoint: s.reorderPoint,
           expiresAt: s.expiresAt,
           shelfLifeDays: s.shelfLifeDays,
+          suggestionRejected: s.suggestionRejected,
         );
       } else {
         created = await domain.addItem(
@@ -198,6 +199,7 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
           reorderPoint: s.reorderPoint,
           expiresAt: s.expiresAt,
           shelfLifeDays: s.shelfLifeDays,
+          suggestionRejected: s.suggestionRejected,
         );
       }
       // Remember the chosen currency when the new item actually has a price:
@@ -255,6 +257,8 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
     final result = await showDialog<MarkdownImportResult>(
       context: context,
       builder: (_) => MarkdownImportDialog(
+        houseId: domain.houseId,
+        listId: targetListId,
         categories: domain.categoriesForList(targetListId),
         reusePref: prefs.reuseExistingItems,
         reuseFeatureAvailable: ServerFeature.reuseExistingItems,

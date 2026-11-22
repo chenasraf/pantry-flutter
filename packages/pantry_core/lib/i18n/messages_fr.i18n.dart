@@ -1487,6 +1487,17 @@ class SettingsMessagesFr extends SettingsMessages {
       """Lors de l'ajout d'un article, rechercher aussi des suggestions de réutilisation parmi les articles archivés. Réutiliser un article archivé le désarchive.""";
 
   /// ```dart
+  /// "Saisie intelligente"
+  /// ```
+  String get smartItemInput => """Saisie intelligente""";
+
+  /// ```dart
+  /// "Reconnaître les quantités comme « 2 L lait » pendant la saisie et suggérer la catégorie et la quantité utilisées auparavant."
+  /// ```
+  String get smartItemInputBody =>
+      """Reconnaître les quantités comme « 2 L lait » pendant la saisie et suggérer la catégorie et la quantité utilisées auparavant.""";
+
+  /// ```dart
   /// "Remplir le nom"
   /// ```
   String get barcodeFillName => """Remplir le nom""";
@@ -4750,6 +4761,16 @@ class ComposeChecklistsMessagesFr extends ComposeChecklistsMessages {
   /// ```
   String get multipleHint =>
       """Séparer les éléments par des retours à la ligne""";
+
+  /// ```dart
+  /// "Suggéré"
+  /// ```
+  String get suggested => """Suggéré""";
+
+  /// ```dart
+  /// "Retirer la suggestion"
+  /// ```
+  String get dropSuggestion => """Retirer la suggestion""";
 }
 
 class PriceChecklistsMessagesFr extends PriceChecklistsMessages {
@@ -9649,6 +9670,9 @@ Mot de passe : pantry-rocks""",
   """settings.suggestArchivedItems""": """Suggérer les articles archivés""",
   """settings.suggestArchivedItemsBody""":
       """Lors de l'ajout d'un article, rechercher aussi des suggestions de réutilisation parmi les articles archivés. Réutiliser un article archivé le désarchive.""",
+  """settings.smartItemInput""": """Saisie intelligente""",
+  """settings.smartItemInputBody""":
+      """Reconnaître les quantités comme « 2 L lait » pendant la saisie et suggérer la catégorie et la quantité utilisées auparavant.""",
   """settings.barcodeFillName""": """Remplir le nom""",
   """settings.barcodeFillNameBody""":
       """Utiliser le nom du produit d'un code-barres scanné comme nom de l'article.""",
@@ -10256,6 +10280,8 @@ Mot de passe : pantry-rocks""",
   """checklists.compose.multiple""": """Plusieurs""",
   """checklists.compose.multipleHint""":
       """Séparer les éléments par des retours à la ligne""",
+  """checklists.compose.suggested""": """Suggéré""",
+  """checklists.compose.dropSuggestion""": """Retirer la suggestion""",
   """checklists.price.label""": """Prix""",
   """checklists.price.set""": """Fixe""",
   """checklists.price.range""": """Plage""",

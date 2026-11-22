@@ -8,6 +8,7 @@ import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
 import 'package:pantry_core/models/item_start_values.dart';
 import 'package:pantry_core/models/stock.dart';
+import 'package:pantry_core/models/suggestion_rejected.dart';
 import 'package:pantry_core/utils/currencies.dart';
 import 'form_components.dart';
 import 'price_input.dart';
@@ -128,6 +129,9 @@ class ComposeSubmission {
   final int? expiresAt;
   final int? shelfLifeDays;
 
+  /// Guesses the person dropped before adding, to teach the item memory.
+  final SuggestionRejected? suggestionRejected;
+
   const ComposeSubmission({
     required this.name,
     this.description,
@@ -150,5 +154,6 @@ class ComposeSubmission {
     this.reorderPoint,
     this.expiresAt,
     this.shelfLifeDays,
+    this.suggestionRejected,
   });
 }

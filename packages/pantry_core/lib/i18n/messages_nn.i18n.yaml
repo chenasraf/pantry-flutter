@@ -379,6 +379,8 @@ settings:
     never: Aldri bruk igjen
   suggestArchivedItems: Føreslå arkiverte oppføringar
   suggestArchivedItemsBody:
+  smartItemInput: Smart innskriving
+  smartItemInputBody: Les mengder som «2 L mjølk» medan du skriv, og føreslå kategorien og mengda som vart brukt før.
   barcodeFillName:
   barcodeFillNameBody:
   barcodeFillCategory:
@@ -1016,6 +1018,8 @@ checklists:
     pickTargetList: Vel ei liste
     multiple: Fleire
     multipleHint: Skil ulike oppføringar ved å lage ei ny linje
+    suggested: Føreslått
+    dropSuggestion: Fjern forslaget
   price:
     label: Pris
     set: Fast

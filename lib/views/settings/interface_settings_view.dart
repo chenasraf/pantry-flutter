@@ -292,6 +292,14 @@ class InterfaceSettingsView extends StatelessWidget {
           labelOf: _composeBarPositionLabel,
           onChanged: (value) => _setComposeBarPosition(context, value),
         ),
+      SwitchListTile(
+        secondary: const Icon(Icons.auto_awesome_outlined),
+        title: Text(m.settings.smartItemInput),
+        subtitle: Text(m.settings.smartItemInputBody),
+        value: prefs.smartItemInput,
+        onChanged: (value) =>
+            context.read<PrefsService>().setSmartItemInput(value),
+      ),
       if (ServerFeature.reuseExistingItems)
         DropdownSettingTile<String>(
           icon: Icons.autorenew,

@@ -80,6 +80,7 @@ extension ChecklistServiceItems on ChecklistService {
     String? reorderPoint,
     int? expiresAt,
     int? shelfLifeDays,
+    SuggestionRejected? suggestionRejected,
   }) async {
     final loginName = AuthService.instance.credentials?.loginName;
     return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
@@ -113,6 +114,8 @@ extension ChecklistServiceItems on ChecklistService {
           'expiresAt': ?expiresAt,
           'shelfLifeDays': ?shelfLifeDays,
         },
+        if (ServerFeature.itemMemory && suggestionRejected != null)
+          'suggestionRejected': suggestionRejected.toJson(),
       },
       fromJson: (data) => ListItem.fromJson(data),
     );

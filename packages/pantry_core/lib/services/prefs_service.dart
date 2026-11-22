@@ -38,6 +38,7 @@ class PrefsService extends ChangeNotifier {
   static const _barcodeFillNameKey = 'barcode_fill_name';
   static const _barcodeFillCategoryKey = 'barcode_fill_category';
   static const _barcodeFillImageKey = 'barcode_fill_image';
+  static const _smartItemInputKey = 'smart_item_input';
   static const _checklistViewKey = 'checklist_view';
   static const _checklistCheckboxPositionKey = 'checklist_checkbox_position';
   static const _composeBarPositionKey = 'compose_bar_position';
@@ -174,6 +175,12 @@ class PrefsService extends ChangeNotifier {
 
   bool _barcodeFillImage = true;
   bool get barcodeFillImage => _barcodeFillImage;
+
+  /// When true (default), typing an item reads its quantity out of the name
+  /// ("2 L milk") and offers the category and amount the household used
+  /// before.
+  bool _smartItemInput = true;
+  bool get smartItemInput => _smartItemInput;
 
   /// "list" or "cards"
   String _checklistView = 'list';
@@ -547,6 +554,9 @@ class PrefsService extends ChangeNotifier {
       _truncateItemNames = truncateItemNames == 'true';
     }
 
+    final smartItemInput = all[_smartItemInputKey];
+    if (smartItemInput != null) _smartItemInput = smartItemInput == 'true';
+
     final notesCheckedToBottom = all[_notesCheckedToBottomKey];
     if (notesCheckedToBottom != null) {
       _notesCheckedToBottom = notesCheckedToBottom == 'true';
@@ -753,6 +763,7 @@ class PrefsService extends ChangeNotifier {
     _keepScreenOnWhileShopping = false;
     _listMenuStyle = 'grid';
     _truncateItemNames = false;
+    _smartItemInput = true;
     _notesCheckedToBottom = false;
     _itemDescriptionDisplay = 'off';
     _checklistListFilter = {};
@@ -807,6 +818,7 @@ class PrefsService extends ChangeNotifier {
       _keepScreenOnWhileShoppingKey,
       _listMenuStyleKey,
       _truncateItemNamesKey,
+      _smartItemInputKey,
       _notesCheckedToBottomKey,
       _itemDescriptionDisplayKey,
       _checklistListFilterKey,

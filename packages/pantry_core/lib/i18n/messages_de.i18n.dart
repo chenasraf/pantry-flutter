@@ -1484,6 +1484,17 @@ class SettingsMessagesDe extends SettingsMessages {
       """Beim Hinzufügen eines Eintrags auch archivierte Einträge für Wiederverwendungsvorschläge durchsuchen. Das Wiederverwenden eines archivierten Eintrags hebt die Archivierung auf.""";
 
   /// ```dart
+  /// "Intelligente Eingabe"
+  /// ```
+  String get smartItemInput => """Intelligente Eingabe""";
+
+  /// ```dart
+  /// "Mengen wie „2 L Milch“ beim Tippen erkennen und die zuvor verwendete Kategorie und Menge vorschlagen."
+  /// ```
+  String get smartItemInputBody =>
+      """Mengen wie „2 L Milch“ beim Tippen erkennen und die zuvor verwendete Kategorie und Menge vorschlagen.""";
+
+  /// ```dart
   /// "Namen ausfüllen"
   /// ```
   String get barcodeFillName => """Namen ausfüllen""";
@@ -4752,6 +4763,16 @@ class ComposeChecklistsMessagesDe extends ComposeChecklistsMessages {
   /// "Einträge durch Zeilenumbrüche trennen"
   /// ```
   String get multipleHint => """Einträge durch Zeilenumbrüche trennen""";
+
+  /// ```dart
+  /// "Vorgeschlagen"
+  /// ```
+  String get suggested => """Vorgeschlagen""";
+
+  /// ```dart
+  /// "Vorschlag entfernen"
+  /// ```
+  String get dropSuggestion => """Vorschlag entfernen""";
 }
 
 class PriceChecklistsMessagesDe extends PriceChecklistsMessages {
@@ -9651,6 +9672,9 @@ Passwort: pantry-rocks""",
   """settings.suggestArchivedItems""": """Archivierte Einträge vorschlagen""",
   """settings.suggestArchivedItemsBody""":
       """Beim Hinzufügen eines Eintrags auch archivierte Einträge für Wiederverwendungsvorschläge durchsuchen. Das Wiederverwenden eines archivierten Eintrags hebt die Archivierung auf.""",
+  """settings.smartItemInput""": """Intelligente Eingabe""",
+  """settings.smartItemInputBody""":
+      """Mengen wie „2 L Milch“ beim Tippen erkennen und die zuvor verwendete Kategorie und Menge vorschlagen.""",
   """settings.barcodeFillName""": """Namen ausfüllen""",
   """settings.barcodeFillNameBody""":
       """Den Produktnamen eines gescannten Barcodes als Namen des Eintrags verwenden.""",
@@ -10267,6 +10291,8 @@ Passwort: pantry-rocks""",
   """checklists.compose.multiple""": """Mehrere""",
   """checklists.compose.multipleHint""":
       """Einträge durch Zeilenumbrüche trennen""",
+  """checklists.compose.suggested""": """Vorgeschlagen""",
+  """checklists.compose.dropSuggestion""": """Vorschlag entfernen""",
   """checklists.price.label""": """Preis""",
   """checklists.price.set""": """Fest""",
   """checklists.price.range""": """Bereich""",

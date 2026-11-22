@@ -15,6 +15,7 @@ import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/item_start_values.dart';
 import 'package:pantry_core/models/list_template.dart';
+import 'package:pantry_core/models/suggestion_rejected.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry/services/barcode_service.dart';
@@ -32,6 +33,7 @@ import 'package:pantry_core/utils/stock_rules.dart';
 import 'item_compose_chips.dart';
 import 'item_compose_trays.dart';
 import 'item_draft.dart';
+import 'item_guess.dart';
 import 'item_form_image.dart';
 import 'price_input.dart';
 import 'stock_cards.dart';
@@ -289,6 +291,16 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   /// falls back to the fields' default seeds, recomputed from the live target.
   bool _customFieldsEdited = false;
 
+  /// Guesses dropped for the single item being typed, and for each line in
+  /// multiple mode.
+  final _drops = ItemGuessDrops();
+  final Map<String, ItemGuessDrops> _lineDrops = {};
+
+  /// Set once the user sets the quantity or category themselves, after which
+  /// no guess replaces what they chose — even an empty choice.
+  bool _quantityChosen = false;
+  bool _categoryChosen = false;
+
   /// The list the item will land in: the picked target in All-lists mode, else
   /// the bar's concrete list. Governs which list-scoped fields apply.
   int? get _targetListId =>
@@ -333,6 +345,51 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   void _resetDraft(ItemStartValues start) {
     _draft.reset(start);
     _qtyCtrl.text = _draft.quantity;
+    _drops.clear();
+    _lineDrops.clear();
+    _quantityChosen = false;
+    _categoryChosen = false;
+  }
+
+  bool get _inventory => _draft.stock != null && !_draft.stock!.template;
+
+  /// The quantity the draft carries of its own: picked, or a list default.
+  String get _draftQuantity =>
+      (_inventory ? _draft.stock!.quantity ?? '' : _draft.quantity).trim();
+
+  ItemGuess _guessFor(String text, ItemGuessDrops drops) => ItemGuess.of(
+    text,
+    houseId: widget.houseId,
+    listId: _targetListId,
+    usableCategoryIds: [for (final c in widget.categories) c.id],
+    drops: drops,
+  );
+
+  /// The quantity [guess] puts on the item, or null when the draft's own
+  /// stands. A quantity typed into the name beats a list default but not one
+  /// the user set; a remembered one only fills a draft that has none. On an
+  /// inventory, anything already on hand stands.
+  String? _quantityGuess(ItemGuess guess, {required bool lineTyped}) {
+    final quantity = guess.quantity;
+    if (quantity == null) return null;
+    if (_inventory) return _draftQuantity.isEmpty ? quantity : null;
+    if (guess.quantityRemembered) {
+      return _draftQuantity.isEmpty && !_quantityChosen ? quantity : null;
+    }
+    // A line of a batch carries its own amount, which beats the one shared
+    // by every line.
+    return lineTyped || !_quantityChosen ? quantity : null;
+  }
+
+  int? _categoryGuess(ItemGuess guess) =>
+      _draft.categoryId == null && !_categoryChosen ? guess.categoryId : null;
+
+  /// Picking a category other than the one guessed tells the memory the guess
+  /// was wrong.
+  void _chooseCategory(int? id, int? guessed) {
+    if (guessed != null && id != guessed) _drops.categoryId = guessed;
+    _categoryChosen = true;
+    _draft.categoryId = id;
   }
 
   @override
@@ -408,9 +465,10 @@ class ItemComposeBarState extends State<ItemComposeBar> {
 
   void _onNameChanged() {
     _maybeLoadSuggestions();
-    // Rebuild so the bulk-add hint tracks input in multiple mode, and the
-    // single-mode reuse suggestions re-filter as the user types.
+    // Rebuild so the bulk-add hint tracks input in multiple mode, the
+    // single-mode reuse suggestions re-filter, and guesses follow the text.
     if (_multiple ||
+        PrefsService.instance.smartItemInput ||
         widget.reuseCandidates.isNotEmpty ||
         widget.archivedReuseCandidates.isNotEmpty ||
         widget.templateSuggestions.isNotEmpty ||
@@ -454,10 +512,9 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   /// offered over the list's own copy. fuzzywuzzy's weighted ratio blends token
   /// and partial matching, so a longer query ("Organic milk") still matches a
   /// shorter name ("Milk"). Empty in multiple mode, with no query, or when
-  /// unwired.
-  List<_Suggestion> _reuseMatches() {
+  /// unwired. [query] is the name the typed text reads as.
+  List<_Suggestion> _reuseMatches(String query) {
     if (_multiple || widget.buildReuseSuggestion == null) return const [];
-    final query = _nameCtrl.text.trim();
     if (query.isEmpty) return const [];
     final active = widget.reuseCandidates;
     final activeIds = {for (final i in active) i.id};
@@ -526,6 +583,32 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       _openTray = null;
     });
     _focusNode.requestFocus();
+  }
+
+  /// A review row for each typed line that carries a guess, so each one can be
+  /// dropped before the batch is added.
+  List<Widget> _lineGuessRows() {
+    final categories = {for (final c in widget.categories) c.id: c};
+    final rows = <Widget>[];
+    for (final line in _bulkNames()) {
+      final guess = _guessFor(line, _lineDrops[line] ?? ItemGuessDrops());
+      final quantity = _quantityGuess(guess, lineTyped: true);
+      final category = categories[_categoryGuess(guess)];
+      if (quantity == null && category == null) continue;
+      ItemGuessDrops drops() =>
+          _lineDrops.putIfAbsent(line, ItemGuessDrops.new);
+      rows.add(
+        ItemGuessRow(
+          name: guess.name,
+          quantityGuess: quantity,
+          onDropQuantity: () => setState(() => guess.dropQuantity(drops())),
+          categoryGuess: category,
+          onDropCategory: () =>
+              setState(() => drops().categoryId = category?.id),
+        ),
+      );
+    }
+    return rows;
   }
 
   List<String> _bulkNames() {
@@ -625,8 +708,24 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   }
 
   void _toggleTray(Tray t) {
+    final opening = _openTray != t;
     setState(() {
-      _openTray = _openTray == t ? null : t;
+      _openTray = opening ? t : null;
+      // Opening the quantity to edit it takes the guessed one as the start.
+      if (opening && (t == Tray.quantity || t == Tray.stock) && !_multiple) {
+        final guessed = _quantityGuess(
+          _guessFor(_nameCtrl.text, _drops),
+          lineTyped: false,
+        );
+        if (guessed != null) {
+          if (_inventory) {
+            _draft.stock!.quantity = guessed;
+          } else {
+            _draft.quantity = guessed;
+          }
+          _quantityChosen = true;
+        }
+      }
     });
     if (t == Tray.quantity) {
       _qtyCtrl.text = _draft.quantity;
@@ -754,6 +853,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   void _stepQty(int dir) {
     final next = stepQuantity(_draft.quantity, dir);
     setState(() {
+      _quantityChosen = true;
       _draft.quantity = next;
       _qtyCtrl.text = next;
       _qtyCtrl.selection = TextSelection.collapsed(offset: next.length);
@@ -766,10 +866,33 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   bool get _hasContent =>
       _multiple ? _bulkNames().isNotEmpty : _nameCtrl.text.trim().isNotEmpty;
 
-  ComposeSubmission _buildSubmission(String name) {
+  /// The item [text] adds: its name and quantity read through the guesses not
+  /// in [drops], over what the draft carries.
+  ComposeSubmission _submissionFor(
+    String text,
+    ItemGuessDrops drops, {
+    required bool lineTyped,
+  }) {
+    final guess = _guessFor(text, drops);
+    final quantity = _quantityGuess(guess, lineTyped: lineTyped);
+    final submitted = quantity ?? _draftQuantity;
+    return _buildSubmission(
+      guess.name,
+      quantity: quantity,
+      categoryId: _categoryGuess(guess),
+      suggestionRejected: drops.rejection(submittedQuantity: submitted),
+    );
+  }
+
+  ComposeSubmission _buildSubmission(
+    String name, {
+    String? quantity,
+    int? categoryId,
+    SuggestionRejected? suggestionRejected,
+  }) {
     final stock = _draft.stock;
     final inventory = stock != null && !stock.template;
-    final quantity = inventory ? (stock.quantity ?? '') : _draft.quantity;
+    quantity ??= inventory ? (stock.quantity ?? '') : _draft.quantity;
     final expiry = stock?.expiryPatch(null);
     String? blankToNull(String? v) =>
         (v ?? '').trim().isEmpty ? null : v!.trim();
@@ -785,7 +908,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       reorderPoint: blankToNull(stock?.reorderPoint),
       expiresAt: expiry?.expiresAt,
       shelfLifeDays: expiry?.shelfLifeDays,
-      categoryId: _draft.categoryId,
+      categoryId: _draft.categoryId ?? categoryId,
       storeIds: _draft.storeIds.toList(),
       labelIds: _draft.labelIds.toList(),
       rrule: _draft.rrule,
@@ -805,6 +928,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       // Custom fields are single-item too; carry the fields' defaults plus any
       // tray edits. Omitted in bulk mode or when no fields apply.
       customFields: _composeCustomFields(),
+      suggestionRejected: suggestionRejected,
     );
   }
 
@@ -818,14 +942,25 @@ class ItemComposeBarState extends State<ItemComposeBar> {
 
   Future<void> _submit() async {
     if (_submitting || !_hasTarget) return;
-    final names = _multiple
-        ? _bulkNames()
-        : [_nameCtrl.text.trim()].where((s) => s.isNotEmpty).toList();
-    if (names.isEmpty) return;
+    final typed = _nameCtrl.text.trim();
+    final submissions = _multiple
+        ? [
+            for (final line in _bulkNames())
+              _submissionFor(
+                line,
+                _lineDrops[line] ?? ItemGuessDrops(),
+                lineTyped: true,
+              ),
+          ]
+        : [
+            if (typed.isNotEmpty)
+              _submissionFor(typed, _drops, lineTyped: false),
+          ];
+    if (submissions.isEmpty) return;
     setState(() => _submitting = true);
     bool allOk = true;
-    for (final n in names) {
-      final ok = await widget.onSubmit(_buildSubmission(n));
+    for (final submission in submissions) {
+      final ok = await widget.onSubmit(submission);
       if (!mounted) return;
       if (!ok) {
         allOk = false;
@@ -862,11 +997,20 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
 
+    final guess = _multiple ? null : _guessFor(_nameCtrl.text, _drops);
+    final quantityGuess = guess == null
+        ? null
+        : _quantityGuess(guess, lineTyped: false);
+    final categoryGuess = guess == null ? null : _categoryGuess(guess);
+
     // Reuse suggestions share the Flexible slot with the trays, so they only
     // surface while no tray is open (i.e. while the user is typing the name).
-    final reuseMatches = _openTray == null
-        ? _reuseMatches()
+    final reuseMatches = _openTray == null && guess != null
+        ? _reuseMatches(guess.name)
         : const <_Suggestion>[];
+    final lineGuesses = _openTray == null && _multiple
+        ? _lineGuessRows()
+        : const <Widget>[];
 
     Widget? trayChild;
     switch (_openTray) {
@@ -884,10 +1028,10 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       case Tray.category:
         trayChild = CategoryTray(
           categories: widget.categories,
-          selectedId: _draft.categoryId,
+          selectedId: _draft.categoryId ?? categoryGuess,
           onSelected: (id) {
             setState(() {
-              _draft.categoryId = id;
+              _chooseCategory(id, categoryGuess);
               _openTray = null;
             });
           },
@@ -897,7 +1041,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
                   final created = await widget.onRequestCreateCategory!();
                   if (created == null || !mounted) return;
                   setState(() {
-                    _draft.categoryId = created.id;
+                    _chooseCategory(created.id, categoryGuess);
                     _openTray = null;
                   });
                 },
@@ -941,7 +1085,10 @@ class ItemComposeBarState extends State<ItemComposeBar> {
           controller: _qtyCtrl,
           // setState so the chip row above rebuilds live as the user types
           // (e.g. the label flips back to "Quantity" when the field clears).
-          onChanged: (v) => setState(() => _draft.quantity = v),
+          onChanged: (v) => setState(() {
+            _quantityChosen = true;
+            _draft.quantity = v;
+          }),
           onMinus: () => _stepQty(-1),
           onPlus: () => _stepQty(1),
         );
@@ -1034,6 +1181,12 @@ class ItemComposeBarState extends State<ItemComposeBar> {
                   _targetListId != null
               ? () => widget.onEditItemDefaults!(_targetListId!)
               : null,
+          guessedCategoryId: categoryGuess,
+          onDropCategoryGuess: () =>
+              setState(() => _drops.categoryId = categoryGuess),
+          quantityGuess: quantityGuess,
+          onDropQuantityGuess: () =>
+              setState(() => guess!.dropQuantity(_drops)),
         ),
         const SizedBox(height: 10),
         if (trayChild != null) ...[
@@ -1054,6 +1207,14 @@ class ItemComposeBarState extends State<ItemComposeBar> {
                 buildTile: widget.buildReuseSuggestion!,
                 onTap: _onSuggestionTap,
               ),
+            ),
+          ),
+          const SizedBox(height: 10),
+        ] else if (lineGuesses.isNotEmpty) ...[
+          Flexible(
+            fit: FlexFit.loose,
+            child: SingleChildScrollView(
+              child: _LineGuesses(rows: lineGuesses),
             ),
           ),
           const SizedBox(height: 10),
@@ -1396,6 +1557,38 @@ class _Suggestion {
   final List<String>? fromTemplates;
 
   const _Suggestion(this.item, {this.fromTemplates});
+}
+
+/// What each line of a multiple-items add reads as, shown above the input.
+class _LineGuesses extends StatelessWidget {
+  final List<Widget> rows;
+
+  const _LineGuesses({required this.rows});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Container(
+      decoration: AppSurfaces.of(context).card(),
+      clipBehavior: Clip.antiAlias,
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final (i, row) in rows.indexed) ...[
+            if (i > 0)
+              Divider(
+                height: 1,
+                thickness: 1,
+                color: cs.outlineVariant.withValues(alpha: 0.5),
+              ),
+            row,
+          ],
+        ],
+      ),
+    );
+  }
 }
 
 /// Panel of fuzzy-matched items shown above the input while composing a single

@@ -1470,6 +1470,17 @@ class SettingsMessagesNn extends SettingsMessages {
 
   String get suggestArchivedItemsBody => """null""";
 
+  /// ```dart
+  /// "Smart innskriving"
+  /// ```
+  String get smartItemInput => """Smart innskriving""";
+
+  /// ```dart
+  /// "Les mengder som «2 L mjølk» medan du skriv, og føreslå kategorien og mengda som vart brukt før."
+  /// ```
+  String get smartItemInputBody =>
+      """Les mengder som «2 L mjølk» medan du skriv, og føreslå kategorien og mengda som vart brukt før.""";
+
   String get barcodeFillName => """null""";
 
   String get barcodeFillNameBody => """null""";
@@ -4709,6 +4720,16 @@ class ComposeChecklistsMessagesNn extends ComposeChecklistsMessages {
   /// ```
   String get multipleHint =>
       """Skil ulike oppføringar ved å lage ei ny linje""";
+
+  /// ```dart
+  /// "Føreslått"
+  /// ```
+  String get suggested => """Føreslått""";
+
+  /// ```dart
+  /// "Fjern forslaget"
+  /// ```
+  String get dropSuggestion => """Fjern forslaget""";
 }
 
 class PriceChecklistsMessagesNn extends PriceChecklistsMessages {
@@ -9566,6 +9587,9 @@ Passord: pantry""",
   """settings.reuseExistingItemsNames.reuse""": """Alltid bruk igjen""",
   """settings.reuseExistingItemsNames.never""": """Aldri bruk igjen""",
   """settings.suggestArchivedItems""": """Føreslå arkiverte oppføringar""",
+  """settings.smartItemInput""": """Smart innskriving""",
+  """settings.smartItemInputBody""":
+      """Les mengder som «2 L mjølk» medan du skriv, og føreslå kategorien og mengda som vart brukt før.""",
   """settings.barcodeFillImageBody""":
       """Når du leggjer til ei oppføring, søk òg blant arkiverte oppføringar etter forslag til gjenbruk. Å bruke ei arkivert oppføring på nytt hentar ho ut av arkivet.""",
   """settings.navOrderTitle""": """Navigasjonsrekkefylgje""",
@@ -10149,6 +10173,8 @@ Passord: pantry""",
   """checklists.compose.multiple""": """Fleire""",
   """checklists.compose.multipleHint""":
       """Skil ulike oppføringar ved å lage ei ny linje""",
+  """checklists.compose.suggested""": """Føreslått""",
+  """checklists.compose.dropSuggestion""": """Fjern forslaget""",
   """checklists.price.label""": """Pris""",
   """checklists.price.set""": """Fast""",
   """checklists.price.range""": """Område""",

@@ -1471,6 +1471,17 @@ class SettingsMessagesHe extends SettingsMessages {
       """בעת הוספת פריט, לחפש הצעות לשימוש חוזר גם בפריטים שבארכיון. שימוש חוזר בפריט מארכיון מוציא אותו מהארכיון.""";
 
   /// ```dart
+  /// "קלט חכם"
+  /// ```
+  String get smartItemInput => """קלט חכם""";
+
+  /// ```dart
+  /// "זיהוי כמויות כמו ״2 ליטר חלב״ בזמן ההקלדה, והצעת הקטגוריה והכמות שבהן השתמשתם בעבר."
+  /// ```
+  String get smartItemInputBody =>
+      """זיהוי כמויות כמו ״2 ליטר חלב״ בזמן ההקלדה, והצעת הקטגוריה והכמות שבהן השתמשתם בעבר.""";
+
+  /// ```dart
   /// "מילוי השם"
   /// ```
   String get barcodeFillName => """מילוי השם""";
@@ -4707,6 +4718,16 @@ class ComposeChecklistsMessagesHe extends ComposeChecklistsMessages {
   /// "הפרד פריטים בשורות חדשות"
   /// ```
   String get multipleHint => """הפרד פריטים בשורות חדשות""";
+
+  /// ```dart
+  /// "מוצע"
+  /// ```
+  String get suggested => """מוצע""";
+
+  /// ```dart
+  /// "הסרת ההצעה"
+  /// ```
+  String get dropSuggestion => """הסרת ההצעה""";
 }
 
 class PriceChecklistsMessagesHe extends PriceChecklistsMessages {
@@ -9523,6 +9544,9 @@ Map<String, String> get messagesHeMap => {
   """settings.suggestArchivedItems""": """הצעת פריטים בארכיון""",
   """settings.suggestArchivedItemsBody""":
       """בעת הוספת פריט, לחפש הצעות לשימוש חוזר גם בפריטים שבארכיון. שימוש חוזר בפריט מארכיון מוציא אותו מהארכיון.""",
+  """settings.smartItemInput""": """קלט חכם""",
+  """settings.smartItemInputBody""":
+      """זיהוי כמויות כמו ״2 ליטר חלב״ בזמן ההקלדה, והצעת הקטגוריה והכמות שבהן השתמשתם בעבר.""",
   """settings.barcodeFillName""": """מילוי השם""",
   """settings.barcodeFillNameBody""":
       """שימוש בשם המוצר מברקוד שנסרק כשם הפריט.""",
@@ -10093,6 +10117,8 @@ Map<String, String> get messagesHeMap => {
   """checklists.compose.pickTargetList""": """בחר רשימה""",
   """checklists.compose.multiple""": """מרובה""",
   """checklists.compose.multipleHint""": """הפרד פריטים בשורות חדשות""",
+  """checklists.compose.suggested""": """מוצע""",
+  """checklists.compose.dropSuggestion""": """הסרת ההצעה""",
   """checklists.price.label""": """מחיר""",
   """checklists.price.set""": """קבוע""",
   """checklists.price.range""": """טווח""",

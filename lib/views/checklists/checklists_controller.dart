@@ -16,12 +16,14 @@ import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/models/list_template.dart';
 import 'package:pantry_core/models/member.dart';
 import 'package:pantry_core/models/stock.dart';
+import 'package:pantry_core/models/suggestion_rejected.dart';
 import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/category_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/custom_field_service.dart';
+import 'package:pantry_core/services/item_memory_service.dart';
 import 'package:pantry_core/services/label_service.dart';
 import 'package:pantry_core/services/pending_upload_store.dart';
 import 'package:pantry_core/services/store_service.dart';
@@ -631,6 +633,8 @@ class ChecklistsController extends ChangeNotifier {
 
       final cats = results[1] as List<models.Category>;
       _categories = {for (final c in cats) c.id: c};
+
+      unawaited(ItemMemoryService.instance.refresh(houseId));
 
       // Stores are gated on the `stores` capability and fetched non-fatally so
       // a server without the feature (404) doesn't break the whole load.

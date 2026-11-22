@@ -296,6 +296,8 @@ settings:
     never: Nunca reutilizar
   suggestArchivedItems: Sugerir artículos archivados
   suggestArchivedItemsBody: Al añadir un artículo, buscar también sugerencias de reutilización entre los artículos archivados. Reutilizar un artículo archivado lo desarchiva.
+  smartItemInput: Entrada inteligente
+  smartItemInputBody: Reconocer cantidades como «2 L leche» al escribir y sugerir la categoría y la cantidad usadas antes.
   barcodeFillName: "Rellenar el nombre"
   barcodeFillNameBody: "Usar el nombre del producto de un código de barras escaneado como nombre del artículo."
   barcodeFillCategory: "Rellenar la categoría"
@@ -889,6 +891,8 @@ checklists:
     pickTargetList: Elige una lista
     multiple: Varios
     multipleHint: Separa los elementos con saltos de línea
+    suggested: Sugerido
+    dropSuggestion: Quitar sugerencia
   price:
     label: Precio
     set: Fijo

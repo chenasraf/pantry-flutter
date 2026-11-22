@@ -296,6 +296,8 @@ settings:
     never: Never reuse
   suggestArchivedItems: Suggest archived items
   suggestArchivedItemsBody: When adding an item, also search archived items for reuse suggestions. Reusing an archived item unarchives it.
+  smartItemInput: Smart input
+  smartItemInputBody: 'Read amounts like "2 L milk" as you type, and suggest the category and amount used before.'
   barcodeFillName: Fill in the name
   barcodeFillNameBody: Use the product name from a scanned barcode as the item name.
   barcodeFillCategory: Fill in the category
@@ -889,6 +891,8 @@ checklists:
     pickTargetList: Pick a list
     multiple: Multiple
     multipleHint: Separate items by new lines
+    suggested: Suggested
+    dropSuggestion: Remove suggestion
   price:
     label: Price
     set: Set
