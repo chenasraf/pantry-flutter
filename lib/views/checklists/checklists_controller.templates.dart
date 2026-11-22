@@ -130,6 +130,29 @@ extension ChecklistsControllerTemplates on ChecklistsController {
     return saved;
   }
 
+  /// The server's id for list [id] once its create has synced, or null if the
+  /// create was dropped.
+  Future<int?> serverListId(int id) {
+    if (id > 0) return Future.value(id);
+    final sync = SyncManager.instance;
+    final done = Completer<int?>();
+    late final StreamSubscription<SyncOpApplied> applied;
+    late final StreamSubscription<SyncOpSkipped> skipped;
+    void finish(int? realId) {
+      applied.cancel();
+      skipped.cancel();
+      if (!done.isCompleted) done.complete(realId);
+    }
+
+    applied = sync.onApplied.listen((e) {
+      if (e.op.tempEntityId == id) finish(e.boundRealId);
+    });
+    skipped = sync.onSkipped.listen((e) {
+      if (e.op.tempEntityId == id) finish(null);
+    });
+    return done.future;
+  }
+
   Future<TemplateLists> loadTemplateLists(int templateId) =>
       _checklistService.getTemplateLists(houseId, templateId);
 

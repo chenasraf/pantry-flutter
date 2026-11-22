@@ -1111,6 +1111,16 @@ class ChecklistsController extends ChangeNotifier {
       notifyListeners();
     }
 
+    // A list whose create hasn't reached the server has nothing there to
+    // fetch; asking would 404 and leave it showing an error once it syncs.
+    if (list.id < 0) {
+      _error = null;
+      _isLoading = false;
+      _isRefreshing = false;
+      notifyListeners();
+      return;
+    }
+
     try {
       final freshItems = await _fetchItemsInListSort(list);
       if (_currentList?.id == list.id && !isSoftView) {

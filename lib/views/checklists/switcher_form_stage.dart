@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
@@ -123,20 +125,26 @@ class _ListFormStageState extends State<ListFormStage> {
     }
   }
 
-  /// Saves the attachments onto [list] when they changed. Failing leaves the
-  /// list itself saved.
+  /// Saves the attachments onto [list] when they changed, once the list is on
+  /// the server. Failing leaves the list itself saved.
   Future<void> _saveAttachments(ChecklistList list) async {
-    if (!_attachmentsReady || list.id <= 0) return;
+    if (!_attachmentsReady) return;
+    final isTemplate = list.kind == ListKind.template;
+    final changed = isTemplate
+        ? _templateLists.everyList != _initialTemplateLists.everyList ||
+              !_sameIds(_templateLists.listIds, _initialTemplateLists.listIds)
+        : !_sameIds(_templateIds, _initialTemplateIds);
+    if (!changed) return;
+    final controller = widget.controller;
+    final templateLists = _templateLists;
+    final templateIds = _templateIds;
     try {
-      if (list.kind == ListKind.template) {
-        final changed =
-            _templateLists.everyList != _initialTemplateLists.everyList ||
-            !_sameIds(_templateLists.listIds, _initialTemplateLists.listIds);
-        if (changed) {
-          await widget.controller.setTemplateLists(list.id, _templateLists);
-        }
-      } else if (!_sameIds(_templateIds, _initialTemplateIds)) {
-        await widget.controller.setAttachedTemplates(list.id, _templateIds);
+      final id = await controller.serverListId(list.id);
+      if (id == null) return;
+      if (isTemplate) {
+        await controller.setTemplateLists(id, templateLists);
+      } else {
+        await controller.setAttachedTemplates(id, templateIds);
       }
     } catch (e) {
       debugPrint('[ListFormStage] Failed to save attachments: $e');
@@ -198,7 +206,7 @@ class _ListFormStageState extends State<ListFormStage> {
           defaultRrule: rrule,
           defaultRepeatFromCompletion: repeatFromCompletion,
         );
-        await _saveAttachments(fresh);
+        unawaited(_saveAttachments(fresh));
         if (!mounted) return;
         await widget.controller.selectList(fresh);
       }
