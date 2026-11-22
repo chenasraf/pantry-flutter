@@ -1,2 +1,0 @@
-Build System
-- strip deps metadata from build

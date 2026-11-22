@@ -1,2 +1,0 @@
-Bug Fixes
-- correctly package icons to prevent startup freeze

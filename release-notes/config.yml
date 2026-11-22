@@ -1,0 +1,55 @@
+# Release notes destinations for the Pantry app. The same file drives writing
+# the notes and CI's release-notes-check, which gates the release PR and the
+# release push on them.
+
+version:
+  file: pubspec.yaml
+  pattern: '^version:[[:space:]]*([0-9]+\.[0-9]+\.[0-9]+)'
+tag-prefix: v
+
+# Linked from the short store notes; `{version}` is the version name.
+full-notes-url: https://github.com/chenasraf/pantry-flutter/releases/tag/v{version}
+
+# Release notes per store, rendered into release-notes/<version>/<file>.
+# `limit` is the store's character limit.
+destinations:
+  play:
+    file: play.txt
+    format: text
+    limit: 500
+    name: Google Play (phone), also F-Droid
+  wear:
+    file: wear.txt
+    format: text
+    limit: 500
+    name: Google Play (Wear OS)
+  ios:
+    file: ios.txt
+    format: text
+    limit: 4000
+    name: App Store (iPhone and iPad)
+  macos:
+    file: macos.txt
+    format: text
+    limit: 4000
+    name: Mac App Store
+
+# Which destinations a fragment's `platforms` reach. These are the same names as
+# the platform commit scopes, so a `fix(wear): …` commit's fragment defaults to
+# `platforms: [wear]`. Linux and Windows have no store; their users read the
+# GitHub release.
+platforms:
+  all: [play, wear, ios, macos]
+  android: [play, wear]
+  wear: [wear]
+  mobile: [play, ios]
+  ios: [ios]
+  apple: [ios, macos]
+  macos: [macos]
+  desktop: [macos]
+
+# The other Pantry repo. A change people see in both gets matching fragments on
+# both sides.
+paired-repo:
+  github: chenasraf/nextcloud-pantry
+  path: ~/Dev/nextcloud-apps/pantry

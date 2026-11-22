@@ -1,3 +1,0 @@
-Bug Fixes
-- nynorsk custom delegate ([#125](https://github.com/chenasraf/pantry-flutter/issues/125))
-- show all feature intros with version requirement note

@@ -1,2 +1,0 @@
-Features
-- remember "once" toggle value per-list

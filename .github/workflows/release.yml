@@ -436,10 +436,19 @@ jobs:
       - name: Compile for Windows
         run: flutter build windows --release
 
+  # Required status check on master: the release PR can't merge until
+  # release-notes/<version>/ is complete. On the push that releases a version,
+  # release-please waits on it too, so a merge past the check isn't tagged.
+  release-notes:
+    if: github.event_name != 'workflow_dispatch'
+    uses: chenasraf/workflows/.github/workflows/release-notes-check.yml@release-notes-latest
+    with:
+      mode: ${{ github.event_name == 'pull_request' && 'pr' || 'release' }}
+
   release-please:
-    needs: [lint, test]
+    needs: [lint, test, release-notes]
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    uses: chenasraf/workflows/.github/workflows/release-please-fastlane-changelog.yml@master
+    uses: chenasraf/workflows/.github/workflows/release-please-fdroid-changelog.yml@fastlane-latest
     # A PR opened with the default GITHUB_TOKEN is authored by github-actions[bot],
     # which the repository's first_time_contributors approval policy gates: its
     # checks sit at action_required until someone clicks through. Authoring as a
@@ -449,24 +458,6 @@ jobs:
       token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
     with:
       release-type: dart
-      scopes: |
-        ios: fastlane/metadata/ios/en-US/changelogs
-        macos: fastlane/metadata/macos/en-US/changelogs
-        desktop: fastlane/metadata/macos/en-US/changelogs
-        apple: |
-          fastlane/metadata/ios/en-US/changelogs
-          fastlane/metadata/macos/en-US/changelogs
-        mobile: |
-          fastlane/metadata/android/en-US/changelogs
-          fastlane/metadata/ios/en-US/changelogs
-        android: |
-          fastlane/metadata/android/en-US/changelogs
-          fastlane/metadata/android-wear/en-US/changelogs
-        wear: fastlane/metadata/android-wear/en-US/changelogs
-      # Play resolves release notes by the version code of the artifact being
-      # uploaded, and the wear bundle's carries the flavor's +20000 offset.
-      version-code-offsets: |
-        fastlane/metadata/android-wear/en-US/changelogs: 20000
 
   build-android:
     needs: [setup, release-please]

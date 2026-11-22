@@ -1,2 +1,0 @@
-Build System
-- re-sign with stripping

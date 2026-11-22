@@ -1,2 +1,0 @@
-Build System
-- disable deps metadata in apk

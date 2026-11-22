@@ -1,3 +1,0 @@
-Bug Fixes
-- undo now properly unchecks items
-- honor dark mode on cold launch

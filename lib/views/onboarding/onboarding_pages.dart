@@ -111,6 +111,19 @@ class OnboardingPageEntry {
 /// page carries [onboardingUpgradersOnly], so it lands as a what's-changed
 /// recap for someone who already has lists to apply it to.
 ///
+/// A change earns a page only when at least one of these holds:
+/// 1. It can't be discovered from the screen: a gesture, long-press, swipe,
+///    hidden menu, or a mode you enter.
+/// 2. It changes a habit: something people already do moved, was renamed, or
+///    behaves differently.
+/// 3. It is a new place: a tab, view or flow that needs a reason to visit.
+///
+/// Fixes, speed and reliability, self-explanatory settings, and clearly
+/// labelled buttons where you'd look anyway never get one. A version adds at
+/// most two upgrader pages per platform; anything beyond waits or shares a
+/// page. The new-user tour grows only for the core loop it already covers.
+/// Release-note fragments flag candidates with `onboarding: yes`.
+///
 /// Keys MUST be valid dotted versions parseable by [Version].
 final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
   '0.16.0': [

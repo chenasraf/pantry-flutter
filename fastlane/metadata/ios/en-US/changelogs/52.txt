@@ -1,2 +1,0 @@
-Bug Fixes
-- remove flutter_avif so F-Droid builds are reproducible

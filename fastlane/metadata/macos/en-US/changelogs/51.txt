@@ -1,2 +1,0 @@
-Bug Fixes
-- pin dependencies and build per-ABI for reproducible builds
