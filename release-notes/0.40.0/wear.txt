@@ -1,0 +1,3 @@
+Nothing changes on the watch in this release. On your phone, adding items is quicker, notes and photos can come from your Nextcloud files, lists show an estimated total, and a finished shopping trip can be undone.
+
+Full notes: https://github.com/chenasraf/pantry-flutter/releases/tag/v0.40.0

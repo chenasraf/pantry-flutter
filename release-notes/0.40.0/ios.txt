@@ -1,0 +1,15 @@
+Adding items is quicker. Type "2 L milk" and Pantry fills in the amount and suggests a category, based on what your household picked for that item before. Each guess shows as a chip you can tap to drop, and anything you type or pick yourself always wins. You can turn it off with "Smart input" in Settings. Category and amount suggestions need the Pantry server app 0.40.0 or newer.
+
+New:
+• Keep a note in sync with a Markdown file in your Nextcloud: pick a folder from the note's menu, and edits made to either one show up in the other. You can also turn a text file already in your Nextcloud into a note with Import from Nextcloud. When the file is in someone else's Nextcloud, the note shows whose files it's in.
+• Add pictures that are already in your Nextcloud to items and the photo board, no re-uploading needed. Link to the file and it keeps showing even after you rename or move it, or import your own copy.
+• Lists add up the prices of the items you still need to buy. Filter or search and the estimate follows along, so you know what a store run will cost before you head out.
+• Finished a shopping trip by mistake? Undo it from shopping history: what you checked off goes back on its list, and what the trip added to your inventories is taken back out.
+• Templates can add new items from their attached lists on their own. Turn it on in the template's settings; items the template already has are left as they are.
+• Items sold at several stores show a single chip with the number of stores instead of crowding the row. Tap it to see them all.
+
+Fixes:
+• Checking off checklist items in a note works straight away, without opening the note for editing.
+• Inventory lists show their names, instead of a number, when you manage categories, labels and custom fields.
+• Lists: the templates you pick when creating a list are saved, a new list opens straight away, and swiping over a row's open actions closes them.
+• Inventory: setting a category or labels on several items at once offers the ones from their lists.
