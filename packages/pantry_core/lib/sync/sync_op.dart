@@ -3,6 +3,13 @@
 /// the link endpoints after the item's own fields.
 const stockLinkTargetKey = 'stockLinkTarget';
 
+/// A [SyncOpKind.setImage] body key naming one of the caller's Nextcloud files
+/// to attach, in place of bytes parked in the pending upload store.
+const itemImageFileIdKey = 'fileId';
+
+/// The [FileAttachMode] name of an [itemImageFileIdKey] attach.
+const itemImageModeKey = 'mode';
+
 enum SyncEntity {
   checklistList,
   checklistItem,

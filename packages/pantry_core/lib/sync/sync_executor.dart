@@ -2,6 +2,7 @@ import 'package:pantry_core/models/stock.dart';
 import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
+import 'package:pantry_core/models/file_attach.dart';
 import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
@@ -448,9 +449,10 @@ class SyncExecutor {
         : svc.unlinkItem(op.houseId, listId, itemId);
   }
 
-  /// Attach a queued image to an item. The bytes sit in [PendingUploadStore]
-  /// under the op's uuid; if they are gone there is nothing left to send, so
-  /// the op resolves empty and drains rather than wedging the queue behind a
+  /// Attach a queued image to an item: one of the caller's Nextcloud files when
+  /// the op names a `fileId`, otherwise bytes that sit in [PendingUploadStore]
+  /// under the op's uuid. If the bytes are gone there is nothing left to send,
+  /// so the op resolves empty and drains rather than wedging the queue behind a
   /// file that will never come back.
   Future<SyncResult> _executeItemImage(
     ChecklistService svc,
@@ -459,6 +461,18 @@ class SyncExecutor {
     int itemId,
     SyncOp op,
   ) async {
+    final fileId = op.body[itemImageFileIdKey] as int?;
+    if (fileId != null) {
+      return SyncResult(
+        await svc.attachItemImageFromFile(
+          houseId,
+          listId,
+          itemId,
+          fileId: fileId,
+          mode: FileAttachMode.parse(op.body[itemImageModeKey]),
+        ),
+      );
+    }
     final bytes = await PendingUploadStore.instance.read(op.uuid);
     if (bytes == null) return SyncResult.empty;
     final item = await svc.uploadItemImage(

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/file_attach.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/photo.dart';
 import 'package:pantry/services/image_cache_service.dart';
@@ -416,6 +417,28 @@ class PhotoBoardController extends ChangeNotifier {
       task.error = e.toString();
       task.done = true;
       notifyListeners();
+    }
+  }
+
+  /// Add one of the account's Nextcloud files to the current folder. Online
+  /// only, like the picker it comes from.
+  Future<void> attachFromFile(NextcloudImagePick pick) async {
+    try {
+      final photo = await _service.attachPhotoFromFile(
+        houseId,
+        fileId: pick.fileId,
+        mode: pick.mode,
+        folderId: _currentFolderId,
+      );
+      _photos.insert(0, photo);
+      _service.cachePhotos(houseId, _photos);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('[PhotoBoardController] Attach from files failed: $e');
+      showAppToast(
+        message: m.photoBoard.attachFromFilesFailed,
+        kind: ToastKind.error,
+      );
     }
   }
 

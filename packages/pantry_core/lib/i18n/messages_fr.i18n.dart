@@ -4300,9 +4300,19 @@ class ItemFormChecklistsMessagesFr extends ItemFormChecklistsMessages {
   String get takePhoto => """Prendre une photo""";
 
   /// ```dart
-  /// "Choisir une image"
+  /// "De l'appareil"
   /// ```
-  String get chooseImage => """Choisir une image""";
+  String get fromDevice => """De l'appareil""";
+
+  /// ```dart
+  /// "De l'ordinateur"
+  /// ```
+  String get fromComputer => """De l'ordinateur""";
+
+  /// ```dart
+  /// "De Nextcloud"
+  /// ```
+  String get fromNextcloud => """De Nextcloud""";
 
   /// ```dart
   /// "Remplacer"
@@ -6903,6 +6913,38 @@ class FilePickerNotesWallMessagesFr extends FilePickerNotesWallMessages {
   /// ```
   String get folderReadOnly =>
       """Vous ne pouvez pas ajouter de fichiers à ce dossier.""";
+
+  /// ```dart
+  /// "Choisir une image"
+  /// ```
+  String get chooseImage => """Choisir une image""";
+
+  /// ```dart
+  /// "Aucune image dans ce dossier."
+  /// ```
+  String get noImages => """Aucune image dans ce dossier.""";
+
+  /// ```dart
+  /// "Lier au fichier"
+  /// ```
+  String get linkFile => """Lier au fichier""";
+
+  /// ```dart
+  /// "Affiche le fichier depuis votre Nextcloud. Il reste disponible si vous le renommez ou le déplacez."
+  /// ```
+  String get linkFileHint =>
+      """Affiche le fichier depuis votre Nextcloud. Il reste disponible si vous le renommez ou le déplacez.""";
+
+  /// ```dart
+  /// "Importer une copie"
+  /// ```
+  String get importCopy => """Importer une copie""";
+
+  /// ```dart
+  /// "Enregistre une copie distincte dans Pantry. Les modifications de l'original ne l'affectent pas."
+  /// ```
+  String get importCopyHint =>
+      """Enregistre une copie distincte dans Pantry. Les modifications de l'original ne l'affectent pas.""";
 }
 
 class SortNotesWallMessagesFr extends SortNotesWallMessages {
@@ -6959,6 +7001,11 @@ class PhotoBoardMessagesFr extends PhotoBoardMessages {
   /// ```
   String queuedOffline(int count) =>
       """${_plural(count, one: 'Pas de connexion — la photo sera envoyée dès votre retour en ligne.', many: 'Pas de connexion — $count photos seront envoyées dès votre retour en ligne.')}""";
+
+  /// ```dart
+  /// "Impossible d'ajouter ce fichier."
+  /// ```
+  String get attachFromFilesFailed => """Impossible d'ajouter ce fichier.""";
 
   /// ```dart
   /// "En attente d'une connexion"
@@ -7124,14 +7171,24 @@ class AddMenuPhotoBoardMessagesFr extends AddMenuPhotoBoardMessages {
   const AddMenuPhotoBoardMessagesFr(this._parent) : super(_parent);
 
   /// ```dart
-  /// "Téléverser des photos"
+  /// "De l'appareil"
   /// ```
-  String get upload => """Téléverser des photos""";
+  String get fromDevice => """De l'appareil""";
+
+  /// ```dart
+  /// "De l'ordinateur"
+  /// ```
+  String get fromComputer => """De l'ordinateur""";
 
   /// ```dart
   /// "Prendre une photo"
   /// ```
   String get camera => """Prendre une photo""";
+
+  /// ```dart
+  /// "Depuis les fichiers Nextcloud"
+  /// ```
+  String get fromFiles => """Depuis les fichiers Nextcloud""";
 
   /// ```dart
   /// "Nouveau dossier"
@@ -10315,7 +10372,9 @@ Mot de passe : pantry-rocks""",
   """checklists.itemForm.image""": """Image""",
   """checklists.itemForm.addImage""": """Ajouter une image""",
   """checklists.itemForm.takePhoto""": """Prendre une photo""",
-  """checklists.itemForm.chooseImage""": """Choisir une image""",
+  """checklists.itemForm.fromDevice""": """De l'appareil""",
+  """checklists.itemForm.fromComputer""": """De l'ordinateur""",
+  """checklists.itemForm.fromNextcloud""": """De Nextcloud""",
   """checklists.itemForm.replaceImage""": """Remplacer""",
   """checklists.itemForm.removeImage""": """Supprimer""",
   """checklists.itemForm.imageQueuedOffline""":
@@ -10825,6 +10884,14 @@ Mot de passe : pantry-rocks""",
       """Impossible d'ouvrir ce dossier.""",
   """notesWall.filePicker.folderReadOnly""":
       """Vous ne pouvez pas ajouter de fichiers à ce dossier.""",
+  """notesWall.filePicker.chooseImage""": """Choisir une image""",
+  """notesWall.filePicker.noImages""": """Aucune image dans ce dossier.""",
+  """notesWall.filePicker.linkFile""": """Lier au fichier""",
+  """notesWall.filePicker.linkFileHint""":
+      """Affiche le fichier depuis votre Nextcloud. Il reste disponible si vous le renommez ou le déplacez.""",
+  """notesWall.filePicker.importCopy""": """Importer une copie""",
+  """notesWall.filePicker.importCopyHint""":
+      """Enregistre une copie distincte dans Pantry. Les modifications de l'original ne l'affectent pas.""",
   """notesWall.title""": """Titre""",
   """notesWall.content""": """Contenu""",
   """notesWall.color""": """Couleur""",
@@ -10836,6 +10903,8 @@ Mot de passe : pantry-rocks""",
   """photoBoard.noPhotos""": """Aucune photo pour le moment.""",
   """photoBoard.failedToLoad""": """Impossible de charger les photos.""",
   """photoBoard.uploadFailed""": """Impossible de télécharger la photo.""",
+  """photoBoard.attachFromFilesFailed""":
+      """Impossible d'ajouter ce fichier.""",
   """photoBoard.waitingForConnection""": """En attente d'une connexion""",
   """photoBoard.deleteFailed""": """Impossible de supprimer la photo.""",
   """photoBoard.deleteConfirm""": """Supprimer cette photo ?""",
@@ -10867,8 +10936,10 @@ Mot de passe : pantry-rocks""",
   """photoBoard.folderName""": """Nom du dossier""",
   """photoBoard.renameFolder""": """Renommer le dossier""",
   """photoBoard.caption""": """Légende""",
-  """photoBoard.addMenu.upload""": """Téléverser des photos""",
+  """photoBoard.addMenu.fromDevice""": """De l'appareil""",
+  """photoBoard.addMenu.fromComputer""": """De l'ordinateur""",
   """photoBoard.addMenu.camera""": """Prendre une photo""",
+  """photoBoard.addMenu.fromFiles""": """Depuis les fichiers Nextcloud""",
   """photoBoard.addMenu.newFolder""": """Nouveau dossier""",
   """photoBoard.sort.foldersFirst""": """Dossiers en premier""",
   """photoBoard.sort.newestFirst""": """Plus récents""",

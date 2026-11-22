@@ -7,8 +7,10 @@ import 'package:pantry_core/models/category.dart' as models;
 import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry_core/models/label.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/file_attach.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
 import 'package:pantry_core/utils/category_icons.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/label_icons.dart';
@@ -18,6 +20,7 @@ import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/widgets/markdown_editor.dart';
 import 'form_components.dart';
 import 'item_draft.dart';
+import 'item_form_image.dart';
 import 'price_input.dart';
 
 class _TrayShell extends StatelessWidget {
@@ -475,16 +478,20 @@ class TypeTray extends StatelessWidget {
 
 class ImageTray extends StatelessWidget {
   final Uint8List? bytes;
+  final NextcloudImagePick? remote;
   final VoidCallback onPick;
   final VoidCallback? onTakePhoto;
+  final VoidCallback? onFromNextcloud;
   final VoidCallback onReplace;
   final VoidCallback onRemove;
 
   const ImageTray({
     super.key,
     required this.bytes,
+    this.remote,
     required this.onPick,
     this.onTakePhoto,
+    this.onFromNextcloud,
     required this.onReplace,
     required this.onRemove,
   });
@@ -492,10 +499,13 @@ class ImageTray extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final f = m.checklists.itemForm;
+    final remote = this.remote;
+    final bytes = this.bytes;
+    final onlyDevice = onTakePhoto == null && onFromNextcloud == null;
     return _TrayShell(
       label: m.checklists.compose.chipImage,
-      child: bytes == null
-          ? onTakePhoto == null
+      child: bytes == null && remote == null
+          ? onlyDevice
                 ? OutlinedButton.icon(
                     onPressed: onPick,
                     icon: const Icon(Icons.add_photo_alternate_outlined),
@@ -505,28 +515,46 @@ class ImageTray extends StatelessWidget {
                     spacing: 8,
                     runSpacing: 8,
                     children: [
-                      OutlinedButton.icon(
-                        onPressed: onTakePhoto,
-                        icon: const Icon(Icons.photo_camera_outlined),
-                        label: Text(f.takePhoto),
-                      ),
+                      if (onTakePhoto != null)
+                        OutlinedButton.icon(
+                          onPressed: onTakePhoto,
+                          icon: const Icon(Icons.photo_camera_outlined),
+                          label: Text(f.takePhoto),
+                        ),
                       OutlinedButton.icon(
                         onPressed: onPick,
                         icon: const Icon(Icons.add_photo_alternate_outlined),
-                        label: Text(f.chooseImage),
+                        label: Text(
+                          PlatformInfo.isDesktop
+                              ? f.fromComputer
+                              : f.fromDevice,
+                        ),
                       ),
+                      if (onFromNextcloud != null)
+                        OutlinedButton.icon(
+                          onPressed: onFromNextcloud,
+                          icon: const Icon(Icons.cloud_outlined),
+                          label: Text(f.fromNextcloud),
+                        ),
                     ],
                   )
           : Row(
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(SurfaceRadius.tile),
-                  child: AvifMemoryImage(
-                    bytes!,
-                    width: 64,
-                    height: 64,
-                    fit: BoxFit.cover,
-                  ),
+                  child: remote != null
+                      ? Image(
+                          image: nextcloudPickImage(remote, size: 128),
+                          width: 64,
+                          height: 64,
+                          fit: BoxFit.cover,
+                        )
+                      : AvifMemoryImage(
+                          bytes!,
+                          width: 64,
+                          height: 64,
+                          fit: BoxFit.cover,
+                        ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(

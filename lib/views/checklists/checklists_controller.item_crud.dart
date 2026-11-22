@@ -521,6 +521,47 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
     }
   }
 
+  /// Attach one of the account's Nextcloud files as [item]'s image. Queued for
+  /// an item the server has not created yet, like a picture would be; there is
+  /// nothing to keep on the device, only the file's id.
+  Future<void> attachItemImageFromFile(
+    ListItem item,
+    NextcloudImagePick pick,
+  ) async {
+    if (item.id > 0 && _sync.isOnline) {
+      final updated = await _checklistService.attachItemImageFromFile(
+        houseId,
+        item.listId,
+        item.id,
+        fileId: pick.fileId,
+        mode: pick.mode,
+      );
+      final index = _items.indexWhere((i) => i.id == item.id);
+      if (index != -1) {
+        _items[index] = updated;
+        _cacheVisibleItems(item.listId);
+        notifyListeners();
+      }
+      return;
+    }
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistItem,
+        op: SyncOpKind.setImage,
+        houseId: houseId,
+        parentId: item.listId,
+        entityId: item.id < 0 ? null : item.id,
+        tempEntityId: item.id < 0 ? item.id : null,
+        body: {
+          itemImageFileIdKey: pick.fileId,
+          itemImageModeKey: pick.mode.name,
+        },
+        createdAt: _now(),
+      ),
+    );
+  }
+
   Future<void> deleteItemImage(ListItem item) async {
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index != -1) {

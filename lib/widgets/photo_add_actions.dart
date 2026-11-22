@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/utils/apple_host_info.dart';
 import 'package:pantry/views/home/home_floating_nav.dart';
+import 'package:pantry/views/notes/nextcloud_file_picker.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
 import 'package:pantry/widgets/nav_action_offer.dart';
 
@@ -76,6 +78,11 @@ class _PhotoAddActionsState extends State<PhotoAddActions> {
     }
   }
 
+  Future<void> _pickFromNextcloud() async {
+    final pick = await pickNextcloudImage(context);
+    if (pick != null) await widget.controller.attachFromFile(pick);
+  }
+
   Future<void> _createFolderDialog() async {
     if (!mounted) return;
     final textController = TextEditingController();
@@ -120,7 +127,9 @@ class _PhotoAddActionsState extends State<PhotoAddActions> {
       if (widget.enabled && perms.canUploadPhotos)
         (
           icon: Icons.add_photo_alternate,
-          label: m.photoBoard.addMenu.upload,
+          label: PlatformInfo.isDesktop
+              ? m.photoBoard.addMenu.fromComputer
+              : m.photoBoard.addMenu.fromDevice,
           onTap: _pickPhotos,
         ),
       if (widget.enabled && perms.canUploadPhotos && _cameraSupported)
@@ -128,6 +137,14 @@ class _PhotoAddActionsState extends State<PhotoAddActions> {
           icon: Icons.camera_alt,
           label: m.photoBoard.addMenu.camera,
           onTap: _takePhoto,
+        ),
+      if (widget.enabled &&
+          perms.canUploadPhotos &&
+          ServerFeature.imagesFromFiles)
+        (
+          icon: Icons.cloud_outlined,
+          label: m.photoBoard.addMenu.fromFiles,
+          onTap: _pickFromNextcloud,
         ),
       if (widget.enabled && perms.canMovePhotos)
         (

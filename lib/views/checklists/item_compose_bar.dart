@@ -26,6 +26,7 @@ import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/utils/apple_host_info.dart';
 import 'package:pantry/views/checklists/barcode_scan_view.dart';
 import 'package:pantry/views/custom_fields/item_custom_fields_editor.dart';
+import 'package:pantry/views/notes/nextcloud_file_picker.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
 import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
@@ -623,8 +624,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     setState(() {
       _multiple = !_multiple;
       if (_multiple) {
-        _draft.imageFile = null;
-        _draft.imageBytes = null;
+        _draft.clearImage();
         // Image, price + custom fields are single-item concerns; close their
         // trays when switching to bulk entry.
         if (_openTray == Tray.image ||
@@ -735,16 +735,20 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   }
 
   Future<void> _replaceImage() async {
-    if (!_cameraSupported) {
-      await _pickImage(ImageSource.gallery);
-      return;
-    }
-    final source = await showModalBottomSheet<ImageSource>(
-      context: context,
-      showDragHandle: true,
-      builder: (ctx) => const ImageSourceSheet(),
+    final source = await chooseImageSource(
+      context,
+      cameraSupported: _cameraSupported,
     );
-    if (source != null) await _pickImage(source);
+    switch (source) {
+      case ImagePickSource.camera:
+        await _pickImage(ImageSource.camera);
+      case ImagePickSource.device:
+        await _pickImage(ImageSource.gallery);
+      case ImagePickSource.nextcloud:
+        await _pickFromNextcloud();
+      case null:
+        break;
+    }
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -753,16 +757,23 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     if (f == null || !mounted) return;
     final bytes = await f.readAsBytes();
     setState(() {
+      _draft.clearImage();
       _draft.imageFile = f;
       _draft.imageBytes = bytes;
     });
   }
 
-  void _removeImage() {
+  Future<void> _pickFromNextcloud() async {
+    final pick = await pickNextcloudImage(context);
+    if (pick == null || !mounted) return;
     setState(() {
-      _draft.imageFile = null;
-      _draft.imageBytes = null;
+      _draft.clearImage();
+      _draft.remoteImage = pick;
     });
+  }
+
+  void _removeImage() {
+    setState(_draft.clearImage);
   }
 
   /// Scan (or manually enter) a barcode, then prefill the draft. Checks the
@@ -824,9 +835,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     // Download the product image and stage it on the draft so the existing
     // create → uploadItemImage path attaches it after the item is created.
     final imageUrl = result.imageUrl;
-    if (prefs.barcodeFillImage &&
-        imageUrl != null &&
-        _draft.imageBytes == null) {
+    if (prefs.barcodeFillImage && imageUrl != null && !_draft.hasImage) {
       final bytes = await svc.downloadImage(imageUrl);
       if (bytes != null && mounted) {
         setState(() => _draft.imageBytes = Uint8List.fromList(bytes));
@@ -919,6 +928,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       imageMime: (!_multiple && _draft.imageFile != null)
           ? (lookupMimeType(_draft.imageFile!.name) ?? 'image/jpeg')
           : null,
+      remoteImage: _multiple ? null : _draft.remoteImage,
       barcode: _multiple ? null : _draft.barcode,
       // Price is a single-item concern — omitted entirely in bulk mode or when
       // the server lacks the capability.
@@ -1138,9 +1148,13 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       case Tray.image:
         trayChild = ImageTray(
           bytes: _draft.imageBytes,
+          remote: _draft.remoteImage,
           onPick: () => _pickImage(ImageSource.gallery),
           onTakePhoto: _cameraSupported
               ? () => _pickImage(ImageSource.camera)
+              : null,
+          onFromNextcloud: ServerFeature.imagesFromFiles
+              ? _pickFromNextcloud
               : null,
           onReplace: _replaceImage,
           onRemove: _removeImage,

@@ -4261,9 +4261,19 @@ class ItemFormChecklistsMessagesNn extends ItemFormChecklistsMessages {
   String get takePhoto => """Ta bilete""";
 
   /// ```dart
-  /// "Vel bilete"
+  /// "Frå eininga"
   /// ```
-  String get chooseImage => """Vel bilete""";
+  String get fromDevice => """Frå eininga""";
+
+  /// ```dart
+  /// "Frå datamaskina"
+  /// ```
+  String get fromComputer => """Frå datamaskina""";
+
+  /// ```dart
+  /// "Frå Nextcloud"
+  /// ```
+  String get fromNextcloud => """Frå Nextcloud""";
 
   /// ```dart
   /// "Erstatt"
@@ -6848,6 +6858,38 @@ class FilePickerNotesWallMessagesNn extends FilePickerNotesWallMessages {
   /// ```
   String get folderReadOnly =>
       """Du kan ikkje leggje til filer i denne mappa.""";
+
+  /// ```dart
+  /// "Vel eit bilete"
+  /// ```
+  String get chooseImage => """Vel eit bilete""";
+
+  /// ```dart
+  /// "Ingen bilete i denne mappa."
+  /// ```
+  String get noImages => """Ingen bilete i denne mappa.""";
+
+  /// ```dart
+  /// "Lenk til fila"
+  /// ```
+  String get linkFile => """Lenk til fila""";
+
+  /// ```dart
+  /// "Viser fila frå Nextcloud-en din. Lenkja verkar framleis om du endrar namn på fila eller flyttar ho."
+  /// ```
+  String get linkFileHint =>
+      """Viser fila frå Nextcloud-en din. Lenkja verkar framleis om du endrar namn på fila eller flyttar ho.""";
+
+  /// ```dart
+  /// "Importer ein kopi"
+  /// ```
+  String get importCopy => """Importer ein kopi""";
+
+  /// ```dart
+  /// "Lagrar ein eigen kopi i Pantry. Endringar i originalen påverkar ikkje kopien."
+  /// ```
+  String get importCopyHint =>
+      """Lagrar ein eigen kopi i Pantry. Endringar i originalen påverkar ikkje kopien.""";
 }
 
 class SortNotesWallMessagesNn extends SortNotesWallMessages {
@@ -6904,6 +6946,11 @@ class PhotoBoardMessagesNn extends PhotoBoardMessages {
   /// ```
   String queuedOffline(int count) =>
       """${_plural(count, one: 'Inga tilkopling — biletet blir lasta opp når du er tilkopla att.', many: 'Inga tilkopling — $count bilete blir lasta opp når du er tilkopla att.')}""";
+
+  /// ```dart
+  /// "Kunne ikkje leggje til fila."
+  /// ```
+  String get attachFromFilesFailed => """Kunne ikkje leggje til fila.""";
 
   /// ```dart
   /// "Ventar på tilkopling"
@@ -7067,14 +7114,24 @@ class AddMenuPhotoBoardMessagesNn extends AddMenuPhotoBoardMessages {
   const AddMenuPhotoBoardMessagesNn(this._parent) : super(_parent);
 
   /// ```dart
-  /// "Last opp bilete"
+  /// "Frå eininga"
   /// ```
-  String get upload => """Last opp bilete""";
+  String get fromDevice => """Frå eininga""";
+
+  /// ```dart
+  /// "Frå datamaskina"
+  /// ```
+  String get fromComputer => """Frå datamaskina""";
 
   /// ```dart
   /// "Ta bilete"
   /// ```
   String get camera => """Ta bilete""";
+
+  /// ```dart
+  /// "Frå Nextcloud-filer"
+  /// ```
+  String get fromFiles => """Frå Nextcloud-filer""";
 
   /// ```dart
   /// "Ny mappe"
@@ -10211,7 +10268,9 @@ Passord: pantry""",
   """checklists.itemForm.image""": """Bilete""",
   """checklists.itemForm.addImage""": """Legg til bilete""",
   """checklists.itemForm.takePhoto""": """Ta bilete""",
-  """checklists.itemForm.chooseImage""": """Vel bilete""",
+  """checklists.itemForm.fromDevice""": """Frå eininga""",
+  """checklists.itemForm.fromComputer""": """Frå datamaskina""",
+  """checklists.itemForm.fromNextcloud""": """Frå Nextcloud""",
   """checklists.itemForm.replaceImage""": """Erstatt""",
   """checklists.itemForm.removeImage""": """Fjern""",
   """checklists.itemForm.imageQueuedOffline""":
@@ -10703,6 +10762,14 @@ Passord: pantry""",
   """notesWall.filePicker.failedToLoad""": """Kunne ikkje opne denne mappa.""",
   """notesWall.filePicker.folderReadOnly""":
       """Du kan ikkje leggje til filer i denne mappa.""",
+  """notesWall.filePicker.chooseImage""": """Vel eit bilete""",
+  """notesWall.filePicker.noImages""": """Ingen bilete i denne mappa.""",
+  """notesWall.filePicker.linkFile""": """Lenk til fila""",
+  """notesWall.filePicker.linkFileHint""":
+      """Viser fila frå Nextcloud-en din. Lenkja verkar framleis om du endrar namn på fila eller flyttar ho.""",
+  """notesWall.filePicker.importCopy""": """Importer ein kopi""",
+  """notesWall.filePicker.importCopyHint""":
+      """Lagrar ein eigen kopi i Pantry. Endringar i originalen påverkar ikkje kopien.""",
   """notesWall.title""": """Tittel""",
   """notesWall.content""": """Innhald""",
   """notesWall.color""": """Farge""",
@@ -10714,6 +10781,7 @@ Passord: pantry""",
   """photoBoard.noPhotos""": """Ingen bilete enno.""",
   """photoBoard.failedToLoad""": """Klarte ikkje laste bilete.""",
   """photoBoard.uploadFailed""": """Klarte ikkje laste opp bilete.""",
+  """photoBoard.attachFromFilesFailed""": """Kunne ikkje leggje til fila.""",
   """photoBoard.waitingForConnection""": """Ventar på tilkopling""",
   """photoBoard.deleteFailed""": """Klarte ikkje slette bilete""",
   """photoBoard.deleteConfirm""": """Slett dette biletet?""",
@@ -10742,8 +10810,10 @@ Passord: pantry""",
   """photoBoard.folderName""": """Katalognavn""",
   """photoBoard.renameFolder""": """Gi nytt namn til mappe""",
   """photoBoard.caption""": """Bilettekst""",
-  """photoBoard.addMenu.upload""": """Last opp bilete""",
+  """photoBoard.addMenu.fromDevice""": """Frå eininga""",
+  """photoBoard.addMenu.fromComputer""": """Frå datamaskina""",
   """photoBoard.addMenu.camera""": """Ta bilete""",
+  """photoBoard.addMenu.fromFiles""": """Frå Nextcloud-filer""",
   """photoBoard.addMenu.newFolder""": """Ny mappe""",
   """photoBoard.sort.foldersFirst""": """Mapper fyrst""",
   """photoBoard.sort.newestFirst""": """Nyaste fyrst""",

@@ -4254,9 +4254,19 @@ class ItemFormChecklistsMessages {
   String get takePhoto => """Take photo""";
 
   /// ```dart
-  /// "Choose image"
+  /// "From device"
   /// ```
-  String get chooseImage => """Choose image""";
+  String get fromDevice => """From device""";
+
+  /// ```dart
+  /// "From computer"
+  /// ```
+  String get fromComputer => """From computer""";
+
+  /// ```dart
+  /// "From Nextcloud"
+  /// ```
+  String get fromNextcloud => """From Nextcloud""";
 
   /// ```dart
   /// "Replace"
@@ -6822,6 +6832,38 @@ class FilePickerNotesWallMessages {
   /// "You can't add files to this folder."
   /// ```
   String get folderReadOnly => """You can't add files to this folder.""";
+
+  /// ```dart
+  /// "Choose an image"
+  /// ```
+  String get chooseImage => """Choose an image""";
+
+  /// ```dart
+  /// "No images in this folder."
+  /// ```
+  String get noImages => """No images in this folder.""";
+
+  /// ```dart
+  /// "Link to file"
+  /// ```
+  String get linkFile => """Link to file""";
+
+  /// ```dart
+  /// "Shows the file from your Nextcloud. It keeps working if you rename or move it."
+  /// ```
+  String get linkFileHint =>
+      """Shows the file from your Nextcloud. It keeps working if you rename or move it.""";
+
+  /// ```dart
+  /// "Import a copy"
+  /// ```
+  String get importCopy => """Import a copy""";
+
+  /// ```dart
+  /// "Saves a separate copy in Pantry. Changes to the original won't affect it."
+  /// ```
+  String get importCopyHint =>
+      """Saves a separate copy in Pantry. Changes to the original won't affect it.""";
 }
 
 class SortNotesWallMessages {
@@ -6878,6 +6920,11 @@ class PhotoBoardMessages {
   /// ```
   String queuedOffline(int count) =>
       """${_plural(count, one: 'No connection — the photo will be uploaded once you are back online.', many: 'No connection — $count photos will be uploaded once you are back online.')}""";
+
+  /// ```dart
+  /// "Couldn't add that file."
+  /// ```
+  String get attachFromFilesFailed => """Couldn't add that file.""";
 
   /// ```dart
   /// "Waiting for a connection"
@@ -7041,14 +7088,24 @@ class AddMenuPhotoBoardMessages {
   const AddMenuPhotoBoardMessages(this._parent);
 
   /// ```dart
-  /// "Upload photos"
+  /// "From device"
   /// ```
-  String get upload => """Upload photos""";
+  String get fromDevice => """From device""";
+
+  /// ```dart
+  /// "From computer"
+  /// ```
+  String get fromComputer => """From computer""";
 
   /// ```dart
   /// "Take photo"
   /// ```
   String get camera => """Take photo""";
+
+  /// ```dart
+  /// "From Nextcloud files"
+  /// ```
+  String get fromFiles => """From Nextcloud files""";
 
   /// ```dart
   /// "New folder"
@@ -10175,7 +10232,9 @@ Password: pantry-rocks""",
   """checklists.itemForm.image""": """Image""",
   """checklists.itemForm.addImage""": """Add image""",
   """checklists.itemForm.takePhoto""": """Take photo""",
-  """checklists.itemForm.chooseImage""": """Choose image""",
+  """checklists.itemForm.fromDevice""": """From device""",
+  """checklists.itemForm.fromComputer""": """From computer""",
+  """checklists.itemForm.fromNextcloud""": """From Nextcloud""",
   """checklists.itemForm.replaceImage""": """Replace""",
   """checklists.itemForm.removeImage""": """Remove""",
   """checklists.itemForm.imageQueuedOffline""":
@@ -10649,6 +10708,14 @@ Password: pantry-rocks""",
   """notesWall.filePicker.failedToLoad""": """Could not open this folder.""",
   """notesWall.filePicker.folderReadOnly""":
       """You can't add files to this folder.""",
+  """notesWall.filePicker.chooseImage""": """Choose an image""",
+  """notesWall.filePicker.noImages""": """No images in this folder.""",
+  """notesWall.filePicker.linkFile""": """Link to file""",
+  """notesWall.filePicker.linkFileHint""":
+      """Shows the file from your Nextcloud. It keeps working if you rename or move it.""",
+  """notesWall.filePicker.importCopy""": """Import a copy""",
+  """notesWall.filePicker.importCopyHint""":
+      """Saves a separate copy in Pantry. Changes to the original won't affect it.""",
   """notesWall.title""": """Title""",
   """notesWall.content""": """Content""",
   """notesWall.color""": """Color""",
@@ -10660,6 +10727,7 @@ Password: pantry-rocks""",
   """photoBoard.noPhotos""": """No photos yet.""",
   """photoBoard.failedToLoad""": """Failed to load photos.""",
   """photoBoard.uploadFailed""": """Failed to upload photo.""",
+  """photoBoard.attachFromFilesFailed""": """Couldn't add that file.""",
   """photoBoard.waitingForConnection""": """Waiting for a connection""",
   """photoBoard.deleteFailed""": """Failed to delete photo.""",
   """photoBoard.deleteConfirm""": """Delete this photo?""",
@@ -10688,8 +10756,10 @@ Password: pantry-rocks""",
   """photoBoard.folderName""": """Folder name""",
   """photoBoard.renameFolder""": """Rename folder""",
   """photoBoard.caption""": """Caption""",
-  """photoBoard.addMenu.upload""": """Upload photos""",
+  """photoBoard.addMenu.fromDevice""": """From device""",
+  """photoBoard.addMenu.fromComputer""": """From computer""",
   """photoBoard.addMenu.camera""": """Take photo""",
+  """photoBoard.addMenu.fromFiles""": """From Nextcloud files""",
   """photoBoard.addMenu.newFolder""": """New folder""",
   """photoBoard.sort.foldersFirst""": """Folders first""",
   """photoBoard.sort.newestFirst""": """Newest first""",

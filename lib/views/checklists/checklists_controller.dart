@@ -8,6 +8,7 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/category.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
+import 'package:pantry_core/models/file_attach.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/label.dart' as models;

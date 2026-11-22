@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
+import 'package:pantry_core/models/file_attach.dart';
 import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
 import 'package:pantry_core/models/item_start_values.dart';
@@ -27,6 +28,17 @@ class ItemDraft {
   RecurrenceState recurrence = RecurrenceState();
   XFile? imageFile;
   Uint8List? imageBytes;
+
+  /// An image from the account's Nextcloud files, in place of [imageBytes].
+  NextcloudImagePick? remoteImage;
+
+  bool get hasImage => imageBytes != null || remoteImage != null;
+
+  void clearImage() {
+    imageFile = null;
+    imageBytes = null;
+    remoteImage = null;
+  }
 
   /// Scanned barcode (EAN/UPC) carried through to the created item. Set by the
   /// scan flow; null for hand-typed items.
@@ -74,8 +86,7 @@ class ItemDraft {
       this.stock = StockDraft.forItem(null, template: stock.template);
     }
     this.start(start);
-    imageFile = null;
-    imageBytes = null;
+    clearImage();
     barcode = null;
     price = PricesDraft.empty(price.storeless.currency);
     customFields = const [];
@@ -112,6 +123,7 @@ class ComposeSubmission {
   final Uint8List? imageBytes;
   final String? imageName;
   final String? imageMime;
+  final NextcloudImagePick? remoteImage;
   final String? barcode;
 
   /// Prices for the created item, or null when there's no price (create
@@ -145,6 +157,7 @@ class ComposeSubmission {
     this.imageBytes,
     this.imageName,
     this.imageMime,
+    this.remoteImage,
     this.barcode,
     this.prices,
     this.customFields,

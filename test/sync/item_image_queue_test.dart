@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pantry_core/models/file_attach.dart';
 import 'package:pantry_core/services/pending_upload_store.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
@@ -101,6 +102,28 @@ void main() {
       },
     );
 
+    test('a Nextcloud file on an unsynced item queues its id alone', () async {
+      manager.setOnline(false);
+      final controller = ChecklistsController(houseId: 1);
+      addTearDown(controller.dispose);
+
+      await controller.attachItemImageFromFile(
+        makeListItem(id: -5, listId: 10),
+        const NextcloudImagePick(
+          fileId: 77,
+          name: 'cat.jpg',
+          mode: FileAttachMode.import,
+        ),
+      );
+
+      final op = queued().single;
+      expect(op.op, SyncOpKind.setImage);
+      expect(op.tempEntityId, -5);
+      expect(op.body[itemImageFileIdKey], 77);
+      expect(op.body[itemImageModeKey], 'import');
+      expect(await PendingUploadStore.instance.read(op.uuid), isNull);
+    });
+
     test('removing an image queues a clear', () async {
       manager.setOnline(false);
       final controller = ChecklistsController(houseId: 1);
@@ -191,6 +214,38 @@ void main() {
 
       expect(controller.pendingItemImage(42), isNull);
     });
+
+    test(
+      'a Nextcloud file queued after a picture takes it off the row',
+      () async {
+        manager.setOnline(false);
+        final controller = ChecklistsController(houseId: 1);
+        addTearDown(controller.dispose);
+
+        final item = makeListItem(id: -5, listId: 10);
+        await controller.uploadItemImage(
+          item,
+          bytes: _bytes,
+          fileName: 'shot.jpg',
+          mimeType: 'image/jpeg',
+        );
+        await settleUntil(() => controller.pendingItemImage(-5) != null);
+
+        // The file has no bytes on this device, so the row falls back to what
+        // the server shows rather than the picture it replaced.
+        await controller.attachItemImageFromFile(
+          item,
+          const NextcloudImagePick(
+            fileId: 77,
+            name: 'cat.jpg',
+            mode: FileAttachMode.link,
+          ),
+        );
+        await settleUntil(() => controller.pendingItemImage(-5) == null);
+
+        expect(controller.pendingItemImage(-5), isNull);
+      },
+    );
 
     test('nothing is offered once the upload lands', () async {
       manager.setOnline(false);

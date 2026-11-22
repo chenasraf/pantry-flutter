@@ -216,6 +216,8 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
           fileName: s.imageName ?? 'image.jpg',
           mimeType: s.imageMime ?? 'image/jpeg',
         );
+      } else if (s.remoteImage != null) {
+        await domain.attachItemImageFromFile(created, s.remoteImage!);
       }
       return true;
     } catch (_) {

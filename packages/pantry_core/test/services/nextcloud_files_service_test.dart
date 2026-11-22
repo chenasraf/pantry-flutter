@@ -14,6 +14,7 @@ String _response(
   bool folder = false,
   String? type,
   int? size,
+  int? fileId,
   String permissions = 'RGDNVCK',
 }) =>
     '''
@@ -24,6 +25,7 @@ String _response(
       <d:resourcetype>${folder ? '<d:collection/>' : ''}</d:resourcetype>
       ${type == null ? '' : '<d:getcontenttype>$type</d:getcontenttype>'}
       ${size == null ? '' : '<d:getcontentlength>$size</d:getcontentlength>'}
+      ${fileId == null ? '' : '<oc:fileid>$fileId</oc:fileid>'}
       <d:getlastmodified>Sun, 22 Nov 2026 10:00:00 GMT</d:getlastmodified>
       <oc:permissions>$permissions</oc:permissions>
     </d:prop>
@@ -140,6 +142,54 @@ void main() {
       expect(listing.folder.contentType, isNull);
       expect(listing.folder.size, isNull);
       expect(listing.folder.modifiedAt, DateTime.utc(2026, 11, 22, 10));
+    });
+
+    test('reads each file\'s Nextcloud id', () {
+      final listing = NextcloudFilesService.parsePropfind(
+        _multistatus([
+          _response('/remote.php/dav/files/ada/', folder: true, fileId: 1),
+          _response(
+            '/remote.php/dav/files/ada/cat.jpg',
+            type: 'image/jpeg',
+            fileId: 42,
+          ),
+        ]),
+        userId: 'ada',
+      );
+      expect(listing.folder.fileId, 1);
+      expect(listing.children.single.fileId, 42);
+    });
+  });
+
+  group('isImage', () {
+    RemoteFileEntry file(String? type, {int? fileId = 7}) => RemoteFileEntry(
+      path: '/f',
+      name: 'f',
+      isFolder: false,
+      fileId: fileId,
+      contentType: type,
+    );
+
+    test('takes any image type', () {
+      expect(file('image/jpeg').isImage, isTrue);
+      expect(file('IMAGE/PNG').isImage, isTrue);
+      expect(file('image/avif').isImage, isTrue);
+    });
+
+    test('turns down other types, files without an id and folders', () {
+      expect(file('video/x-matroska').isImage, isFalse);
+      expect(file('text/plain').isImage, isFalse);
+      expect(file(null).isImage, isFalse);
+      expect(file('image/jpeg', fileId: null).isImage, isFalse);
+      expect(
+        const RemoteFileEntry(
+          path: '/d',
+          name: 'd',
+          isFolder: true,
+          fileId: 3,
+        ).isImage,
+        isFalse,
+      );
     });
   });
 

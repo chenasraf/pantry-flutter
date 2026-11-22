@@ -10,6 +10,7 @@ import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry_core/models/label.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
+import 'package:pantry_core/models/file_attach.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
@@ -23,6 +24,7 @@ import 'package:pantry_core/utils/rrule.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
 import 'package:pantry/views/custom_fields/item_custom_fields_editor.dart';
+import 'package:pantry/views/notes/nextcloud_file_picker.dart';
 import 'package:pantry_core/widgets/avif_image.dart';
 import 'package:pantry/widgets/create_label_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
@@ -83,6 +85,7 @@ class _ItemFormViewState extends State<ItemFormView> {
   bool _labelPickerOpen = false;
   TextDirection _nameDir = TextDirection.ltr;
   XFile? _pickedImage;
+  NextcloudImagePick? _pickedRemote;
   bool _removeExistingImage = false;
   String? _focusedField;
   bool _cameraSupported = !PlatformInfo.isDesktop;
@@ -384,8 +387,12 @@ class _ItemFormViewState extends State<ItemFormView> {
         if (currency != null) await widget.controller.setLastCurrency(currency);
       }
 
-      if (_removeExistingImage && _pickedImage == null) {
+      final remote = _pickedRemote;
+      if (_removeExistingImage && _pickedImage == null && remote == null) {
         await widget.controller.deleteItemImage(savedItem);
+      }
+      if (remote != null) {
+        await widget.controller.attachItemImageFromFile(savedItem, remote);
       }
       if (_pickedImage != null) {
         final bytes = await _pickedImage!.readAsBytes();
@@ -767,6 +774,18 @@ class _ItemFormViewState extends State<ItemFormView> {
   }
 
   Widget _buildImageSection(ThemeData theme) {
+    final remote = _pickedRemote;
+    if (remote != null) {
+      return ImagePreviewTile(
+        image: nextcloudPickImage(remote),
+        onRemove: () => setState(() {
+          _pickedRemote = null;
+          if (!_isEditing) _removeExistingImage = false;
+        }),
+        onReplace: _replaceImage,
+      );
+    }
+
     if (_pickedImage != null) {
       return ImagePreviewTile(
         image: AvifAwareFileImage(File(_pickedImage!.path)),
@@ -808,20 +827,27 @@ class _ItemFormViewState extends State<ItemFormView> {
       onTakePhoto: _cameraSupported
           ? () => _pickImage(ImageSource.camera)
           : null,
+      onFromNextcloud: ServerFeature.imagesFromFiles
+          ? _pickFromNextcloud
+          : null,
     );
   }
 
   Future<void> _replaceImage() async {
-    if (!_cameraSupported) {
-      await _pickImage(ImageSource.gallery);
-      return;
-    }
-    final source = await showModalBottomSheet<ImageSource>(
-      context: context,
-      showDragHandle: true,
-      builder: (ctx) => const ImageSourceSheet(),
+    final source = await chooseImageSource(
+      context,
+      cameraSupported: _cameraSupported,
     );
-    if (source != null) await _pickImage(source);
+    switch (source) {
+      case ImagePickSource.camera:
+        await _pickImage(ImageSource.camera);
+      case ImagePickSource.device:
+        await _pickImage(ImageSource.gallery);
+      case ImagePickSource.nextcloud:
+        await _pickFromNextcloud();
+      case null:
+        break;
+    }
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -830,9 +856,20 @@ class _ItemFormViewState extends State<ItemFormView> {
     if (file != null) {
       setState(() {
         _pickedImage = file;
+        _pickedRemote = null;
         _removeExistingImage = true;
       });
     }
+  }
+
+  Future<void> _pickFromNextcloud() async {
+    final pick = await pickNextcloudImage(context);
+    if (pick == null || !mounted) return;
+    setState(() {
+      _pickedRemote = pick;
+      _pickedImage = null;
+      _removeExistingImage = true;
+    });
   }
 }
 

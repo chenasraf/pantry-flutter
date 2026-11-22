@@ -4264,9 +4264,19 @@ class ItemFormChecklistsMessagesHe extends ItemFormChecklistsMessages {
   String get takePhoto => """צלם תמונה""";
 
   /// ```dart
-  /// "בחר תמונה"
+  /// "מהמכשיר"
   /// ```
-  String get chooseImage => """בחר תמונה""";
+  String get fromDevice => """מהמכשיר""";
+
+  /// ```dart
+  /// "מהמחשב"
+  /// ```
+  String get fromComputer => """מהמחשב""";
+
+  /// ```dart
+  /// "מ-Nextcloud"
+  /// ```
+  String get fromNextcloud => """מ-Nextcloud""";
 
   /// ```dart
   /// "החלף"
@@ -6829,6 +6839,38 @@ class FilePickerNotesWallMessagesHe extends FilePickerNotesWallMessages {
   /// "אין לך הרשאה להוסיף קבצים לתיקייה זו."
   /// ```
   String get folderReadOnly => """אין לך הרשאה להוסיף קבצים לתיקייה זו.""";
+
+  /// ```dart
+  /// "בחר תמונה"
+  /// ```
+  String get chooseImage => """בחר תמונה""";
+
+  /// ```dart
+  /// "אין תמונות בתיקייה הזו."
+  /// ```
+  String get noImages => """אין תמונות בתיקייה הזו.""";
+
+  /// ```dart
+  /// "קישור לקובץ"
+  /// ```
+  String get linkFile => """קישור לקובץ""";
+
+  /// ```dart
+  /// "מציג את הקובץ מה-Nextcloud שלך. ממשיך לעבוד גם אם תשנה את שמו או תעביר אותו."
+  /// ```
+  String get linkFileHint =>
+      """מציג את הקובץ מה-Nextcloud שלך. ממשיך לעבוד גם אם תשנה את שמו או תעביר אותו.""";
+
+  /// ```dart
+  /// "ייבוא עותק"
+  /// ```
+  String get importCopy => """ייבוא עותק""";
+
+  /// ```dart
+  /// "שומר עותק נפרד ב-Pantry. שינויים בקובץ המקורי לא ישפיעו עליו."
+  /// ```
+  String get importCopyHint =>
+      """שומר עותק נפרד ב-Pantry. שינויים בקובץ המקורי לא ישפיעו עליו.""";
 }
 
 class SortNotesWallMessagesHe extends SortNotesWallMessages {
@@ -6885,6 +6927,11 @@ class PhotoBoardMessagesHe extends PhotoBoardMessages {
   /// ```
   String queuedOffline(int count) =>
       """${_plural(count, one: 'אין חיבור — התמונה תועלה כשהחיבור יחזור.', many: 'אין חיבור — $count תמונות יועלו כשהחיבור יחזור.')}""";
+
+  /// ```dart
+  /// "לא ניתן להוסיף את הקובץ."
+  /// ```
+  String get attachFromFilesFailed => """לא ניתן להוסיף את הקובץ.""";
 
   /// ```dart
   /// "ממתין לחיבור"
@@ -7048,14 +7095,24 @@ class AddMenuPhotoBoardMessagesHe extends AddMenuPhotoBoardMessages {
   const AddMenuPhotoBoardMessagesHe(this._parent) : super(_parent);
 
   /// ```dart
-  /// "העלאת תמונות"
+  /// "מהמכשיר"
   /// ```
-  String get upload => """העלאת תמונות""";
+  String get fromDevice => """מהמכשיר""";
+
+  /// ```dart
+  /// "מהמחשב"
+  /// ```
+  String get fromComputer => """מהמחשב""";
 
   /// ```dart
   /// "צילום תמונה"
   /// ```
   String get camera => """צילום תמונה""";
+
+  /// ```dart
+  /// "מקבצי Nextcloud"
+  /// ```
+  String get fromFiles => """מקבצי Nextcloud""";
 
   /// ```dart
   /// "תיקייה חדשה"
@@ -10155,7 +10212,9 @@ Map<String, String> get messagesHeMap => {
   """checklists.itemForm.image""": """תמונה""",
   """checklists.itemForm.addImage""": """הוסף תמונה""",
   """checklists.itemForm.takePhoto""": """צלם תמונה""",
-  """checklists.itemForm.chooseImage""": """בחר תמונה""",
+  """checklists.itemForm.fromDevice""": """מהמכשיר""",
+  """checklists.itemForm.fromComputer""": """מהמחשב""",
+  """checklists.itemForm.fromNextcloud""": """מ-Nextcloud""",
   """checklists.itemForm.replaceImage""": """החלף""",
   """checklists.itemForm.removeImage""": """הסר""",
   """checklists.itemForm.imageQueuedOffline""":
@@ -10624,6 +10683,14 @@ Map<String, String> get messagesHeMap => {
   """notesWall.filePicker.failedToLoad""": """לא ניתן לפתוח את התיקייה.""",
   """notesWall.filePicker.folderReadOnly""":
       """אין לך הרשאה להוסיף קבצים לתיקייה זו.""",
+  """notesWall.filePicker.chooseImage""": """בחר תמונה""",
+  """notesWall.filePicker.noImages""": """אין תמונות בתיקייה הזו.""",
+  """notesWall.filePicker.linkFile""": """קישור לקובץ""",
+  """notesWall.filePicker.linkFileHint""":
+      """מציג את הקובץ מה-Nextcloud שלך. ממשיך לעבוד גם אם תשנה את שמו או תעביר אותו.""",
+  """notesWall.filePicker.importCopy""": """ייבוא עותק""",
+  """notesWall.filePicker.importCopyHint""":
+      """שומר עותק נפרד ב-Pantry. שינויים בקובץ המקורי לא ישפיעו עליו.""",
   """notesWall.title""": """כותרת""",
   """notesWall.content""": """תוכן""",
   """notesWall.color""": """צבע""",
@@ -10635,6 +10702,7 @@ Map<String, String> get messagesHeMap => {
   """photoBoard.noPhotos""": """אין תמונות עדיין.""",
   """photoBoard.failedToLoad""": """טעינת התמונות נכשלה.""",
   """photoBoard.uploadFailed""": """העלאת התמונה נכשלה.""",
+  """photoBoard.attachFromFilesFailed""": """לא ניתן להוסיף את הקובץ.""",
   """photoBoard.waitingForConnection""": """ממתין לחיבור""",
   """photoBoard.deleteFailed""": """מחיקת התמונה נכשלה.""",
   """photoBoard.deleteConfirm""": """למחוק את התמונה?""",
@@ -10662,8 +10730,10 @@ Map<String, String> get messagesHeMap => {
   """photoBoard.folderName""": """שם התיקייה""",
   """photoBoard.renameFolder""": """שנה שם תיקייה""",
   """photoBoard.caption""": """כיתוב""",
-  """photoBoard.addMenu.upload""": """העלאת תמונות""",
+  """photoBoard.addMenu.fromDevice""": """מהמכשיר""",
+  """photoBoard.addMenu.fromComputer""": """מהמחשב""",
   """photoBoard.addMenu.camera""": """צילום תמונה""",
+  """photoBoard.addMenu.fromFiles""": """מקבצי Nextcloud""",
   """photoBoard.addMenu.newFolder""": """תיקייה חדשה""",
   """photoBoard.sort.foldersFirst""": """תיקיות קודם""",
   """photoBoard.sort.newestFirst""": """החדש ביותר""",

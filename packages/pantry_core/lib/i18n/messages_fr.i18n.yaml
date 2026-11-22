@@ -758,7 +758,9 @@ checklists:
     image: Image
     addImage: Ajouter une image
     takePhoto: Prendre une photo
-    chooseImage: Choisir une image
+    fromDevice: "De l'appareil"
+    fromComputer: "De l'ordinateur"
+    fromNextcloud: "De Nextcloud"
     replaceImage: Remplacer
     removeImage: Supprimer
     imageQueuedOffline: "Pas de connexion — l'image sera jointe dès votre retour en ligne."
@@ -1299,6 +1301,12 @@ notesWall:
     noTextFiles: "Aucun fichier texte dans ce dossier."
     failedToLoad: "Impossible d'ouvrir ce dossier."
     folderReadOnly: "Vous ne pouvez pas ajouter de fichiers à ce dossier."
+    chooseImage: "Choisir une image"
+    noImages: "Aucune image dans ce dossier."
+    linkFile: "Lier au fichier"
+    linkFileHint: "Affiche le fichier depuis votre Nextcloud. Il reste disponible si vous le renommez ou le déplacez."
+    importCopy: "Importer une copie"
+    importCopyHint: "Enregistre une copie distincte dans Pantry. Les modifications de l'original ne l'affectent pas."
   title: Titre
   content: Contenu
   color: Couleur
@@ -1314,6 +1322,7 @@ photoBoard:
   failedToLoad: Impossible de charger les photos.
   uploadFailed: "Impossible de télécharger la photo."
   queuedOffline(int count): "${_plural(count, one: 'Pas de connexion — la photo sera envoyée dès votre retour en ligne.', many: 'Pas de connexion — $count photos seront envoyées dès votre retour en ligne.')}"
+  attachFromFilesFailed: "Impossible d'ajouter ce fichier."
   waitingForConnection: "En attente d'une connexion"
   deleteFailed: Impossible de supprimer la photo.
   deleteConfirm: Supprimer cette photo ?
@@ -1345,8 +1354,10 @@ photoBoard:
   caption: "Légende"
   photoCount(int count): "$count"
   addMenu:
-    upload: Téléverser des photos
+    fromDevice: "De l'appareil"
+    fromComputer: "De l'ordinateur"
     camera: Prendre une photo
+    fromFiles: "Depuis les fichiers Nextcloud"
     newFolder: Nouveau dossier
   sort:
     foldersFirst: Dossiers en premier

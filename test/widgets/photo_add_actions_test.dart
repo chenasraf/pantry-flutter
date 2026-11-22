@@ -13,7 +13,8 @@ void main() {
   // never rendered. The label we reach for to confirm the menu is open varies
   // by platform.
   final isDesktop = Platform.isMacOS || Platform.isWindows || Platform.isLinux;
-  final menuOpenLabel = isDesktop ? 'Upload photos' : 'Take photo';
+  final menuOpenLabel = isDesktop ? 'From computer' : 'Take photo';
+  final uploadLabel = isDesktop ? 'From computer' : 'From device';
 
   /// The board's actions and the nav that renders them, wired the way the home
   /// shell wires them: the board publishes into a holder, the bar reads it.
@@ -49,7 +50,7 @@ void main() {
     expect(find.byIcon(Icons.add), findsOneWidget);
 
     // None of the action labels should be visible while closed.
-    expect(find.text('Upload photos'), findsNothing);
+    expect(find.text(uploadLabel), findsNothing);
     expect(find.text('Take photo'), findsNothing);
     expect(find.text('New folder'), findsNothing);
   });
@@ -64,7 +65,7 @@ void main() {
     await tester.tap(find.byIcon(Icons.add));
     await tester.pumpAndSettle();
 
-    expect(find.text('Upload photos'), findsOneWidget);
+    expect(find.text(uploadLabel), findsOneWidget);
     expect(find.text('New folder'), findsOneWidget);
     expect(find.byIcon(Icons.add_photo_alternate), findsOneWidget);
     expect(find.byIcon(Icons.create_new_folder), findsOneWidget);

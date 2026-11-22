@@ -878,7 +878,9 @@ checklists:
     image: Bilete
     addImage: Legg til bilete
     takePhoto: Ta bilete
-    chooseImage: Vel bilete
+    fromDevice: "Frå eininga"
+    fromComputer: "Frå datamaskina"
+    fromNextcloud: "Frå Nextcloud"
     replaceImage: Erstatt
     removeImage: Fjern
     imageQueuedOffline: Inga tilkopling — biletet blir lagt ved når du er tilkopla att.
@@ -1438,6 +1440,12 @@ notesWall:
     noTextFiles: "Ingen tekstfiler i denne mappa."
     failedToLoad: "Kunne ikkje opne denne mappa."
     folderReadOnly: "Du kan ikkje leggje til filer i denne mappa."
+    chooseImage: "Vel eit bilete"
+    noImages: "Ingen bilete i denne mappa."
+    linkFile: "Lenk til fila"
+    linkFileHint: "Viser fila frå Nextcloud-en din. Lenkja verkar framleis om du endrar namn på fila eller flyttar ho."
+    importCopy: "Importer ein kopi"
+    importCopyHint: "Lagrar ein eigen kopi i Pantry. Endringar i originalen påverkar ikkje kopien."
   title: Tittel
   content: Innhald
   color: Farge
@@ -1452,6 +1460,7 @@ photoBoard:
   failedToLoad: Klarte ikkje laste bilete.
   uploadFailed: Klarte ikkje laste opp bilete.
   queuedOffline(int count): "${_plural(count, one: 'Inga tilkopling — biletet blir lasta opp når du er tilkopla att.', many: 'Inga tilkopling — $count bilete blir lasta opp når du er tilkopla att.')}"
+  attachFromFilesFailed: "Kunne ikkje leggje til fila."
   waitingForConnection: Ventar på tilkopling
   deleteFailed: Klarte ikkje slette bilete
   deleteConfirm: Slett dette biletet?
@@ -1487,8 +1496,10 @@ photoBoard:
   caption: Bilettekst
   photoCount(int count): "$count"
   addMenu:
-    upload: Last opp bilete
+    fromDevice: "Frå eininga"
+    fromComputer: "Frå datamaskina"
     camera: Ta bilete
+    fromFiles: "Frå Nextcloud-filer"
     newFolder: Ny mappe
   sort:
     foldersFirst: Mapper fyrst

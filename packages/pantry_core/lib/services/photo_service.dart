@@ -1,3 +1,4 @@
+import 'package:pantry_core/models/file_attach.dart';
 import 'package:pantry_core/models/photo.dart';
 import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/cache_store.dart';
@@ -84,6 +85,20 @@ class PhotoService {
       mimeType: mimeType,
       fieldName: 'image',
       fields: fields.isNotEmpty ? fields : null,
+      fromJson: (data) => Photo.fromJson(data),
+    );
+  }
+
+  /// Add one of the caller's own Nextcloud files to the board.
+  Future<Photo> attachPhotoFromFile(
+    int houseId, {
+    required int fileId,
+    required FileAttachMode mode,
+    int? folderId,
+  }) async {
+    return ApiClient.instance.post<Map<String, dynamic>, Photo>(
+      '/houses/$houseId/photos/files',
+      body: {'fileId': fileId, 'mode': mode.name, 'folderId': ?folderId},
       fromJson: (data) => Photo.fromJson(data),
     );
   }

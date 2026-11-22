@@ -4306,9 +4306,19 @@ class ItemFormChecklistsMessagesDe extends ItemFormChecklistsMessages {
   String get takePhoto => """Foto aufnehmen""";
 
   /// ```dart
-  /// "Bild auswählen"
+  /// "Vom Gerät"
   /// ```
-  String get chooseImage => """Bild auswählen""";
+  String get fromDevice => """Vom Gerät""";
+
+  /// ```dart
+  /// "Vom Computer"
+  /// ```
+  String get fromComputer => """Vom Computer""";
+
+  /// ```dart
+  /// "Aus Nextcloud"
+  /// ```
+  String get fromNextcloud => """Aus Nextcloud""";
 
   /// ```dart
   /// "Ersetzen"
@@ -6911,6 +6921,38 @@ class FilePickerNotesWallMessagesDe extends FilePickerNotesWallMessages {
   /// ```
   String get folderReadOnly =>
       """Du kannst diesem Ordner keine Dateien hinzufügen.""";
+
+  /// ```dart
+  /// "Bild auswählen"
+  /// ```
+  String get chooseImage => """Bild auswählen""";
+
+  /// ```dart
+  /// "Keine Bilder in diesem Ordner."
+  /// ```
+  String get noImages => """Keine Bilder in diesem Ordner.""";
+
+  /// ```dart
+  /// "Mit Datei verknüpfen"
+  /// ```
+  String get linkFile => """Mit Datei verknüpfen""";
+
+  /// ```dart
+  /// "Zeigt die Datei aus deiner Nextcloud. Sie bleibt verfügbar, wenn du sie umbenennst oder verschiebst."
+  /// ```
+  String get linkFileHint =>
+      """Zeigt die Datei aus deiner Nextcloud. Sie bleibt verfügbar, wenn du sie umbenennst oder verschiebst.""";
+
+  /// ```dart
+  /// "Kopie importieren"
+  /// ```
+  String get importCopy => """Kopie importieren""";
+
+  /// ```dart
+  /// "Speichert eine eigene Kopie in Pantry. Änderungen am Original wirken sich nicht darauf aus."
+  /// ```
+  String get importCopyHint =>
+      """Speichert eine eigene Kopie in Pantry. Änderungen am Original wirken sich nicht darauf aus.""";
 }
 
 class SortNotesWallMessagesDe extends SortNotesWallMessages {
@@ -6967,6 +7009,12 @@ class PhotoBoardMessagesDe extends PhotoBoardMessages {
   /// ```
   String queuedOffline(int count) =>
       """${_plural(count, one: 'Keine Verbindung — das Foto wird hochgeladen, sobald du wieder online bist.', many: 'Keine Verbindung — $count Fotos werden hochgeladen, sobald du wieder online bist.')}""";
+
+  /// ```dart
+  /// "Die Datei konnte nicht hinzugefügt werden."
+  /// ```
+  String get attachFromFilesFailed =>
+      """Die Datei konnte nicht hinzugefügt werden.""";
 
   /// ```dart
   /// "Warten auf eine Verbindung"
@@ -7132,14 +7180,24 @@ class AddMenuPhotoBoardMessagesDe extends AddMenuPhotoBoardMessages {
   const AddMenuPhotoBoardMessagesDe(this._parent) : super(_parent);
 
   /// ```dart
-  /// "Fotos hochladen"
+  /// "Vom Gerät"
   /// ```
-  String get upload => """Fotos hochladen""";
+  String get fromDevice => """Vom Gerät""";
+
+  /// ```dart
+  /// "Vom Computer"
+  /// ```
+  String get fromComputer => """Vom Computer""";
 
   /// ```dart
   /// "Foto aufnehmen"
   /// ```
   String get camera => """Foto aufnehmen""";
+
+  /// ```dart
+  /// "Aus Nextcloud-Dateien"
+  /// ```
+  String get fromFiles => """Aus Nextcloud-Dateien""";
 
   /// ```dart
   /// "Neuer Ordner"
@@ -10329,7 +10387,9 @@ Passwort: pantry-rocks""",
   """checklists.itemForm.image""": """Bild""",
   """checklists.itemForm.addImage""": """Bild hinzufügen""",
   """checklists.itemForm.takePhoto""": """Foto aufnehmen""",
-  """checklists.itemForm.chooseImage""": """Bild auswählen""",
+  """checklists.itemForm.fromDevice""": """Vom Gerät""",
+  """checklists.itemForm.fromComputer""": """Vom Computer""",
+  """checklists.itemForm.fromNextcloud""": """Aus Nextcloud""",
   """checklists.itemForm.replaceImage""": """Ersetzen""",
   """checklists.itemForm.removeImage""": """Entfernen""",
   """checklists.itemForm.imageQueuedOffline""":
@@ -10838,6 +10898,14 @@ Passwort: pantry-rocks""",
       """Dieser Ordner konnte nicht geöffnet werden.""",
   """notesWall.filePicker.folderReadOnly""":
       """Du kannst diesem Ordner keine Dateien hinzufügen.""",
+  """notesWall.filePicker.chooseImage""": """Bild auswählen""",
+  """notesWall.filePicker.noImages""": """Keine Bilder in diesem Ordner.""",
+  """notesWall.filePicker.linkFile""": """Mit Datei verknüpfen""",
+  """notesWall.filePicker.linkFileHint""":
+      """Zeigt die Datei aus deiner Nextcloud. Sie bleibt verfügbar, wenn du sie umbenennst oder verschiebst.""",
+  """notesWall.filePicker.importCopy""": """Kopie importieren""",
+  """notesWall.filePicker.importCopyHint""":
+      """Speichert eine eigene Kopie in Pantry. Änderungen am Original wirken sich nicht darauf aus.""",
   """notesWall.title""": """Titel""",
   """notesWall.content""": """Inhalt""",
   """notesWall.color""": """Farbe""",
@@ -10849,6 +10917,8 @@ Passwort: pantry-rocks""",
   """photoBoard.noPhotos""": """Noch keine Fotos.""",
   """photoBoard.failedToLoad""": """Fotos konnten nicht geladen werden.""",
   """photoBoard.uploadFailed""": """Foto konnte nicht hochgeladen werden.""",
+  """photoBoard.attachFromFilesFailed""":
+      """Die Datei konnte nicht hinzugefügt werden.""",
   """photoBoard.waitingForConnection""": """Warten auf eine Verbindung""",
   """photoBoard.deleteFailed""": """Foto konnte nicht gelöscht werden.""",
   """photoBoard.deleteConfirm""": """Dieses Foto löschen?""",
@@ -10882,8 +10952,10 @@ Passwort: pantry-rocks""",
   """photoBoard.folderName""": """Ordnername""",
   """photoBoard.renameFolder""": """Ordner umbenennen""",
   """photoBoard.caption""": """Beschriftung""",
-  """photoBoard.addMenu.upload""": """Fotos hochladen""",
+  """photoBoard.addMenu.fromDevice""": """Vom Gerät""",
+  """photoBoard.addMenu.fromComputer""": """Vom Computer""",
   """photoBoard.addMenu.camera""": """Foto aufnehmen""",
+  """photoBoard.addMenu.fromFiles""": """Aus Nextcloud-Dateien""",
   """photoBoard.addMenu.newFolder""": """Neuer Ordner""",
   """photoBoard.sort.foldersFirst""": """Ordner zuerst""",
   """photoBoard.sort.newestFirst""": """Neueste zuerst""",

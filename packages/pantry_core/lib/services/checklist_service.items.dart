@@ -316,6 +316,21 @@ extension ChecklistServiceItems on ChecklistService {
     );
   }
 
+  /// Attach one of the caller's own Nextcloud files as the item's image.
+  Future<ListItem> attachItemImageFromFile(
+    int houseId,
+    int listId,
+    int itemId, {
+    required int fileId,
+    required FileAttachMode mode,
+  }) async {
+    return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
+      '${listPath(houseId, listId)}/items/$itemId/image/files',
+      body: {'fileId': fileId, 'mode': mode.name},
+      fromJson: (data) => ListItem.fromJson(data),
+    );
+  }
+
   Future<void> deleteItemImage(int houseId, int listId, int itemId) async {
     await ApiClient.instance.delete(
       '${listPath(houseId, listId)}/items/$itemId/image',

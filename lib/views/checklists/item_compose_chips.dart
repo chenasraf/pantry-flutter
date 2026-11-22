@@ -300,10 +300,8 @@ class ChipRow extends StatelessWidget {
           if (showImageChip) ...[
             const SizedBox(width: 8),
             _ComposeChip(
-              label: draft.imageBytes != null
-                  ? '✓'
-                  : m.checklists.compose.chipImage,
-              color: draft.imageBytes != null ? cs.primary : null,
+              label: draft.hasImage ? '✓' : m.checklists.compose.chipImage,
+              color: draft.hasImage ? cs.primary : null,
               icon: Icons.image_outlined,
               selected: openTray == Tray.image,
               onTap: () => onOpen(Tray.image),

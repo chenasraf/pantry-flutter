@@ -758,7 +758,9 @@ checklists:
     image: Bild
     addImage: Bild hinzufügen
     takePhoto: Foto aufnehmen
-    chooseImage: Bild auswählen
+    fromDevice: "Vom Gerät"
+    fromComputer: "Vom Computer"
+    fromNextcloud: "Aus Nextcloud"
     replaceImage: Ersetzen
     removeImage: Entfernen
     imageQueuedOffline: Keine Verbindung — das Bild wird angehängt, sobald du wieder online bist.
@@ -1299,6 +1301,12 @@ notesWall:
     noTextFiles: "Keine Textdateien in diesem Ordner."
     failedToLoad: "Dieser Ordner konnte nicht geöffnet werden."
     folderReadOnly: "Du kannst diesem Ordner keine Dateien hinzufügen."
+    chooseImage: "Bild auswählen"
+    noImages: "Keine Bilder in diesem Ordner."
+    linkFile: "Mit Datei verknüpfen"
+    linkFileHint: "Zeigt die Datei aus deiner Nextcloud. Sie bleibt verfügbar, wenn du sie umbenennst oder verschiebst."
+    importCopy: "Kopie importieren"
+    importCopyHint: "Speichert eine eigene Kopie in Pantry. Änderungen am Original wirken sich nicht darauf aus."
   title: Titel
   content: Inhalt
   color: Farbe
@@ -1314,6 +1322,7 @@ photoBoard:
   failedToLoad: Fotos konnten nicht geladen werden.
   uploadFailed: Foto konnte nicht hochgeladen werden.
   queuedOffline(int count): "${_plural(count, one: 'Keine Verbindung — das Foto wird hochgeladen, sobald du wieder online bist.', many: 'Keine Verbindung — $count Fotos werden hochgeladen, sobald du wieder online bist.')}"
+  attachFromFilesFailed: "Die Datei konnte nicht hinzugefügt werden."
   waitingForConnection: Warten auf eine Verbindung
   deleteFailed: "Foto konnte nicht gelöscht werden."
   deleteConfirm: "Dieses Foto löschen?"
@@ -1345,8 +1354,10 @@ photoBoard:
   caption: Beschriftung
   photoCount(int count): "$count"
   addMenu:
-    upload: Fotos hochladen
+    fromDevice: "Vom Gerät"
+    fromComputer: "Vom Computer"
     camera: Foto aufnehmen
+    fromFiles: "Aus Nextcloud-Dateien"
     newFolder: Neuer Ordner
   sort:
     foldersFirst: Ordner zuerst

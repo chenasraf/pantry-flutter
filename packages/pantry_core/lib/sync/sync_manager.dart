@@ -556,8 +556,13 @@ class SyncManager {
     for (final raw in _queue.all()) {
       if (raw.entity != SyncEntity.checklistItem) continue;
       if (raw.houseId != houseId) continue;
-      final isSet = raw.op == SyncOpKind.setImage;
-      if (!isSet && raw.op != SyncOpKind.clearImage) continue;
+      // A file from the account's Nextcloud has no bytes on this device to
+      // show, so it hides an earlier picture the same way a removal does.
+      final isSet =
+          raw.op == SyncOpKind.setImage && raw.body[itemImageFileIdKey] == null;
+      if (raw.op != SyncOpKind.setImage && raw.op != SyncOpKind.clearImage) {
+        continue;
+      }
       for (final id in [
         _remap.rewrite(raw).effectiveEntityId,
         raw.tempEntityId,

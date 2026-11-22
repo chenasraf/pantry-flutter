@@ -758,7 +758,9 @@ checklists:
     image: תמונה
     addImage: הוסף תמונה
     takePhoto: צלם תמונה
-    chooseImage: בחר תמונה
+    fromDevice: "מהמכשיר"
+    fromComputer: "מהמחשב"
+    fromNextcloud: "מ-Nextcloud"
     replaceImage: החלף
     removeImage: הסר
     imageQueuedOffline: אין חיבור — התמונה תצורף כשהחיבור יחזור.
@@ -1299,6 +1301,12 @@ notesWall:
     noTextFiles: "אין קובצי טקסט בתיקייה זו."
     failedToLoad: "לא ניתן לפתוח את התיקייה."
     folderReadOnly: "אין לך הרשאה להוסיף קבצים לתיקייה זו."
+    chooseImage: "בחר תמונה"
+    noImages: "אין תמונות בתיקייה הזו."
+    linkFile: "קישור לקובץ"
+    linkFileHint: "מציג את הקובץ מה-Nextcloud שלך. ממשיך לעבוד גם אם תשנה את שמו או תעביר אותו."
+    importCopy: "ייבוא עותק"
+    importCopyHint: "שומר עותק נפרד ב-Pantry. שינויים בקובץ המקורי לא ישפיעו עליו."
   title: כותרת
   content: תוכן
   color: צבע
@@ -1314,6 +1322,7 @@ photoBoard:
   failedToLoad: טעינת התמונות נכשלה.
   uploadFailed: העלאת התמונה נכשלה.
   queuedOffline(int count): "${_plural(count, one: 'אין חיבור — התמונה תועלה כשהחיבור יחזור.', many: 'אין חיבור — $count תמונות יועלו כשהחיבור יחזור.')}"
+  attachFromFilesFailed: "לא ניתן להוסיף את הקובץ."
   waitingForConnection: ממתין לחיבור
   deleteFailed: מחיקת התמונה נכשלה.
   deleteConfirm: למחוק את התמונה?
@@ -1345,8 +1354,10 @@ photoBoard:
   caption: כיתוב
   photoCount(int count): "$count"
   addMenu:
-    upload: העלאת תמונות
+    fromDevice: "מהמכשיר"
+    fromComputer: "מהמחשב"
     camera: צילום תמונה
+    fromFiles: "מקבצי Nextcloud"
     newFolder: תיקייה חדשה
   sort:
     foldersFirst: תיקיות קודם

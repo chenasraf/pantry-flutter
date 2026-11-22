@@ -12,6 +12,9 @@ class RemoteFileEntry {
   final String path;
   final String name;
   final bool isFolder;
+
+  /// Nextcloud's file id, which outlives renames and moves.
+  final int? fileId;
   final String? contentType;
   final int? size;
   final DateTime? modifiedAt;
@@ -23,6 +26,7 @@ class RemoteFileEntry {
     required this.path,
     required this.name,
     required this.isFolder,
+    this.fileId,
     this.contentType,
     this.size,
     this.modifiedAt,
@@ -44,6 +48,12 @@ class RemoteFileEntry {
     if (!type.startsWith('text/') && type != 'application/json') return false;
     return (size ?? 0) <= maxImportBytes;
   }
+
+  /// Whether the server would accept this file as an item image or photo.
+  bool get isImage =>
+      !isFolder &&
+      fileId != null &&
+      (contentType?.toLowerCase().startsWith('image/') ?? false);
 }
 
 /// A folder's own entry and what it holds.
@@ -65,6 +75,14 @@ class NextcloudFilesService {
   static final NextcloudFilesService instance = NextcloudFilesService._();
 
   static const _dav = ApiClient(basePath: '/remote.php/dav/files');
+  static const _core = ApiClient(basePath: '/index.php/core');
+
+  /// A thumbnail of one of the account's own files, from Nextcloud itself:
+  /// Pantry's image preview only serves images already attached in a house.
+  Uri imagePreviewUri(int fileId, {int size = 128}) => _core.buildUri(
+    '/preview',
+    {'fileId': '$fileId', 'x': '$size', 'y': '$size', 'a': '1'},
+  );
 
   static const _propfindBody = '''
 <?xml version="1.0"?>
@@ -74,6 +92,7 @@ class NextcloudFilesService {
     <d:getcontenttype/>
     <d:getcontentlength/>
     <d:getlastmodified/>
+    <oc:fileid/>
     <oc:permissions/>
   </d:prop>
 </d:propfind>''';
@@ -152,10 +171,12 @@ class NextcloudFilesService {
     final type = prop('getcontenttype', _d)?.innerText.trim();
     final length = prop('getcontentlength', _d)?.innerText.trim();
     final modified = prop('getlastmodified', _d)?.innerText.trim();
+    final fileId = prop('fileid', _oc)?.innerText.trim();
     return RemoteFileEntry(
       path: path,
       name: path == '/' ? '' : path.substring(path.lastIndexOf('/') + 1),
       isFolder: isFolder,
+      fileId: fileId == null ? null : int.tryParse(fileId),
       contentType: type == null || type.isEmpty ? null : type,
       size: length == null ? null : int.tryParse(length),
       modifiedAt: modified == null ? null : _parseHttpDate(modified),
