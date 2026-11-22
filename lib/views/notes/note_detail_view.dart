@@ -15,6 +15,7 @@ import 'package:pantry/views/checklists/import_to_list.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/notes/note_form_view.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
+import 'package:pantry/widgets/markdown_task_checkbox.dart';
 import 'package:pantry/widgets/note_sync.dart';
 
 class NoteDetailView extends StatefulWidget {
@@ -61,9 +62,9 @@ class _NoteDetailViewState extends State<NoteDetailView> {
     setState(() => _note = updated);
   }
 
-  /// Each rendered checkbox's context, by task-line ordinal, so a tap anywhere
-  /// on its row can be traced back to it.
-  final Map<int, BuildContext> _checkboxes = {};
+  /// The task-line ordinal of each rendered checkbox, by its context, so a tap
+  /// anywhere on its row can be traced back to it.
+  final Map<BuildContext, int> _checkboxes = {};
   PointerDownEvent? _down;
   Timer? _tapWindow;
   bool _linkTapped = false;
@@ -110,8 +111,8 @@ class _NoteDetailViewState extends State<NoteDetailView> {
   int? _checkboxRowAt(Offset position) {
     int? hit;
     var hitArea = double.infinity;
-    for (final MapEntry(key: ordinal, value: context) in _checkboxes.entries) {
-      if (!context.mounted) continue;
+    _checkboxes.removeWhere((context, _) => !context.mounted);
+    for (final MapEntry(key: context, value: ordinal) in _checkboxes.entries) {
       final row = context.findAncestorRenderObjectOfType<RenderFlex>();
       if (row == null || !row.attached || !row.hasSize) continue;
       final rect = MatrixUtils.transformRect(
@@ -145,11 +146,12 @@ class _NoteDetailViewState extends State<NoteDetailView> {
         (note.content?.trim().isNotEmpty ?? false);
     // The Markdown builder invokes checkboxBuilder once per task-list item, a
     // parent after its sub-items; this counter, through the build order, maps
-    // each rendered checkbox back to its `- [ ]` line in the source. Reset
-    // every build.
+    // each rendered checkbox back to its `- [ ]` line in the source.
     var checkboxIndex = 0;
     final buildOrder = taskLinesInBuildOrder(note.content ?? '');
-    _checkboxes.clear();
+    final paragraphStyle = theme.textTheme.bodyLarge?.copyWith(
+      color: textColor.withAlpha(230),
+    );
 
     // The scaffold renders edge-to-edge, so the content scrolls behind the
     // system navigation bar and the floating edit button. Pad the bottom of the
@@ -209,21 +211,19 @@ class _NoteDetailViewState extends State<NoteDetailView> {
                         selectable: true,
                         softLineBreak: true,
                         checkboxBuilder: (checked) {
-                          final built = checkboxIndex++;
-                          final ordinal = built < buildOrder.length
-                              ? buildOrder[built]
-                              : built;
-                          final icon = Icon(
-                            checked
-                                ? Icons.check_box
-                                : Icons.check_box_outline_blank,
-                            size: 20,
+                          final ordinal = taskLineForBuiltCheckbox(
+                            checkboxIndex++,
+                            buildOrder,
+                          );
+                          final icon = MarkdownTaskCheckbox(
+                            checked: checked,
+                            style: paragraphStyle,
                             color: textColor.withAlpha(230),
                           );
-                          if (!hasEditButton) return icon;
+                          if (!hasEditButton || ordinal == null) return icon;
                           return Builder(
                             builder: (context) {
-                              _checkboxes[ordinal] = context;
+                              _checkboxes[context] = ordinal;
                               return icon;
                             },
                           );
@@ -236,9 +236,7 @@ class _NoteDetailViewState extends State<NoteDetailView> {
                         },
                         styleSheet: MarkdownStyleSheet.fromTheme(theme)
                             .copyWith(
-                              p: theme.textTheme.bodyLarge?.copyWith(
-                                color: textColor.withAlpha(230),
-                              ),
+                              p: paragraphStyle,
                               h1: theme.textTheme.headlineMedium?.copyWith(
                                 color: textColor,
                                 fontWeight: FontWeight.bold,

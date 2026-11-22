@@ -62,6 +62,42 @@ void main() {
     expect(find.byIcon(Icons.check_box), findsOneWidget);
   });
 
+  testWidgets('a checkbox still ticks its line after the hero flight in', (
+    tester,
+  ) async {
+    // The flight reparents the note's markdown twice, and each move parses it
+    // again, building every checkbox anew.
+    final controller = _CapturingNotesController();
+    final note = makeNote(content: '- [ ] Milk\n- [ ] Bread');
+
+    await tester.pumpWidget(
+      wrapForTest(
+        Builder(
+          builder: (context) => GestureDetector(
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => NoteDetailView(
+                  note: note,
+                  controller: controller,
+                  bgColor: const Color(0xFFFFFFFF),
+                  textColor: const Color(0xFF000000),
+                ),
+              ),
+            ),
+            child: Hero(tag: 'note-${note.id}', child: const Text('Open')),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('Open'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.check_box_outline_blank).last);
+    await tester.pumpAndSettle();
+
+    expect(controller.lastTick, (ordinal: 1, text: 'Bread', checked: true));
+  });
+
   group('tapping a checklist row', () {
     testWidgets('anywhere on its text ticks it', (tester) async {
       final controller = _CapturingNotesController();
