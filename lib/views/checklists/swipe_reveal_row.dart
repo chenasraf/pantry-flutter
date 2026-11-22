@@ -81,23 +81,35 @@ class SwipeRevealRowState extends State<SwipeRevealRow> {
   @override
   Widget build(BuildContext context) {
     if (SwipeRevealRow.debugPinActions ?? PlatformInfo.isDesktop) {
-      // Desktop: content + always-visible actions in a plain Row (no clip,
-      // slide, or gesture). `stretch` makes the action tiles span the row's
-      // full height; otherwise their backgrounds center and leave gaps.
-      return IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(child: widget.child),
-            for (final a in widget.actions)
-              _ActionButton(
-                action: a,
-                width: _actionWidth,
-                density: widget.density,
-                onTap: a.onPressed,
-              ),
-          ],
-        ),
+      // Desktop: always-visible actions (no clip, slide, or gesture). The
+      // content alone sizes the row, leaving room for the actions, which are
+      // pinned over that room at the row's full height. An IntrinsicHeight
+      // would do the same, but rows that lay themselves out from their width
+      // through a LayoutBuilder can't report an intrinsic height.
+      return Stack(
+        children: [
+          Padding(
+            padding: EdgeInsetsDirectional.only(end: _maxSwipe),
+            child: widget.child,
+          ),
+          PositionedDirectional(
+            top: 0,
+            bottom: 0,
+            end: 0,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final a in widget.actions)
+                  _ActionButton(
+                    action: a,
+                    width: _actionWidth,
+                    density: widget.density,
+                    onTap: a.onPressed,
+                  ),
+              ],
+            ),
+          ),
+        ],
       );
     }
     final isRtl = Directionality.of(context) == TextDirection.rtl;

@@ -96,4 +96,39 @@ void main() {
     expect(edited, isTrue);
     expect(slideOf(tester), isNot(0));
   });
+
+  group('with the actions pinned', () {
+    setUp(() => SwipeRevealRow.debugPinActions = true);
+
+    testWidgets('a row sized by a LayoutBuilder keeps its height', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapForTest(
+          Align(
+            alignment: AlignmentDirectional.topStart,
+            child: SwipeRevealRow(
+              actions: [
+                SwipeAction(
+                  icon: Icons.edit,
+                  label: 'Edit',
+                  tint: Colors.white,
+                  background: Colors.blue,
+                  onPressed: () {},
+                ),
+              ],
+              child: LayoutBuilder(
+                builder: (context, constraints) =>
+                    const SizedBox(height: 120, child: Text('Milk')),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(tester.getSize(find.byType(SwipeRevealRow)).height, 120);
+      expect(tester.getSize(find.byType(InkWell)).height, 120);
+    });
+  });
 }
