@@ -30,6 +30,11 @@ class SwipeRevealRow extends StatefulWidget {
     this.onOpened,
   });
 
+  /// Overrides [PlatformInfo.isDesktop] for deciding whether the actions are
+  /// pinned, so tests on a desktop host can reach the swipe layout.
+  @visibleForTesting
+  static bool? debugPinActions;
+
   @override
   State<SwipeRevealRow> createState() => SwipeRevealRowState();
 }
@@ -75,7 +80,7 @@ class SwipeRevealRowState extends State<SwipeRevealRow> {
 
   @override
   Widget build(BuildContext context) {
-    if (PlatformInfo.isDesktop) {
+    if (SwipeRevealRow.debugPinActions ?? PlatformInfo.isDesktop) {
       // Desktop: content + always-visible actions in a plain Row (no clip,
       // slide, or gesture). `stretch` makes the action tiles span the row's
       // full height; otherwise their backgrounds center and leave gaps.
@@ -100,46 +105,49 @@ class SwipeRevealRowState extends State<SwipeRevealRow> {
     // actions shifted +_maxSwipe past the trailing edge behind the ClipRect) to
     // -_maxSwipe (open, translation 0). RTL flips the trailing edge to the left.
     final slide = (_maxSwipe + _offset) * (isRtl ? -1 : 1);
-    return ClipRect(
-      child: Stack(
-        children: [
-          // Foreground stays put and fully visible regardless of swipe state.
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onHorizontalDragStart: widget.enabled ? _onPanStart : null,
-            onHorizontalDragUpdate: widget.enabled ? _onPanUpdate : null,
-            onHorizontalDragEnd: widget.enabled ? _onPanEnd : null,
-            child: widget.child,
-          ),
-          // Action row anchored at the trailing edge, translated in/out by
-          // `slide`. Sits on top so the buttons cover (not displace) the content.
-          PositionedDirectional(
-            top: 0,
-            bottom: 0,
-            end: 0,
-            child: AnimatedContainer(
-              duration: _dragging
-                  ? Duration.zero
-                  : const Duration(milliseconds: 220),
-              curve: Curves.easeOutCubic,
-              transform: Matrix4.translationValues(slide, 0, 0),
-              child: Row(
-                children: [
-                  for (final a in widget.actions)
-                    _ActionButton(
-                      action: a,
-                      width: _actionWidth,
-                      density: widget.density,
-                      onTap: () {
-                        close();
-                        a.onPressed();
-                      },
-                    ),
-                ],
+    // The drag wraps the action buttons too, so an open row can be swiped shut
+    // from on top of them; a tap that never moves still reaches the button.
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onHorizontalDragStart: widget.enabled ? _onPanStart : null,
+      onHorizontalDragUpdate: widget.enabled ? _onPanUpdate : null,
+      onHorizontalDragEnd: widget.enabled ? _onPanEnd : null,
+      child: ClipRect(
+        child: Stack(
+          children: [
+            // Foreground stays put and fully visible regardless of swipe state.
+            widget.child,
+            // Action row anchored at the trailing edge, translated in/out by
+            // `slide`. Sits on top so the buttons cover (not displace) the
+            // content.
+            PositionedDirectional(
+              top: 0,
+              bottom: 0,
+              end: 0,
+              child: AnimatedContainer(
+                duration: _dragging
+                    ? Duration.zero
+                    : const Duration(milliseconds: 220),
+                curve: Curves.easeOutCubic,
+                transform: Matrix4.translationValues(slide, 0, 0),
+                child: Row(
+                  children: [
+                    for (final a in widget.actions)
+                      _ActionButton(
+                        action: a,
+                        width: _actionWidth,
+                        density: widget.density,
+                        onTap: () {
+                          close();
+                          a.onPressed();
+                        },
+                      ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
