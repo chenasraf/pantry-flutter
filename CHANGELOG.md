@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.40.0](https://github.com/chenasraf/pantry-flutter/compare/v0.39.0...v0.40.0) (2026-11-22)
+
+
+### Features
+
+* **checklists:** show an item's stores as a single chip ([b7151ef](https://github.com/chenasraf/pantry-flutter/commit/b7151ef9abca19ffd68bd9b3dab8febe22e829cb))
+* **items:** fill in the amount and suggest a category as you type an item ([b8591d6](https://github.com/chenasraf/pantry-flutter/commit/b8591d6c0168427600768ec93ba6d49bb6475948))
+* **lists:** show an estimated total for the items you still need to buy ([6d3ee54](https://github.com/chenasraf/pantry-flutter/commit/6d3ee5471e95f98acef50ccae2acc57e20d7c3c3))
+* **notes:** keep a note in sync with a file in your Nextcloud, or create a note from a file ([fa88929](https://github.com/chenasraf/pantry-flutter/commit/fa8892951a746c894ea1dc244b76a60eacf63e43))
+* **notes:** show whose files a synced note is saved in when they are not yours ([ed172e3](https://github.com/chenasraf/pantry-flutter/commit/ed172e3274c4baa87f104e22993b9a73d81dc21a))
+* **onboarding:** introduce smart input when adding items ([5dcf7e0](https://github.com/chenasraf/pantry-flutter/commit/5dcf7e094254e743b6bd4453e0eac75c8ddd1296))
+* **photos:** allow attaching photos that are already in your Nextcloud files ([01622fb](https://github.com/chenasraf/pantry-flutter/commit/01622fbb729d35e234202ec49e6ad57b144216aa))
+* **shopping:** allow undoing a finished shopping trip ([c0616a0](https://github.com/chenasraf/pantry-flutter/commit/c0616a0f20e8fdb3ef89912a624d35596e059399))
+* **templates:** allow a template to add new items from its lists automatically ([96268f2](https://github.com/chenasraf/pantry-flutter/commit/96268f278778d63a43e886f0423275863fd85ba4))
+
+
+### Bug Fixes
+
+* **categories:** inventory lists will now show their names in category management ([1debdbe](https://github.com/chenasraf/pantry-flutter/commit/1debdbefd2f58b0f760456564e2ea1a6e764d1bf))
+* **desktop:** inventory rows will now show at their full height ([62f77f2](https://github.com/chenasraf/pantry-flutter/commit/62f77f2088164b0afe77e78fd3f0bf72b6e9ed2d))
+* **inventory:** setting a category or labels on several items will now offer the ones from their lists ([e9de5fc](https://github.com/chenasraf/pantry-flutter/commit/e9de5fc01785a5fbde39f35d3fc0052274f7dcc6))
+* **labels:** inventory lists will now show their names when managing labels and custom fields ([e2da700](https://github.com/chenasraf/pantry-flutter/commit/e2da700bbdf5fd61e118d5c42f4d6a95dd7c79fb))
+* **lists:** templates and lists picked when creating a list will now be saved ([892c665](https://github.com/chenasraf/pantry-flutter/commit/892c665cb7933dadaa2419a0e355399adaa11543))
+* **mobile:** swiping over a row's open actions will now close them ([fa23ca4](https://github.com/chenasraf/pantry-flutter/commit/fa23ca407eb4fa62dedec932d093bbabe33a8435))
+* **notes:** checking off checklist items in a note will now work without editing it ([1cadf6e](https://github.com/chenasraf/pantry-flutter/commit/1cadf6eb01c13217cc4fcbee4ce1178f96995719)), closes [#206](https://github.com/chenasraf/pantry-flutter/issues/206)
+
 ## [0.39.0](https://github.com/chenasraf/pantry-flutter/compare/v0.38.0...v0.39.0) (2026-11-15)
 
 
