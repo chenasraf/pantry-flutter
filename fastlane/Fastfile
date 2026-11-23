@@ -33,10 +33,11 @@ default_platform(:android)
 
 platform :android do
   # supply reads release notes only from <metadata>/<locale>/changelogs/<versionCode>.txt.
+  # Written without a trailing newline: Play counts it against the 500 limit.
   def write_play_changelog(metadata_dir, version_code, notes)
     changelog_dir = File.join(metadata_dir, "en-US", "changelogs")
     FileUtils.mkdir_p(changelog_dir)
-    File.write(File.join(changelog_dir, "#{version_code}.txt"), "#{notes}\n")
+    File.write(File.join(changelog_dir, "#{version_code}.txt"), notes)
   end
 
   # -- Image change detection --
