@@ -120,7 +120,7 @@ Translations are very welcome — see the [i18n guide](DEVELOPMENT.md#internatio
 ## Privacy
 
 Pantry is a self-hosted client. Your data never leaves your Nextcloud server. See the
-[privacy policy](https://casraf.dev/pantry-privacy-policy) for details.
+[privacy policy](https://pantry.casraf.dev/privacy/) for details.
 
 ## Contributing
 
