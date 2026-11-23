@@ -1,7 +1,7 @@
 Adding items is quicker: type "2 L milk" and Pantry fills in the amount and suggests a category (needs Pantry server 0.40.0).
 
 More features:
-• Sync notes with Markdown files in your Nextcloud
+• Sync notes with Markdown files in Nextcloud
 • Add photos already in your Nextcloud
 • Estimated totals on lists
 • Undo a finished shopping trip
