@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.40.1](https://github.com/chenasraf/pantry-flutter/compare/v0.40.0...v0.40.1) (2026-11-25)
+
+
+### Bug Fixes
+
+* houses shared with you will now load after previously having none ([17c5c87](https://github.com/chenasraf/pantry-flutter/commit/17c5c87059e62e69f937bb842b06d62408746a04))
+
 ## [0.40.0](https://github.com/chenasraf/pantry-flutter/compare/v0.39.0...v0.40.0) (2026-11-22)
 
 
