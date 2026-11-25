@@ -32,7 +32,7 @@ class HomeController extends ChangeNotifier {
 
     // Restore from cache
     final cached = HouseService.instance.getCached();
-    if (cached != null && _houses.isEmpty) {
+    if (cached != null && cached.isNotEmpty && _houses.isEmpty) {
       _houses = cached;
       _restoreSelection();
       _isLoading = false;
